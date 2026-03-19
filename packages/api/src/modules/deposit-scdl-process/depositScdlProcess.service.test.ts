@@ -20,19 +20,17 @@ import depositScdlProcessCheckService from "./check/DepositScdlProcess.check.ser
 import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
 import Siret from "../../identifierObjects/Siret";
 import dataLogService from "../data-log/dataLog.service";
-import { DataLogEntity } from "../data-log/entities/dataLogEntity";
-import { InsertOneResult } from "mongodb";
 import s3FileService from "../s3-file/s3Storage.service";
 import { DefaultObject } from "../../@types";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
 import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
-import { DepositLogPort } from "../../dataProviders/db/deposit-log/depositLog.port";
+import { DepositLogPort } from "../../dataProviders/db/deposit-log/deposit-log.port";
 import { DepositScdlProcessService } from "./depositScdlProcess.service";
 import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.port.mock";
 
 jest.mock("./check/DepositScdlProcess.check.service");
-jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
+jest.mock("../../dataProviders/db/deposit-log/deposit-log.port");
 jest.mock("../../dataProviders/db/deposit-log/deposit-log.mapper");
 jest.mock("../providers/scdl/scdl.service.ts");
 
@@ -412,7 +410,7 @@ describe("DepositScdlProcessService", () => {
             jest.spyOn(depositScdlProcessCheckService, "finalCheckBeforePersist").mockResolvedValue(undefined);
             persistMock = jest.spyOn(scdlService, "persist").mockResolvedValue(undefined);
             deletDepositMock = mockDepositLogPort.deleteByUserId.mockResolvedValue(true);
-            jest.spyOn(dataLogService, "addFromFile").mockResolvedValue({} as InsertOneResult<DataLogEntity>);
+            jest.spyOn(dataLogService, "addFromFile").mockResolvedValue();
             mockS3DeleteUserFile.mockResolvedValue();
             mockGetUserFile.mockResolvedValue(createMockFile("test.csv"));
         });

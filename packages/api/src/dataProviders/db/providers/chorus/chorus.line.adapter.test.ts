@@ -1,5 +1,5 @@
 import chorusLineAdapter from "./chorus.line.adapter";
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import ChorusLineEntity from "../../../../modules/providers/chorus/entities/ChorusLineEntity";
 
 describe("chorusLinePort", () => {
@@ -8,7 +8,7 @@ describe("chorusLinePort", () => {
     beforeAll(() => {
         jest
             // @ts-expect-error: test
-            .spyOn(MongoPort.prototype, "collection", "get")
+            .spyOn(MongoAdapter.prototype, "collection", "get")
             // @ts-expect-error: test
             .mockReturnValue({ bulkWrite: mockBulkWrite });
     });

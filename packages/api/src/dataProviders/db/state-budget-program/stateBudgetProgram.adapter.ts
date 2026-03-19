@@ -1,12 +1,12 @@
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
-import MongoPort from "../../../shared/MongoPort";
+import MongoAdapter from "../MongoAdapter";
 import StateBudgetProgramDbo from "./StateBudgetProgramDbo";
 import StateBudgetProgramMapper from "./state-budget-program.mapper";
 
 /**
  * Represents a data provider for state budget programs.
  */
-export class StateBudgetProgramAdapter extends MongoPort<StateBudgetProgramDbo> {
+export class StateBudgetProgramAdapter extends MongoAdapter<StateBudgetProgramDbo> {
     collectionName = "state-budget-program";
 
     /**

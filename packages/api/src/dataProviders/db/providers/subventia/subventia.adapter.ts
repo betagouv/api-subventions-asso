@@ -1,9 +1,9 @@
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import Siren from "../../../../identifierObjects/Siren";
 import Siret from "../../../../identifierObjects/Siret";
 import { SubventiaDbo } from "../../../../modules/providers/subventia/@types/subventia.entity";
 
-export class SubventiaAdapter extends MongoPort<Omit<SubventiaDbo, "_id">> {
+export class SubventiaAdapter extends MongoAdapter<Omit<SubventiaDbo, "_id">> {
     readonly collectionName = "subventia";
 
     public async findBySiren(siren: Siren) {

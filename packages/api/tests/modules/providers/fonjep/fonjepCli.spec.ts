@@ -11,7 +11,7 @@ import dataBretagneAdapter from "../../../../src/dataProviders/api/dataBretagne/
 import { DATA_BRETAGNE_DTOS, PROGRAMS } from "../../../__fixtures__/paymentsFlat.fixture";
 import stateBudgetProgramAdapter from "../../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.adapter";
 import paymentFlatAdapter from "../../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
-import applicationFlatAdapter from "../../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
+import applicationFlatAdapter from "../../../../src/dataProviders/db/applicationFlat/application-flat.adapter";
 
 const FILEPATH = path.resolve(__dirname, "./__fixtures__/fonjep-new.xlsx");
 const EXPORT_DATE = new Date("2022-03-03").toISOString();

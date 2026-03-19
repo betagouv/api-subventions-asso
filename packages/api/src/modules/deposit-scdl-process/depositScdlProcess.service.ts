@@ -21,7 +21,7 @@ import ScdlErrorStats from "./entities/ScdlErrorStats";
 import notifyService from "../notify/notify.service";
 import { NotificationType } from "../notify/@types/NotificationType";
 import { isUserAdmin } from "../../shared/helpers/UserHelper";
-import { DepositLogPort } from "../../dataProviders/db/deposit-log/depositLog.port";
+import { DepositLogPort } from "../../dataProviders/db/deposit-log/deposit-log.port";
 
 export class DepositScdlProcessService {
     constructor(private readonly depositLogPort: DepositLogPort) {}

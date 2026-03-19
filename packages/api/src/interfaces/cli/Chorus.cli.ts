@@ -102,7 +102,10 @@ export default class ChorusCli extends CliController {
     }
 
     async resetPaymentFlat() {
-        if ((await paymentFlatChorusService.cursorFindChorusOnly().toArray()).length)
+        const iterator = paymentFlatChorusService.cursorFindChorusOnly()[Symbol.asyncIterator]();
+        const first = await iterator.next();
+
+        if (!first.done)
             console.warn("DB already initialized, maybe you want to use 'resyncPaymentFlatByExercise' instead");
         const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
         this.logger.logIC("Create payment flat entities from chorus");

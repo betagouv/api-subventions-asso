@@ -1,7 +1,7 @@
-import MongoPort from "../../../shared/MongoPort";
+import MongoAdapter from "../MongoAdapter";
 import GisproEntity from "../../../modules/providers/dauphin-gispro/@types/GisproEntity";
 
-export class GisproAdapter extends MongoPort<GisproEntity> {
+export class GisproAdapter extends MongoAdapter<GisproEntity> {
     public collectionName = "gispro";
 
     public async createIndexes() {

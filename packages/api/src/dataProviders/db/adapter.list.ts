@@ -1,0 +1,64 @@
+import rnaSirenAdapter from "./rnaSiren/rnaSiren.adapter";
+import uniteLegalEntrepriseAdapter from "./uniteLegalEntreprise/uniteLegalEntreprise.adapter";
+import uniteLegalNameAdapter from "./uniteLegalName/uniteLegalName.adapter";
+import configurationsAdapter from "./configurations/configurations.adapter";
+import logsAdapter from "./stats/logs.adapter";
+import statsAssociationsVisitAdapter from "./stats/statsAssociationsVisit.adapter";
+import userResetAdapter from "./user/user-reset.adapter";
+import userAdapter from "./user/user.adapter";
+import consumerTokenAdapter from "./user/consumer-token.adapter";
+import chorusLineAdapter from "./providers/chorus/chorus.line.adapter";
+import dauphinAdapter from "./providers/dauphin/dauphin.adapter";
+import demarchesSimplifieesDataAdapter from "./providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
+import demarchesSimplifieesSchemaAdapter from "./providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
+import fonjepVersementsAdapter from "./providers/fonjep/fonjep.versements.adapter";
+import fonjepPostesAdapter from "./providers/fonjep/fonjep.postes.adapter";
+import fonjepTiersAdapter from "./providers/fonjep/fonjep.tiers.adapter";
+import fonjepTypePosteAdapter from "./providers/fonjep/fonjep.typePoste.adapter";
+import fonjepDispositifAdapter from "./providers/fonjep/fonjep.dispositif.adapter";
+import paymentFlatAdapter from "./paymentFlat/paymentFlat.adapter";
+import { osirisActionAdapter, osirisRequestAdapter } from "./providers/osiris";
+import miscScdlGrantAdapter from "./providers/scdl/miscScdlGrant.adapter";
+import miscScdlProducersAdapter from "./providers/scdl/miscScdlProducers.adapter";
+import sireneStockUniteLegaleAdapter from "./sirene/stockUniteLegale/sireneStockUniteLegale.adapter";
+import amountsVsProgramRegionAdapter from "./dataViz/amountVSProgramRegion/amounts-vs-program-region.adapter";
+import dataLogAdapter from "./data-log/data-log.adapter";
+import applicationFlatAdapter from "./applicationFlat/application-flat.adapter";
+import gisproAdapter from "./providers/gispro.adapter";
+import depositLogAdapter from "./deposit-log/deposit-log.adapter";
+import chorusFseAdapter from "./providers/chorus/chorus.fse.adapter";
+
+export const adaptersWithIndexes = [
+    // TODO: handle adapter initialization from within and remove this file
+    userAdapter,
+    logsAdapter,
+    userResetAdapter,
+    osirisRequestAdapter,
+    osirisActionAdapter,
+    fonjepVersementsAdapter,
+    fonjepPostesAdapter,
+    fonjepTiersAdapter,
+    fonjepTypePosteAdapter,
+    fonjepDispositifAdapter,
+    dauphinAdapter,
+    miscScdlGrantAdapter,
+    miscScdlProducersAdapter,
+    configurationsAdapter,
+    consumerTokenAdapter,
+    chorusLineAdapter,
+    chorusFseAdapter,
+    demarchesSimplifieesDataAdapter,
+    demarchesSimplifieesSchemaAdapter,
+    statsAssociationsVisitAdapter,
+    rnaSirenAdapter,
+    uniteLegalEntrepriseAdapter,
+    uniteLegalNameAdapter,
+    paymentFlatAdapter,
+    sireneStockUniteLegaleAdapter,
+    amountsVsProgramRegionAdapter,
+    dataLogAdapter,
+    applicationFlatAdapter,
+    depositLogAdapter,
+    gisproAdapter,
+    dauphinAdapter,
+];

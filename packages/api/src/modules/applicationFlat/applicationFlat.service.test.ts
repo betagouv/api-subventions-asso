@@ -1,6 +1,6 @@
 import Siren from "../../identifierObjects/Siren";
 
-import applicationFlatAdapter from "../../dataProviders/db/applicationFlat/applicationFlat.adapter";
+import applicationFlatAdapter from "../../dataProviders/db/applicationFlat/application-flat.adapter";
 import applicationFlatService from "./applicationFlat.service";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import ApplicationFlatMapper from "./application-flat.mapper";
@@ -11,12 +11,11 @@ import { ReadableStream } from "node:stream/web";
 import Siret from "../../identifierObjects/Siret";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import { FindCursor } from "mongodb";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import { APPLICATION_LINK_TO_CHORUS, DBO as APPLICATION_FLAT_DBO } from "./__fixtures__";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
 
-jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.adapter");
+jest.mock("../../dataProviders/db/applicationFlat/application-flat.adapter");
 jest.mock("./application-flat.mapper");
 jest.mock("../../identifierObjects/Siret");
 jest.mock("../../shared/helpers/MongoHelper");
@@ -131,11 +130,17 @@ describe("ApplicationFlatService", () => {
     });
 
     describe("containsDataFromProvider", () => {
-        const CURSOR = { hasNext: jest.fn() } as unknown as FindCursor;
         const PROVIDER = "PROV";
+        let mockCursorFind;
+
+        const createAsyncIterable = <T>(items: T[]): AsyncIterable<T> => ({
+            [Symbol.asyncIterator]: async function* () {
+                yield* items;
+            },
+        });
 
         beforeAll(() => {
-            jest.mocked(applicationFlatAdapter.cursorFind).mockReturnValue(CURSOR);
+            mockCursorFind = jest.spyOn(applicationFlatAdapter, "cursorFind");
         });
 
         afterAll(() => {
@@ -143,16 +148,26 @@ describe("ApplicationFlatService", () => {
         });
 
         it("gets cursor", async () => {
+            mockCursorFind.mockReturnValue(createAsyncIterable([]));
+
             await applicationFlatService.containsDataFromProvider(PROVIDER);
             expect(applicationFlatAdapter.cursorFind({ provider: PROVIDER }));
         });
 
-        it("returns response from cursor's hasNext", async () => {
-            const expected = "toto" as unknown as boolean;
-            jest.mocked(CURSOR.hasNext).mockResolvedValue(expected);
+        it("returns true when iterable contains at least one item", async () => {
+            mockCursorFind.mockReturnValue(createAsyncIterable([{} as ApplicationFlatEntity]));
+
             const actual = await applicationFlatService.containsDataFromProvider(PROVIDER);
-            expect(CURSOR.hasNext).toHaveBeenCalled();
-            expect(actual).toBe(expected);
+
+            expect(actual).toBe(true);
+        });
+
+        it("returns false when iterable is empty", async () => {
+            mockCursorFind.mockReturnValue(createAsyncIterable([]));
+
+            const actual = await applicationFlatService.containsDataFromProvider(PROVIDER);
+
+            expect(actual).toBe(false);
         });
     });
 

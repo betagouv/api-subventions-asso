@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import amountsVsProgramRegionAdapter from "../../../src/dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.adapter";
+import amountsVsProgramRegionAdapter from "../../../src/dataProviders/db/dataViz/amountVSProgramRegion/amounts-vs-program-region.adapter";
 import paymentFlatAdapter from "../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
 import AmountsVsProgramRegionCli from "../../../src/interfaces/cli/AmountsVsProgramRegion.cli";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";

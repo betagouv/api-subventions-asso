@@ -1,7 +1,7 @@
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import { GeoDbo } from "../../../../modules/providers/geoApi/@types/geo.types";
 
-export class GeoAdapter extends MongoPort<GeoDbo> {
+export class GeoAdapter extends MongoAdapter<GeoDbo> {
     collectionName = "geo";
 
     async createIndexes() {

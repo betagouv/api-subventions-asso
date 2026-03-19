@@ -1,10 +1,10 @@
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import { SireneUniteLegaleDbo } from "../../../../modules/providers/sirene/stockUniteLegale/@types/SireneUniteLegaleDbo";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
 import SireneStockUniteLegaleMapper from "../../../../modules/providers/sirene/stockUniteLegale/mappers/sirene-stock-unite-legale.mapper";
 import Siren from "../../../../identifierObjects/Siren";
 
-export class SireneUniteLegaleDbAdapter extends MongoPort<SireneUniteLegaleDbo> {
+export class SireneUniteLegaleDbAdapter extends MongoAdapter<SireneUniteLegaleDbo> {
     collectionName = "sirene";
 
     public async createIndexes(): Promise<void> {

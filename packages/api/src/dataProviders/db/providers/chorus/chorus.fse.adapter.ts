@@ -1,6 +1,6 @@
 import { WithId } from "mongodb";
 import ChorusFseEntity from "../../../../modules/providers/chorus/entities/ChorusFseEntity";
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
 import Siret from "../../../../identifierObjects/Siret";
 import Ridet from "../../../../identifierObjects/Ridet";
@@ -8,7 +8,7 @@ import Tahitiet from "../../../../identifierObjects/Tahitiet";
 
 type ChorusFseDbo = Omit<ChorusFseEntity, "identifier"> & { identifier: string };
 
-export class ChorusFseAdapter extends MongoPort<ChorusFseDbo> {
+export class ChorusFseAdapter extends MongoAdapter<ChorusFseDbo> {
     readonly collectionName = "chorus-fse";
 
     private toDbo(entity: ChorusFseEntity): ChorusFseDbo {

@@ -1,8 +1,8 @@
 import { UserDto } from "dto";
-import MongoPort from "../../../shared/MongoPort";
+import MongoAdapter from "../MongoAdapter";
 import { WinstonLog } from "../../../@types/WinstonLog";
 
-export class LogsAdapter extends MongoPort<WinstonLog> {
+export class LogsAdapter extends MongoAdapter<WinstonLog> {
     collectionName = "log";
 
     async createIndexes() {

@@ -7,13 +7,13 @@ import { UserDto } from "dto";
 import { ObjectId } from "mongodb";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import { ScdlDepositCronService } from "./scdl-deposit.cron.service";
-import { DepositLogPort } from "../../dataProviders/db/deposit-log/depositLog.port";
+import { DepositLogPort } from "../../dataProviders/db/deposit-log/deposit-log.port";
 import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.port.mock";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 
 jest.mock("../../shared/helpers/DateHelper");
 jest.mock("../user/services/crud/user.crud.service");
-jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
+jest.mock("../../dataProviders/db/deposit-log/deposit-log.port");
 jest.mock("../notify/notify.service", () => ({
     notify: jest.fn().mockResolvedValue(true),
 }));

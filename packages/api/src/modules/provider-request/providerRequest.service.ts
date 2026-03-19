@@ -1,10 +1,10 @@
 import axios, { AxiosError } from "axios";
-import providerRequestAdapter from "../../dataProviders/db/provider-request/providerRequest.adapter";
 import ProviderRequestLog from "./entities/ProviderRequestLog";
 import RequestConfig from "./@types/RequestConfig";
 import { RequestResponse } from "./@types/RequestResponse";
 import RequestConfigMapper from "./mappers/request-config.mapper";
 import RequestResponseMapper from "./mappers/request-response.mapper";
+import providerRequestAdapter from "../../dataProviders/db/provider-request/providerRequest.adapter";
 
 export class ProviderRequestService {
     constructor(private providerId: string) {}

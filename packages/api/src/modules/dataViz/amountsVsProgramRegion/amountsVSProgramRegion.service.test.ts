@@ -4,12 +4,13 @@ import {
     AMOUNTS_VS_PROGRAM_REGION_ENTITIES,
     NOT_AGGREGATED_ENTITIES,
 } from "./__fixtures__/amountsVSProgramRegion.fixture";
-import amountsVsProgramRegionAdapter from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.adapter";
+import amountsVsProgramRegionAdapter from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amounts-vs-program-region.adapter";
 import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.service";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS,
 } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPaymentFlat";
 
 describe("amountsVSProgramRegionService", () => {
     describe("toAmountsVsProgramRegionEntities", () => {
@@ -18,7 +19,6 @@ describe("amountsVSProgramRegionService", () => {
 
         let mockCursor;
         let mockDocuments;
-        let nDocuments;
 
         beforeEach(() => {
             mockDocuments = [
@@ -29,17 +29,12 @@ describe("amountsVSProgramRegionService", () => {
                 { ...CHORUS_PAYMENT_FLAT_ENTITY, programNumber: "programNumber" },
                 { ...CHORUS_PAYMENT_FLAT_ENTITY, accountingAttachmentRegion: "Occitanie" },
             ];
-            nDocuments = mockDocuments.length;
 
             mockCursor = {
-                next: jest.fn().mockImplementation(() => {
-                    return mockDocuments.shift();
-                }),
-                hasNext: jest.fn().mockImplementation(() => {
-                    if (mockDocuments.length) return true;
-                    return false;
-                }),
-            };
+                [Symbol.asyncIterator]: async function* () {
+                    yield* mockDocuments;
+                },
+            } as AsyncIterable<ChorusPaymentFlatEntity>;
 
             mockCursorFindChorusOnly = jest
                 .spyOn(paymentFlatChorusService, "cursorFindChorusOnly")
@@ -61,8 +56,6 @@ describe("amountsVSProgramRegionService", () => {
         afterEach(() => {
             mockMapper.mockRestore();
             mockCursorFindChorusOnly.mockRestore();
-            mockCursor.next.mockRestore();
-            mockCursor.hasNext.mockRestore();
         });
 
         it("should call cursorFindChorusOnly with the budget exercice", async () => {
@@ -76,18 +69,6 @@ describe("amountsVSProgramRegionService", () => {
             await amountsVsProgramRegionService.toAmountsVsProgramRegionEntities();
 
             expect(mockCursorFindChorusOnly).toHaveBeenCalledWith(undefined);
-        });
-
-        it("should call hasNext nDocuments + 1 times", async () => {
-            await amountsVsProgramRegionService.toAmountsVsProgramRegionEntities();
-
-            expect(mockCursor.hasNext).toHaveBeenCalledTimes(nDocuments + 1);
-        });
-
-        it("should call cursor.next nDocuments times", async () => {
-            await amountsVsProgramRegionService.toAmountsVsProgramRegionEntities();
-
-            expect(mockCursor.next).toHaveBeenCalledTimes(nDocuments);
         });
 
         it("should call toNotAggregatedEntity for each first time occurrence of agregation key (program, year,region)", async () => {

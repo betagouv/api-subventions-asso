@@ -1,6 +1,6 @@
 import * as mongoDB from "mongodb";
 import { AgentTypeEnum, TerritorialScopeEnum } from "dto";
-import { AnyBulkWriteOperation, Document, FindCursor } from "mongodb";
+import { AnyBulkWriteOperation, Document } from "mongodb";
 
 import {
     MONGO_METABASE_DBNAME,
@@ -9,8 +9,9 @@ import {
     MONGO_METABASE_USER,
 } from "../../../configurations/mongo.conf";
 import { DataLogEntity } from "../../../modules/data-log/entities/dataLogEntity";
+import { MetabaseDumpPort } from "./metabase-dump.port";
 
-export class MetabaseDumpAdapter {
+export class MetabaseDumpAdapter implements MetabaseDumpPort {
     mongoClient: mongoDB.MongoClient;
     db: mongoDB.Db;
 
@@ -27,29 +28,29 @@ export class MetabaseDumpAdapter {
         this.db = this.mongoClient.db(MONGO_METABASE_DBNAME);
     }
 
-    public connectToDumpDatabase() {
-        return this.mongoClient.connect().catch(reason => {
+    public async connectToDumpDatabase(): Promise<void> {
+        await this.mongoClient.connect().catch(reason => {
             console.log("MONGO CONNECTION ERROR\n");
             console.error(reason);
             process.exit(1);
         });
     }
 
-    public addLogs(logs: unknown[]) {
-        return this.db.collection("log").insertMany(logs as Document[]);
+    public async addLogs(logs: unknown[]): Promise<void> {
+        await this.db.collection("log").insertMany(logs as Document[]);
     }
 
-    public addVisits(visits: unknown[]) {
-        return this.db.collection("visits").insertMany(visits as Document[]);
+    public async addVisits(visits: unknown[]): Promise<void> {
+        await this.db.collection("visits").insertMany(visits as Document[]);
     }
 
-    public async upsertUsers(users: unknown[]) {
+    public async upsertUsers(users: unknown[]): Promise<void> {
         await this.db.collection("users").deleteMany({});
-        return this.db.collection("users").insertMany(users as Document[]);
+        await this.db.collection("users").insertMany(users as Document[]);
     }
 
-    public patchWithPipedriveData() {
-        return this.db
+    public async patchWithPipedriveData(): Promise<void> {
+        await this.db
             .collection("users")
             .aggregate([
                 // join
@@ -126,7 +127,7 @@ export class MetabaseDumpAdapter {
             .toArray();
     }
 
-    public savePipedrive(users) {
+    public async savePipedrive(users): Promise<void> {
         const operations: AnyBulkWriteOperation[] = [];
         for (const user of users) {
             operations.push({
@@ -137,27 +138,26 @@ export class MetabaseDumpAdapter {
                 },
             });
         }
-        return this.db.collection("users-pipedrive").bulkWrite(operations);
+        await this.db.collection("users-pipedrive").bulkWrite(operations);
     }
 
-    public cleanAfterDate(date: Date) {
-        return this.db.collection("log").deleteMany({ timestamp: { $gt: date } });
+    public async cleanAfterDate(date: Date): Promise<void> {
+        await this.db.collection("log").deleteMany({ timestamp: { $gt: date } });
     }
 
-    public async upsertDepositLogs(depositLogs: unknown[]) {
+    public async upsertDepositLogs(depositLogs: unknown[]): Promise<void> {
         await this.db.collection("deposit-logs").deleteMany({});
-        return this.db.collection("deposit-logs").insertMany(depositLogs as Document[]);
+        await this.db.collection("deposit-logs").insertMany(depositLogs as Document[]);
     }
 
-    public async upsertDataLog(dataLogCursor: FindCursor<DataLogEntity>) {
+    public async upsertDataLog(dataLogs: AsyncIterable<DataLogEntity>): Promise<void> {
         await this.db.collection("data-log").deleteMany({});
 
         const batchSize = 1000;
         let batch: Document[] = [];
 
-        while (await dataLogCursor.hasNext()) {
-            const doc = await dataLogCursor.next();
-            if (doc) batch.push(doc as Document);
+        for await (const doc of dataLogs) {
+            batch.push(doc as Document);
 
             if (batch.length >= batchSize) {
                 await this.db.collection("data-log").insertMany(batch);

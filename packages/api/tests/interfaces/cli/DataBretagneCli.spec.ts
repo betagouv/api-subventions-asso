@@ -3,7 +3,7 @@ import DataBretagneCli from "../../../src/interfaces/cli/DataBretagne.cli";
 import DataBretagneFixture from "../../__fixtures__/data-bretagne.fixture.json";
 import bopAdapter from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.adapter";
 import { ObjectId } from "mongodb";
-import dataLogAdapter from "../../../src/dataProviders/db/data-log/dataLog.adapter";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
 
 describe("DataBretagneCli", () => {
     beforeEach(() => {

@@ -1,6 +1,6 @@
-import db from "./MongoConnection";
+import db from "../../shared/MongoConnection";
 
-export default abstract class MongoPort<T> {
+export default abstract class MongoAdapter<T> {
     public abstract collectionName: string;
     public abstract createIndexes(): void;
 

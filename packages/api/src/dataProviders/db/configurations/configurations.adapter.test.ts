@@ -32,7 +32,10 @@ describe("Configuration Port", () => {
 
     describe("getByName", () => {
         it("should be call findOne of collection", async () => {
-            const fn = jest.fn();
+            const fn = jest.fn().mockResolvedValue({
+                _id: "test-id",
+                name: "TEST",
+            });
             collectionMock.mockImplementationOnce(() => ({ findOne: fn }));
 
             const expected = [
@@ -41,7 +44,7 @@ describe("Configuration Port", () => {
                 },
             ];
 
-            configurationsAdapter.getByName("TEST");
+            await configurationsAdapter.getByName("TEST");
 
             expect(fn).toHaveBeenCalledWith(...expected);
         });

@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
 import UserReset from "../../../modules/user/entities/UserReset";
-import MongoPort from "../../../shared/MongoPort";
+import MongoAdapter from "../MongoAdapter";
 
-export class UserResetAdapter extends MongoPort<UserReset> {
+export class UserResetAdapter extends MongoAdapter<UserReset> {
     collectionName = "users-reset";
 
     public async findByToken(token: string) {

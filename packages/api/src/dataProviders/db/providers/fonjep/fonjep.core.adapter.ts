@@ -1,14 +1,18 @@
 import { Document } from "mongodb";
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
+import { FonjepCorePort } from "./fonjep-core.port";
 
-export abstract class FonjepCoreAdapter<FonjepTypedDocument extends Document> extends MongoPort<FonjepTypedDocument> {
+export abstract class FonjepCoreAdapter<FonjepTypedDocument extends Document>
+    extends MongoAdapter<FonjepTypedDocument>
+    implements FonjepCorePort
+{
     private tmpCollectionEnabled = false;
 
     useTemporyCollection(active: boolean) {
         this.tmpCollectionEnabled = active;
     }
 
-    async applyTemporyCollection() {
+    async applyTemporyCollection(): Promise<void> {
         this.useTemporyCollection(false);
         await this.collection.rename(this.collectionName + "-OLD");
         await this.getTmpCollection().rename(this.collectionName);

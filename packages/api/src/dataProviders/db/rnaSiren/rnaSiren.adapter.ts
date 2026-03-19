@@ -2,11 +2,11 @@ import Siren from "../../../identifierObjects/Siren";
 import Rna from "../../../identifierObjects/Rna";
 import { isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
-import MongoPort from "../../../shared/MongoPort";
+import MongoAdapter from "../MongoAdapter";
 import RnaSirenMapper from "./rna-siren.mapper";
 import RnaSirenDbo from "./RnaSirenDbo";
 
-export class RnaSirenAdapter extends MongoPort<RnaSirenDbo> {
+export class RnaSirenAdapter extends MongoAdapter<RnaSirenDbo> {
     collectionName = "rna-siren";
 
     async createIndexes() {

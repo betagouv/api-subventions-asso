@@ -1,14 +1,18 @@
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import DemarchesSimplifieesSchema from "../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchema";
+import { DemarchesSimplifieeSchemaPort } from "./demarches-simplifiee-schema.port";
 
-export class DemarchesSimplifieesSchemaAdapter extends MongoPort<DemarchesSimplifieesSchema> {
+export class DemarchesSimplifieesSchemaAdapter
+    extends MongoAdapter<DemarchesSimplifieesSchema>
+    implements DemarchesSimplifieeSchemaPort
+{
     public collectionName = "demarches-simplifiees-schemas";
 
     async createIndexes() {
         await this.collection.createIndex({ demarcheId: 1 }, { unique: true });
     }
 
-    async upsert(entity: DemarchesSimplifieesSchema) {
+    async upsert(entity: DemarchesSimplifieesSchema): Promise<void> {
         await this.collection.updateOne(
             { demarcheId: entity.demarcheId },
             { $set: entity as Partial<DemarchesSimplifieesSchema> },
@@ -16,7 +20,7 @@ export class DemarchesSimplifieesSchemaAdapter extends MongoPort<DemarchesSimpli
         );
     }
 
-    findAll() {
+    findAll(): Promise<DemarchesSimplifieesSchema[]> {
         return this.collection.find({}, { projection: { _id: 0 } }).toArray();
     }
 
