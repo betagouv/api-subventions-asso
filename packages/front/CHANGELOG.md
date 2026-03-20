@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.81.6](https://github.com/betagouv/datasubvention/compare/v0.81.5...v0.81.6) (2026-03-20)
+
+### Bug Fixes
+
+- **front:** display headers in legal information modal ([981a770](https://github.com/betagouv/datasubvention/commit/981a77021963fa3f7230b9a6987d5914ae7cf137))
+
 ## [0.81.5](https://github.com/betagouv/datasubvention/compare/v0.81.4...v0.81.5) (2026-03-16)
 
 ### Bug Fixes
