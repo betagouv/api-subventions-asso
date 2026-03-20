@@ -91,7 +91,6 @@ export default class ChorusParser {
 
             const entity = this.dtoToEntity(chorusDto);
             try {
-                console.log("validateEntity");
                 this.validateEntity(entity);
             } catch (e) {
                 console.log("CATCH !");
