@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.81.6](https://github.com/betagouv/api-subventions-asso/compare/v0.81.5...v0.81.6) (2026-03-20)
+
+### Bug Fixes
+
+- **api:** avoid case sensitivity breaks from identifier with letters ([f7de6af](https://github.com/betagouv/api-subventions-asso/commit/f7de6af1efa04074daf1cd86953c5eba381dc5bf))
+
 ## [0.81.5](https://github.com/betagouv/api-subventions-asso/compare/v0.81.4...v0.81.5) (2026-03-16)
 
 ### Bug Fixes
