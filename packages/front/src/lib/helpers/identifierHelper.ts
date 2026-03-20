@@ -17,7 +17,7 @@ export function isSiren(siren) {
 
 export function isRna(rna) {
     if (!rna) return false;
-    return /^W\d[A-Z\d]\d{7}$/.test(removeWhiteSpace(rna));
+    return /^W\d[A-Z\d]\d{7}$/.test(removeWhiteSpace(rna).toUpperCase());
 }
 
 export function isAssociationIdentifier(identifier) {

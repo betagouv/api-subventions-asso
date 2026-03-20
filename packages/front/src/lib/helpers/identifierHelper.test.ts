@@ -21,6 +21,7 @@ describe("IdentifierHelper", () => {
             rna
             ${RNA}
             ${"W0P0000000"}
+            ${"w0P0000000"}
         `("should return true", ({ rna }) => {
             const expected = true;
             const actual = IdentifierHelper.isRna(rna);

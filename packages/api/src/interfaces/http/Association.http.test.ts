@@ -229,6 +229,15 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
         expect(associationIdentifierService.getOneAssociationIdentifier).toHaveBeenCalledWith(ID_STR);
     });
 
+    it("upper the cases of identifier", async () => {
+        await isAssoIdentifierFromAssoMiddleware(
+            { ...REQ, params: { ...REQ.params, identifier: "w00000001" } },
+            RES,
+            NEXT,
+        );
+        expect(associationIdentifierService.getOneAssociationIdentifier).toHaveBeenCalledWith("W00000001");
+    });
+
     it("calls service to check it is from asso", async () => {
         await isAssoIdentifierFromAssoMiddleware({ ...REQ }, RES, NEXT);
         expect(associationHelper.isIdentifierFromAsso).toHaveBeenCalledWith(ASSOCIATION_ID);
