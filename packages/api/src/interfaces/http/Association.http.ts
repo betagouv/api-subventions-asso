@@ -48,7 +48,8 @@ export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
      * requires that identifier is present in parameter `identifier`
      * */
     try {
-        const identifier = req.params.identifier;
+        // avoids case sensitivity breaks with identifiers containing letters
+        const identifier = (req.params.identifier as string).toUpperCase();
         const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
         if (!(await associationHelper.isIdentifierFromAsso(associationIdentifiers))) throw new NotAssociationError();
         req.assoIdentifier = associationIdentifiers;
