@@ -13,10 +13,11 @@
 
 <ModalContent title="Détail des informations recueillies">
     <Alert small={true}>Certaines formulations peuvent différer selon les fournisseurs de données</Alert>
-    <Table
-        hideTitle={true}
-        headers={$dataWithType.headers}
-        rows={$dataWithType.rows}
-        bordered={false}
-        scrollable={false} />
+    <Table hideTitle={true} rows={$dataWithType.rows} bordered={false} scrollable={false}>
+        <slot slot="headers">
+            {#each $dataWithType.headers as header (header)}
+                <th>{header}</th>
+            {/each}
+        </slot>
+    </Table>
 </ModalContent>
