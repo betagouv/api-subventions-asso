@@ -9,7 +9,6 @@ jest.mock("../../../shared/helpers/StringHelper");
 
 import { CHORUS_FSE_ENTITIES, CHORUS_ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
-import { BulkWriteResult } from "mongodb";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import Siret from "../../../identifierObjects/Siret";
 import associationHelper from "../../associations/associations.helper";

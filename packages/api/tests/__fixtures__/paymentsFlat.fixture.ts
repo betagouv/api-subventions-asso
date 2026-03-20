@@ -1,6 +1,5 @@
 import ChorusEntity from "../../src/modules/providers/chorus/entities/ChorusEntity";
 import { CHORUS_ENTITIES } from "../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
-import { ChorusDto } from "../../src/modules/providers/chorus/@types/ChorusDto";
 export const CHORUS_LAST_UPDATE = new Date("2022-03-12");
 
 export const MOCK_DOCUMENTS: ChorusEntity[] = [
