@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.81.7](https://github.com/betagouv/datasubvention/compare/v0.81.6...v0.81.7) (2026-03-20)
+
+### Bug Fixes
+
+- **front:** upper RNA cases ([846bdbd](https://github.com/betagouv/datasubvention/commit/846bdbd3711e71663596827fe005fbd981e8d938))
+
 ## [0.81.6](https://github.com/betagouv/datasubvention/compare/v0.81.5...v0.81.6) (2026-03-20)
 
 ### Bug Fixes
