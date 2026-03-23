@@ -10,11 +10,14 @@ import { Association } from "dto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../src/shared/LegalCategoriesAccepted";
 import Siren from "../../../src/identifierObjects/Siren";
 import chorusService from "../../../src/modules/providers/chorus/chorus.service";
+import {
+    CHORUS_FSE_ENTITIES,
+    CHORUS_ENTITIES,
+} from "../../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
 import stateBudgetProgramAdapter from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.adapter";
 import PROGRAMS from "../../dataProviders/db/__fixtures__/stateBudgetProgram";
 import chorusFseAdapter from "../../../src/dataProviders/db/providers/chorus/chorus.fse.adapter";
 import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
-import { CHORUS_ENTITIES } from "../../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
 
 describe("ChorusCli", () => {
     // it contains :
@@ -104,7 +107,6 @@ describe("ChorusCli", () => {
         });
 
         it("saves in paymentFlat", async () => {
-            await chorusAdapter.createIndexes();
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
             const payments = await paymentFlatAdapter.findByProvider("chorus");

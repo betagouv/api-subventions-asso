@@ -14,6 +14,12 @@ import Siret from "../../../identifierObjects/Siret";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import chorusFseAdapter from "../../../dataProviders/db/providers/chorus/chorus.fse.adapter";
+import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import paymentFlatService from "../../paymentFlat/paymentFlat.service";
+
+jest.mock("../../paymentFlat/paymentFlat.service");
+jest.mock("./mappers/chorus.fse.mapper");
 jest.mock("../../associations/associations.helper");
 
 describe("chorusService", () => {
@@ -215,6 +221,51 @@ describe("chorusService", () => {
         it("pass entities to port", async () => {
             await chorusService.persistEuropeanEntities(ENTITIES);
             expect(chorusFseAdapter.upsertMany).toHaveBeenCalledWith(ENTITIES);
+        });
+    });
+
+    describe("savePaymentsFromStream", () => {
+        it("send stream to payment flat service to handle persistance", () => {
+            const STREAM = {} as ReadableStream;
+            chorusService.savePaymentsFromStream(STREAM);
+            expect(paymentFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
+        });
+    });
+
+    describe("syncFlat", () => {
+        const STREAM = {} as ReadableStream;
+        let mockSavePaymentsFromStream: jest.SpyInstance;
+        let mockFrom: jest.SpyInstance;
+        beforeEach(() => {
+            jest.mocked(ChorusFseMapper.toPaymentFlat).mockReturnValue(CHORUS_PAYMENT_FLAT_ENTITY);
+            mockSavePaymentsFromStream = jest.spyOn(chorusService, "savePaymentsFromStream").mockResolvedValue();
+            mockFrom = jest.spyOn(ReadableStream, "from").mockReturnValue(STREAM);
+        });
+
+        afterAll(() => {
+            mockSavePaymentsFromStream.mockRestore();
+        });
+
+        it("creates stream from entities", () => {
+            chorusService.syncFlat(CHORUS_FSE_ENTITIES);
+            expect(mockFrom).toHaveBeenCalledWith(CHORUS_FSE_ENTITIES.map(_entity => CHORUS_PAYMENT_FLAT_ENTITY));
+        });
+
+        it("maps entities to payment-flats", () => {
+            chorusService.syncFlat(CHORUS_FSE_ENTITIES);
+            CHORUS_FSE_ENTITIES.forEach((entity, index) => {
+                expect(ChorusFseMapper.toPaymentFlat).toHaveBeenNthCalledWith(index + 1, entity);
+            });
+        });
+
+        it("send stream to persist flat entities", () => {
+            chorusService.syncFlat(CHORUS_FSE_ENTITIES);
+            expect(mockSavePaymentsFromStream).toHaveBeenCalledWith(STREAM);
+        });
+
+        it("returns promise", () => {
+            const actual = chorusService.syncFlat(CHORUS_FSE_ENTITIES);
+            expect(actual).toBeInstanceOf(Promise);
         });
     });
 });

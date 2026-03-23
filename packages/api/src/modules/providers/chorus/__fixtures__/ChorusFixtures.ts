@@ -311,7 +311,7 @@ export const CHORUS_FSE_ENTITIES: ChorusFseEntity[] = [
     {
         societyCode: "BNOR",
         paymentRequestNum: "500000744",
-        budgetaryYear: "2026",
+        budgetaryYear: 2026,
         paymentRequestPostNum: "2",
         amount: 12017.88,
         beneficiaryName: "MAISON EMPLOI FORMAT BASSIN",
