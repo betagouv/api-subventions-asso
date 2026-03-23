@@ -64,13 +64,14 @@
                         Les fichiers PDF ne permettent pas de traitement automatisé, car ils figent l'information sous
                         forme de texte ou d'image, rendant les données inexploitables. <br />
                     </p>
-                    <!--                    <p class="fr-mb-4">-->
-                    <!--                        Pour préparer votre fichier, vous pouvez vous appuyer sur-->
-                    <!--                        <TargetBlankLink href="https://schema.data.gouv.fr/scdl/subventions/">-->
-                    <!--                            notre modèle SCDL &lt;!&ndash; todo : en attente lien vers le gabarit xlsx + chgt blank link par download link ? &ndash;&gt;-->
-                    <!--                        </TargetBlankLink>-->
-                    <!--                        .-->
-                    <!--                    </p>-->
+                    <p class="fr-mb-4">
+                        Pour préparer votre fichier, vous pouvez vous appuyer sur
+                        <TargetBlankLink
+                            href="https://datasubvention.beta.gouv.fr/wp-content/uploads/2024/12/Gabarit-SCDL-202410.xlsx">
+                            notre modèle SCDL
+                        </TargetBlankLink>
+                        .
+                    </p>
                     <h3 class="fr-text--lg fr-text--bold">Besoin d'aide ?</h3>
                     <p class="fr-mb-0">
                         Venez poser vos questions lors du webinaire d’accompagnement sur le dépôt de données au format

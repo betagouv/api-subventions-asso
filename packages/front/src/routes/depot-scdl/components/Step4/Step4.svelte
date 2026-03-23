@@ -48,12 +48,13 @@
                             Voir la documentation
                         </TargetBlankLink>
                     </li>
-                    <!--                    <li class="fr-mb-2v">-->
-                    <!--                        Préparer votre fichier en vous appuyant sur-->
-                    <!--                        <TargetBlankLink href="https://schema.data.gouv.fr/scdl/subventions/">-->
-                    <!--                            notre modèle SCDL &lt;!&ndash; todo : en attente lien vers le gabarit xlsx + chgt blank link par download link &ndash;&gt;-->
-                    <!--                        </TargetBlankLink>-->
-                    <!--                    </li>-->
+                    <li class="fr-mb-2v">
+                        Préparer votre fichier en vous appuyant sur
+                        <TargetBlankLink
+                            href="https://datasubvention.beta.gouv.fr/wp-content/uploads/2024/12/Gabarit-SCDL-202410.xlsx">
+                            notre modèle SCDL
+                        </TargetBlankLink>
+                    </li>
                     <li class="fr-mb-2v">Nous contacter via la bulle de chat</li>
                     <li>
                         Participer à notre webinaire pour plus d’accompagnement dans la mise à jour de votre fichier :
