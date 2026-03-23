@@ -35,7 +35,10 @@
         </InfoBox>
     {/if}
 
-    <a class="fr-link fr-link--download" href="/" on:click|preventDefault={() => ctrl.downloadErrorFile()}>
+    <a
+        class="fr-link fr-link--download"
+        href="/packages/front/static"
+        on:click|preventDefault={() => ctrl.downloadErrorFile()}>
         Télécharger le rapport d'erreurs
     </a>
 

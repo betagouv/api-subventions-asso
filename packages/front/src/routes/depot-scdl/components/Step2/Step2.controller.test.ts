@@ -1,101 +1,265 @@
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
-import { depositLogStore } from "$lib/store/depositLog.store";
 import Step2Controller from "./Step2.controller";
-import type { DepositScdlLogResponseDto } from "dto";
+import { validateFile, getExcelSheetNames, getFileExtension } from "$lib/helpers/fileHelper";
+import FileSizeError from "$lib/errors/file-errors/FileSizeError";
+import FileFormatError from "$lib/errors/file-errors/FileFormatError";
+import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
+import type { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
+import { depositLogStore } from "$lib/store/depositLog.store";
 
 vi.mock("$lib/resources/deposit-log/depositLog.service");
+vi.mock("$lib/helpers/fileHelper", async () => {
+    const actual = await vi.importActual("$lib/helpers/fileHelper");
+    return {
+        ...actual,
+        ...actual,
+        validateFile: vi.fn(),
+        getExcelSheetNames: vi.fn(),
+        getFileExtension: vi.fn(),
+        EXCEL_EXT: actual.EXCEL_EXT,
+        CSV_EXT: actual.CSV_EXT,
+        FileErrorCode: actual.FileErrorCode,
+    };
+});
 
 describe("Step2Controller", () => {
-    const SIRET = "12345678901234";
-    const DEPOSIT_LOG: DepositScdlLogResponseDto = {
-        step: 1,
-        overwriteAlert: true,
-        allocatorSiret: SIRET,
-    };
     let controller: Step2Controller;
-    const createDepositLogMock = vi.spyOn(depositLogService, "createDepositLog");
-    const updateDepositLogMock = vi.spyOn(depositLogService, "updateDepositLog");
-    const mockSet = vi.spyOn(depositLogStore, "set");
+    let mockDispatch: ReturnType<typeof vi.fn>;
+    let clearUploadErrorSpy: ReturnType<typeof vi.spyOn>;
+    const postScdlFileMock = vi.spyOn(depositLogService, "postScdlFile");
+    const validateFileMock = vi.mocked(validateFile);
+    const getExcelSheetNamesMock = vi.mocked(getExcelSheetNames);
+    const getFileExtensionMock = vi.mocked(getFileExtension);
+
+    const createMockFile = (name: string, type: string): File => {
+        return new File(["content"], name, { type });
+    };
 
     beforeEach(() => {
-        controller = new Step2Controller();
-        controller.inputValue.set(SIRET);
-        depositLogStore.set(null);
+        depositLogStore.value = {
+            step: 1,
+            allocatorSiret: "12345678901234",
+        };
+
+        mockDispatch = vi.fn();
+        controller = new Step2Controller(mockDispatch);
+        clearUploadErrorSpy = vi.spyOn(controller, "clearUploadError");
+        vi.clearAllMocks();
+    });
+
+    describe("handleFileChange", () => {
+        it("should clear selected file and upload error when no files", async () => {
+            const event = { detail: { files: null } } as CustomEvent<{ files: FileList | null }>;
+
+            await controller.handleFileChange(event);
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            expect((controller as any).selectedFile).toBe(null);
+            expect(clearUploadErrorSpy).toHaveBeenCalled();
+        });
+
+        it("should set file and call clearUploadError", async () => {
+            const mockFile = createMockFile("test.csv", "text/csv");
+            const mockFileList = [mockFile] as unknown as FileList;
+            const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
+
+            validateFileMock.mockResolvedValue();
+
+            await controller.handleFileChange(event);
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            expect((controller as any).selectedFile).toBe(mockFile);
+            expect(clearUploadErrorSpy).toHaveBeenCalled();
+        });
+
+        it("should set error when file too large", async () => {
+            const mockFile = createMockFile("test.csv", "text/csv");
+            const mockFileList = [mockFile] as unknown as FileList;
+            const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
+
+            validateFileMock.mockRejectedValue(new FileSizeError("test.csv", 30));
+
+            await controller.handleFileChange(event);
+
+            expect(controller.uploadError.value).toBe(true);
+            expect(controller.noFileOrInvalid.value).toBe(true);
+            expect(controller.uploadErrorMessage.value).toBe(
+                "Le fichier est trop volumineux. Il doit faire moins de 30 Mo.",
+            );
+        });
+
+        it("should set error when invalid format", async () => {
+            const mockFile = createMockFile("test.pdf", "application/pdf");
+            const mockFileList = [mockFile] as unknown as FileList;
+            const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
+
+            validateFileMock.mockRejectedValue(new FileFormatError("test.pdf"));
+
+            await controller.handleFileChange(event);
+
+            expect(controller.uploadError.value).toBe(true);
+            expect(controller.uploadErrorMessage.value).toBe(
+                "Ce format de fichier n'est pas supporté. Veuillez déposer un fichier au format CSV, XLS ou XLSX.",
+            );
+        });
+
+        it("should set error when invalid encoding", async () => {
+            const mockFile = createMockFile("test.csv", "text/csv");
+            const mockFileList = [mockFile] as unknown as FileList;
+            const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
+
+            validateFileMock.mockRejectedValue(new FileEncodingError("test.csv", ["UTF-8", "Windows-1252"]));
+
+            await controller.handleFileChange(event);
+
+            expect(controller.uploadError.value).toBe(true);
+            expect(controller.uploadErrorMessage.value).toBe(
+                "Veuillez déposer un fichier au format CSV, XLS ou XLSX avec encodage UTF-8 ou Windows-1252.",
+            );
+        });
+    });
+
+    describe("clearUploadError", () => {
+        it("should clear upload error variables", () => {
+            controller.uploadError.set(true);
+            controller.uploadErrorMessage.set("Error message");
+            controller.noFileOrInvalid.set(true);
+
+            controller.clearUploadError();
+
+            expect(controller.uploadError.value).toBe(false);
+            expect(controller.uploadErrorMessage.value).toBe("");
+            expect(controller.noFileOrInvalid.value).toBe(false);
+        });
     });
 
     describe("handleValidate", () => {
         beforeEach(() => {
-            createDepositLogMock.mockResolvedValue(DEPOSIT_LOG);
-            updateDepositLogMock.mockResolvedValue(DEPOSIT_LOG);
+            postScdlFileMock.mockResolvedValue({} as DepositScdlLogResponseDto);
         });
 
-        it("should return sucess", async () => {
-            const expected = "success";
-            const actual = await controller.handleValidate();
-            expect(actual).toEqual(expected);
-        });
-
-        it("should create new depositLog if no existing deposit log", async () => {
+        it("should return when no file selected", async () => {
             await controller.handleValidate();
-            expect(depositLogService.createDepositLog).toHaveBeenCalledWith({
-                overwriteAlert: true,
-                allocatorSiret: SIRET,
-            });
+
+            expect(getExcelSheetNamesMock).not.toHaveBeenCalled();
+            expect(mockDispatch).not.toHaveBeenCalled();
         });
 
-        it("should update existing depositLog", async () => {
-            depositLogStore.set(DEPOSIT_LOG);
-            updateDepositLogMock.mockResolvedValue(DEPOSIT_LOG);
+        it("should upload file directly when csv", async () => {
+            const mockFile = createMockFile("test.csv", "text/csv");
 
-            controller.inputValue.set("98765432109876");
+            const mockFileList = [mockFile] as unknown as FileList;
+            const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
+            validateFileMock.mockResolvedValue();
+            await controller.handleFileChange(event);
+
+            getFileExtensionMock.mockReturnValue("csv");
 
             await controller.handleValidate();
-            const data = { allocatorSiret: "98765432109876", overwriteAlert: true };
-            expect(depositLogService.updateDepositLog).toHaveBeenCalledWith(1, data);
+
+            expect(mockDispatch).toHaveBeenCalledWith("loading", "Veuillez patientez, nous analysons vos données");
+            expect(postScdlFileMock).toHaveBeenCalledWith(
+                mockFile,
+                { permissionAlert: true } as DepositScdlLogDto,
+                undefined,
+            );
+            expect(mockDispatch).toHaveBeenCalledWith("nextStep");
         });
 
-        it("should not call update depositLog if siret is the same", async () => {
-            depositLogStore.set(DEPOSIT_LOG);
-            updateDepositLogMock.mockResolvedValue(DEPOSIT_LOG);
+        it("should upload file directly when excel with one sheet", async () => {
+            const mockFile = createMockFile(
+                "test.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            );
 
-            controller.inputValue.set("12345678901234");
+            const mockFileList = [mockFile] as unknown as FileList;
+            const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
+            validateFileMock.mockResolvedValue();
+            await controller.handleFileChange(event);
+
+            getExcelSheetNamesMock.mockResolvedValue(["Sheet1"]);
+            getFileExtensionMock.mockReturnValue("xlsx");
 
             await controller.handleValidate();
-            expect(depositLogService.updateDepositLog).not.toHaveBeenCalled();
+
+            expect(mockDispatch).toHaveBeenCalledWith("loading", "Veuillez patientez, nous analysons vos données");
+            expect(postScdlFileMock).toHaveBeenCalledWith(
+                mockFile,
+                { permissionAlert: true } as DepositScdlLogDto,
+                undefined,
+            );
+            expect(mockDispatch).toHaveBeenCalledWith("nextStep");
         });
 
-        it("should store deposit log", async () => {
+        it("should show sheet selector when multiple sheets", async () => {
+            const mockFile = createMockFile(
+                "test.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            );
+
+            const mockFileList = [mockFile] as unknown as FileList;
+            const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
+            validateFileMock.mockResolvedValue();
+            await controller.handleFileChange(event);
+
+            const sheets = ["Sheet1", "Sheet2", "Sheet3"];
+            getExcelSheetNamesMock.mockResolvedValue(sheets);
+
             await controller.handleValidate();
-            expect(mockSet).toHaveBeenCalledWith(DEPOSIT_LOG);
-        });
 
-        it("should return resume when 409 error", async () => {
-            const expected = "resume";
-            const error = {
-                data: { code: 409, message: "Conflict" },
-            };
-            createDepositLogMock.mockRejectedValue(error);
-            const actual = await controller.handleValidate();
-            expect(actual).toBe(expected);
-        });
-
-        it("should return undefined when 400 error", async () => {
-            const error = {
-                data: { code: 400, message: "Bad Request" },
-            };
-            createDepositLogMock.mockRejectedValue(error);
-            const actual = await controller.handleValidate();
-            expect(actual).toBe(undefined);
+            expect(controller.excelSheets.value).toEqual(sheets);
+            expect(controller.view.value).toBe("sheetSelector");
+            expect(mockDispatch).not.toHaveBeenCalled();
+            expect(postScdlFileMock).not.toHaveBeenCalled();
         });
     });
 
-    describe("setTouch", () => {
-        it("should set touched store", () => {
-            const touched = true;
-            const expected = touched;
-            controller.setTouch(touched);
-            const actual = controller.touched.value;
-            expect(actual).toEqual(expected);
+    describe("handleSheetSelected", () => {
+        beforeEach(() => {
+            postScdlFileMock.mockResolvedValue({ permissionAlert: true } as DepositScdlLogResponseDto);
+        });
+
+        it("should upload file with selected sheet", async () => {
+            const mockFile = createMockFile(
+                "test.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            );
+            const selectedSheet = "Sheet2";
+
+            const mockFileList = [mockFile] as unknown as FileList;
+            const fileEvent = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
+            validateFileMock.mockResolvedValue();
+            await controller.handleFileChange(fileEvent);
+
+            const sheetEvent = { detail: selectedSheet } as CustomEvent<string>;
+
+            await controller.handleSheetSelected(sheetEvent);
+
+            expect(mockDispatch).toHaveBeenCalledWith("loading", "Veuillez patientez, nous analysons vos données");
+            expect(postScdlFileMock).toHaveBeenCalledWith(
+                mockFile,
+                { permissionAlert: true } as DepositScdlLogDto,
+                selectedSheet,
+            );
+            expect(mockDispatch).toHaveBeenCalledWith("nextStep");
+        });
+    });
+
+    describe("handleRestardUpload", () => {
+        it("should reset controller state", () => {
+            controller.excelSheets.set(["Sheet1", "Sheet2"]);
+            controller.view.set("sheetSelector");
+            controller.noFileOrInvalid.set(false);
+
+            controller.handleRestartUpload();
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            expect((controller as any).selectedFile).toBe(null);
+            expect(controller.noFileOrInvalid.value).toBe(true);
+            expect(controller.excelSheets.value).toStrictEqual([]);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            expect((controller as any).selectedSheet).toBe(undefined);
+            expect(controller.view.value).toBe("upload");
         });
     });
 });

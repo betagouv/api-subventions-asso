@@ -17,7 +17,6 @@ describe("DepositLogAdapter", () => {
                 updateDate: now,
                 userId: "user123",
                 step: 1,
-                overwriteAlert: true,
                 permissionAlert: false,
                 allocatorSiret: "12345678901234",
             };
@@ -28,7 +27,6 @@ describe("DepositLogAdapter", () => {
                 userId: dbo.userId,
                 step: dbo.step,
                 updateDate: dbo.updateDate,
-                overwriteAlert: dbo.overwriteAlert,
                 permissionAlert: dbo.permissionAlert,
                 allocatorSiret: dbo.allocatorSiret,
             });
@@ -52,7 +50,6 @@ describe("DepositLogAdapter", () => {
                 updateDate: now,
                 userId: "user123",
                 step: 1,
-                overwriteAlert: true,
                 permissionAlert: false,
                 allocatorSiret: "12345678901234",
                 uploadedFileInfos: uploadedFileInfos,
@@ -64,7 +61,6 @@ describe("DepositLogAdapter", () => {
                 userId: dbo.userId,
                 step: dbo.step,
                 updateDate: dbo.updateDate,
-                overwriteAlert: dbo.overwriteAlert,
                 permissionAlert: dbo.permissionAlert,
                 allocatorSiret: dbo.allocatorSiret,
                 uploadedFileInfos: uploadedFileInfos,
@@ -82,7 +78,6 @@ describe("DepositLogAdapter", () => {
                 updateDate: result.updateDate,
                 userId: entity.userId,
                 step: entity.step,
-                overwriteAlert: entity.overwriteAlert,
                 permissionAlert: entity.permissionAlert,
                 allocatorSiret: entity.allocatorSiret,
             });
@@ -103,7 +98,6 @@ describe("DepositLogAdapter", () => {
                 updateDate: result.updateDate,
                 userId: entity.userId,
                 step: entity.step,
-                overwriteAlert: entity.overwriteAlert,
                 permissionAlert: entity.permissionAlert,
                 allocatorSiret: entity.allocatorSiret,
                 uploadedFileInfos: entity.uploadedFileInfos,

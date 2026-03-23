@@ -31,10 +31,9 @@ describe("DepositLogPort", () => {
                     data: {
                         step: 1,
                         allocatorSiret: "12345678901234",
-                        overwriteAlert: true,
                     } as DepositScdlLogResponseDto,
                 } as AxiosResponse);
-                const expected = { data: { step: 1, allocatorSiret: "12345678901234", overwriteAlert: true } };
+                const expected = { data: { step: 1, allocatorSiret: "12345678901234" } };
                 const actual = await depositLogPort.getDepositLog();
                 expect(actual).toEqual(expected);
             });
@@ -69,7 +68,7 @@ describe("DepositLogPort", () => {
 
         beforeAll(() => {
             mockPostResource.mockResolvedValue({
-                data: { step: 1, allocatorSiret: "12345678901234", overwriteAlert: true } as DepositScdlLogResponseDto,
+                data: { step: 1, allocatorSiret: "12345678901234" } as DepositScdlLogResponseDto,
             } as AxiosResponse);
         });
 
@@ -81,7 +80,7 @@ describe("DepositLogPort", () => {
             });
 
             it("returns depositLog", async () => {
-                const expected = { data: { step: 1, allocatorSiret: "12345678901234", overwriteAlert: true } };
+                const expected = { data: { step: 1, allocatorSiret: "12345678901234" } };
                 const actual = await depositLogPort.createDepositLog({});
                 expect(actual).toEqual(expected);
             });
@@ -119,7 +118,7 @@ describe("DepositLogPort", () => {
 
         beforeAll(() => {
             mockPatchResource.mockResolvedValue({
-                data: { step: 1, allocatorSiret: "12345678901234", overwriteAlert: true } as DepositScdlLogResponseDto,
+                data: { step: 1, allocatorSiret: "12345678901234" } as DepositScdlLogResponseDto,
             } as AxiosResponse);
         });
 
@@ -131,7 +130,7 @@ describe("DepositLogPort", () => {
             });
 
             it("returns depositLog", async () => {
-                const expected = { data: { step: 1, allocatorSiret: "12345678901234", overwriteAlert: true } };
+                const expected = { data: { step: 1, allocatorSiret: "12345678901234" } };
                 const actual = await depositLogPort.updateDepositLog(1, {});
                 expect(actual).toEqual(expected);
             });

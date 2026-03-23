@@ -48,7 +48,6 @@ describe("DepositLogService", () => {
         it("should return data when exists", async () => {
             const response = {
                 data: {
-                    overwriteAlert: true,
                     allocatorSiret: "12345678901234",
                     step: 1,
                 },
@@ -76,7 +75,6 @@ describe("DepositLogService", () => {
         it("should return data", async () => {
             const response = {
                 data: {
-                    overwriteAlert: true,
                     allocatorSiret: "12345678901234",
                     step: 1,
                 },
@@ -104,7 +102,6 @@ describe("DepositLogService", () => {
         it("should return data", async () => {
             const response = {
                 data: {
-                    overwriteAlert: true,
                     allocatorSiret: "12345678901234",
                     step: 1,
                 },
@@ -158,7 +155,6 @@ describe("DepositLogService", () => {
 
             const response = {
                 data: {
-                    overwriteAlert: true,
                     allocatorSiret: "12345678901234",
                     step: 2,
                     permissionAlert: true,

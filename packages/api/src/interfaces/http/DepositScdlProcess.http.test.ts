@@ -123,7 +123,6 @@ describe("DepositScdlProcessHttp", () => {
             const result = await controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ);
             expect(result).toEqual({
                 step: STEP,
-                overwriteAlert: true,
                 allocatorSiret: "12345678901234",
                 permissionAlert: true,
                 uploadedFileInfos: {

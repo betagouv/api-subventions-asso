@@ -14,7 +14,6 @@ describe("ResumeFormController", () => {
             step: 2,
             permissionAlert: true,
             allocatorSiret: "12345678901234",
-            overwriteAlert: true,
             uploadedFileInfos: {
                 fileName: "test.csv",
                 errorStats: { count: 0, errorSample: [] },
@@ -54,7 +53,6 @@ describe("ResumeFormController", () => {
                 step: 1,
                 permissionAlert: true,
                 allocatorSiret: "12345678901234",
-                overwriteAlert: true,
             };
             const controller = new ResumeFormController();
             expect(controller.currentView).toBe("siretView");

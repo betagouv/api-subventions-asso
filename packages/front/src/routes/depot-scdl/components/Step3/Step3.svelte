@@ -1,124 +1,70 @@
 <script lang="ts">
-    import Alert from "$lib/dsfr/Alert.svelte";
-    import InfoBox from "$lib/components/InfoBox.svelte";
-    import Checkbox from "$lib/dsfr/Checkbox.svelte";
-    import Upload from "$lib/dsfr/Upload.svelte";
-    import { createEventDispatcher } from "svelte";
-    import SheetSelector from "./SheetSelector.svelte";
     import Step3Controller from "./Step3.controller";
+    import InfoBox from "$lib/components/InfoBox.svelte";
+    import MultipleAllocators from "./MultipleAllocators/MultipleAllocators.svelte";
+    import LessGrantData from "./LessGrantData/LessGrantData.svelte";
+    import { createEventDispatcher } from "svelte";
+    import BlockingErrors from "./BlockingErrors/BlockingErrors.svelte";
+    import ConfirmDataAdd from "./ConfirmDataAdd/ConfirmDataAdd.svelte";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
+    import MissingHeaders from "./MissingHeaders/MissingHeaders.svelte";
 
     const dispatch = createEventDispatcher<{
         prevStep: void;
         nextStep: void;
-        loading: string;
+        loading: void;
         endLoading: void;
-        error: string;
+        restartNewForm: void;
     }>();
     const ctrl = new Step3Controller(dispatch);
-    const {
-        noFileOrInvalid,
-        excelSheets,
-        view,
-        uploadErrorMessage,
-        uploadError,
-        uploadConfig,
-        errorAlertVisible,
-        allocatorSiret,
-    } = ctrl;
-
-    const infoBoxTitle = "Nous acceptons uniquement des fichiers au format CSV ou XLS. ";
-    const checkboxOptions = [
-        {
-            label: "Je confirme que j’ai l’accord ou l’autorité pour déposer ce fichier de données pour ma structure.",
-            value: "agreement",
-        },
-    ];
-    let selectedValues: string[] = [];
+    const { view } = ctrl;
 </script>
 
 <div>
-    {#if $view === "sheetSelector"}
-        <SheetSelector
-            excelSheets={$excelSheets}
-            on:sheetSelected={e => ctrl.handleSheetSelected(e)}
-            on:restartUpload={() => ctrl.handleRestartUpload()} />
-    {:else}
-        <div>
-            <div class="fr-mb-6v">
-                <Alert
-                    type="error"
-                    title="Une erreur empêche la lecture de votre fichier"
-                    closeButton={true}
-                    bind:visible={$errorAlertVisible}>
-                    <p>
-                        Nous vous invitons à réessayer de faire votre dépôt. Si le problème persiste, merci de bien
-                        vouloir contacter notre support via la bulle de chat.
-                    </p>
-                </Alert>
-            </div>
+    <div class="fr-grid-row fr-grid-row--gutters">
+        {#if $view === "missingHeaders"}
+            <MissingHeaders
+                on:prevStep={() => ctrl.handlePrevStep()}
+                on:restartNewForm={() => ctrl.handleRestartNewForm()} />
+        {:else if $view === "multipleAllocator"}
+            <MultipleAllocators
+                on:prevStep={() => ctrl.handlePrevStep()}
+                on:restartNewForm={() => ctrl.handleRestartNewForm()} />
+        {:else if $view === "lessGrantData"}
+            <LessGrantData on:prevStep={() => ctrl.handlePrevStep()} />
+        {:else if $view === "blockingErrors"}
+            <BlockingErrors on:prevStep={() => ctrl.handlePrevStep()} />
+        {:else if $view === "confirmDataAdd"}
+            <ConfirmDataAdd on:prevStep={() => ctrl.handlePrevStep()} on:submitDatas={() => ctrl.submitDatas()} />
+        {/if}
 
-            <div class="fr-mb-6v">
-                <InfoBox title={infoBoxTitle}>
-                    <p class="fr-mb-4">
-                        Les fichiers PDF ne permettent pas de traitement automatisé, car ils figent l'information sous
-                        forme de texte ou d'image, rendant les données inexploitables. <br />
-                    </p>
-                    <p class="fr-mb-4">
-                        Pour préparer votre fichier, vous pouvez vous appuyer sur
+        <div class="fr-col-12 fr-col-md-4">
+            <InfoBox title="Besoin d’aide ?">
+                <ul>
+                    <li class="fr-mb-2v">
+                        Consulter la documentation officielle pour plus d’informations :
+                        <br />
+                        <TargetBlankLink href="https://schema.data.gouv.fr/scdl/subventions/">
+                            Voir la documentation
+                        </TargetBlankLink>
+                    </li>
+                    <li class="fr-mb-2v">
+                        Préparer votre fichier en vous appuyant sur
                         <TargetBlankLink
                             href="https://datasubvention.beta.gouv.fr/wp-content/uploads/2024/12/Gabarit-SCDL-202410.xlsx">
                             notre modèle SCDL
                         </TargetBlankLink>
-                        .
-                    </p>
-                    <h3 class="fr-text--lg fr-text--bold">Besoin d'aide ?</h3>
-                    <p class="fr-mb-0">
-                        Venez poser vos questions lors du webinaire d’accompagnement sur le dépôt de données au format
-                        SCDL :
-                        <TargetBlankLink
-                            href="https://datasubvention.beta.gouv.fr/permanence-scdl-creer-structurer-et-deposer-vos-donnees/">
-                            s'inscrire
-                        </TargetBlankLink>
-                    </p>
-                </InfoBox>
-            </div>
-
-            <div class="fr-mb-6v">
-                <span class="fr-text--bold">SIRET de l’attribuant indiqué :</span>
-                <br />
-                {allocatorSiret}
-            </div>
-
-            <div class="fr-mb-6v">
-                <Checkbox options={checkboxOptions} bind:value={selectedValues} />
-            </div>
-
-            <div class="fr-mb-6v">
-                <Upload
-                    label={uploadConfig.label}
-                    hint={uploadConfig.hint}
-                    disabled={!selectedValues.includes(checkboxOptions[0].value)}
-                    acceptedFormats={uploadConfig.acceptedFormats}
-                    error={$uploadError}
-                    errorMessage={$uploadErrorMessage}
-                    name="file"
-                    on:fileChange={e => ctrl.handleFileChange(e)} />
-            </div>
-
-            <div>
-                <button on:click={() => dispatch("prevStep")} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
-                    Retour
-                </button>
-
-                <button
-                    on:click={() => ctrl.handleValidate()}
-                    disabled={$noFileOrInvalid || !selectedValues.includes(checkboxOptions[0].value)}
-                    class="fr-btn fr-mr-3v"
-                    type="button">
-                    Poursuivre l'import
-                </button>
-            </div>
+                    </li>
+                    <li class="fr-mb-2v">Nous contacter via la bulle de chat</li>
+                    <li>
+                        Participer à notre webinaire pour plus d’accompagnement dans la mise à jour de votre fichier :
+                    </li>
+                    <TargetBlankLink
+                        href="https://datasubvention.beta.gouv.fr/permanence-scdl-creer-structurer-et-deposer-vos-donnees/">
+                        S'inscrire
+                    </TargetBlankLink>
+                </ul>
+            </InfoBox>
         </div>
-    {/if}
+    </div>
 </div>

@@ -7,9 +7,6 @@ import scdlService from "../../providers/scdl/scdl.service";
 
 export class DepositScdlProcessCheckService {
     public validateCreate(dto: CreateDepositScdlLogDto) {
-        if (!dto.overwriteAlert) {
-            throw new BadRequestError("overwrite alert must be accepted");
-        }
         if (!Siret.isSiret(dto.allocatorSiret)) {
             throw new BadRequestError("allocatorSiret must be a valid SIRET");
         }
@@ -22,8 +19,8 @@ export class DepositScdlProcessCheckService {
 
     private ensureExactPropertiesForStep(step: number, depositScdlLogDto: DepositScdlLogDto) {
         const allowedPropsByStep: Record<number, (keyof DepositScdlLogDto)[]> = {
-            1: ["overwriteAlert", "allocatorSiret"],
-            2: ["overwriteAlert", "allocatorSiret", "permissionAlert"],
+            1: ["allocatorSiret"],
+            2: ["allocatorSiret", "permissionAlert"],
         };
 
         const allowedProps = allowedPropsByStep[step];
@@ -45,11 +42,6 @@ export class DepositScdlProcessCheckService {
     }
 
     private validateFields(depositScdlLogDto: DepositScdlLogDto) {
-        if (depositScdlLogDto.overwriteAlert !== undefined) {
-            if (!depositScdlLogDto.overwriteAlert) {
-                throw new BadRequestError("overwriteAlert must be true");
-            }
-        }
         if (depositScdlLogDto.permissionAlert !== undefined) {
             if (!depositScdlLogDto.permissionAlert) {
                 throw new BadRequestError("permissionAlert must be true");
@@ -71,10 +63,6 @@ export class DepositScdlProcessCheckService {
 
         if (depositLogEntity.step !== 2) {
             throw new BadRequestError("deposit must be in step 2");
-        }
-
-        if (depositLogEntity.overwriteAlert !== true) {
-            throw new BadRequestError("overwrite alert must be acknowledged");
         }
 
         if (depositLogEntity.allocatorSiret === undefined) {

@@ -14,7 +14,6 @@ import ScdlErrorStats from "./entities/ScdlErrorStats";
 export default class DepositScdlLogDtoMapper {
     static entityToDepositScdlLogDto(entity: DepositScdlLogEntity): DepositScdlLogDto {
         return {
-            overwriteAlert: entity.overwriteAlert,
             allocatorSiret: entity.allocatorSiret,
             permissionAlert: entity.permissionAlert,
         };
@@ -22,14 +21,12 @@ export default class DepositScdlLogDtoMapper {
 
     static entityToCreateDepositScdlLogDto(entity: DepositScdlLogEntity): CreateDepositScdlLogDto {
         return {
-            overwriteAlert: entity.overwriteAlert,
             allocatorSiret: entity.allocatorSiret,
         };
     }
 
     static entityToDepositScdlLogResponseDto(entity: DepositScdlLogEntity): DepositScdlLogResponseDto {
         return {
-            overwriteAlert: entity.overwriteAlert,
             allocatorSiret: entity.allocatorSiret,
             permissionAlert: entity.permissionAlert,
             step: entity.step,
@@ -55,14 +52,7 @@ export default class DepositScdlLogDtoMapper {
     }
 
     static depositScdlLogDtoToEntity(dto: DepositScdlLogDto, userId: string, step: number): DepositScdlLogEntity {
-        return new DepositScdlLogEntity(
-            userId,
-            step,
-            undefined,
-            dto.overwriteAlert,
-            dto.allocatorSiret,
-            dto.permissionAlert,
-        );
+        return new DepositScdlLogEntity(userId, step, undefined, dto.allocatorSiret, dto.permissionAlert);
     }
 
     static createDepositScdlLogDtoToEntity(
@@ -70,7 +60,7 @@ export default class DepositScdlLogDtoMapper {
         userId: string,
         step: number,
     ): DepositScdlLogEntity {
-        return new DepositScdlLogEntity(userId, step, undefined, dto.overwriteAlert, dto.allocatorSiret);
+        return new DepositScdlLogEntity(userId, step, undefined, dto.allocatorSiret);
     }
 
     static uploadedFileInfosDtoToEntity(dto: UploadedFileInfosDto): UploadedFileInfosEntity {

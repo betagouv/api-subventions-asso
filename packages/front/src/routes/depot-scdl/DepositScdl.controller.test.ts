@@ -9,7 +9,6 @@ describe("DepositScdlController", () => {
     const COMPONENTS_LIST = { 1: "step1Component", 2: "step2Component", 3: "step3Component" };
     const DEPOSIT_LOG: DepositScdlLogResponseDto = {
         step: 1,
-        overwriteAlert: true,
         allocatorSiret: "12345678901234",
     };
     beforeEach(() => {
@@ -64,7 +63,7 @@ describe("DepositScdlController", () => {
         it("set view and step", () => {
             controller.resumeForm();
             expect(controller.currentView.value).toEqual("form");
-            expect(controller.currentStep.value).toEqual(controller.depositLog.value!.step + 2);
+            expect(controller.currentStep.value).toEqual(controller.depositLog.value!.step + 1);
         });
     });
 

@@ -90,7 +90,6 @@ export class DepositScdlProcessService {
         if (!existingDepositLog) {
             throw new NotFoundError("No deposit log found for this user");
         }
-        depositScdlLogDto.overwriteAlert = existingDepositLog.overwriteAlert;
         depositScdlLogDto.allocatorSiret = existingDepositLog.allocatorSiret;
 
         depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, this.SECOND_STEP);
@@ -129,7 +128,6 @@ export class DepositScdlProcessService {
             new DepositScdlLogEntity(
                 userId,
                 this.SECOND_STEP,
-                undefined,
                 undefined,
                 undefined,
                 depositScdlLogDto.permissionAlert,

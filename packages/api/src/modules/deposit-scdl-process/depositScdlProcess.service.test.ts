@@ -207,7 +207,6 @@ describe("DepositScdlProcessService", () => {
             const expected: DepositScdlLogEntity = {
                 userId: USER_ID_STR,
                 step: 1,
-                overwriteAlert: true,
                 updateDate: new Date(),
             };
 
@@ -233,7 +232,6 @@ describe("DepositScdlProcessService", () => {
             const expected = {
                 userId: USER_ID_STR,
                 step: step,
-                overwriteAlert: true,
                 updateDate: new Date(),
             };
 
@@ -278,7 +276,6 @@ describe("DepositScdlProcessService", () => {
             const expected: DepositScdlLogEntity = {
                 userId: USER_ID_STR,
                 step: step,
-                overwriteAlert: true,
                 updateDate: new Date(),
                 allocatorSiret: "12345678901234",
             };

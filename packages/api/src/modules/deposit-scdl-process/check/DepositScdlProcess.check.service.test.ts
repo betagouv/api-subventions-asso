@@ -15,18 +15,9 @@ import { MixedParsedError } from "../../providers/scdl/@types/Validation";
 describe("DepositScdlProcess check service", () => {
     describe("validateCreate", () => {
         it("should accept valid data", () => {
-            const dto: CreateDepositScdlLogDto = { overwriteAlert: true, allocatorSiret: "12345678901234" };
+            const dto: CreateDepositScdlLogDto = { allocatorSiret: "12345678901234" };
 
             expect(() => depositScdlProcessCheckService.validateCreate(dto)).not.toThrow();
-        });
-
-        it("should throw BadRequestError if overwriteAlert is false", () => {
-            const dto: CreateDepositScdlLogDto = { overwriteAlert: false };
-
-            expect(() => depositScdlProcessCheckService.validateCreate(dto)).toThrow(BadRequestError);
-            expect(() => depositScdlProcessCheckService.validateCreate(dto)).toThrow(
-                "overwrite alert must be accepted",
-            );
         });
     });
 
@@ -50,13 +41,6 @@ describe("DepositScdlProcess check service", () => {
         it("should throw BadRequestError if not a siret", () => {
             const wrongSiret: DepositScdlLogDto = { allocatorSiret: "123456789" };
             expect(() => depositScdlProcessCheckService.validateUpdateConsistency(wrongSiret, 1)).toThrow(
-                BadRequestError,
-            );
-        });
-
-        it("should throw BadRequestError if overwriteAlert not accepted", () => {
-            const alertNotAccepted: DepositScdlLogDto = { overwriteAlert: false };
-            expect(() => depositScdlProcessCheckService.validateUpdateConsistency(alertNotAccepted, 1)).toThrow(
                 BadRequestError,
             );
         });
@@ -86,7 +70,6 @@ describe("DepositScdlProcess check service", () => {
                 updateDate: new Date("2025-09-26T00:00:00.000Z"),
                 permissionAlert: true,
                 allocatorSiret: "12345678901234",
-                overwriteAlert: true,
             };
 
             mockGetGrantsOnPeriodByAllocator.mockResolvedValueOnce([]);
@@ -102,30 +85,12 @@ describe("DepositScdlProcess check service", () => {
                 updateDate: new Date("2025-09-26T00:00:00.000Z"),
                 permissionAlert: true,
                 allocatorSiret: "12345678901234",
-                overwriteAlert: true,
                 uploadedFileInfos: {} as UploadedFileInfosEntity,
             };
 
             mockGetGrantsOnPeriodByAllocator.mockResolvedValueOnce([]);
             await expect(depositScdlProcessCheckService.finalCheckBeforePersist(depositLog)).rejects.toThrow(
                 "deposit must be in step 2",
-            );
-        });
-
-        it("should throw when overwriteAlert false", async () => {
-            const depositLog: DepositScdlLogEntity = {
-                userId: "68d6ab9b48ce4a950f7e96df",
-                step: 2,
-                updateDate: new Date("2025-09-26T00:00:00.000Z"),
-                permissionAlert: true,
-                allocatorSiret: "12345678901234",
-                overwriteAlert: false,
-                uploadedFileInfos: {} as UploadedFileInfosEntity,
-            };
-
-            mockGetGrantsOnPeriodByAllocator.mockResolvedValueOnce([]);
-            await expect(depositScdlProcessCheckService.finalCheckBeforePersist(depositLog)).rejects.toThrow(
-                "overwrite alert must be acknowledged",
             );
         });
 
@@ -136,7 +101,6 @@ describe("DepositScdlProcess check service", () => {
                 updateDate: new Date("2025-09-26T00:00:00.000Z"),
                 permissionAlert: true,
                 allocatorSiret: undefined,
-                overwriteAlert: true,
                 uploadedFileInfos: {} as UploadedFileInfosEntity,
             };
 
@@ -153,7 +117,6 @@ describe("DepositScdlProcess check service", () => {
                 updateDate: new Date("2025-09-26T00:00:00.000Z"),
                 permissionAlert: false,
                 allocatorSiret: "12345678901234",
-                overwriteAlert: true,
                 uploadedFileInfos: {} as UploadedFileInfosEntity,
             };
 
@@ -170,7 +133,6 @@ describe("DepositScdlProcess check service", () => {
                 updateDate: new Date("2025-09-26T00:00:00.000Z"),
                 permissionAlert: true,
                 allocatorSiret: "12345678901234",
-                overwriteAlert: true,
                 uploadedFileInfos: {
                     fileName: "test.csv",
                     uploadDate: new Date("2025-11-03T00:00:00.000Z"),
@@ -197,7 +159,6 @@ describe("DepositScdlProcess check service", () => {
                 updateDate: new Date("2025-09-26T00:00:00.000Z"),
                 permissionAlert: true,
                 allocatorSiret: "12345678901236",
-                overwriteAlert: true,
                 uploadedFileInfos: {
                     fileName: "test.csv",
                     uploadDate: new Date("2025-11-03T00:00:00.000Z"),
@@ -224,7 +185,6 @@ describe("DepositScdlProcess check service", () => {
                 updateDate: new Date("2025-09-26T00:00:00.000Z"),
                 permissionAlert: true,
                 allocatorSiret: "12345678901234",
-                overwriteAlert: true,
                 uploadedFileInfos: {
                     fileName: "test.csv",
                     uploadDate: new Date("2025-11-03T00:00:00.000Z"),
@@ -258,7 +218,6 @@ describe("DepositScdlProcess check service", () => {
                 updateDate: new Date("2025-09-26T00:00:00.000Z"),
                 permissionAlert: true,
                 allocatorSiret: "12345678901234",
-                overwriteAlert: true,
                 uploadedFileInfos: {
                     fileName: "test.csv",
                     uploadDate: new Date("2025-11-03T00:00:00.000Z"),
@@ -287,7 +246,6 @@ describe("DepositScdlProcess check service", () => {
                 updateDate: new Date("2025-09-26T00:00:00.000Z"),
                 permissionAlert: true,
                 allocatorSiret: "12345678901234",
-                overwriteAlert: true,
                 uploadedFileInfos: {
                     fileName: "test.csv",
                     uploadDate: new Date("2025-11-03T00:00:00.000Z"),

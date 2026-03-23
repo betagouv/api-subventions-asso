@@ -16,7 +16,10 @@
     <p>
         <strong>Fichier ajouté :</strong>
         <br />
-        <a class="fr-link fr-link--download" href="/" on:click|preventDefault={() => ctrl.generateDownloadUrl()}>
+        <a
+            class="fr-link fr-link--download"
+            href="/packages/front/static"
+            on:click|preventDefault={() => ctrl.generateDownloadUrl()}>
             {filename}
         </a>
     </p>
@@ -36,7 +39,10 @@
         <br />
         <strong>Nombre de lignes déjà existantes dans notre base : {existingLinesInDb}</strong>
         <br />
-        <a class="fr-link fr-link--download" href="/" on:click|preventDefault={() => ctrl.downloadGrantsCsv()}>
+        <a
+            class="fr-link fr-link--download"
+            href="/packages/front/static"
+            on:click|preventDefault={() => ctrl.downloadGrantsCsv()}>
             Télécharger les données existantes
         </a>
     </p>

@@ -14,7 +14,6 @@ describe("depositScdlLogDtoAdapter", () => {
             const result = DepositScdlLogDtoMapper.entityToDepositScdlLogDto(entity);
 
             expect(result).toEqual({
-                overwriteAlert: entity.overwriteAlert,
                 allocatorSiret: entity.allocatorSiret,
                 permissionAlert: entity.permissionAlert,
             });
@@ -27,7 +26,6 @@ describe("depositScdlLogDtoAdapter", () => {
             const result = DepositScdlLogDtoMapper.entityToCreateDepositScdlLogDto(entity);
 
             expect(result).toEqual({
-                overwriteAlert: entity.overwriteAlert,
                 allocatorSiret: entity.allocatorSiret,
             });
         });
@@ -39,7 +37,6 @@ describe("depositScdlLogDtoAdapter", () => {
             const result = DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(entity);
 
             expect(result).toEqual({
-                overwriteAlert: entity.overwriteAlert,
                 allocatorSiret: entity.allocatorSiret,
                 permissionAlert: entity.permissionAlert,
                 step: entity.step,
@@ -51,7 +48,6 @@ describe("depositScdlLogDtoAdapter", () => {
             const result = DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(entity);
 
             expect(result).toEqual({
-                overwriteAlert: entity.overwriteAlert,
                 allocatorSiret: entity.allocatorSiret,
                 permissionAlert: entity.permissionAlert,
                 step: entity.step,
@@ -82,7 +78,6 @@ describe("depositScdlLogDtoAdapter", () => {
     describe("depositScdlLogDtoToEntity", () => {
         it("should convert DepositScdlLogDto to DepositScdlLogEntity", () => {
             const dto: DepositScdlLogDto = {
-                overwriteAlert: true,
                 allocatorSiret: "12345678901234",
                 permissionAlert: true,
             };
@@ -95,7 +90,6 @@ describe("depositScdlLogDtoAdapter", () => {
             expect(result).toMatchObject({
                 userId: userId,
                 step: step,
-                overwriteAlert: dto.overwriteAlert,
                 permissionAlert: dto.permissionAlert,
                 allocatorSiret: dto.allocatorSiret,
             });
@@ -105,7 +99,7 @@ describe("depositScdlLogDtoAdapter", () => {
     describe("createDepositScdlLogDtoToEntity", () => {
         it("should convert CreateDepositScdlLogDto to DepositScdlLogEntity", () => {
             const dto: CreateDepositScdlLogDto = {
-                overwriteAlert: true,
+                allocatorSiret: "12345678901234",
             };
             const userId = "user123";
             const step = 1;
@@ -115,7 +109,7 @@ describe("depositScdlLogDtoAdapter", () => {
             expect(result).toMatchObject({
                 userId: userId,
                 step: step,
-                overwriteAlert: dto.overwriteAlert,
+                allocatorSiret: dto.allocatorSiret,
             });
         });
 
