@@ -3,8 +3,8 @@ import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ProviderCore from "../ProviderCore";
 import Siren from "../../../identifierObjects/Siren";
-import chorusLineAdapter from "../../../dataProviders/db/providers/chorus/chorus.line.adapter";
-import ChorusLineEntity from "./entities/ChorusLineEntity";
+import chorusAdapter from "../../../dataProviders/db/providers/chorus/chorus.adapter";
+import ChorusEntity from "./entities/ChorusEntity";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Siret from "../../../identifierObjects/Siret";
@@ -29,8 +29,8 @@ export class ChorusService extends ProviderCore {
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
-    public async upsertMany(entities: ChorusLineEntity[]) {
-        return chorusLineAdapter.upsertMany(entities);
+    public async upsertMany(entities: ChorusEntity[]) {
+        return chorusAdapter.upsertMany(entities);
     }
 
     /*
@@ -38,15 +38,15 @@ export class ChorusService extends ProviderCore {
      * The check about that should be associationHelper.isIdentifierFromAsso but we historically have this one
      * that use chorus specific data
      * */
-    public async isAcceptedEntity(entity: ChorusLineEntity) {
+    public async isAcceptedEntity(entity: ChorusEntity) {
         // quick fix to handle payments to assocations without siret but ridet or tahiti
         // there is cases where both siret and ridet/tahiti columns values are #
         // for now we insert all because we don't know the rules behind it
         // and we don't want to lose any information
-        if (entity.indexedInformations.siret === "#") {
+        if (entity.siret === "#") {
             return true;
         } else {
-            const siren = new Siret(entity.indexedInformations.siret).toSiren();
+            const siren = new Siret(entity.siret).toSiren();
 
             const cache = this.sirenBelongAssoCache.get(siren.value);
             if (cache !== null) return cache;
@@ -55,7 +55,7 @@ export class ChorusService extends ProviderCore {
         }
     }
 
-    // will replace isAcceptedEntity when ChorusLine will be refactored to match new ChorusFseEntity process
+    // will replace isAcceptedEntity when Chorus will be refactored to match new ChorusFseEntity process
     public async isEntityAccepted(entity: ChorusFseEntity) {
         const siret = entity.identifier;
         if (siret instanceof Siret) {
@@ -73,7 +73,7 @@ export class ChorusService extends ProviderCore {
     /**
      * @param entities /!\ entities must be validated upstream
      */
-    public async insertBatchChorusLine(entities: ChorusLineEntity[]) {
+    public async insertBatchChorus(entities: ChorusEntity[]) {
         const acceptedEntities = await asyncFilter(entities, entity => this.isAcceptedEntity(entity));
         if (acceptedEntities.length) await this.upsertMany(acceptedEntities);
 
@@ -90,13 +90,13 @@ export class ChorusService extends ProviderCore {
     }
 
     public cursorFind(exerciceBudgetaire?: number) {
-        if (!exerciceBudgetaire) return chorusLineAdapter.cursorFind({});
-        else return chorusLineAdapter.cursorFindOnExercise(exerciceBudgetaire);
+        if (!exerciceBudgetaire) return chorusAdapter.cursorFind({});
+        else return chorusAdapter.cursorFindOnExercise(exerciceBudgetaire);
     }
 
     // TODO: unit test this
-    public getProgramCode(entity: ChorusLineEntity) {
-        return parseInt(entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
+    public getProgramCode(entity: ChorusEntity) {
+        return parseInt(entity.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
     }
 
     public async persistEuropeanEntities(entities: ChorusFseEntity[]) {

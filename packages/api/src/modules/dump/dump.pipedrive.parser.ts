@@ -14,7 +14,9 @@ export default class DumpPipedriveParser {
         const page = excelPage;
         const headerRow = page.splice(0, 1)[0] as string[];
         console.log("Map rows to entities...");
-        const entities = page.map(userRow => GenericParser.linkHeaderToData<string | number>(headerRow, userRow));
+        const entities = page.map(userRow =>
+            GenericParser.linkHeaderToData<DefaultObject<string | null>, string | number>(headerRow, userRow),
+        );
         return entities.map(pipedriveUser =>
             GenericParser.indexDataByPathObject<string>(
                 DumpPipedriveParser.pathObject,

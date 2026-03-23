@@ -1,4 +1,4 @@
-export interface StrictChorusLineDto {
+export interface ChorusDto {
     "N° EJ": string;
     "N° poste EJ": string;
     "Code taxe 1": string;
@@ -18,6 +18,6 @@ export interface StrictChorusLineDto {
     "Domaine fonctionnel": string;
     "Domaine fonctionnel CODE": string;
     "Montant payé": number;
-    // XLSX date can be string (YYYY/MM/DD) or ExcelDateNumber (44856)
-    "Date de dernière opération sur la DP": string | number;
+    // Historicaly the date could be represented as a XLSX number or a string
+    "Date de dernière opération sur la DP": number | string;
 }

@@ -1,7 +1,7 @@
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
-import ChorusLineEntity from "../../../../src/modules/providers/chorus/entities/ChorusLineEntity";
+import ChorusEntity from "../../../../src/modules/providers/chorus/entities/ChorusEntity";
 
-export const ChorusFixtures: ChorusLineEntity[] = [
+export const ChorusFixtures: ChorusEntity[] = [
     {
         uniqueId: "de175292263fdd97b222a754309df07f",
         indexedInformations: {

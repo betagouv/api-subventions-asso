@@ -4,7 +4,7 @@ import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdenti
 import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymentFlat";
 import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
 import chorusService from "../providers/chorus/chorus.service";
-import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
+import ChorusEntity from "../providers/chorus/entities/ChorusEntity";
 import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
 import PaymentFlatProvider from "./@types/paymentFlatProvider";
 import paymentFlatService from "./paymentFlat.service";
@@ -45,7 +45,7 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
     }
 
     /**
-     *  Create a list of PaymentFlatEntity from ChorusLine collection
+     *  Create a list of PaymentFlatEntity from Chorus collection
      *  It aggregates NotAggregatedChorusPaymentFlatEntity having the same uniqueId, to calculate the total amount
      */
     // TODO: move this in ChorusAdapter ?
@@ -61,13 +61,15 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
         const chorusCursor = chorusService.cursorFind(exerciceBudgetaire);
         const entitiesByUniqueId: Record<string, ChorusPaymentFlatEntity> = {};
 
-        const invalidDocuments: ChorusLineEntity[] = [];
+        const invalidDocuments: ChorusEntity[] = [];
         while (await chorusCursor.hasNext()) {
-            const document = (await chorusCursor.next()) as ChorusLineEntity;
+            const document = (await chorusCursor.next()) as ChorusEntity;
 
+            // @TODO: remove this ? Chorus Entity persistance already check identifier
+            // throught Siret.isSiret, Ridet.isRidet, Tahitiet.isTahitiet
             // filter chorus documents with wrong or weird establishment identifier
             // that will make payment-flat adaptation fails
-            if (!EstablishmentIdentifier.getIdentifierType(document.indexedInformations.siret)) {
+            if (!EstablishmentIdentifier.getIdentifierType(document.siret)) {
                 invalidDocuments.push(document);
                 continue;
             }
@@ -101,7 +103,7 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
         console.log(
             `Here are some of them : \n${invalidDocuments
                 .splice(0, 5)
-                .map(document => `- ${document.indexedInformations.siret} \n`)
+                .map(document => `- ${document.siret} \n`)
                 .reduce((acc, str) => (acc += str), "")}`,
         );
 

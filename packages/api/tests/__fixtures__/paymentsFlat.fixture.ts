@@ -1,47 +1,38 @@
-import ChorusLineEntity from "../../src/modules/providers/chorus/entities/ChorusLineEntity";
-import { ENTITIES } from "../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
-import { ChorusLineDto } from "../../src/modules/providers/chorus/@types/ChorusLineDto";
+import ChorusEntity from "../../src/modules/providers/chorus/entities/ChorusEntity";
+import { CHORUS_ENTITIES } from "../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
 export const CHORUS_LAST_UPDATE = new Date("2022-03-12");
 
-export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
+export const MOCK_DOCUMENTS: ChorusEntity[] = [
     // je change le siret pour que je puisse ordonner le snapshot par siret
-    // je change l'exercice du première document pour qu'il ne soit pas enregistré lors de resyncExercice(2023)
+    // je change l'exercice du première document pour qu'il ne soit pas enregistré lors de resyncExercice (2023)
     {
-        ...ENTITIES[0],
-        data: {
-            ...(ENTITIES[0].data as ChorusLineDto),
-            "Code taxe 1": "12345678901313",
-            "Exercice comptable": "2022",
-        },
+        ...CHORUS_ENTITIES[0],
+        siret: "12345678901313",
+        exercice: 2022,
     },
     // je mets des entités avec le même paymentFlat uniqueId pour tester le groupement
     {
-        ...ENTITIES[1],
-        data: {
-            ...(ENTITIES[1].data as ChorusLineDto),
-            "N° EJ": "EJ_egale",
-            "Domaine fonctionnel CODE": "0143-03-01",
-            "Référentiel de programmation CODE": "014303000102",
-            "Code taxe 1": "12345678901212",
-        },
-    },
-    {
-        ...ENTITIES[2],
-        data: {
-            ...(ENTITIES[2].data as ChorusLineDto),
-            "N° EJ": "EJ_egale",
-            "Domaine fonctionnel CODE": "0143-03-01",
-            "Référentiel de programmation CODE": "014303000102",
-            "Code taxe 1": "12345678901212",
-            "Date de dernière opération sur la DP": 45037,
-            "Centre financier CODE": "AA01/0776-C001-4000",
-        },
-    },
+        ...CHORUS_ENTITIES[1],
 
+        ej: "EJ_egale",
+        codeDomaineFonctionnel: "0143-03-01",
+        codeActivitee: "014303000102",
+        siret: "12345678901212",
+    },
     {
-        ...ENTITIES[2],
+        ...CHORUS_ENTITIES[2],
+
+        ej: "EJ_egale",
+        codeDomaineFonctionnel: "0143-03-01",
+        codeActivitee: "014303000102",
+        siret: "12345678901212",
+        dateOperation: new Date("2023-12-12"),
+        codeCentreFinancier: "AA01/0776-C001-4000",
+    },
+    {
+        ...CHORUS_ENTITIES[2],
         uniqueId: "newUniqueId",
-        data: { ...(ENTITIES[2].data as ChorusLineDto), "Code taxe 1": "12345678901414" },
+        siret: "12345678901414",
     },
 ];
 

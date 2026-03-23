@@ -7,7 +7,6 @@ import statsAssociationsVisitAdapter from "./stats/statsAssociationsVisit.adapte
 import userResetAdapter from "./user/user-reset.adapter";
 import userAdapter from "./user/user.adapter";
 import consumerTokenAdapter from "./user/consumer-token.adapter";
-import chorusLineAdapter from "./providers/chorus/chorus.line.adapter";
 import dauphinAdapter from "./providers/dauphin/dauphin.adapter";
 import demarchesSimplifieesDataAdapter from "./providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
 import demarchesSimplifieesSchemaAdapter from "./providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
@@ -27,6 +26,7 @@ import applicationFlatAdapter from "./applicationFlat/application-flat.adapter";
 import gisproAdapter from "./providers/gispro.adapter";
 import depositLogAdapter from "./deposit-log/deposit-log.adapter";
 import chorusFseAdapter from "./providers/chorus/chorus.fse.adapter";
+import chorusAdapter from "./providers/chorus/chorus.adapter";
 
 export const adaptersWithIndexes = [
     // TODO: handle adapter initialization from within and remove this file
@@ -45,7 +45,7 @@ export const adaptersWithIndexes = [
     miscScdlProducersAdapter,
     configurationsAdapter,
     consumerTokenAdapter,
-    chorusLineAdapter,
+    chorusAdapter,
     chorusFseAdapter,
     demarchesSimplifieesDataAdapter,
     demarchesSimplifieesSchemaAdapter,

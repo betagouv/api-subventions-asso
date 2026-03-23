@@ -1,13 +1,19 @@
 import ChorusParser from "./chorus.parser";
-import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES, EUROPEAN_PAGE } from "./__fixtures__/ChorusFixtures";
+import {
+    FILLED_HEADERS,
+    HEADERS,
+    PAGES,
+    EUROPEAN_PAGE,
+    PARSED_DATA,
+    CHORUS_ENTITIES,
+} from "./__fixtures__/ChorusFixtures";
 import * as StringHelper from "../../../shared/helpers/StringHelper";
-import { BeforeAdaptation, DefaultObject } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
 
 jest.mock("../../../shared/GenericParser");
 const mockedGenericParser = jest.mocked(GenericParser);
 jest.mock("../../../shared/helpers/CliHelper");
-jest.mock("./entities/ChorusLineEntity");
+jest.mock("./entities/ChorusEntity");
 jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
 
@@ -20,20 +26,28 @@ describe("ChorusParser", () => {
     };
     describe("buildUniqueId", () => {
         it("call getMD5", () => {
-            const info = ENTITIES[0].indexedInformations;
+            const entity = CHORUS_ENTITIES[0];
             // @ts-expect-error: protected
-            ChorusParser.buildUniqueId(info);
+            ChorusParser.buildUniqueId(entity);
             expect(mockedStringHelper.getMD5).toHaveBeenCalledWith(
-                `${info.ej}-${info.numPosteEJ}-${info.numeroDemandePaiement}-${info.numPosteDP}-${info.codeSociete}-${info.exercice}`,
+                `${entity.ej}-${entity.numPosteEJ}-${entity.numeroDemandePaiement}-${entity.numPosteDP}-${entity.codeSociete}-${entity.exercice}`,
             );
+        });
+    });
+
+    describe("buildEntityFromDto", () => {
+        it("returns partial entity (without uniqueId)", () => {
+            // @ts-expect-error: test private method
+            const actual = ChorusParser.buildEntityFromDto(PARSED_DATA[0]);
+            expect(actual).toMatchSnapshot({ updateDate: expect.any(Date) });
         });
     });
 
     describe("hasMandatoryFields", () => {
         it("should return true", () => {
-            const expected = { value: true };
+            const expected = true;
             // @ts-expect-error: access protected method
-            const actual = ChorusParser.hasMandatoryFields(ENTITIES[0].indexedInformations);
+            const actual = ChorusParser.hasMandatoryFields(CHORUS_ENTITIES[0]);
             expect(actual).toEqual(expected);
         });
 
@@ -46,106 +60,77 @@ describe("ChorusParser", () => {
             ${"exercice"}
             ${"codeSociete"}
         `("should return false", ({ missingProp }) => {
-            const WRONG_INDEXED_INFORMATIONS = { ...ENTITIES[0].indexedInformations, [missingProp]: undefined };
-            const expected = { value: false, hints: [missingProp] };
+            const WRONG_INDEXED_INFORMATIONS = { ...CHORUS_ENTITIES[0], [missingProp]: undefined };
+            const expected = false;
             // @ts-expect-error: access protected method
             const actual = ChorusParser.hasMandatoryFields(WRONG_INDEXED_INFORMATIONS);
             expect(actual).toEqual(expected);
         });
-
-        it("should return multiple missing fields", () => {
-            const WRONG_INDEXED_INFORMATIONS = {
-                ...ENTITIES[0].indexedInformations,
-                numeroDemandePaiement: undefined,
-                exercice: undefined,
-                codeSociete: undefined,
-            };
-
-            const expectedHints = ["numeroDemandePaiement", "exercice", "codeSociete"];
-
-            // @ts-expect-error: access protected method
-            const actual = ChorusParser.hasMandatoryFields(WRONG_INDEXED_INFORMATIONS);
-            for (const hint of expectedHints) {
-                expect(actual.hints).toContain(hint);
-            }
-        });
     });
 
-    describe("validateIndexedInformations", () => {
+    describe("validateEntity", () => {
         const mockHasUniqueKeyFields: jest.SpyInstance = jest
             // @ts-expect-error: ok
             .spyOn(ChorusParser, "hasMandatoryFields");
 
         beforeEach(() => {
-            mockHasUniqueKeyFields.mockReturnValue({ value: true });
+            mockHasUniqueKeyFields.mockReturnValue(true);
         });
 
         it("rejects because codeBranche is not accepted", () => {
-            const indexedInformations = { ...ENTITIES[0].indexedInformations, codeBranche: "WRONG CODE" };
+            const entity = { ...CHORUS_ENTITIES[0], codeBranche: "WRONG CODE" };
 
             //@ts-expect-error: protected
-            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
-                `The branch ${indexedInformations.codeBranche} is not accepted in data`,
+            expect(() => ChorusParser.validateEntity(entity)).toThrow(
+                `The branch ${entity.codeBranche} is not accepted`,
             );
         });
 
         // missingProps order matters for the expect on error message to pass
-        it.each`
-            missingProps
-            ${["ej"]}
-            ${["ej", "numPosteDP", "codeSociete"]}
-        `("rejects because $missingProps unique key field(s) is/are missing", ({ missingProps }) => {
-            mockHasUniqueKeyFields.mockReturnValue({ value: false, hints: [missingProps] });
-            const indexedInformations = ENTITIES[0].indexedInformations;
+        it("rejects because $missingProps unique key field(s) is/are missing", () => {
+            mockHasUniqueKeyFields.mockReturnValue(false);
+            const entity = CHORUS_ENTITIES[0];
 
             //@ts-expect-error: protected
-            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
-                `The mandatory field(s) ${missingProps.concat(" - ")} are missing `,
-            );
+            expect(() => ChorusParser.validateEntity(entity)).toThrow("The entity is missing mandatory fields");
         });
 
         it("rejects because amount is not a number", () => {
-            const indexedInformations = { ...ENTITIES[0].indexedInformations, amount: undefined };
+            const entity = { ...CHORUS_ENTITIES[0], amount: undefined };
             //@ts-expect-error: protected
-            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
-                `Amount is not a number`,
-            );
+            expect(() => ChorusParser.validateEntity(entity)).toThrow(`Invalid amount`);
         });
 
         it("rejects dateOperation is not a Date", () => {
-            const indexedInformations = { ...ENTITIES[0].indexedInformations, dateOperation: "01/01/1960" };
+            const entity = { ...CHORUS_ENTITIES[0], dateOperation: "01/01/1960" };
             //@ts-expect-error: protected
-            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
-                `Operation date is not a valid date`,
-            );
+            expect(() => ChorusParser.validateEntity(entity)).toThrow(`Invalid operation date`);
         });
 
         it("rejects because siret is not valid", () => {
-            const indexedInformations = { ...ENTITIES[0].indexedInformations, siret: "SIRET" };
+            const siret = "SIRET";
+            const entity = { ...CHORUS_ENTITIES[0], siret };
             //@ts-expect-error: protected
-            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
-                `INVALID SIRET FOR ${indexedInformations.siret}`,
-            );
+            expect(() => ChorusParser.validateEntity(entity)).toThrow(`Invalid SIRET: ${siret}`);
         });
 
         it("should return true if siret equals #", () => {
-            const indexedInformations = { ...ENTITIES[0].indexedInformations, siret: "#" };
+            const entity = { ...CHORUS_ENTITIES[0], siret: "#" };
             //@ts-expect-error: protected
-            expect(ChorusParser.validateIndexedInformations(indexedInformations)).toEqual(true);
+            expect(ChorusParser.validateEntity(entity)).toEqual(true);
         });
 
         it("rejects because ej is not valid", () => {
-            const indexedInformations = { ...ENTITIES[0].indexedInformations, ej: "00000" };
+            const ej = "00000";
+            const entity = { ...CHORUS_ENTITIES[0], ej };
             //@ts-expect-error: protected
-            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
-                `INVALID EJ FOR ${indexedInformations.ej}`,
-            );
+            expect(() => ChorusParser.validateEntity(entity)).toThrow(`Invalid EJ: ${ej}`);
         });
 
         it("accepts", () => {
-            const indexedInformations = ENTITIES[0].indexedInformations;
+            const entity = CHORUS_ENTITIES[0];
             //@ts-expect-error: protected
-            expect(ChorusParser.validateIndexedInformations(indexedInformations)).toEqual(true);
+            expect(ChorusParser.validateEntity(entity)).toEqual(true);
         });
     });
 
@@ -160,80 +145,45 @@ describe("ChorusParser", () => {
 
     describe("nationalDataToEntities", () => {
         // @ts-expect-error: protected
-        const originalBuildUniqueId = ChorusParser.buildUniqueId;
-        const mockBuildUniqueId = jest.fn();
-        // @ts-expect-error: protected
-        const originalValidateIndexedInformations = ChorusParser.isIndexedInformationsValid;
-        const mockValidateIndexedInformations = jest.fn().mockReturnValue(true);
+        const originalValidateEntity = ChorusParser.validateEntity;
+        const mockValidateEntity = jest.fn().mockReturnValue(true);
 
         const ROWS = [...PAGES];
 
-        beforeAll(() => {
-            mockedGenericParser.linkHeaderToData.mockReturnValue(ENTITIES[0].data as DefaultObject<BeforeAdaptation>);
-            jest.mocked(GenericParser.indexDataByPathObject).mockReturnValue(
-                ENTITIES[0].indexedInformations as unknown as DefaultObject<unknown>,
-            );
+        beforeEach(() => {
+            mockedGenericParser.linkHeaderToData.mockReturnValue(PARSED_DATA[0]);
             // @ts-expect-error: protected
-            ChorusParser.buildUniqueId = mockBuildUniqueId;
-            // @ts-expect-error: protected
-            ChorusParser.isIndexedInformationsValid = mockValidateIndexedInformations;
+            ChorusParser.validateEntity = mockValidateEntity;
         });
 
         afterAll(() => {
             // @ts-expect-error: protected
-            ChorusParser.buildUniqueId = originalBuildUniqueId;
-            // @ts-expect-error: protected
-            ChorusParser.isIndexedInformationsValid = originalValidateIndexedInformations;
+            ChorusParser.validateEntity = originalValidateEntity;
         });
 
         it.each`
             fn
             ${mockedGenericParser.linkHeaderToData}
-            ${GenericParser.indexDataByPathObject}
-            ${mockValidateIndexedInformations}
-            ${mockBuildUniqueId}
+            ${mockValidateEntity}
         `("should call $fn", ({ fn }) => {
             // @ts-expect-error: protected
             ChorusParser.nationalDataToEntities({ headers: FILLED_HEADERS, rows: ROWS });
             expect(fn).toHaveBeenCalledTimes(ROWS.length);
         });
 
-        it("should not return invalid entities", () => {
-            mockValidateIndexedInformations.mockReturnValueOnce(false);
+        it("should not return invalid entities", async () => {
+            const mockWithThrow = jest
+                .fn()
+                .mockReturnValueOnce(true)
+                .mockReturnValueOnce(true)
+                .mockImplementationOnce(() => {
+                    throw "invalid";
+                });
+            // @ts-expect-error: mock private method
+            ChorusParser.validateEntity = mockWithThrow;
             const expected = ROWS.length - 1;
             // @ts-expect-error: protected
             const actual = ChorusParser.nationalDataToEntities({ headers: FILLED_HEADERS, rows: ROWS }).length;
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("isIndexedInformationsValid", () => {
-        // @ts-expect-error: protected
-        const originalvalidateIndexedInformationsNEW = ChorusParser.validateIndexedInformations;
-        const mockedvalidateIndexedInformationsNEW = jest.fn().mockReturnValue(true);
-
-        beforeAll(() => {
-            // @ts-expect-error: protected
-            ChorusParser.validateIndexedInformations = mockedvalidateIndexedInformationsNEW;
-        });
-
-        afterAll(() => {
-            // @ts-expect-error: protected
-            ChorusParser.validateIndexedInformations = originalvalidateIndexedInformationsNEW;
-        });
-
-        it("should return true", () => {
-            const expected = true;
-            //@ts-expect-error: protected
-            const actual = ChorusParser.isIndexedInformationsValid(ENTITIES[0]);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return false", () => {
-            mockedvalidateIndexedInformationsNEW.mockReturnValueOnce(false);
-            const expected = false;
-            //@ts-expect-error: protected
-            const actual = ChorusParser.isIndexedInformationsValid(ENTITIES[0]);
             expect(actual).toEqual(expected);
         });
     });
@@ -279,7 +229,7 @@ describe("ChorusParser", () => {
 
             // @ts-expect-error: protected
             ChorusParser.nationalDataToEntities = mockedNationalDataToEntities;
-            mockedNationalDataToEntities.mockReturnValue(ENTITIES);
+            mockedNationalDataToEntities.mockReturnValue(CHORUS_ENTITIES);
             // @ts-expect-error: protected
             ChorusParser.europeanDataToEntities = mockedEuropeanDataToEntities;
             mockedEuropeanDataToEntities.mockReturnValue([]);

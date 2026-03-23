@@ -1,8 +1,8 @@
-import chorusLineAdapter from "./chorus.line.adapter";
 import MongoAdapter from "../../MongoAdapter";
-import ChorusLineEntity from "../../../../modules/providers/chorus/entities/ChorusLineEntity";
+import chorusAdapter from "./chorus.adapter";
+import ChorusEntity from "../../../../modules/providers/chorus/entities/ChorusEntity";
 
-describe("chorusLinePort", () => {
+describe("chorusPort", () => {
     const mockBulkWrite = jest.fn();
 
     beforeAll(() => {
@@ -17,7 +17,7 @@ describe("chorusLinePort", () => {
 
     describe("upsertMany", () => {
         it("calls bulkWrite with operations from entities", async () => {
-            await chorusLineAdapter.upsertMany([{ uniqueId: 1 }, { uniqueId: 2 }] as unknown as ChorusLineEntity[]);
+            await chorusAdapter.upsertMany([{ uniqueId: 1 }, { uniqueId: 2 }] as unknown as ChorusEntity[]);
             const actual = mockBulkWrite.mock.calls[0];
             expect(actual).toMatchInlineSnapshot(`
                 [
@@ -55,7 +55,7 @@ describe("chorusLinePort", () => {
     });
 
     describe("cursorFindOnExercise", () => {
-        const mockCursorFind = jest.spyOn(chorusLineAdapter, "cursorFind");
+        const mockCursorFind = jest.spyOn(chorusAdapter, "cursorFind");
         beforeEach(() => {
             mockCursorFind.mockImplementation(jest.fn());
         });
@@ -64,8 +64,8 @@ describe("chorusLinePort", () => {
         });
         it("should call cursorFind with filter", () => {
             const exerciceBudgetaire = 2023;
-            chorusLineAdapter.cursorFindOnExercise(exerciceBudgetaire);
-            expect(mockCursorFind).toHaveBeenCalledWith({ "indexedInformations.exercice": exerciceBudgetaire });
+            chorusAdapter.cursorFindOnExercise(exerciceBudgetaire);
+            expect(mockCursorFind).toHaveBeenCalledWith({ exercice: exerciceBudgetaire });
         });
     });
 });

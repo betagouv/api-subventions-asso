@@ -1,7 +1,6 @@
 import ChorusCli from "../../../src/interfaces/cli/Chorus.cli";
 import path from "path";
-import chorusLineAdapter from "../../../src/dataProviders/db/providers/chorus/chorus.line.adapter";
-import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
+import chorusAdapter from "../../../src/dataProviders/db/providers/chorus/chorus.adapter";
 import paymentFlatAdapter from "../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
 import uniteLegalEntrepriseAdapter from "../../../src/dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.adapter";
 import sireneUniteLegaleDbAdapter from "../../../src/dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.adapter";
@@ -11,10 +10,11 @@ import { Association } from "dto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../src/shared/LegalCategoriesAccepted";
 import Siren from "../../../src/identifierObjects/Siren";
 import chorusService from "../../../src/modules/providers/chorus/chorus.service";
-import { ENTITIES } from "../../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
 import stateBudgetProgramAdapter from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.adapter";
 import PROGRAMS from "../../dataProviders/db/__fixtures__/stateBudgetProgram";
 import chorusFseAdapter from "../../../src/dataProviders/db/providers/chorus/chorus.fse.adapter";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
+import { CHORUS_ENTITIES } from "../../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
 
 describe("ChorusCli", () => {
     // it contains :
@@ -60,18 +60,20 @@ describe("ChorusCli", () => {
             const expected = NB_ASSOS_IN_FILES;
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = (await chorusLineAdapter.cursorFind().toArray()).length;
-            expect(actual).toEqual(expected);
+            const actual = await chorusAdapter.cursorFind().toArray();
+            console.log(actual);
+
+            expect(actual.length).toEqual(expected);
         });
 
         // rerun above test twice
         it("should not save duplicates", async () => {
             const expected = NB_ASSOS_IN_FILES;
-            await chorusLineAdapter.createIndexes();
+            await chorusAdapter.createIndexes();
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = (await chorusLineAdapter.cursorFind().toArray()).length;
+            const actual = (await chorusAdapter.cursorFind().toArray()).length;
             expect(actual).toEqual(expected);
         });
 
@@ -95,7 +97,7 @@ describe("ChorusCli", () => {
         });
 
         it("saves in paymentFlat", async () => {
-            await chorusLineAdapter.createIndexes();
+            await chorusAdapter.createIndexes();
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
             const payments = await paymentFlatAdapter.findAll();
@@ -108,9 +110,9 @@ describe("ChorusCli", () => {
     describe("resyncPaymentFlatByExercise", () => {
         it("add payments flat for exercice", async () => {
             await chorusService.upsertMany(
-                ENTITIES.map(entity => ({
+                CHORUS_ENTITIES.map(entity => ({
                     ...entity,
-                    indexedInformations: { ...entity.indexedInformations, exercice: 2025 },
+                    exercice: 2025,
                 })),
             );
             await controller.resyncPaymentFlatByExercise(2025);
@@ -122,13 +124,13 @@ describe("ChorusCli", () => {
     describe("resetPaymentFlat", () => {
         it("add payments flat", async () => {
             await chorusService.upsertMany([
-                ...ENTITIES.map(entity => ({
+                ...CHORUS_ENTITIES.map(entity => ({
                     ...entity,
-                    indexedInformations: { ...entity.indexedInformations, exercice: 2024 },
+                    exercice: 2024,
                 })),
-                ...ENTITIES.map(entity => ({
+                ...CHORUS_ENTITIES.map(entity => ({
                     ...entity,
-                    indexedInformations: { ...entity.indexedInformations, exercice: 2025 },
+                    exercice: 2025,
                 })),
             ]);
 

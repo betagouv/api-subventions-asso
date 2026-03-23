@@ -2,15 +2,13 @@ import * as CliHelper from "../../../shared/helpers/CliHelper";
 import { BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import { isEJ } from "../../../shared/Validators";
 import { getMD5 } from "../../../shared/helpers/StringHelper";
-import { DefaultObject } from "../../../@types";
 import Siret from "../../../identifierObjects/Siret";
 import { GenericParser } from "../../../shared/GenericParser";
-import ChorusLineEntity from "./entities/ChorusLineEntity";
-import type ChorusIndexedInformations from "./@types/ChorusIndexedInformations";
-import { ChorusLineDto } from "./@types/ChorusLineDto";
+import ChorusEntity from "./entities/ChorusEntity";
 import ChorusFseEntity from "./entities/ChorusFseEntity";
 import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
-import { StrictChorusLineDto } from "./@types/StrictChorusLineDto";
+import { ChorusDto } from "./@types/ChorusDto";
+import { santitizeFloat } from "../../../shared/helpers/NumberHelper";
 
 export default class ChorusParser {
     static parse(content: Buffer) {
@@ -39,9 +37,8 @@ export default class ChorusParser {
         return { headers: ChorusParser.renameEmptyHeaders(data[0]), rows: data.slice(1) };
     }
 
-    // UPDATE: this is not true for "Fournisseur payé (DP)" which does have any code related and the next empty cell correspond to the name of the structure
     // CHORUS exports have "double columns" sharing the same header (only the header for the first column is defined)
-    // Because it is always a code followed by its corresponding label we replace the header by two distinct headers :
+    // Because it is most of the time a code followed by its corresponding label we replace the header by two distinct headers :
     // LABEL + CODE | LABEL
     private static renameEmptyHeaders(headerRow) {
         const header: string[] = [];
@@ -50,12 +47,13 @@ export default class ChorusParser {
             if (!headerRow[i]) {
                 const name = header[i - 1] as string;
 
-                // special case
+                // special case - the adjacent column is the structure name
                 if (name === "Fournisseur payé (DP)") {
                     header.push("Désignation de la structure");
                 } else {
-                    // we add CODE at the end of the previous header
+                    // add CODE suffix to the first header
                     header[i - 1] = `${name} CODE`;
+                    // rename empty header from the previous header
                     header.push(name.replace("&#32;", " ").trim());
                 }
             } else {
@@ -68,7 +66,7 @@ export default class ChorusParser {
     private static europeanDataToEntities(data: { headers: string[]; rows: string[][] }) {
         const { headers, rows } = data;
         return rows.reduce((entities, row) => {
-            const dto = GenericParser.linkHeaderToData(headers, row) as unknown as StrictChorusLineDto;
+            const dto = GenericParser.linkHeaderToData(headers, row) as unknown as ChorusDto;
             let entity: ChorusFseEntity;
             try {
                 entity = ChorusFseMapper.dtoToEntity(dto);
@@ -89,87 +87,109 @@ export default class ChorusParser {
     private static nationalDataToEntities(data: { headers: string[]; rows: string[][] }) {
         const { headers, rows } = data;
         return rows.reduce((entities, row, index, array) => {
-            const rowObject = GenericParser.linkHeaderToData(headers, row) as DefaultObject<string>; // TODO <string|number>
+            const chorusDto = GenericParser.linkHeaderToData(headers, row) as ChorusDto;
 
-            const indexedInformations = GenericParser.indexDataByPathObject(
-                // TODO <string|number>
-                ChorusLineEntity.indexedInformationsPath,
-                rowObject,
-            ) as unknown as ChorusIndexedInformations;
+            const entity = this.dtoToEntity(chorusDto);
+            try {
+                this.validateEntity(entity);
+            } catch (e) {
+                console.log("CATCH !");
+                console.log(
+                    `\n\nThis request is not registered because: ${(e as Error).message}\n`,
+                    JSON.stringify(chorusDto, null, "\t"),
+                );
+                return entities;
+            }
 
-            if (!this.isIndexedInformationsValid(indexedInformations)) return entities;
-
-            const uniqueId = this.buildUniqueId(indexedInformations);
-            entities.push(
-                new ChorusLineEntity(uniqueId, new Date(), indexedInformations, rowObject as unknown as ChorusLineDto),
-            );
+            entities.push(entity);
 
             CliHelper.printAtSameLine(`${index + 1} entities parsed of ${array.length}`);
 
             return entities;
-        }, [] as ChorusLineEntity[]);
+        }, [] as ChorusEntity[]);
     }
 
-    private static buildUniqueId(info: ChorusIndexedInformations) {
-        const { ej, numPosteEJ, numeroDemandePaiement, exercice, codeSociete, numPosteDP } = info;
-        // TODO: get chorus from enum #3410
+    private static buildEntityFromDto(dto: ChorusDto): Omit<ChorusEntity, "uniqueId"> {
+        // @TODO: check if numPosteDP and numPosteEJ are number after parse
+        return {
+            ej: dto["N° EJ"],
+            numPosteEJ: Number(dto["N° poste EJ"]),
+            siret: dto["Code taxe 1"],
+            ridetOrTahitiet: dto["No TVA 3 (COM-RIDET ou TAHITI)"],
+            codeBranche: dto["Branche CODE"],
+            branche: dto["Branche"],
+            activitee: dto["Référentiel de programmation"],
+            codeActivitee: dto["Référentiel de programmation CODE"],
+            numeroDemandePaiement: dto["N° DP"],
+            numPosteDP: Number(dto["N° poste DP"]),
+            codeSociete: dto["Société"],
+            exercice: santitizeFloat(dto["Exercice comptable"]),
+            numeroTier: dto["Fournisseur payé (DP)"],
+            nomStructure: dto["Désignation de la structure"],
+            centreFinancier: dto["Centre financier"],
+            codeCentreFinancier: dto["Centre financier CODE"],
+            domaineFonctionnel: dto["Domaine fonctionnel"],
+            codeDomaineFonctionnel: dto["Domaine fonctionnel CODE"],
+            amount: santitizeFloat(dto["EUR"] ?? dto["Montant payé"]),
+            dateOperation: GenericParser.getDateFromXLSX(dto["Date de dernière opération sur la DP"]),
+            updateDate: new Date(),
+        };
+    }
+
+    public static dtoToEntity(dto: ChorusDto): ChorusEntity {
+        const partialEntity = this.buildEntityFromDto(dto);
+        return {
+            uniqueId: this.buildUniqueId(partialEntity),
+            ...partialEntity,
+        };
+    }
+
+    private static buildUniqueId(partialEntity: Omit<ChorusEntity, "uniqueId">) {
+        const { ej, numPosteEJ, numeroDemandePaiement, exercice, codeSociete, numPosteDP } = partialEntity;
         return getMD5(`${ej}-${numPosteEJ}-${numeroDemandePaiement}-${numPosteDP}-${codeSociete}-${exercice}`);
     }
 
-    private static hasMandatoryFields(indexedInformations: ChorusIndexedInformations) {
+    /**
+     * Checks for mandatory fields used to build unique ID
+     */
+    private static hasMandatoryFields(entity: ChorusEntity) {
         const missingFields: string[] = [];
 
         // those fields are "mandatory" because they are used to build the unique ID
         const mandatoryFields = ["ej", "numPosteEJ", "numeroDemandePaiement", "numPosteDP", "codeSociete", "exercice"];
         for (const key of mandatoryFields) {
-            if (!indexedInformations[key]) missingFields.push(key);
+            if (!entity[key]) missingFields.push(key);
         }
-
         if (missingFields.length) {
-            return { value: false, hints: missingFields };
-        } else return { value: true };
+            return false;
+        } else return true;
     }
 
-    private static validateIndexedInformations(indexedInformations) {
-        if (!BRANCHE_ACCEPTED[indexedInformations.codeBranche]) {
-            throw new Error(`The branch ${indexedInformations.codeBranche} is not accepted in data`);
-        }
-
-        const hasUniqueFields = this.hasMandatoryFields(indexedInformations);
-
-        if (!hasUniqueFields.value) {
-            throw new Error(`The mandatory field(s) ${hasUniqueFields.hints?.concat(" - ")} are missing `);
-        }
+    private static validateEntity(entity: ChorusEntity) {
+        const hasUniqueFields = this.hasMandatoryFields(entity);
+        if (!hasUniqueFields) throw new Error("The entity is missing mandatory fields");
 
         // special treatment for siret with # that represents departments which didn't use SIRET but another identifier
-        if (!Siret.isSiret(indexedInformations.siret) && indexedInformations.siret !== "#") {
-            throw new Error(`INVALID SIRET FOR ${indexedInformations.siret}`);
+        if (!Siret.isSiret(entity.siret) && entity.siret !== "#") {
+            throw new Error(`Invalid SIRET: ${entity.siret}`);
         }
 
-        if (isNaN(indexedInformations.amount)) {
-            throw new Error(`Amount is not a number`);
+        if (!isEJ(entity.ej)) {
+            throw new Error(`Invalid EJ: ${entity.ej}`);
         }
 
-        if (!(indexedInformations.dateOperation instanceof Date)) {
-            throw new Error(`Operation date is not a valid date`);
+        if (!BRANCHE_ACCEPTED[entity.codeBranche]) {
+            throw new Error(`The branch ${entity.codeBranche} is not accepted`);
         }
 
-        if (!isEJ(indexedInformations.ej)) {
-            throw new Error(`INVALID EJ FOR ${indexedInformations.ej}`);
+        if (isNaN(entity.amount)) {
+            throw new Error(`Invalid amount`);
+        }
+
+        if (!(entity.dateOperation instanceof Date)) {
+            throw new Error(`Invalid operation date`);
         }
 
         return true;
-    }
-
-    private static isIndexedInformationsValid(indexedInformations: ChorusIndexedInformations) {
-        try {
-            return this.validateIndexedInformations(indexedInformations);
-        } catch (e) {
-            console.log(
-                `\n\nThis request is not registered because: ${(e as Error).message}\n`,
-                JSON.stringify(indexedInformations, null, "\t"),
-            );
-            return false;
-        }
     }
 }

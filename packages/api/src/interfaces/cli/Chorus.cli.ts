@@ -5,7 +5,7 @@ import ChorusParser from "../../modules/providers/chorus/chorus.parser";
 import chorusService from "../../modules/providers/chorus/chorus.service";
 import * as CliHelper from "../../shared/helpers/CliHelper";
 import CliController from "../../shared/CliController";
-import ChorusLineEntity from "../../modules/providers/chorus/entities/ChorusLineEntity";
+import ChorusEntity from "../../modules/providers/chorus/entities/ChorusEntity";
 import paymentFlatChorusService from "../../modules/paymentFlat/paymentFlat.chorus.service";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import ChorusFseEntity from "../../modules/providers/chorus/entities/ChorusFseEntity";
@@ -42,18 +42,15 @@ export default class ChorusCli extends CliController {
         await Promise.all([this.persistChorusEntities(national, logger), this.persistChorusFseEntities(european)]);
     }
 
-    private async persistChorusEntities(entities: ChorusLineEntity[], logger) {
+    private async persistChorusEntities(entities: ChorusEntity[], logger) {
         const totalEntities = entities.length;
-        const exercicesSet = entities.reduce(
-            (set, entity) => set.add(entity.indexedInformations.exercice),
-            new Set<number>(),
-        );
+        const exercicesSet = entities.reduce((set, entity) => set.add(entity.exercice), new Set<number>());
 
         console.info(`\n${totalEntities} valid entities found in file.`);
 
         console.info("Start register in database ...");
 
-        const batchs: ChorusLineEntity[][] = [];
+        const batchs: ChorusEntity[][] = [];
 
         for (let i = 0; i < entities.length; i += this.batchSize) {
             batchs.push(entities.slice(i, i + this.batchSize));
@@ -66,7 +63,7 @@ export default class ChorusCli extends CliController {
 
         await asyncForEach(batchs, async (batch, index) => {
             CliHelper.printProgress(index * this.batchSize, totalEntities);
-            const result = await chorusService.insertBatchChorusLine(batch);
+            const result = await chorusService.insertBatchChorus(batch);
             finalResult.created += result.created;
             finalResult.rejected += result.rejected;
         });

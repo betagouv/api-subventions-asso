@@ -25,7 +25,6 @@ export class AssociationsHelper {
         if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
         // if asso is too recent to be on record we need api
         const asso = await apiAssoService.findAssociationBySiren(siren);
-        console.log("asso", asso);
         return this.isCategoryFromAsso(asso?.categorie_juridique?.[0]?.value);
     }
 

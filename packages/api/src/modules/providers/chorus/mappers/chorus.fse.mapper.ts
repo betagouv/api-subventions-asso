@@ -5,11 +5,11 @@ import { BRANCHE_ACCEPTED } from "../../../../shared/ChorusBrancheAccepted";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { santitizeFloat } from "../../../../shared/helpers/NumberHelper";
-import { StrictChorusLineDto } from "../@types/StrictChorusLineDto";
+import { ChorusDto } from "../@types/ChorusDto";
 import ChorusFseEntity from "../entities/ChorusFseEntity";
 
 export class ChorusFseMapper {
-    private static getIdentifier(dto: StrictChorusLineDto): Siret | Ridet | Tahitiet {
+    private static getIdentifier(dto: ChorusDto): Siret | Ridet | Tahitiet {
         const error = new Error("Error in Chorus format. No siret, ridet or tahitiet");
         const siret = dto["Code taxe 1"];
         const ridetOrTahitiet = dto["No TVA 3 (COM-RIDET ou TAHITI)"];
@@ -23,7 +23,7 @@ export class ChorusFseMapper {
         }
     }
 
-    static dtoToEntity(dto: StrictChorusLineDto): ChorusFseEntity {
+    static dtoToEntity(dto: ChorusDto): ChorusFseEntity {
         const branchCode = dto["Branche CODE"];
         if (!BRANCHE_ACCEPTED[branchCode]) {
             throw new Error(`The branch ${branchCode} is not accepted in data`);
