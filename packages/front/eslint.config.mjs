@@ -66,7 +66,8 @@ export default [
     {
         languageOptions: {
             parserOptions: {
-                tsconfigRootDir: path.resolve(fileURLToPath(new URL(".", import.meta.url))),
+                project: "./tsconfig.json",
+                tsconfigRootDir: __dirname,
             },
             globals: {
                 ...globals.browser,

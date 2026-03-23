@@ -28,6 +28,14 @@ const ignores = [
 ];
 
 export default [
+    {
+        languageOptions: {
+            parserOptions: {
+                project: "./tsconfig.json",
+                tsconfigRootDir: __dirname,
+            },
+        },
+    },
     { ignores },
     eslint.configs.recommended,
     ...tseslint.configs.recommended,
