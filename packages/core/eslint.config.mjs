@@ -3,10 +3,7 @@ import tseslint from "typescript-eslint";
 import globals from "globals";
 import importPlugin from "eslint-plugin-import";
 import prettier from "eslint-config-prettier";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import path from "path";
 
 const ignores = [
     // config files
@@ -53,7 +50,7 @@ export default [
         languageOptions: {
             parserOptions: {
                 project: "./tsconfig.json",
-                tsconfigRootDir: __dirname,
+                tsconfigRootDir: path.resolve(),
             },
             globals: {
                 ...globals.node,

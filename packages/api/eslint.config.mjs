@@ -3,13 +3,12 @@ import tseslint from "typescript-eslint";
 import globals from "globals";
 import importPlugin from "eslint-plugin-import";
 import prettier from "eslint-config-prettier";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+import path from "path";
 
 const ignores = [
     // config files
     // Sure, let's lint our lint config... :D
-    // ./eslint.config.js
+    "eslint.config.mjs",
     ".DS_Store",
     ".env",
     ".env.*",
@@ -29,14 +28,12 @@ const ignores = [
     "**/*.md",
 ];
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 export default [
     {
         languageOptions: {
             parserOptions: {
                 project: "./tsconfig.json",
-                tsconfigRootDir: __dirname,
+                tsconfigRootDir: path.resolve(),
             },
         },
     },

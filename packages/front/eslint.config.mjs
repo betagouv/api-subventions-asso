@@ -6,10 +6,7 @@ import prettier from "eslint-config-prettier";
 import vitest from "eslint-plugin-vitest";
 import svelte from "eslint-plugin-svelte";
 import svelteConfig from "./svelte.config.js";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import path from "path";
 
 const ignores = [
     "eslint.config.mjs",
@@ -67,10 +64,6 @@ export default [
     vitest.configs.recommended,
     {
         languageOptions: {
-            parserOptions: {
-                project: "./tsconfig.json",
-                tsconfigRootDir: __dirname,
-            },
             globals: {
                 ...globals.browser,
                 ...globals.node, // Add this if you are using SvelteKit in non-SPA mode
@@ -105,6 +98,10 @@ export default [
         files: ["**/*.ts"],
         languageOptions: {
             parser: tseslint.parser,
+            parserOptions: {
+                project: "./tsconfig.json",
+                tsconfigRootDir: path.resolve(),
+            },
         },
     },
     {
