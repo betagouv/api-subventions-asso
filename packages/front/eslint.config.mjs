@@ -99,7 +99,7 @@ export default [
         languageOptions: {
             parser: tseslint.parser,
             parserOptions: {
-                project: "./tsconfig.json",
+                project: "./eslint.tsconfig.json",
                 tsconfigRootDir: path.resolve(),
             },
         },
