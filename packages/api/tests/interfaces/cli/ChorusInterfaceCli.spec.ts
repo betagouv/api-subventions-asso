@@ -9,7 +9,6 @@ import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.servi
 import { Association } from "dto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../src/shared/LegalCategoriesAccepted";
 import Siren from "../../../src/identifierObjects/Siren";
-import chorusService from "../../../src/modules/providers/chorus/chorus.service";
 import {
     CHORUS_FSE_ENTITIES,
     CHORUS_ENTITIES,
@@ -18,6 +17,7 @@ import stateBudgetProgramAdapter from "../../../src/dataProviders/db/state-budge
 import PROGRAMS from "../../dataProviders/db/__fixtures__/stateBudgetProgram";
 import chorusFseAdapter from "../../../src/dataProviders/db/providers/chorus/chorus.fse.adapter";
 import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
+import { toArray } from "../../__helpers__/ayncIterableHelper";
 
 describe("ChorusCli", () => {
     // it contains :
@@ -64,8 +64,6 @@ describe("ChorusCli", () => {
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
             const actual = await chorusAdapter.cursorFind().toArray();
-            console.log(actual);
-
             expect(actual.length).toEqual(expected);
         });
 
@@ -95,7 +93,7 @@ describe("ChorusCli", () => {
         it("saves european chorus data", async () => {
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = await chorusFseAdapter.findAll();
+            const actual = await toArray(chorusFseAdapter.getIterableFindAll());
             expect(actual.map(entity => ({ ...entity, updateDate: expect.any(Date) }))).toMatchSnapshot();
         });
 
@@ -118,13 +116,15 @@ describe("ChorusCli", () => {
 
     describe("resyncPaymentFlatByExercise", () => {
         it("add payments flat for exercice", async () => {
-            await chorusService.upsertMany(
+            await chorusAdapter.upsertMany(
                 CHORUS_ENTITIES.map(entity => ({
                     ...entity,
                     exercice: 2025,
                 })),
             );
-            await controller.resyncPaymentFlatByExercise(2025);
+            await chorusFseAdapter.upsertMany(CHORUS_FSE_ENTITIES.map(entity => ({ ...entity, budgetaryYear: 2025 })));
+
+            await controller.resyncFlatByExercise(2025);
             const actual = await paymentFlatAdapter.findAll();
             expect(actual).toMatchSnapshot();
         });
@@ -132,7 +132,7 @@ describe("ChorusCli", () => {
 
     describe("resetPaymentFlat", () => {
         it("add payments flat", async () => {
-            await chorusService.upsertMany([
+            await chorusAdapter.upsertMany([
                 ...CHORUS_ENTITIES.map(entity => ({
                     ...entity,
                     exercice: 2024,
@@ -142,8 +142,8 @@ describe("ChorusCli", () => {
                     exercice: 2025,
                 })),
             ]);
-
-            await controller.resetPaymentFlat();
+            await chorusFseAdapter.upsertMany(CHORUS_FSE_ENTITIES);
+            await controller.resetFlat();
             const actual = await paymentFlatAdapter.findAll();
             expect(actual).toMatchSnapshot();
         });

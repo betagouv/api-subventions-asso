@@ -1,12 +1,5 @@
 import chorusService from "./chorus.service";
 import chorusAdapter from "../../../dataProviders/db/providers/chorus/chorus.adapter";
-
-jest.mock("../../../dataProviders/db/providers/chorus/chorus.adapter");
-const mockedChorusPort = jest.mocked(chorusAdapter);
-jest.mock("./mappers/chorus.mapper");
-
-jest.mock("../../../shared/helpers/StringHelper");
-
 import { CHORUS_FSE_ENTITIES, CHORUS_ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
@@ -18,9 +11,15 @@ import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 
+jest.mock("../../../dataProviders/db/providers/chorus/chorus.adapter");
+jest.mock("./mappers/chorus.mapper");
+jest.mock("../../../shared/helpers/StringHelper");
 jest.mock("../../paymentFlat/paymentFlat.service");
 jest.mock("./mappers/chorus.fse.mapper");
 jest.mock("../../associations/associations.helper");
+jest.mock("../../paymentFlat/paymentFlat.chorus.service");
+
+const mockedChorusPort = jest.mocked(chorusAdapter);
 
 describe("chorusService", () => {
     beforeEach(() => {
@@ -244,6 +243,7 @@ describe("chorusService", () => {
 
         afterAll(() => {
             mockSavePaymentsFromStream.mockRestore();
+            mockFrom.mockRestore();
         });
 
         it("creates stream from entities", () => {
@@ -266,6 +266,27 @@ describe("chorusService", () => {
         it("returns promise", () => {
             const actual = chorusService.syncFlat(CHORUS_FSE_ENTITIES);
             expect(actual).toBeInstanceOf(Promise);
+        });
+    });
+
+    describe("initFlat", () => {
+        let mockSavePaymentsFromStream;
+        const STREAM = { foo: "bar" };
+        // @ts-expect-error: mock readable stream
+        const READABLE_STREAM = { pipeThrough: () => STREAM } as ReadableStream;
+
+        beforeEach(() => {
+            jest.spyOn(ReadableStream, "from").mockReturnValue(READABLE_STREAM);
+            mockSavePaymentsFromStream = jest.spyOn(chorusService, "savePaymentsFromStream").mockResolvedValue();
+        });
+
+        afterAll(() => {
+            mockSavePaymentsFromStream.mockRestore();
+        });
+
+        it("save flat from stream", async () => {
+            await chorusService.initFlat();
+            expect(mockSavePaymentsFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 });

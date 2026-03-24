@@ -118,6 +118,24 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
         const stream = ReadableStream.from(entities.map(entity => ChorusFseMapper.toPaymentFlat(entity)));
         return this.savePaymentsFromStream(stream);
     }
+
+    public async syncFlatByExercise(exercise: number) {
+        const entities = await chorusFseAdapter.findByExercise(exercise);
+        if (entities.length > 0) return this.syncFlat(entities);
+        else return;
+    }
+
+    public async initFlat() {
+        // @TODO: make an helper (asyncIterator, adapter) => ReadableStream
+        const stream = ReadableStream.from(chorusFseAdapter.getIterableFindAll()).pipeThrough(
+            new TransformStream({
+                transform(chorusFseEntity, controller) {
+                    controller.enqueue(ChorusFseMapper.toPaymentFlat(chorusFseEntity));
+                },
+            }),
+        );
+        return this.savePaymentsFromStream(stream);
+    }
 }
 
 const chorusService = new ChorusService();

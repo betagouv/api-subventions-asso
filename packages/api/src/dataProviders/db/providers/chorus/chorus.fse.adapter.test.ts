@@ -20,9 +20,15 @@ describe("ChorusFsePort", () => {
         jest.spyOn(MongoAdapter.prototype, "collection", "get").mockReturnValue({ find: mockFind });
     });
 
-    describe("findAll", () => {
+    describe("findByExercise", () => {
+        const EXERCISE = 2026;
+        it("query collection by exercise", async () => {
+            await chorusFseAdapter.findByExercise(EXERCISE);
+            expect(mockFind).toHaveBeenCalledWith({ budgetaryYear: EXERCISE });
+        });
+
         it("maps dto to entity", async () => {
-            await chorusFseAdapter.findAll();
+            await chorusFseAdapter.findByExercise(EXERCISE);
             expect(mockToEntity).toHaveBeenCalled();
         });
     });
