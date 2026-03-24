@@ -27,7 +27,7 @@ import notifyService from "../notify/notify.service";
 import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
 import { DepositLogPort } from "../../dataProviders/db/deposit-log/deposit-log.port";
 import { DepositScdlProcessService } from "./depositScdlProcess.service";
-import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.port.mock";
+import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.adapter.mock";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/deposit-log.port");

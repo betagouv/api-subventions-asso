@@ -8,7 +8,7 @@ import { ObjectId } from "mongodb";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import { ScdlDepositCronService } from "./scdl-deposit.cron.service";
 import { DepositLogPort } from "../../dataProviders/db/deposit-log/deposit-log.port";
-import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.port.mock";
+import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.adapter.mock";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 
 jest.mock("../../shared/helpers/DateHelper");
