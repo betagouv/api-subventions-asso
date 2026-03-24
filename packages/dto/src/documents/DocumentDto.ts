@@ -1,4 +1,4 @@
-import { SiretDto, ProviderValue } from "..";
+import { SiretDto, ProviderValue } from "../shared";
 
 export interface DocumentDto {
     // TODO list possible types ?
