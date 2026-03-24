@@ -6,8 +6,10 @@ import prettier from "eslint-config-prettier";
 import vitest from "eslint-plugin-vitest";
 import svelte from "eslint-plugin-svelte";
 import svelteConfig from "./svelte.config.js";
-import path from "path";
+import { dirname } from "path";
 import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const ignores = [
     // Sure, let's lint our lint config... :D
