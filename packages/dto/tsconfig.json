@@ -3,10 +3,12 @@
         "target": "es2022",
         "module": "commonjs",
         "outDir": "./build",
+        "rootDir": "./",
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,
         "declaration": true
     },
-    "exclude": ["node_modules/.pnpm"]
+    "include": ["./src/**/*.ts", "index.ts"],
+    "exclude": ["node_modules", "build"]
 }

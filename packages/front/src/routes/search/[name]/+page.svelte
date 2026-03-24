@@ -65,7 +65,7 @@
         </div>
 
         <div class="fr-grid-row fr-grid-row--gutters search-layout">
-            {#each $associations.results as simplifiedAsso}
+            {#each $associations.results as simplifiedAsso (simplifiedAsso.siren + "-" + simplifiedAsso.rna)}
                 <AssociationCard {simplifiedAsso} searchKey={$inputSearch} />
             {/each}
         </div>

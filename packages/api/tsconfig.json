@@ -37,6 +37,6 @@
         /* TSOA */
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
-    },
-    "include": ["src/**/*", "tests/**/*", "migrations/**/*", "jest.config.*"]
+    }
+    // "include": ["src/**/*", "tests/**/*", "migrations/**/*", "jest.config.*"]
 }

@@ -5,10 +5,10 @@ import {
     DepositScdlLogResponseDto,
     MixedParsedErrorDto,
     UploadedFileInfosDto,
+    ScdlErrorStatsDto,
 } from "dto";
 import UploadedFileInfosEntity from "./entities/uploadedFileInfos.entity";
 import { MixedParsedError } from "../providers/scdl/@types/Validation";
-import { ScdlErrorStatsDto } from "dto/depositScdlProcess";
 import ScdlErrorStats from "./entities/ScdlErrorStats";
 
 export default class DepositScdlLogDtoMapper {
