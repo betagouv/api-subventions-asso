@@ -12,8 +12,8 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const ignores = [
-    // Sure, let's lint our lint config... :D
-    // ./eslint.config.js
+    "eslint.config.mjs",
+    "vite.config.ts",
     ".DS_Store",
     ".env",
     ".env.*",
