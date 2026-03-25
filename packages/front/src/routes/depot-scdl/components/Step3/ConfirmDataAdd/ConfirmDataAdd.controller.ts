@@ -7,6 +7,8 @@ export default class ConfirmDataAddController {
     public rangeStartYear: number;
     public rangeEndYear: number;
     public filename: string;
+    public allocatorSiret: string;
+    public allocatorName?: string;
 
     constructor() {
         const depositLog = depositLogStore.value!;
@@ -16,6 +18,8 @@ export default class ConfirmDataAddController {
         this.rangeStartYear = Math.min(...uploadedFileInfos.grantCoverageYears);
         this.rangeEndYear = Math.max(...uploadedFileInfos.grantCoverageYears);
         this.filename = uploadedFileInfos.fileName;
+        this.allocatorSiret = depositLog.allocatorSiret!;
+        this.allocatorName = depositLog.allocatorName;
     }
 
     async downloadGrantsCsv() {

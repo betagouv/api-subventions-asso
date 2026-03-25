@@ -15,7 +15,12 @@
     <p>
         Vous avez renseigné au début du parcours le SIRET attribuant suivant :
         <br />
-        <strong>{$depositLogStore?.allocatorSiret}</strong>
+        <strong>
+            {$depositLogStore?.allocatorSiret}
+            {#if $depositLogStore?.allocatorName}
+                - {$depositLogStore.allocatorName}
+            {/if}
+        </strong>
     </p>
     <p>
         Or, votre fichier contient des données pour d’autres SIRET attribuant :
@@ -25,9 +30,7 @@
                 siret => siret !== $depositLogStore.allocatorSiret,
             )}
             <strong>{filteredSirets?.slice(0, 12)?.join(", ")}</strong>
-            {#if filteredSirets.length > 12}...
-            {:else}.
-            {/if}
+            {#if filteredSirets.length > 12}...{/if}
         {/if}
     </p>
     <p>

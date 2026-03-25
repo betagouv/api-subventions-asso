@@ -22,6 +22,7 @@ import notifyService from "../notify/notify.service";
 import { NotificationType } from "../notify/@types/NotificationType";
 import { isUserAdmin } from "../../shared/helpers/UserHelper";
 import { DepositLogPort } from "../../dataProviders/db/deposit-log/deposit-log.port";
+import associationNameService from "../association-name/associationName.service";
 
 export class DepositScdlProcessService {
     constructor(private readonly depositLogPort: DepositLogPort) {}
@@ -52,8 +53,10 @@ export class DepositScdlProcessService {
             throw new ConflictError("Deposit log already exists");
         }
         depositScdlProcessCheckService.validateCreate(createDepositScdlLogDto);
+        const allocatorName = await this.resolveAllocatorName(createDepositScdlLogDto.allocatorSiret);
         const depositLogEntity = DepositScdlLogDtoMapper.createDepositScdlLogDtoToEntity(
             createDepositScdlLogDto,
+            allocatorName,
             userId,
             this.FIRST_STEP,
         );
@@ -72,12 +75,38 @@ export class DepositScdlProcessService {
         }
         depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, step);
 
+        const hasSiretChanged =
+            depositScdlLogDto.allocatorSiret !== undefined &&
+            depositScdlLogDto.allocatorSiret !== existingDepositLog.allocatorSiret;
+
+        const shouldRetryNameLookup =
+            !!existingDepositLog.allocatorSiret && existingDepositLog.allocatorName === undefined;
+
+        if (hasSiretChanged) {
+            depositScdlLogDto.allocatorName = await this.resolveAllocatorName(depositScdlLogDto.allocatorSiret);
+        } else if (shouldRetryNameLookup) {
+            depositScdlLogDto.allocatorName = await this.resolveAllocatorName(existingDepositLog.allocatorSiret);
+        }
+
         const partialDepositLog: Partial<DepositScdlLogEntity> = {
             step,
             userId,
             ...depositScdlLogDto,
         };
         return this.depositLogPort.updatePartial(partialDepositLog);
+    }
+
+    private async resolveAllocatorName(siret?: string): Promise<string | undefined> {
+        if (!siret || !Siret.isSiret(siret)) {
+            return undefined;
+        }
+
+        try {
+            const result = await associationNameService.find(siret);
+            return result.length ? result[0].name : undefined;
+        } catch {
+            return undefined;
+        }
     }
 
     async validateScdlFile(
@@ -128,6 +157,7 @@ export class DepositScdlProcessService {
             new DepositScdlLogEntity(
                 userId,
                 this.SECOND_STEP,
+                undefined,
                 undefined,
                 undefined,
                 depositScdlLogDto.permissionAlert,

@@ -25,6 +25,7 @@
         uploadConfig,
         errorAlertVisible,
         allocatorSiret,
+        allocatorName,
     } = ctrl;
 
     const infoBoxTitle = "Nous acceptons uniquement des fichiers au format CSV ou XLS. ";
@@ -88,6 +89,8 @@
                 <span class="fr-text--bold">SIRET de l’attribuant indiqué :</span>
                 <br />
                 {allocatorSiret}
+                {#if allocatorName}
+                    - {allocatorName}{/if}
             </div>
 
             <div class="fr-mb-6v">

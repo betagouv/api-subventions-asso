@@ -101,10 +101,11 @@ describe("depositScdlLogDtoAdapter", () => {
             const dto: CreateDepositScdlLogDto = {
                 allocatorSiret: "12345678901234",
             };
+            const allocatorName = "fake name";
             const userId = "user123";
             const step = 1;
 
-            const result = DepositScdlLogDtoMapper.createDepositScdlLogDtoToEntity(dto, userId, step);
+            const result = DepositScdlLogDtoMapper.createDepositScdlLogDtoToEntity(dto, allocatorName, userId, step);
 
             expect(result).toMatchObject({
                 userId: userId,

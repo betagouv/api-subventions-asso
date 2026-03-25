@@ -7,14 +7,19 @@ export default class LessGrantDataController {
     public detectedLines: number;
     public existingLinesInDb: number;
     public filename: string;
+    public allocatorSiret: string;
+    public allocatorName?: string;
 
     constructor() {
-        const uploadedFileInfos = depositLogStore.value!.uploadedFileInfos!;
+        const depositLog = depositLogStore.value!;
+        const uploadedFileInfos = depositLog.uploadedFileInfos!;
         this.rangeStartYear = Math.min(...uploadedFileInfos.grantCoverageYears);
         this.rangeEndYear = Math.max(...uploadedFileInfos.grantCoverageYears);
         this.detectedLines = uploadedFileInfos.parseableLines;
         this.existingLinesInDb = uploadedFileInfos.existingLinesInDbOnSamePeriod;
         this.filename = uploadedFileInfos.fileName;
+        this.allocatorSiret = depositLog.allocatorSiret!;
+        this.allocatorName = depositLog.allocatorName;
     }
 
     async downloadGrantsCsv() {

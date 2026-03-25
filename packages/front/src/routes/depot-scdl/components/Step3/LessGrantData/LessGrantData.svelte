@@ -5,7 +5,8 @@
 
     const dispatch = createEventDispatcher<{ prevStep: void }>();
     const ctrl = new LessGrantDataController();
-    const { rangeStartYear, rangeEndYear, detectedLines, existingLinesInDb, filename } = ctrl;
+    const { rangeStartYear, rangeEndYear, detectedLines, existingLinesInDb, filename, allocatorSiret, allocatorName } =
+        ctrl;
 </script>
 
 <div class="fr-col-12 fr-col-md-8">
@@ -14,6 +15,14 @@
     </Alert>
 
     <p>
+        <span class="fr-text--bold">SIRET de l’attribuant indiqué :</span>
+        <br />
+        {allocatorSiret}
+        {#if allocatorName}
+            - {allocatorName}{/if}
+    </p>
+
+    <p class="fr-mb-0">
         <strong>Fichier ajouté :</strong>
         <br />
         <a
@@ -28,8 +37,6 @@
         <strong>
             Votre fichier comprend des données entre : l'exercice {rangeStartYear} et l'exercice {rangeEndYear}
         </strong>
-        <br />
-        Ces dates sont données à titre indicatif. Elles ne garantissent pas que l’année soit complète.
     </p>
 
     <p>

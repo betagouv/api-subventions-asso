@@ -16,7 +16,8 @@
     let selectedValues: string[] = [];
 
     const ctrl = new ConfirmDataAddController();
-    const { addedLines, existingLinesInDb, rangeStartYear, rangeEndYear, filename } = ctrl;
+    const { addedLines, existingLinesInDb, rangeStartYear, rangeEndYear, filename, allocatorSiret, allocatorName } =
+        ctrl;
 </script>
 
 <div class="fr-col-12 fr-col-md-8">
@@ -28,6 +29,14 @@
     {:else}
         <Alert type="info" title="Vous êtes sur le point d’ajouter {addedLines} lignes." />
     {/if}
+
+    <p>
+        <span class="fr-text--bold">SIRET de l’attribuant indiqué :</span>
+        <br />
+        {allocatorSiret}
+        {#if allocatorName}
+            - {allocatorName}{/if}
+    </p>
 
     <strong>Fichier ajouté :</strong>
     <br />

@@ -28,6 +28,7 @@ export default class DepositScdlLogDtoMapper {
     static entityToDepositScdlLogResponseDto(entity: DepositScdlLogEntity): DepositScdlLogResponseDto {
         return {
             allocatorSiret: entity.allocatorSiret,
+            allocatorName: entity.allocatorName,
             permissionAlert: entity.permissionAlert,
             step: entity.step,
             uploadedFileInfos: entity.uploadedFileInfos
@@ -52,15 +53,23 @@ export default class DepositScdlLogDtoMapper {
     }
 
     static depositScdlLogDtoToEntity(dto: DepositScdlLogDto, userId: string, step: number): DepositScdlLogEntity {
-        return new DepositScdlLogEntity(userId, step, undefined, dto.allocatorSiret, dto.permissionAlert);
+        return new DepositScdlLogEntity(
+            userId,
+            step,
+            undefined,
+            dto.allocatorSiret,
+            dto.allocatorName,
+            dto.permissionAlert,
+        );
     }
 
     static createDepositScdlLogDtoToEntity(
         dto: CreateDepositScdlLogDto,
+        allocatorName: string | undefined,
         userId: string,
         step: number,
     ): DepositScdlLogEntity {
-        return new DepositScdlLogEntity(userId, step, undefined, dto.allocatorSiret);
+        return new DepositScdlLogEntity(userId, step, undefined, dto.allocatorSiret, allocatorName);
     }
 
     static uploadedFileInfosDtoToEntity(dto: UploadedFileInfosDto): UploadedFileInfosEntity {

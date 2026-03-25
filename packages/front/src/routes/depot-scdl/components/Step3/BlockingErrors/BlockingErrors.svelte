@@ -17,6 +17,14 @@
         </p>
     </Alert>
 
+    <p>
+        <span class="fr-text--bold">SIRET de l’attribuant indiqué :</span>
+        <br />
+        {ctrl.allocatorSiret}
+        {#if ctrl.allocatorName}
+            - {ctrl.allocatorName}{/if}
+    </p>
+
     {#if ctrl.isErrorReportTruncated}
         <Alert type="warning" title="Le rapport d'erreur est trop long">
             <p>

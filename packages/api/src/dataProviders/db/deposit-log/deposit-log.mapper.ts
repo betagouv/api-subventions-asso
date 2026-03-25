@@ -8,6 +8,7 @@ export default class DepositLogMapper {
             dbo.step,
             dbo.updateDate,
             dbo.allocatorSiret,
+            dbo.allocatorName,
             dbo.permissionAlert,
             dbo.uploadedFileInfos,
         );
@@ -22,6 +23,7 @@ export default class DepositLogMapper {
             step: entity.step,
             permissionAlert: entity.permissionAlert,
             allocatorSiret: entity.allocatorSiret,
+            allocatorName: entity.allocatorName,
             uploadedFileInfos: entity.uploadedFileInfos,
         };
     }

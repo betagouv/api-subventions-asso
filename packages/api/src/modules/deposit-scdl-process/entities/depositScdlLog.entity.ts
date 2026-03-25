@@ -7,6 +7,7 @@ export default class DepositScdlLogEntity implements ProviderDataEntity {
         public step: number,
         public updateDate: Date = new Date(),
         public allocatorSiret?: string,
+        public allocatorName?: string,
         public permissionAlert?: boolean,
         public uploadedFileInfos?: UploadedFileInfosEntity,
     ) {}

@@ -8,5 +8,6 @@ export default interface DepositScdlLogDbo {
     step: number;
     permissionAlert?: boolean;
     allocatorSiret?: string;
+    allocatorName?: string;
     uploadedFileInfos?: UploadedFileInfosDbo;
 }
