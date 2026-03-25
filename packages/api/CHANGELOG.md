@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.82.0](https://github.com/betagouv/api-subventions-asso/compare/v0.81.7...v0.82.0) (2026-03-25)
+
+### Bug Fixes
+
+- **api:** \_\_dirname used in eslint in ES6 module ([05c4bea](https://github.com/betagouv/api-subventions-asso/commit/05c4bea054939e656b923d92472ee6a1fb84fc2d))
+- **api:** fix property access on undefined dto ([0bfe18f](https://github.com/betagouv/api-subventions-asso/commit/0bfe18fbf975dfbdb48b30f2aececfa16609d86f))
+- **chore:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) fix tsconfig root dir error ([#3870](https://github.com/betagouv/api-subventions-asso/issues/3870)) ([e366eaf](https://github.com/betagouv/api-subventions-asso/commit/e366eaf66eecbad28c0806c94955eb8e81d4cfa9))
+
+### Features
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) added env conf filter for notifications ([#3820](https://github.com/betagouv/api-subventions-asso/issues/3820)) ([a39cc66](https://github.com/betagouv/api-subventions-asso/commit/a39cc66dffe22b66f479cbee0666dc09a60fdec5))
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) remove uses of dev.local alias ([#3851](https://github.com/betagouv/api-subventions-asso/issues/3851)) ([7cb56ad](https://github.com/betagouv/api-subventions-asso/commit/7cb56ad8e0831f1449bd1af32469d7b716588663))
+- **api:** [#3822](https://github.com/betagouv/api-subventions-asso/issues/3822) one year deposit notification ([#3860](https://github.com/betagouv/api-subventions-asso/issues/3860)) ([739843d](https://github.com/betagouv/api-subventions-asso/commit/739843d5ea36b117603ecb7a2ea452eafe52d88e))
+- **api:** [#3823](https://github.com/betagouv/api-subventions-asso/issues/3823) chorus european payments ([#3839](https://github.com/betagouv/api-subventions-asso/issues/3839)) ([4c85c2e](https://github.com/betagouv/api-subventions-asso/commit/4c85c2e9e909aeaebea1daf96459560a2ca7b6a4))
+- **api:** [#3867](https://github.com/betagouv/api-subventions-asso/issues/3867) chorus fse to flat ([#3868](https://github.com/betagouv/api-subventions-asso/issues/3868)) ([8f66c40](https://github.com/betagouv/api-subventions-asso/commit/8f66c40e33fd83c7883f8490d8b8facac7563a9e))
+
 ## [0.81.7](https://github.com/betagouv/api-subventions-asso/compare/v0.81.6...v0.81.7) (2026-03-20)
 
 ### Bug Fixes
