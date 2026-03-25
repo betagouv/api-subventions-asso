@@ -1,5 +1,6 @@
 import ScdlErrorStats from "./ScdlErrorStats";
 import { MissingHeaders } from "../../providers/scdl/@types/MissingHeaders";
+import ExerciceLineCount from "./exerciceLineCount";
 
 export default class UploadedFileInfosEntity {
     constructor(
@@ -9,6 +10,7 @@ export default class UploadedFileInfosEntity {
         public grantCoverageYears: number[],
         public parseableLines: number,
         public totalLines: number,
+        public lineCountsByExercice: ExerciceLineCount[],
         public missingHeaders: MissingHeaders,
         public existingLinesInDbOnSamePeriod: number,
         public errorStats: ScdlErrorStats,

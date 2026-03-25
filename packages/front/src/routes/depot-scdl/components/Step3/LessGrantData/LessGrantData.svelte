@@ -2,11 +2,24 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import LessGrantDataController from "./LessGrantData.controller";
     import { createEventDispatcher } from "svelte";
+    import Table from "$lib/dsfr/Table.svelte";
+    import TableRow from "$lib/dsfr/TableRow.svelte";
+
+    const headers = ["Exercice", "Lignes actuellement en base", "Lignes traitées dans votre fichier"];
+    const tableId = "grant-by-exercice-table";
 
     const dispatch = createEventDispatcher<{ prevStep: void }>();
     const ctrl = new LessGrantDataController();
-    const { rangeStartYear, rangeEndYear, detectedLines, existingLinesInDb, filename, allocatorSiret, allocatorName } =
-        ctrl;
+    const {
+        rangeStartYear,
+        rangeEndYear,
+        detectedLines,
+        existingLinesInDb,
+        filename,
+        allocatorSiret,
+        allocatorName,
+        tableContent,
+    } = ctrl;
 </script>
 
 <div class="fr-col-12 fr-col-md-8">
@@ -39,6 +52,25 @@
         </strong>
     </p>
 
+    {#if tableContent.length > 0}
+        <div class="table-wrap">
+            <Table id={tableId} size="sm" bordered={false} title="Comparaison des données :" titleClass="fr-text-lg">
+                <slot slot="headers">
+                    {#each headers as header (header)}
+                        <th>{header}</th>
+                    {/each}
+                </slot>
+                {#each tableContent as exercice, index (index)}
+                    <TableRow id={tableId} {index}>
+                        <td class="primary">{exercice.exercice}</td>
+                        <td>{exercice.linesInDb}</td>
+                        <td>{exercice.parsedLines}</td>
+                    </TableRow>
+                {/each}
+            </Table>
+        </div>
+    {/if}
+
     <p>
         <strong>
             Nombre de lignes détectées : <span class="underlined-score">{detectedLines}</span>
@@ -68,5 +100,10 @@
 <style>
     .underlined-score {
         color: var(--red-marianne-425-625);
+    }
+
+    .table-wrap {
+        width: fit-content;
+        max-width: 100%;
     }
 </style>

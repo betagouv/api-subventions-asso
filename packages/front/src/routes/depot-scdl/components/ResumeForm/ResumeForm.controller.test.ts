@@ -21,6 +21,7 @@ describe("ResumeFormController", () => {
                 missingHeaders: { mandatory: [], optional: [] },
                 existingLinesInDbOnSamePeriod: 12,
                 totalLines: 124,
+                lineCountsByExercice: [{ exercice: 2014, linesInDb: 12, parsedLines: 123 }],
                 uploadDate: new Date(),
                 grantCoverageYears: [2024],
                 allocatorsSiret: ["12345678901234"],

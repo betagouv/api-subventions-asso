@@ -35,6 +35,8 @@ describe("Step3Controller", () => {
                 uploadedFileInfos: {
                     allocatorsSiret: ["12345678901234"],
                     parseableLines: 123,
+                    totalLines: 123,
+                    lineCountsByExercice: [],
                     missingHeaders: { mandatory: [], optional: [] },
                     existingLinesInDbOnSamePeriod: 123,
                     errorStats: { count: 1, errorSample: [{ bloquant: "non" }] },
@@ -105,6 +107,8 @@ describe("Step3Controller", () => {
                 uploadedFileInfos: {
                     allocatorsSiret: ["12345678901234"],
                     parseableLines: 123,
+                    totalLines: 123,
+                    lineCountsByExercice: [],
                     missingHeaders: { mandatory: [], optional: [] },
                     existingLinesInDbOnSamePeriod: 123,
                     errorStats: { count: 1, errorSample: [{ bloquant: "non" }] },
