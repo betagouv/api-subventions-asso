@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.82.0](https://github.com/betagouv/datasubvention/compare/v0.81.7...v0.82.0) (2026-03-25)
+
+### Bug Fixes
+
+- **api:** \_\_dirname used in eslint in ES6 module ([05c4bea](https://github.com/betagouv/datasubvention/commit/05c4bea054939e656b923d92472ee6a1fb84fc2d))
+- **chore:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) fix tsconfig root dir error ([#3870](https://github.com/betagouv/datasubvention/issues/3870)) ([e366eaf](https://github.com/betagouv/datasubvention/commit/e366eaf66eecbad28c0806c94955eb8e81d4cfa9))
+
 # [0.81.0](https://github.com/betagouv/datasubvention/compare/v0.80.1...v0.81.0) (2026-02-26)
 
 **Note:** Version bump only for package core
