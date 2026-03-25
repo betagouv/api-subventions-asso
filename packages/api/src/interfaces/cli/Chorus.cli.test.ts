@@ -1,19 +1,16 @@
 import fs from "fs";
-
-jest.mock("fs");
-const mockedFs = jest.mocked(fs);
 import ChorusParser from "../../modules/providers/chorus/chorus.parser";
-
-jest.mock("../../modules/providers/chorus/chorus.parser");
-jest.mock("../../shared/helpers/CliHelper");
 import chorusService from "../../modules/providers/chorus/chorus.service";
-
-jest.mock("../../modules/providers/chorus/chorus.service");
-const mockedService = jest.mocked(chorusService);
 import ChorusCli from "./Chorus.cli";
 import { CHORUS_ENTITIES } from "../../modules/providers/chorus/__fixtures__/ChorusFixtures";
 import paymentFlatChorusService from "../../modules/paymentFlat/paymentFlat.chorus.service";
-import { ChorusPaymentFlatEntity } from "../../modules/providers/chorus/@types/ChorusPaymentFlat";
+
+jest.mock("fs");
+const mockedFs = jest.mocked(fs);
+jest.mock("../../modules/providers/chorus/chorus.parser");
+jest.mock("../../shared/helpers/CliHelper");
+jest.mock("../../modules/providers/chorus/chorus.service");
+const mockedService = jest.mocked(chorusService);
 jest.mock("../../modules/paymentFlat/paymentFlat.chorus.service");
 
 describe("Chorus CLI", () => {
@@ -41,7 +38,7 @@ describe("Chorus CLI", () => {
         let resyncFlatSpy: jest.SpyInstance;
 
         beforeEach(() => {
-            resyncFlatSpy = jest.spyOn(controller, "resyncPaymentFlatByExercise").mockImplementation(jest.fn());
+            resyncFlatSpy = jest.spyOn(controller, "resyncFlatByExercise").mockImplementation(jest.fn());
         });
 
         it("should call chorusService.insertBatchChorus()", async () => {
@@ -108,30 +105,20 @@ describe("Chorus CLI", () => {
     describe("resyncPaymentFlatByExercise", () => {
         it("calls service updatePaymentsFlatCollection", async () => {
             const YEAR = 2022;
-            await controller.resyncPaymentFlatByExercise(YEAR);
+            await controller.resyncFlatByExercise(YEAR);
             expect(paymentFlatChorusService.updatePaymentsFlatCollection).toHaveBeenCalledWith(YEAR);
         });
     });
 
     describe("resetPaymentFlat", () => {
-        it("checks if collection is empty of chorus results", async () => {
-            jest.mocked(paymentFlatChorusService.cursorFindChorusOnly).mockReturnValueOnce({
-                [Symbol.asyncIterator]: async function* () {
-                    yield 1;
-                },
-            } as AsyncIterable<ChorusPaymentFlatEntity>);
-            await controller.resetPaymentFlat();
-            expect(paymentFlatChorusService.cursorFindChorusOnly).toHaveBeenCalled();
+        it("calls old chorus service init", async () => {
+            await controller.resetFlat();
+            expect(paymentFlatChorusService.init).toHaveBeenCalled();
         });
 
-        it("calls service init", async () => {
-            jest.mocked(paymentFlatChorusService.cursorFindChorusOnly).mockReturnValueOnce({
-                [Symbol.asyncIterator]: async function* () {
-                    yield 1;
-                },
-            } as AsyncIterable<ChorusPaymentFlatEntity>);
-            await controller.resetPaymentFlat();
-            expect(paymentFlatChorusService.init).toHaveBeenCalledWith();
+        it("calls chorus init for european data", async () => {
+            await controller.resetFlat();
+            expect(chorusService.initFlat).toHaveBeenCalled();
         });
     });
 });

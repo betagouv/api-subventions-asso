@@ -5,10 +5,11 @@ import EstablishmentIdentifier from "../../../../identifierObjects/Establishment
 import Siret from "../../../../identifierObjects/Siret";
 import Ridet from "../../../../identifierObjects/Ridet";
 import Tahitiet from "../../../../identifierObjects/Tahitiet";
+import { ChorusFsePort } from "./chorus.fse.port";
 
 type ChorusFseDbo = Omit<ChorusFseEntity, "identifier"> & { identifier: string };
 
-export class ChorusFseAdapter extends MongoAdapter<ChorusFseDbo> {
+export class ChorusFseAdapter extends MongoAdapter<ChorusFseDbo> implements ChorusFsePort {
     readonly collectionName = "chorus-fse";
 
     private toDbo(entity: ChorusFseEntity): ChorusFseDbo {
@@ -43,9 +44,8 @@ export class ChorusFseAdapter extends MongoAdapter<ChorusFseDbo> {
         );
     }
 
-    public async findAll() {
-        const dbos = await this.collection.find({}).toArray();
-        return dbos.map(this.toEntity);
+    public getIterableFindAll() {
+        return this.collection.find({}).map(dbo => this.toEntity(dbo)) as AsyncIterable<ChorusFseEntity>;
     }
 
     public async upsertMany(entities: ChorusFseEntity[]) {
@@ -65,7 +65,13 @@ export class ChorusFseAdapter extends MongoAdapter<ChorusFseDbo> {
                 },
             };
         });
-        return this.collection.bulkWrite(bulk, { ordered: false });
+        await this.collection.bulkWrite(bulk, { ordered: false });
+    }
+
+    public async findByExercise(exercise: number): Promise<ChorusFseEntity[]> {
+        console.log("findByEx: ", exercise);
+        const dbos = await this.collection.find({ budgetaryYear: exercise }).toArray();
+        return dbos.map(this.toEntity);
     }
 }
 

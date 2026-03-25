@@ -9,10 +9,12 @@ import Tahiti from "../../../../identifierObjects/Tahiti";
 import Rid from "../../../../identifierObjects/Rid";
 import { CHORUS_ENTITIES } from "../__fixtures__/ChorusFixtures";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
+import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
 
 jest.mock("@sentry/node", () => ({
     captureException: jest.fn(),
 }));
+jest.mock("../../../../identifierObjects/EstablishmentIdentifier");
 
 describe("ChorusMapper", () => {
     const COMPLEMENTARY_DATA = {
@@ -223,6 +225,9 @@ describe("ChorusMapper", () => {
         const mockGetActionCodeAndEntity = jest.spyOn(ChorusMapper, "getActionCodeAndEntity");
 
         beforeEach(() => {
+            jest.mocked(EstablishmentIdentifier.getAssociationIdentifier).mockReturnValue(
+                new Siren(DEFAULT_ASSOCIATION.siren),
+            );
             // @ts-expect-error: mock
             mockGetProgramCodeAndEntity.mockReturnValue({
                 code: COMPLEMENTARY_DATA.programCode,

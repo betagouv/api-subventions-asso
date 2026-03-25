@@ -3,6 +3,7 @@ import Siret from "./Siret";
 import Ridet from "./Ridet";
 import Tahitiet from "./Tahitiet";
 import { EstablishmentIdName } from "./@types/IdentifierName";
+import { EstablishmentIdType } from "./@types/IdentifierType";
 
 export default class EstablishmentIdentifier {
     public siret?: Siret;
@@ -30,6 +31,16 @@ export default class EstablishmentIdentifier {
         if (Ridet.isRidet(identifier)) return new Ridet(identifier);
         if (Tahitiet.isTahitiet(identifier)) return new Tahitiet(identifier);
         return null;
+    }
+
+    static getAssociationIdentifier(identifier: EstablishmentIdType) {
+        if (identifier instanceof Siret) {
+            return identifier.toSiren();
+        } else if (identifier instanceof Ridet) {
+            return identifier.toRid();
+        } else {
+            return identifier.toTahiti();
+        }
     }
 
     toString(): string {

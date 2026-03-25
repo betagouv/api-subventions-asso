@@ -5,7 +5,7 @@ interface MandatoryPaymentFlatDbo extends FlatDbo {
     idVersement: string;
     montant: number;
     dateOperation: Date;
-    numeroProgramme: number;
+    numeroProgramme: number | string;
 }
 
 interface OptionalPaymentFlatDbo {

@@ -15,7 +15,6 @@ export class NotifyService {
             if (this.shouldSkipNotification(type)) {
                 return Promise.resolve(true);
             }
-
             const pipesPromise = this.outPipes.map(pipe => {
                 return pipe.notify(type, data).catch(e => {
                     Sentry.captureException(e); // TODO refactor with errorService? #1591
