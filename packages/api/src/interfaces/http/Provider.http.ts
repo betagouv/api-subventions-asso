@@ -17,6 +17,9 @@ export class ProviderHttp extends Controller {
         return await providerService.getProvidersInfos();
     }
 
+    /**
+     * @summary Historique des imports par fournisseur de données
+     */
     @Get("/historique")
     async getDataLog(): Promise<DataLogDto[]> {
         return dataLogService.getProvidersLogOverview();

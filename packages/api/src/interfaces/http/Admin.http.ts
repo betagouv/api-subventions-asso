@@ -67,9 +67,7 @@ export class AdminHttp extends Controller {
     }
 
     /**
-     *
-     * @param year
-     * @returns
+     * @summary Statistiques de consommation par consommateur
      */
     @Get("/stats/consumers")
     public async getConsumersStats() {

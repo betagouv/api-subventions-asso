@@ -71,6 +71,8 @@ export class AssociationHttp extends Controller {
      * Remonte les informations d'une association.
      * Accepte un RNA (ex: W123456789), un SIREN (ex: 123456789) ou un SIRET (ex: 12345678900012).
      * Seul endpoint acceptant le SIRET — les autres endpoints de cette route n'acceptent que RNA ou SIREN.
+     *
+     * @summary Informations d'une association
      * @param identifier RNA, SIREN ou SIRET de l'association
      * @param req
      */
@@ -258,6 +260,8 @@ export class AssociationHttp extends Controller {
 
     /**
      * Retourne tous les établissements liés à une association
+     *
+     * @summary Établissements d'une association
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */

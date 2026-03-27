@@ -63,6 +63,8 @@ export async function isEstabIdentifierFromAssoMiddleware(req, _res, next) {
 export class EstablishmentHttp extends Controller {
     /**
      * Remonte les informations d'un établissement
+     *
+     * @summary Informations d'un établissement
      * @param identifier  Identifiant Siret
      * @param req
      */
@@ -201,6 +203,11 @@ export class EstablishmentHttp extends Controller {
         return { documents };
     }
 
+    /**
+     * @summary RIBs d'un établissement
+     * @param identifier Identifiant Siret
+     * @param req
+     */
     @Get("documents/rib")
     public async getRibs(identifier: EstablishmentIdentifierDto, @Request() req): Promise<GetDocumentsResponseDto> {
         const estabIdentifier = req.estabIdentifier;

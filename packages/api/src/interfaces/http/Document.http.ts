@@ -11,6 +11,9 @@ import associationIdentifierService from "../../modules/association-identifier/a
 @Security("jwt")
 @Tags("Document Controller")
 export class DocumentHttp extends Controller {
+    /**
+     * @summary Télécharge tous les documents d'une structure (ZIP) via son RNA, SIREN ou SIRET
+     */
     @Get("/downloads/{identifier}")
     public async downloadDocumentsByIdentifier(@Path() identifier: StructureIdentifierDto) {
         const identifierEntity = await (establishmentIdentifierService.isEstablishmentIdentifier(identifier)
@@ -23,6 +26,9 @@ export class DocumentHttp extends Controller {
         return stream;
     }
 
+    /**
+     * @summary Télécharge une sélection de documents (ZIP)
+     */
     @Post("/downloads")
     public async downloadRequiredDocuments(
         @Body() requiredDocs: DocumentRequestDto[],
@@ -36,6 +42,8 @@ export class DocumentHttp extends Controller {
 
     /**
      * Télécharge un document dauphin
+     *
+     * @summary Télécharge un document depuis un identifiant de document fournisseur
      * @param providerId
      * @param url absolute provider's doc path
      */

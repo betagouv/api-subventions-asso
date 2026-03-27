@@ -7,6 +7,9 @@ import amountsVsProgramRegionService from "../../modules/dataViz/amountsVsProgra
 @Security("jwt")
 @Tags("Dataviz Controller")
 export class DataVizHttp extends Controller {
+    /**
+     * @summary Montants des subventions agrégés par programme et région
+     */
     @Get("/montant-versus-programme-region")
     @Response<HttpErrorInterface>("404")
     public async getAmountsVsProgramRegion(): Promise<GetAmountsVsProgramRegionResponseDto> {

@@ -39,12 +39,18 @@ export class AuthentificationHttp extends Controller {
         req.res?.cookie("token", user.jwt.token, cookieOption);
     }
 
+    /**
+     * @summary Envoie un e-mail de réinitialisation de mot de passe
+     */
     @Post("/forget-password")
     public async forgetPassword(@Body() body: { email: string }): Promise<{ success: boolean }> {
         await userActivationService.forgetPassword(body.email.toLocaleLowerCase());
         return { success: true };
     }
 
+    /**
+     * @summary Réinitialise le mot de passe via un token de réinitialisation
+     */
     @Post("/reset-password")
     public async resetPassword(
         @Body() body: { password: string; token: string },
@@ -64,6 +70,9 @@ export class AuthentificationHttp extends Controller {
         throw new InternalServerError();
     }
 
+    /**
+     * @summary Authentification par e-mail et mot de passe
+     */
     @Post("/login")
     @SuccessResponse("200", "Login successfully")
     public login(
@@ -74,6 +83,9 @@ export class AuthentificationHttp extends Controller {
         return this._login(req);
     }
 
+    /**
+     * @summary Authentification via ProConnect (ex AgentConnect)
+     */
     @Get("/ac/login")
     @SuccessResponse("200", "Login successfully")
     public agentConnectLogin(@Request() req: Request): LoginDtoResponse {
@@ -81,6 +93,9 @@ export class AuthentificationHttp extends Controller {
         return this._login(req);
     }
 
+    /**
+     * @summary Active un compte utilisateur via un token d'activation
+     */
     @Post("/activate")
     @SuccessResponse("200", "Account activation successfully")
     public async activate(
@@ -93,6 +108,9 @@ export class AuthentificationHttp extends Controller {
         return { user };
     }
 
+    /**
+     * @summary Déconnexion de l'utilisateur courant
+     */
     @Get("/logout")
     @Security("jwt")
     public async logout(@Request() req: IdentifiedRequest): Promise<string | null> {
@@ -103,6 +121,9 @@ export class AuthentificationHttp extends Controller {
         return url;
     }
 
+    /**
+     * @summary Valide un token d'activation ou de réinitialisation et retourne son type
+     */
     @Post("/validate-token")
     public async validateToken(@Body() body: { token?: string }): Promise<TokenValidationDtoResponse> {
         if (!body.token) throw new BadRequestError();
