@@ -12,8 +12,6 @@ export interface ChorusPayment extends BasePayment {
     codeBranche?: ProviderValue<string>;
     branche?: ProviderValue<string>;
     type?: ProviderValue<string>;
-    /**
-     * Deprecated
-     */
+    /** @deprecated Utiliser `programme` à la place */
     bop?: ProviderValue<string>;
 }
