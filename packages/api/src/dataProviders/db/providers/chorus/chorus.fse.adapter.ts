@@ -69,7 +69,6 @@ export class ChorusFseAdapter extends MongoAdapter<ChorusFseDbo> implements Chor
     }
 
     public async findByExercise(exercise: number): Promise<ChorusFseEntity[]> {
-        console.log("findByEx: ", exercise);
         const dbos = await this.collection.find({ budgetaryYear: exercise }).toArray();
         return dbos.map(this.toEntity);
     }

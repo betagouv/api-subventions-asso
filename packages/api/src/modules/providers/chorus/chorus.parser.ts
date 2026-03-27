@@ -11,7 +11,7 @@ import { ChorusDto } from "./@types/ChorusDto";
 import { santitizeFloat } from "../../../shared/helpers/NumberHelper";
 
 export default class ChorusParser {
-    static parse(content: Buffer) {
+    static parse(content: Buffer, options?: { withoutEuropeanData: boolean }) {
         const NATIONAL_PAGE_NAME = "1. Extraction";
         const EUROPEAN_PAGE_NAME = "2. Extraction FEHBE";
 
@@ -25,12 +25,21 @@ export default class ChorusParser {
         }
 
         const nationalEntities = this.nationalDataToEntities(this.getHeadersAndRows(nationalData));
-        const europeanData = pagesWithName.find(page => page.name === EUROPEAN_PAGE_NAME)?.data;
-        if (!europeanData) {
-            throw new Error("No european data found in the file, please check if page name as changed.");
+
+        const parseResult = { national: nationalEntities, european: null };
+
+        if (options?.withoutEuropeanData) {
+            return parseResult;
+        } else {
+            const europeanData = pagesWithName.find(page => page.name === EUROPEAN_PAGE_NAME)?.data;
+            if (!europeanData) {
+                throw new Error(
+                    "No european data found in the file, please check if page name as changed. \n If you are trying to import prior to 2026 file, please use --no-fse option",
+                );
+            }
+            const europeanEntities = this.europeanDataToEntities(this.getHeadersAndRows(europeanData));
+            return { ...parseResult, european: europeanEntities };
         }
-        const europeanEntities = this.europeanDataToEntities(this.getHeadersAndRows(europeanData));
-        return { national: nationalEntities, european: europeanEntities };
     }
 
     private static getHeadersAndRows(data: string[][]) {

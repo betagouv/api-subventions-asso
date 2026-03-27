@@ -35,7 +35,6 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
             if (payments.length === 0) continue;
 
             await this.addToPaymentFlat(payments);
-            console.log("All documents inserted");
         }
     }
 
@@ -124,8 +123,6 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
         );
 
         await this.addToPaymentFlat(payments);
-
-        console.log("All documents inserted");
     }
 
     public savePaymentsFromStream(stream: ReadableStream<PaymentFlatEntity>) {
