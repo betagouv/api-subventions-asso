@@ -14,8 +14,7 @@ import userCrudService from "../../modules/user/services/crud/user.crud.service"
 @Security("jwt")
 export class UserHttp extends Controller {
     /**
-     * Return user roles
-     * @summary List user's roles
+     * @summary Rôles de l'utilisateur courant
      */
     @Get("/roles")
     @Security("jwt", ["user"])
@@ -24,8 +23,7 @@ export class UserHttp extends Controller {
     }
 
     /**
-     * Update user password
-     * @summary Update password
+     * @summary Mise à jour du mot de passe
      */
     @Put("/password")
     @Response<HttpErrorInterface>(400, "Bad Request")
@@ -37,8 +35,7 @@ export class UserHttp extends Controller {
     }
 
     /**
-     * delete own's account
-     * @summary delete own's account
+     * @summary Suppression du compte courant
      */
     @Delete("/")
     @Security("jwt", ["user"])
@@ -51,8 +48,7 @@ export class UserHttp extends Controller {
     }
 
     /**
-     * get own's account
-     * @summary get own's account
+     * @summary Informations du compte courant
      */
     @Get("/me")
     @Security("jwt", ["user"])
@@ -62,8 +58,7 @@ export class UserHttp extends Controller {
     }
 
     /**
-     * update own's account
-     * @summary update own's account
+     * @summary Mise à jour du profil courant
      */
     @Patch("/")
     @Security("jwt", ["user"])
@@ -73,8 +68,7 @@ export class UserHttp extends Controller {
     }
 
     /**
-     * getting all data of user
-     * @summary getting all data of user
+     * @summary Données personnelles de l'utilisateur courant
      */
     @Get("/data")
     @Security("jwt", ["user"])

@@ -27,7 +27,7 @@ import { fixFilenameEncoding } from "../../shared/helpers/FileHelper";
 @Tags("Deposit Scdl Process Controller")
 export class DepositScdlProcessHttp extends Controller {
     /**
-     * @summary Retrieves the deposit log information for the authenticated user if exists
+     * @summary Récupère le journal de dépôt de l'utilisateur courant
      * @param req
      * @returns {DepositScdlLogResponseDto} 200 - The deposit log information for the authenticated user
      * @returns {void} 204 - No deposit log found for the user
@@ -47,7 +47,7 @@ export class DepositScdlProcessHttp extends Controller {
     }
 
     /**
-     * @summary return csv of SCDL grants associated with the allocator's SIRET and the exercise range of the SCDL file for the authenticated user
+     * @summary Génère un CSV des subventions SCDL existantes pour l'utilisateur courant
      * @param req
      * @returns {string} 200 - csv file content
      * @returns 401 - Unauthorized
@@ -65,7 +65,7 @@ export class DepositScdlProcessHttp extends Controller {
     }
 
     /**
-     * @summary return the presigned download url for the file currently being processed by the deposit process for the authenticated user
+     * @summary Retourne l'URL de téléchargement du fichier en cours de dépôt
      * @param req
      * @returns {FileDownloadUrlDto} 200 - url content
      * @returns 401 - Unauthorized
@@ -80,7 +80,7 @@ export class DepositScdlProcessHttp extends Controller {
     }
 
     /**
-     * @summary Delete the deposit log information for the authenticated user if exists
+     * @summary Supprime le journal de dépôt de l'utilisateur courant
      * @param req
      * @returns {void} 204 - Deposit log deleted successfully
      * @returns 401 - Unauthorized
@@ -94,7 +94,7 @@ export class DepositScdlProcessHttp extends Controller {
     }
 
     /**
-     * @summary Create a deposit log for the authenticated user
+     * @summary Crée un journal de dépôt pour l'utilisateur courant
      * @param createDepositScdlLogDto
      * @param req
      * @returns {DepositScdlLogResponseDto} 201 - Deposit log created successfully
@@ -120,7 +120,7 @@ export class DepositScdlProcessHttp extends Controller {
     }
 
     /**
-     * @summary update a deposit log for the authenticated user for current step
+     * @summary Met à jour l'étape courante du journal de dépôt
      * @param step number step to update
      * @param depositScdlLogDto
      * @param req
@@ -149,7 +149,7 @@ export class DepositScdlProcessHttp extends Controller {
     }
 
     /**
-     * @summary validate scdl file with parsing and update deposit logs
+     * @summary Valide et analyse le fichier SCDL, met à jour le journal de dépôt
      *
      * @param file - The uploaded SCDL file to validate (CSV or Excel format)
      * @param depositScdlLogDto - dto containing uploaded file infos
@@ -181,7 +181,7 @@ export class DepositScdlProcessHttp extends Controller {
     }
 
     /**
-     * @summary Parse and persist scdl file, then delete deposit log
+     * @summary Intègre le fichier SCDL en base et supprime le journal de dépôt
      *
      * @param req
      *

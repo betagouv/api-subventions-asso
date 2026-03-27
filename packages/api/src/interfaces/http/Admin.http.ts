@@ -13,8 +13,7 @@ import statsService from "../../modules/stats/stats.service";
 @Security("jwt", ["admin"])
 export class AdminHttp extends Controller {
     /**
-     * Update user roles
-     * @summary Update user's roles
+     * @summary Mise à jour des rôles d'un utilisateur
      */
     @Post("/user/roles")
     @Response<HttpErrorInterface>(400, "Role Not Valid")
@@ -23,8 +22,7 @@ export class AdminHttp extends Controller {
     }
 
     /**
-     * Return the list of all users
-     * @summary List all users
+     * @summary Liste de tous les utilisateurs
      */
     @Get("/user/list-users")
     public async listUsers(): Promise<UserListDtoResponse> {
@@ -34,8 +32,7 @@ export class AdminHttp extends Controller {
     }
 
     /**
-     * Create a new user and send a mail to create a new password
-     * @summary Create user
+     * @summary Création d'un utilisateur (envoie un e-mail d'activation)
      */
     @Post("/user/create-user")
     @Response<HttpErrorInterface>(400, "Bad Request")
@@ -51,8 +48,7 @@ export class AdminHttp extends Controller {
     }
 
     /**
-     * Remove a user
-     * @summary Remove user
+     * @summary Suppression d'un utilisateur
      */
     @Delete("/user/:id")
     @Response<HttpErrorInterface>(400, "Bad Request")
