@@ -64,6 +64,8 @@ export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
 @Middlewares(isAssoIdentifierFromAssoMiddleware)
 @Security("jwt")
 @Tags("Association Controller")
+@Response<HttpErrorInterface>("401", "Non authentifié")
+@Response<HttpErrorInterface>("422", "Identifiant invalide")
 export class AssociationHttp extends Controller {
     /**
      * Remonte les informations d'une association
@@ -71,7 +73,7 @@ export class AssociationHttp extends Controller {
      * @param req
      */
     @Get("/")
-    @Response<HttpErrorInterface>("404")
+    @Response<HttpErrorInterface>("404", "Association introuvable")
     public async getAssociation(
         @Path() identifier: StructureIdentifierDto,
         @Request() req,
@@ -89,7 +91,6 @@ export class AssociationHttp extends Controller {
      * @param req
      */
     @Get("/subventions")
-    @Response<HttpErrorInterface>("404")
     public async getDemandeSubventions(
         identifier: AssociationIdentifierDto,
         @Request() req,
@@ -210,6 +211,7 @@ export class AssociationHttp extends Controller {
     @Get("/raw-grants")
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>("404")
+    @Response<HttpErrorInterface>("403", "Accès refusé")
     public async getRawGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<JoinedRawGrantDto[]> {
         const associationIdentifiers = req.assoIdentifier;
 
@@ -237,6 +239,7 @@ export class AssociationHttp extends Controller {
      * @param req
      */
     @Get("/etablissements")
+    @Response<HttpErrorInterface>("404", "Association introuvable")
     public async getEstablishments(
         identifier: AssociationIdentifierDto,
         @Request() req,
