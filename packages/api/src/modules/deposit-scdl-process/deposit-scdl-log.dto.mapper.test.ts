@@ -126,6 +126,7 @@ describe("depositScdlLogDtoAdapter", () => {
                     grantCoverageYears: [2020, 2021],
                     parseableLines: 200,
                     totalLines: 202,
+                    lineCountsByExercice: [],
                     missingHeaders: { optional: [], mandatory: [] },
                     existingLinesInDbOnSamePeriod: 0,
                     errorStats: { count: 0, errorSample: [] },

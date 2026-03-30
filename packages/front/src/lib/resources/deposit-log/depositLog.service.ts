@@ -82,7 +82,9 @@ class DepositLogService {
         const hasMultipleAllocators =
             fileInfos.allocatorsSiret.length > 1 ||
             (fileInfos.allocatorsSiret.length === 1 && declaredSiret !== fileInfos.allocatorsSiret[0]);
-        const hasLessGrantData = fileInfos.parseableLines < fileInfos.existingLinesInDbOnSamePeriod;
+        const hasLessGrantData =
+            fileInfos.parseableLines < fileInfos.existingLinesInDbOnSamePeriod ||
+            fileInfos.lineCountsByExercice.some(lineCount => lineCount.parsedLines < lineCount.linesInDb);
         const hasBlockingErrors = fileInfos.errorStats.errorSample.some(error => error.bloquant === "oui") ?? false;
 
         if (hasMissingHeaders) return FILE_VALIDATION_STATES.MISSING_HEADERS;

@@ -3,6 +3,11 @@
     import ConfirmDataAddController from "./ConfirmDataAdd.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
+    import Table from "$lib/dsfr/Table.svelte";
+    import TableRow from "$lib/dsfr/TableRow.svelte";
+
+    const headers = ["Exercice", "Lignes actuellement en base", "Lignes traitées dans votre fichier"];
+    const tableId = "grant-by-exercice-table";
 
     const dispatch = createEventDispatcher<{ prevStep: void; submitDatas: void }>();
 
@@ -16,8 +21,16 @@
     let selectedValues: string[] = [];
 
     const ctrl = new ConfirmDataAddController();
-    const { addedLines, existingLinesInDb, rangeStartYear, rangeEndYear, filename, allocatorSiret, allocatorName } =
-        ctrl;
+    const {
+        addedLines,
+        existingLinesInDb,
+        rangeStartYear,
+        rangeEndYear,
+        filename,
+        allocatorSiret,
+        allocatorName,
+        tableContent,
+    } = ctrl;
 </script>
 
 <div class="fr-col-12 fr-col-md-8">
@@ -53,17 +66,36 @@
         </strong>
     </p>
 
-    <p>
-        <strong>Nombre de lignes traitées : {addedLines}</strong>
-    </p>
+    {#if tableContent.length > 0}
+        <div class="table-wrap">
+            <Table id={tableId} size="sm" bordered={false} title="Comparaison des données :" titleClass="fr-text-lg">
+                <slot slot="headers">
+                    {#each headers as header (header)}
+                        <th>{header}</th>
+                    {/each}
+                </slot>
+                {#each tableContent as exercice, index (index)}
+                    <TableRow id={tableId} {index}>
+                        <td class="primary">{exercice.exercice}</td>
+                        <td>{exercice.linesInDb}</td>
+                        <td>{exercice.parsedLines}</td>
+                    </TableRow>
+                {/each}
+            </Table>
+        </div>
+    {/if}
+
+    <a
+        class="fr-link fr-link--download"
+        href="/packages/front/static"
+        on:click|preventDefault={() => ctrl.downloadGrantsCsv()}>
+        Télécharger les données existantes
+    </a>
 
     <div>
-        <strong>Nombre de lignes déjà existantes dans notre base : {existingLinesInDb}</strong>
-        <br />
-
         {#if existingLinesInDb > 0}
             <p class="italic fr-mb-0">
-                Ces données proviennent :
+                <strong>Origine des données actuellement présentes :</strong>
                 <br />
                 (a) d’un fichier SCDL déposé précédemment pour cette même structure via le parcours de dépôt.
                 <br />
@@ -71,14 +103,19 @@
                 <br />
                 Aucune donnée issue d’un outil tiers ne sera remplacée.
             </p>
-
-            <a
-                class="fr-link fr-link--download"
-                href="/packages/front/static"
-                on:click|preventDefault={() => ctrl.downloadGrantsCsv()}>
-                Télécharger les données existantes
-            </a>
         {/if}
+    </div>
+
+    <div class="fr-mt-4v">
+        <h6 class="fr-mb-0">A savoir :</h6>
+        <ul>
+            <li>Vos imports n’impactent que les exercices que vous transmettez.</li>
+            <li>Les données des exercices non inclus dans votre fichier sont conservées.</li>
+            <li>
+                Pour un même exercice, les données existantes sont remplacées uniquement si l’import contient davantage
+                de lignes que celles déjà présentes en production.
+            </li>
+        </ul>
     </div>
 
     <div class="fr-my-4v">
@@ -103,5 +140,10 @@
 <style>
     .italic {
         font-style: italic;
+    }
+
+    .table-wrap {
+        width: fit-content;
+        max-width: 100%;
     }
 </style>

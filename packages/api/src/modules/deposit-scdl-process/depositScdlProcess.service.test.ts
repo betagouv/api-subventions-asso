@@ -340,6 +340,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
+                    lineCountsByExercice: [],
                     missingHeaders: { optional: [], mandatory: [] },
                 } as ScdlParsedInfos,
             };
@@ -481,6 +482,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
+                    lineCountsByExercice: [],
                     missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
             };
@@ -506,6 +508,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
+                    lineCountsByExercice: [],
                     missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
             };
@@ -530,6 +533,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
+                    lineCountsByExercice: [],
                     missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
             };
@@ -554,6 +558,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
+                    lineCountsByExercice: [],
                     existingLinesInDbOnSamePeriod: 0,
                     missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
