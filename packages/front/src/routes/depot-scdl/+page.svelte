@@ -2,16 +2,15 @@
     import WelcomeForm from "./components/WelcomeForm/WelcomeForm.svelte";
     import ResumeForm from "./components/ResumeForm/ResumeForm.svelte";
     import Step1 from "./components/Step1/Step1.svelte";
-    import Step2 from "./components/Step2/Step2.svelte";
     import { onMount } from "svelte";
     import { DepositScdlController } from "./DepositScdl.controller";
-    import Step3 from "./components/Step3/Step3.svelte";
+    import Step2 from "./components/Step2/Step2.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
+    import Step3 from "./components/Step3/Step3.svelte";
     import Step4 from "./components/Step4/Step4.svelte";
-    import Step5 from "./components/Step5/Step5.svelte";
     import StepIndicator from "$lib/dsfr/StepIndicator/StepIndicator.svelte";
 
-    const stepComponents = { 1: Step1, 2: Step2, 3: Step3, 4: Step4, 5: Step5 };
+    const stepComponents = { 1: Step1, 2: Step2, 3: Step3, 4: Step4 };
 
     const ctrl = new DepositScdlController(stepComponents);
     const { currentStep, currentView, currentStepComponent, stepsDesc, currentLoadingMessage, isLoading } = ctrl;

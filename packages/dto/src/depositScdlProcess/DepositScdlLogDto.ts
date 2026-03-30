@@ -1,5 +1,5 @@
 export interface DepositScdlLogDto {
-    overwriteAlert?: boolean;
     allocatorSiret?: string;
+    allocatorName?: string;
     permissionAlert?: boolean;
 }

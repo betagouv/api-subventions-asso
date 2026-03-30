@@ -22,6 +22,8 @@ import notifyService from "../notify/notify.service";
 import { NotificationType } from "../notify/@types/NotificationType";
 import { isUserAdmin } from "../../shared/helpers/UserHelper";
 import { DepositLogPort } from "../../dataProviders/db/deposit-log/deposit-log.port";
+import associationNameService from "../association-name/associationName.service";
+import ExerciceLineCount from "./entities/exerciceLineCount";
 
 export class DepositScdlProcessService {
     constructor(private readonly depositLogPort: DepositLogPort) {}
@@ -52,8 +54,10 @@ export class DepositScdlProcessService {
             throw new ConflictError("Deposit log already exists");
         }
         depositScdlProcessCheckService.validateCreate(createDepositScdlLogDto);
+        const allocatorName = await this.resolveAllocatorName(createDepositScdlLogDto.allocatorSiret);
         const depositLogEntity = DepositScdlLogDtoMapper.createDepositScdlLogDtoToEntity(
             createDepositScdlLogDto,
+            allocatorName,
             userId,
             this.FIRST_STEP,
         );
@@ -72,12 +76,39 @@ export class DepositScdlProcessService {
         }
         depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, step);
 
+        const hasSiretChanged =
+            depositScdlLogDto.allocatorSiret !== undefined &&
+            depositScdlLogDto.allocatorSiret !== existingDepositLog.allocatorSiret;
+
+        const shouldRetryNameLookup =
+            !!existingDepositLog.allocatorSiret && existingDepositLog.allocatorName === undefined;
+
+        if (hasSiretChanged) {
+            depositScdlLogDto.allocatorName = await this.resolveAllocatorName(depositScdlLogDto.allocatorSiret);
+        } else if (shouldRetryNameLookup) {
+            depositScdlLogDto.allocatorName = await this.resolveAllocatorName(existingDepositLog.allocatorSiret);
+        }
+
         const partialDepositLog: Partial<DepositScdlLogEntity> = {
             step,
             userId,
             ...depositScdlLogDto,
         };
         return this.depositLogPort.updatePartial(partialDepositLog);
+    }
+
+    private async resolveAllocatorName(siret?: string): Promise<string | undefined> {
+        if (!siret || !Siret.isSiret(siret)) {
+            return undefined;
+        }
+
+        try {
+            const result = await associationNameService.find(siret);
+            return result.length ? result[0].name : undefined;
+        } catch {
+            console.error(`Error while looking up allocator name for siret ${siret}`);
+            return undefined;
+        }
     }
 
     async validateScdlFile(
@@ -90,7 +121,6 @@ export class DepositScdlProcessService {
         if (!existingDepositLog) {
             throw new NotFoundError("No deposit log found for this user");
         }
-        depositScdlLogDto.overwriteAlert = existingDepositLog.overwriteAlert;
         depositScdlLogDto.allocatorSiret = existingDepositLog.allocatorSiret;
 
         depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, this.SECOND_STEP);
@@ -104,12 +134,25 @@ export class DepositScdlProcessService {
             parsedInfos.allocatorsSiret.length === 1 &&
             parsedInfos.allocatorsSiret[0] === existingDepositLog.allocatorSiret;
         let existingLinesInDbOnSamePeriod: number = 0;
+        const lineCountsByExercice: ExerciceLineCount[] = [];
         if (hasSameAllocatorSiret) {
             const documentsInDB: MiscScdlGrantEntity[] = await scdlService.getGrantsOnPeriodByAllocator(
                 parsedInfos.allocatorsSiret[0],
                 parsedInfos.grantCoverageYears,
             );
             existingLinesInDbOnSamePeriod = documentsInDB.length;
+
+            const lineCountByExercice: Record<number, number> = {};
+            for (const doc of documentsInDB) {
+                lineCountByExercice[doc.exercice] = (lineCountByExercice[doc.exercice] ?? 0) + 1;
+            }
+
+            parsedInfos.grantCoverageYears.forEach(exercice => {
+                const parsedLine = parsedInfos.lineCountsByExercice[exercice] ?? 0;
+                const inDb = lineCountByExercice[exercice] ?? 0;
+
+                lineCountsByExercice.push(new ExerciceLineCount(exercice, parsedLine, inDb));
+            });
         }
 
         const uploadedFileInfos = new UploadedFileInfosEntity(
@@ -119,6 +162,7 @@ export class DepositScdlProcessService {
             parsedInfos.grantCoverageYears,
             parsedInfos.parseableLines,
             parsedInfos.totalLines,
+            lineCountsByExercice,
             parsedInfos.missingHeaders,
             existingLinesInDbOnSamePeriod,
             new ScdlErrorStats(errors),

@@ -1,69 +1,40 @@
 <script lang="ts">
-    import Step4Controller from "./Step4.controller";
-    import InfoBox from "$lib/components/InfoBox.svelte";
-    import MultipleAllocators from "./MultipleAllocators/MultipleAllocators.svelte";
-    import LessGrantData from "./LessGrantData/LessGrantData.svelte";
     import { createEventDispatcher } from "svelte";
-    import BlockingErrors from "./BlockingErrors/BlockingErrors.svelte";
-    import ConfirmDataAdd from "./ConfirmDataAdd/ConfirmDataAdd.svelte";
+    import InfoBox from "$lib/components/InfoBox.svelte";
+    import { goToUrl } from "$lib/services/router.service";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
-    import MissingHeaders from "./MissingHeaders/MissingHeaders.svelte";
 
-    const dispatch = createEventDispatcher<{
-        prevStep: void;
-        nextStep: void;
-        loading: void;
-        endLoading: void;
-        restartNewForm: void;
-    }>();
-    const ctrl = new Step4Controller(dispatch);
-    const { view } = ctrl;
+    const dispatch = createEventDispatcher<{ restartNewForm: void }>();
 </script>
 
 <div>
-    <div class="fr-grid-row fr-grid-row--gutters">
-        {#if $view === "missingHeaders"}
-            <MissingHeaders
-                on:prevStep={() => ctrl.handlePrevStep()}
-                on:restartNewForm={() => ctrl.handleRestartNewForm()} />
-        {:else if $view === "multipleAllocator"}
-            <MultipleAllocators
-                on:prevStep={() => ctrl.handlePrevStep()}
-                on:restartNewForm={() => ctrl.handleRestartNewForm()} />
-        {:else if $view === "lessGrantData"}
-            <LessGrantData on:prevStep={() => ctrl.handlePrevStep()} />
-        {:else if $view === "blockingErrors"}
-            <BlockingErrors on:prevStep={() => ctrl.handlePrevStep()} />
-        {:else if $view === "confirmDataAdd"}
-            <ConfirmDataAdd on:prevStep={() => ctrl.handlePrevStep()} on:submitDatas={() => ctrl.submitDatas()} />
-        {/if}
+    <h1 class="fr-h3 text-center">Dépôt terminé avec succès !</h1>
 
-        <div class="fr-col-12 fr-col-md-4">
-            <InfoBox title="Besoin d’aide ?">
-                <ul>
-                    <li class="fr-mb-2v">
-                        Consulter la documentation officielle pour plus d’informations :
-                        <br />
-                        <TargetBlankLink href="https://schema.data.gouv.fr/scdl/subventions/">
-                            Voir la documentation
-                        </TargetBlankLink>
-                    </li>
-                    <!--                    <li class="fr-mb-2v">-->
-                    <!--                        Préparer votre fichier en vous appuyant sur-->
-                    <!--                        <TargetBlankLink href="https://schema.data.gouv.fr/scdl/subventions/">-->
-                    <!--                            notre modèle SCDL &lt;!&ndash; todo : en attente lien vers le gabarit xlsx + chgt blank link par download link &ndash;&gt;-->
-                    <!--                        </TargetBlankLink>-->
-                    <!--                    </li>-->
-                    <li class="fr-mb-2v">Nous contacter via la bulle de chat</li>
-                    <li>
-                        Participer à notre webinaire pour plus d’accompagnement dans la mise à jour de votre fichier :
-                    </li>
-                    <TargetBlankLink
-                        href="https://datasubvention.beta.gouv.fr/permanence-scdl-creer-structurer-et-deposer-vos-donnees/">
-                        S'inscrire
-                    </TargetBlankLink>
-                </ul>
-            </InfoBox>
-        </div>
+    <p>
+        Merci pour votre contribution au partage des données sur les subventions publiques.
+        <br />
+        Votre fichier a été validé et intégré avec succès dans notre base. 🎉
+    </p>
+
+    <p>Vous pouvez dès à présent déposer un autre fichier pour un SIRET différent si besoin.</p>
+
+    <InfoBox title="Pensez à importer vos données sur data.gouv.fr">
+        <p>
+            Data.Subvention vous accompagne pour produire et déposer votre fichier SCDL sur notre outil. Pour respecter
+            pleinement vos obligations en matière d’open data, nous vous encourageons à publier également ce jeu de
+            données sur data.gouv.fr.
+        </p>
+
+        <TargetBlankLink href="https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000034600552">
+            Voir le texte de loi
+        </TargetBlankLink>
+    </InfoBox>
+
+    <div style="text-align: center;">
+        <button on:click={() => goToUrl("/")} class="fr-btn fr-btn fr-mr-3v" type="button">Voir sur le portail</button>
+
+        <button on:click={() => dispatch("restartNewForm")} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
+            Déposer un nouveau fichier
+        </button>
     </div>
 </div>

@@ -1,20 +1,53 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
+    import InfoBox from "$lib/components/InfoBox.svelte";
+    import Step1Controller from "./Step1.controller";
+    import Input from "$lib/dsfr/Input.svelte";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
-    const dispatch = createEventDispatcher<{ nextStep: void; prevStep: void }>();
+    const ctrl = new Step1Controller();
+    const { inputValue, hasError, isDisabled } = ctrl;
+
+    const dispatch = createEventDispatcher<{ nextStep: void; prevStep: void; resumeForm: void }>();
+
+    const infoBoxTitle = "💡 Vous ne connaissez pas le SIRET de l’attribuant ?";
+
+    async function handleValidate() {
+        const result = await ctrl.handleValidate();
+        if (result === "success") {
+            dispatch("nextStep");
+        } else if (result === "resume") {
+            dispatch("resumeForm");
+        }
+    }
 </script>
 
 <div>
-    <div class="fr-text fr-mb-4v">
-        <p class="fr-text--bold fr-text--lead fr-mb-0">À savoir</p>
-        <ul>
-            <li>Vos imports n’impactent que les exercices que vous transmettez.</li>
-            <li>Les données des exercices non inclus dans votre fichier sont conservées.</li>
-            <li>
-                Pour un même exercice, les données existantes sont remplacées uniquement si l’import contient davantage
-                de lignes que celles déjà présentes en production.
-            </li>
-        </ul>
+    <Input
+        id="siret"
+        name="siret"
+        type="text"
+        bind:value={$inputValue}
+        label="Indiquez le SIRET de l’attribuant :"
+        hint="La collectivité ou l’organisme qui attribue les subventions dans ce fichier."
+        on:change
+        on:blur={() => ctrl.setTouch(true)}
+        error={$hasError ? "true" : ""}
+        errorMsg="Le SIRET doit contenir 14 chiffres" />
+
+    <div class="fr-mb-6v">
+        <InfoBox title={infoBoxTitle}>
+            <p class="fr-mb-4v">Vous pouvez :</p>
+            <ul>
+                <li>regarder dans votre fichier Excel s'il y figure</li>
+                <li>
+                    le rechercher sur
+                    <TargetBlankLink href="https://annuaire-entreprises.data.gouv.fr/">
+                        Annuaire Entreprises
+                    </TargetBlankLink>
+                </li>
+            </ul>
+        </InfoBox>
     </div>
 
     <div>
@@ -22,8 +55,8 @@
             Retour
         </button>
 
-        <button on:click={() => dispatch("nextStep")} class="fr-btn fr-mr-3v" type="button">
-            Je comprends et je poursuis l'import
+        <button on:click={() => handleValidate()} disabled={$isDisabled} class="fr-btn fr-mr-3v" type="button">
+            Valider
         </button>
     </div>
 </div>

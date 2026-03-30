@@ -45,7 +45,7 @@ describe("/parcours-depot", () => {
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
-            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true));
+            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined));
 
             const response = await request(g.app)
                 .get(`/parcours-depot`)
@@ -54,7 +54,6 @@ describe("/parcours-depot", () => {
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual({
-                overwriteAlert: true,
                 step: 1,
             });
         });
@@ -83,13 +82,14 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 12,
                 13,
+                [],
                 { optional: [], mandatory: [] },
                 1,
                 new ScdlErrorStats([]),
             );
 
             await depositLogAdapter.insertOne(
-                new DepositScdlLogEntity(userId, 1, new Date(), true, "99000000000001", true, uploadFileInfo),
+                new DepositScdlLogEntity(userId, 1, new Date(), "99000000000001", "fake name", true, uploadFileInfo),
             );
 
             const response = await request(g.app)
@@ -115,13 +115,14 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 12,
                 13,
+                [],
                 { optional: [], mandatory: [] },
                 1,
                 new ScdlErrorStats([]),
             );
 
             await depositLogAdapter.insertOne(
-                new DepositScdlLogEntity(userId, 1, new Date(), true, "99000000000001", true, uploadFileInfo),
+                new DepositScdlLogEntity(userId, 1, new Date(), "99000000000001", "fake name", true, uploadFileInfo),
             );
 
             const response = await request(g.app)
@@ -151,13 +152,14 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 12,
                 13,
+                [],
                 { optional: [], mandatory: [] },
                 1,
                 new ScdlErrorStats([]),
             );
 
             await depositLogAdapter.insertOne(
-                new DepositScdlLogEntity(userId, 2, new Date(), true, "99000000000001", true, uploadFileInfo),
+                new DepositScdlLogEntity(userId, 2, new Date(), "99000000000001", "fake name", true, uploadFileInfo),
             );
 
             const response = await request(g.app)
@@ -186,12 +188,13 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 38,
                 39,
+                [],
                 { optional: [], mandatory: [] },
                 0,
                 new ScdlErrorStats([]),
             );
             await depositLogAdapter.insertOne(
-                new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234", true, uploadFileInfo),
+                new DepositScdlLogEntity(userId, 1, undefined, "12345678901234", "fake name", true, uploadFileInfo),
             );
 
             const response = await request(g.app)
@@ -241,7 +244,7 @@ describe("/parcours-depot", () => {
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
-            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true));
+            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined));
 
             const response = await request(g.app)
                 .post(`/parcours-depot`)
@@ -277,7 +280,7 @@ describe("/parcours-depot", () => {
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
-            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234"));
+            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, "12345678901234"));
 
             const response = await request(g.app)
                 .patch(`/parcours-depot/step/1`)
@@ -287,7 +290,6 @@ describe("/parcours-depot", () => {
 
             const expected: DepositScdlLogResponseDto = {
                 allocatorSiret: "12345678901234",
-                overwriteAlert: true,
                 step: 1,
             };
 
@@ -299,12 +301,10 @@ describe("/parcours-depot", () => {
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
-            const depositLogEntity = new DepositScdlLogEntity(userId, 2, undefined, true, "12345678901234");
+            const depositLogEntity = new DepositScdlLogEntity(userId, 2, undefined, "12345678901234");
             await depositLogAdapter.insertOne(depositLogEntity);
 
-            const inconsistentDto: DepositScdlLogDto = {
-                overwriteAlert: true,
-            };
+            const inconsistentDto: DepositScdlLogDto = {};
 
             const response = await request(g.app)
                 .patch(`/parcours-depot/step/2`)
@@ -320,7 +320,6 @@ describe("/parcours-depot", () => {
                 step: depositLogEntity.step,
                 updateDate: existingLog?.updateDate,
                 allocatorSiret: depositLogEntity.allocatorSiret,
-                overwriteAlert: depositLogEntity.overwriteAlert,
             });
         });
 
@@ -328,7 +327,7 @@ describe("/parcours-depot", () => {
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
-            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true));
+            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined));
 
             const response = await request(g.app)
                 .patch(`/parcours-depot/step/9`)
@@ -348,7 +347,7 @@ describe("/parcours-depot", () => {
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
-            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234"));
+            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, "12345678901234"));
 
             const csvPath = path.join(FILE_PATH, "test-csv-valid.csv");
 
@@ -380,7 +379,7 @@ describe("/parcours-depot", () => {
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
-            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234"));
+            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, "12345678901234"));
 
             const csvPath = path.join(FILE_PATH, "test-csv-valid.csv");
 
@@ -400,7 +399,7 @@ describe("/parcours-depot", () => {
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
-            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234"));
+            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, "12345678901234"));
 
             const csvPath = path.join(FILE_PATH, "test-csv-invalid-headers-names.csv");
 
@@ -448,13 +447,14 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 38,
                 39,
+                [],
                 { optional: [], mandatory: [] },
                 0,
                 new ScdlErrorStats([]),
             );
 
             await depositLogAdapter.insertOne(
-                new DepositScdlLogEntity(userId, 2, undefined, true, "12345676541230", true, uploadFileInfo),
+                new DepositScdlLogEntity(userId, 2, undefined, "12345676541230", "fake name", true, uploadFileInfo),
             );
 
             await request(g.app).post(`/parcours-depot/depot-fichier-scdl`).set("x-access-token", token).expect(204);
@@ -483,12 +483,13 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 38,
                 39,
+                [],
                 { optional: [], mandatory: [] },
                 0,
                 new ScdlErrorStats([]),
             );
             await depositLogAdapter.insertOne(
-                new DepositScdlLogEntity(userId, 2, undefined, true, "12345676541230", true, uploadFileInfo),
+                new DepositScdlLogEntity(userId, 2, undefined, "12345676541230", "fake name", true, uploadFileInfo),
             );
 
             const response = await request(g.app)

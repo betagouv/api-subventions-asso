@@ -5,13 +5,22 @@
     import MissingHeadersController from "./MissingHeaders.controller";
 
     const dispatch = createEventDispatcher<{ prevStep: void }>();
-    const { missingMandatoryHeaders, missingOptionalHeaders } = new MissingHeadersController();
+    const { missingMandatoryHeaders, missingOptionalHeaders, allocatorSiret, allocatorName } =
+        new MissingHeadersController();
 </script>
 
 <div class="fr-col-12 fr-col-md-8">
     <Alert type="error" title="Des colonnes obligatoires sont manquantes ou mal nommées dans votre fichier">
         <p>Compte tenu de ces erreurs votre fichier n'a pas pu être analysé.</p>
     </Alert>
+
+    <p>
+        <span class="fr-text--bold">SIRET de l’attribuant indiqué :</span>
+        <br />
+        {allocatorSiret}
+        {#if allocatorName}
+            - {allocatorName}{/if}
+    </p>
 
     <p>
         Pour analyser votre fichier nous avons besoin que les noms des colonnes (en première ligne) soient présentes et

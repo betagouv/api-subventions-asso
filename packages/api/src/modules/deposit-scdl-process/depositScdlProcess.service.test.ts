@@ -28,11 +28,14 @@ import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
 import { DepositLogPort } from "../../dataProviders/db/deposit-log/deposit-log.port";
 import { DepositScdlProcessService } from "./depositScdlProcess.service";
 import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.adapter.mock";
+import associationNameService from "../association-name/associationName.service";
+import { DepositScdlLogDto } from "dto";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/deposit-log.port");
 jest.mock("../../dataProviders/db/deposit-log/deposit-log.mapper");
 jest.mock("../providers/scdl/scdl.service.ts");
+jest.mock("../association-name/associationName.service");
 
 jest.mock("../notify/notify.service", () => ({
     notify: jest.fn().mockResolvedValue(true),
@@ -85,6 +88,7 @@ describe("DepositScdlProcessService", () => {
         mockDepositLogPort = createMockDepositLogPort();
         depositScdlProcessService = new DepositScdlProcessService(mockDepositLogPort);
 
+        jest.mocked(associationNameService.find).mockResolvedValue([]);
         mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog");
         mockFindDepositLog = jest.spyOn(depositScdlProcessService, "findAll");
         mockGetGrantsOnPeriodByAllocator = jest.spyOn(scdlService, "getGrantsOnPeriodByAllocator");
@@ -95,6 +99,10 @@ describe("DepositScdlProcessService", () => {
         mockParseCsv = jest.spyOn(scdlService, "parseCsv");
         mockParseXls = jest.spyOn(scdlService, "parseXls");
         mockDetectCsvDelimiter = jest.spyOn(FileHelper, "detectCsvDelimiter");
+    });
+
+    afterEach(() => {
+        jest.mocked(associationNameService.find).mockRestore();
     });
 
     describe("getDepositLog", () => {
@@ -207,7 +215,6 @@ describe("DepositScdlProcessService", () => {
             const expected: DepositScdlLogEntity = {
                 userId: USER_ID_STR,
                 step: 1,
-                overwriteAlert: true,
                 updateDate: new Date(),
             };
 
@@ -233,7 +240,6 @@ describe("DepositScdlProcessService", () => {
             const expected = {
                 userId: USER_ID_STR,
                 step: step,
-                overwriteAlert: true,
                 updateDate: new Date(),
             };
 
@@ -261,6 +267,49 @@ describe("DepositScdlProcessService", () => {
                 depositScdlProcessService.updateDepositLog(2, CREATE_DEPOSIT_LOG_DTO, USER_ID_STR),
             ).rejects.toBeInstanceOf(NotFoundError);
         });
+
+        it("Should lookup allocator name", async () => {
+            jest.mocked(associationNameService.find).mockResolvedValue([{ name: "ALLOCATOR NAME" } as never]);
+            const depositLog = DEPOSIT_LOG_ENTITY;
+            depositLog.allocatorName = undefined;
+            mockGetDepositLog.mockResolvedValueOnce(depositLog);
+            const step = 3;
+
+            const mockUpdatePartial = mockDepositLogPort.updatePartial.mockResolvedValue({} as never);
+
+            await depositScdlProcessService.updateDepositLog(step, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, USER_ID_STR);
+
+            expect(associationNameService.find).toHaveBeenCalledWith(depositLog.allocatorSiret);
+            expect(mockUpdatePartial).toHaveBeenCalledWith({
+                step,
+                userId: USER_ID_STR,
+                ...DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+                allocatorName: "ALLOCATOR NAME",
+            });
+        });
+
+        it("Should resolve name when updating siret", async () => {
+            jest.mocked(associationNameService.find).mockResolvedValue([{ name: "ALLOCATOR NAME" } as never]);
+
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
+
+            const dto: DepositScdlLogDto = {
+                allocatorSiret: "98765432101234",
+            };
+            const step = 3;
+
+            mockDepositLogPort.updatePartial.mockResolvedValue({} as never);
+
+            await depositScdlProcessService.updateDepositLog(step, dto, USER_ID_STR);
+
+            expect(associationNameService.find).toHaveBeenCalledWith(dto.allocatorSiret);
+            expect(mockDepositLogPort.updatePartial).toHaveBeenCalledWith({
+                step,
+                userId: USER_ID_STR,
+                allocatorSiret: dto.allocatorSiret,
+                allocatorName: "ALLOCATOR NAME",
+            });
+        });
     });
 
     describe("validateScdlFile", () => {
@@ -278,7 +327,6 @@ describe("DepositScdlProcessService", () => {
             const expected: DepositScdlLogEntity = {
                 userId: USER_ID_STR,
                 step: step,
-                overwriteAlert: true,
                 updateDate: new Date(),
                 allocatorSiret: "12345678901234",
             };
@@ -292,6 +340,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
+                    lineCountsByExercice: [],
                     missingHeaders: { optional: [], mandatory: [] },
                 } as ScdlParsedInfos,
             };
@@ -433,6 +482,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
+                    lineCountsByExercice: [],
                     missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
             };
@@ -458,6 +508,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
+                    lineCountsByExercice: [],
                     missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
             };
@@ -482,6 +533,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
+                    lineCountsByExercice: [],
                     missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
             };
@@ -506,6 +558,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
+                    lineCountsByExercice: [],
                     existingLinesInDbOnSamePeriod: 0,
                     missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
@@ -526,6 +579,36 @@ describe("DepositScdlProcessService", () => {
                 grantCoverageYears: parsedResult.parsedInfos.grantCoverageYears,
                 parsedLines: parsedResult.parsedInfos.parseableLines,
             });
+        });
+    });
+
+    describe("resolveAllocatorName", () => {
+        it("return undefined if invalid SIRET", async () => {
+            jest.spyOn(Siret, "isSiret").mockReturnValue(false);
+
+            // @ts-expect-error - test private method
+            const result = await depositScdlProcessService.resolveAllocatorName("invalid-siret");
+            expect(result).toBeUndefined();
+            expect(associationNameService.find).not.toHaveBeenCalled();
+        });
+
+        it("return name if API return a result", async () => {
+            jest.spyOn(Siret, "isSiret").mockReturnValue(true);
+            jest.mocked(associationNameService.find).mockResolvedValue([{ name: "Allocator name Test" } as never]);
+
+            // @ts-expect-error - test private method
+            const result = await depositScdlProcessService.resolveAllocatorName("12345678901234");
+            expect(result).toBe("Allocator name Test");
+        });
+
+        it("return undefined if API error", async () => {
+            jest.spyOn(Siret, "isSiret").mockReturnValue(true);
+            jest.mocked(associationNameService.find).mockRejectedValue(new Error("API down"));
+
+            // @ts-expect-error - test private method
+            const result = await depositScdlProcessService.resolveAllocatorName("12345678901234");
+
+            expect(result).toBeUndefined();
         });
     });
 });

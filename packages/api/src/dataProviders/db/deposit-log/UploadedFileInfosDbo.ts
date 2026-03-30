@@ -1,3 +1,5 @@
+import ExerciceLineCount from "../../../modules/deposit-scdl-process/entities/exerciceLineCount";
+
 export default interface UploadedFileInfosDbo {
     fileName: string;
     uploadDate: Date;
@@ -5,6 +7,7 @@ export default interface UploadedFileInfosDbo {
     grantCoverageYears: number[];
     parseableLines: number;
     totalLines: number;
+    lineCountsByExercice: ExerciceLineCount[];
     missingHeaders: {
         mandatory: string[];
         optional: string[];

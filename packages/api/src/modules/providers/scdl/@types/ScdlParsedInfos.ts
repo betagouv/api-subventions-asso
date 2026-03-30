@@ -5,5 +5,6 @@ export interface ScdlParsedInfos {
     grantCoverageYears: number[];
     parseableLines: number;
     totalLines: number;
+    lineCountsByExercice: Record<number, number>;
     missingHeaders: MissingHeaders;
 }

@@ -7,8 +7,8 @@ export default class DepositLogMapper {
             dbo.userId,
             dbo.step,
             dbo.updateDate,
-            dbo.overwriteAlert,
             dbo.allocatorSiret,
+            dbo.allocatorName,
             dbo.permissionAlert,
             dbo.uploadedFileInfos,
         );
@@ -21,9 +21,9 @@ export default class DepositLogMapper {
             updateDate,
             userId: entity.userId,
             step: entity.step,
-            overwriteAlert: entity.overwriteAlert,
             permissionAlert: entity.permissionAlert,
             allocatorSiret: entity.allocatorSiret,
+            allocatorName: entity.allocatorName,
             uploadedFileInfos: entity.uploadedFileInfos,
         };
     }

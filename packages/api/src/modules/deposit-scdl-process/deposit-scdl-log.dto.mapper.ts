@@ -14,23 +14,22 @@ import ScdlErrorStats from "./entities/ScdlErrorStats";
 export default class DepositScdlLogDtoMapper {
     static entityToDepositScdlLogDto(entity: DepositScdlLogEntity): DepositScdlLogDto {
         return {
-            overwriteAlert: entity.overwriteAlert,
             allocatorSiret: entity.allocatorSiret,
+            allocatorName: entity.allocatorName,
             permissionAlert: entity.permissionAlert,
         };
     }
 
     static entityToCreateDepositScdlLogDto(entity: DepositScdlLogEntity): CreateDepositScdlLogDto {
         return {
-            overwriteAlert: entity.overwriteAlert,
             allocatorSiret: entity.allocatorSiret,
         };
     }
 
     static entityToDepositScdlLogResponseDto(entity: DepositScdlLogEntity): DepositScdlLogResponseDto {
         return {
-            overwriteAlert: entity.overwriteAlert,
             allocatorSiret: entity.allocatorSiret,
+            allocatorName: entity.allocatorName,
             permissionAlert: entity.permissionAlert,
             step: entity.step,
             uploadedFileInfos: entity.uploadedFileInfos
@@ -47,6 +46,7 @@ export default class DepositScdlLogDtoMapper {
             grantCoverageYears: entity.grantCoverageYears,
             parseableLines: entity.parseableLines,
             totalLines: entity.totalLines,
+            lineCountsByExercice: entity.lineCountsByExercice,
             missingHeaders: entity.missingHeaders,
             existingLinesInDbOnSamePeriod: entity.existingLinesInDbOnSamePeriod,
             errorStats: entity.errorStats,
@@ -59,18 +59,19 @@ export default class DepositScdlLogDtoMapper {
             userId,
             step,
             undefined,
-            dto.overwriteAlert,
             dto.allocatorSiret,
+            dto.allocatorName,
             dto.permissionAlert,
         );
     }
 
     static createDepositScdlLogDtoToEntity(
         dto: CreateDepositScdlLogDto,
+        allocatorName: string | undefined,
         userId: string,
         step: number,
     ): DepositScdlLogEntity {
-        return new DepositScdlLogEntity(userId, step, undefined, dto.overwriteAlert, dto.allocatorSiret);
+        return new DepositScdlLogEntity(userId, step, undefined, dto.allocatorSiret, allocatorName);
     }
 
     static uploadedFileInfosDtoToEntity(dto: UploadedFileInfosDto): UploadedFileInfosEntity {
@@ -81,6 +82,7 @@ export default class DepositScdlLogDtoMapper {
             grantCoverageYears: dto.grantCoverageYears,
             parseableLines: dto.parseableLines,
             totalLines: dto.totalLines,
+            lineCountsByExercice: dto.lineCountsByExercice,
             missingHeaders: dto.missingHeaders,
             existingLinesInDbOnSamePeriod: dto.existingLinesInDbOnSamePeriod,
             errorStats: this.scdlErrorStatsDtoToEntity(dto.errorStats),

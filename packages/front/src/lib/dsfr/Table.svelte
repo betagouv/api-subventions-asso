@@ -13,6 +13,7 @@
     export let multiline = false;
     // remove outer border
     export let customLight = false;
+    export let titleClass = "";
 
     let tableClasses: string[] = ["fr-table", `fr-table--${size}`];
     if (!scrollable) tableClasses.push("fr-table--no-scroll");
@@ -24,7 +25,7 @@
         <div class="fr-table__container">
             <div class="fr-table__content">
                 <table class:no-outer-border={customLight} id="table-{id}" class:fr-cell--multiline={multiline}>
-                    <caption class:fr-sr-only={hideTitle} aria-hidden={hideTitle}>{title}</caption>
+                    <caption class:fr-sr-only={hideTitle} class={titleClass} aria-hidden={hideTitle}>{title}</caption>
                     <thead>
                         <tr>
                             <slot name="headers"></slot>
