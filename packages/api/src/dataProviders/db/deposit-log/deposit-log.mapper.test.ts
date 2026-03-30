@@ -80,6 +80,7 @@ describe("DepositLogAdapter", () => {
                 step: entity.step,
                 permissionAlert: entity.permissionAlert,
                 allocatorSiret: entity.allocatorSiret,
+                allocatorName: entity.allocatorName,
             });
         });
 

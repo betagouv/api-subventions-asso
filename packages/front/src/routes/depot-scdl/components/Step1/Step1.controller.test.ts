@@ -28,7 +28,7 @@ describe("Step1Controller", () => {
             updateDepositLogMock.mockResolvedValue(DEPOSIT_LOG);
         });
 
-        it("should return sucess", async () => {
+        it("should return success", async () => {
             const expected = "success";
             const actual = await controller.handleValidate();
             expect(actual).toEqual(expected);

@@ -270,14 +270,16 @@ describe("DepositScdlProcessService", () => {
 
         it("Should lookup allocator name", async () => {
             jest.mocked(associationNameService.find).mockResolvedValue([{ name: "ALLOCATOR NAME" } as never]);
-            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
+            const depositLog = DEPOSIT_LOG_ENTITY;
+            depositLog.allocatorName = undefined;
+            mockGetDepositLog.mockResolvedValueOnce(depositLog);
             const step = 3;
 
             const mockUpdatePartial = mockDepositLogPort.updatePartial.mockResolvedValue({} as never);
 
             await depositScdlProcessService.updateDepositLog(step, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, USER_ID_STR);
 
-            expect(associationNameService.find).toHaveBeenCalledWith(DEPOSIT_LOG_ENTITY.allocatorSiret);
+            expect(associationNameService.find).toHaveBeenCalledWith(depositLog.allocatorSiret);
             expect(mockUpdatePartial).toHaveBeenCalledWith({
                 step,
                 userId: USER_ID_STR,

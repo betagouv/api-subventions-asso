@@ -15,6 +15,7 @@ export default class DepositScdlLogDtoMapper {
     static entityToDepositScdlLogDto(entity: DepositScdlLogEntity): DepositScdlLogDto {
         return {
             allocatorSiret: entity.allocatorSiret,
+            allocatorName: entity.allocatorName,
             permissionAlert: entity.permissionAlert,
         };
     }

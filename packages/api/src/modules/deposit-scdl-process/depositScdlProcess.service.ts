@@ -105,6 +105,7 @@ export class DepositScdlProcessService {
             const result = await associationNameService.find(siret);
             return result.length ? result[0].name : undefined;
         } catch {
+            console.error(`Error while looking up allocator name for siret ${siret}`);
             return undefined;
         }
     }

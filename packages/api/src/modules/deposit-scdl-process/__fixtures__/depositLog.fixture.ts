@@ -9,6 +9,7 @@ export const DEPOSIT_LOG_ENTITY: DepositScdlLogEntity = {
     step: 1,
     updateDate: new Date("2025-09-26T00:00:00.000Z"),
     allocatorSiret: "12345678901234",
+    allocatorName: "Test",
     permissionAlert: false,
 };
 

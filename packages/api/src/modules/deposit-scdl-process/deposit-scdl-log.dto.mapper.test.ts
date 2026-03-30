@@ -15,6 +15,7 @@ describe("depositScdlLogDtoAdapter", () => {
 
             expect(result).toEqual({
                 allocatorSiret: entity.allocatorSiret,
+                allocatorName: entity.allocatorName,
                 permissionAlert: entity.permissionAlert,
             });
         });
@@ -38,6 +39,7 @@ describe("depositScdlLogDtoAdapter", () => {
 
             expect(result).toEqual({
                 allocatorSiret: entity.allocatorSiret,
+                allocatorName: entity.allocatorName,
                 permissionAlert: entity.permissionAlert,
                 step: entity.step,
             });
@@ -111,6 +113,7 @@ describe("depositScdlLogDtoAdapter", () => {
                 userId: userId,
                 step: step,
                 allocatorSiret: dto.allocatorSiret,
+                allocatorName: allocatorName,
             });
         });
 
