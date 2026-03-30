@@ -20,6 +20,7 @@ import {
 } from "tsoa";
 import DepositScdlLogDtoMapper from "../../modules/deposit-scdl-process/deposit-scdl-log.dto.mapper";
 import { depositScdlProcessService } from "../../init-services";
+import { fixFilenameEncoding } from "../../shared/helpers/FileHelper";
 
 @Route("/parcours-depot")
 @Security("jwt")
@@ -169,6 +170,7 @@ export class DepositScdlProcessHttp extends Controller {
         @FormField() pageName?: string,
     ): Promise<DepositScdlLogResponseDto> {
         const parsedDto = JSON.parse(depositScdlLogDto);
+        file.originalname = fixFilenameEncoding(file.originalname); // accented char pb: see if other way to fix this
         const updatedDepositLog = await depositScdlProcessService.validateScdlFile(
             file,
             parsedDto,
