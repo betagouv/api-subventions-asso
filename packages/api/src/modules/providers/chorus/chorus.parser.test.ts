@@ -214,7 +214,7 @@ describe("ChorusParser", () => {
         const mockedNationalDataToEntities = jest.fn();
         const mockedEuropeanDataToEntities = jest.fn();
 
-        const FILE_CONTENT = "THIS IS A BUFFER";
+        const FILE_CONTENT = Buffer.from("THIS IS A BUFFER");
 
         const EUROPEAN_HEADERS_AND_ROWS = { headers: EUROPEAN_DATA[0], rows: EUROPEAN_DATA.slice(2) };
 
@@ -243,8 +243,7 @@ describe("ChorusParser", () => {
         // we used to have a xlsx with only one tab called "1. Extraction"
         // the current format has 3 tabs and the second one is "1. Extraction"
         it("should work with old format", () => {
-            // @ts-expect-error: mock
-            ChorusParser.parse(FILE_CONTENT, () => true);
+            ChorusParser.parse(FILE_CONTENT);
             expect(mockedGenericParser.xlsxParse).toHaveBeenCalledWith(FILE_CONTENT);
             mockedGenericParser.xlsxParse.mockReturnValueOnce([
                 { data: NATIONAL_DATA, name: "1. Extraction" },
@@ -253,27 +252,39 @@ describe("ChorusParser", () => {
         });
 
         it("should call GenericParser.xlsxParse", () => {
-            // @ts-expect-error: mock
-            ChorusParser.parse(FILE_CONTENT, () => true);
+            ChorusParser.parse(FILE_CONTENT);
             expect(mockedGenericParser.xlsxParse).toHaveBeenCalledWith(FILE_CONTENT);
         });
 
         it("should get headers and rows from data", () => {
-            // @ts-expect-error: mock
-            ChorusParser.parse(FILE_CONTENT, () => true);
+            ChorusParser.parse(FILE_CONTENT);
             expect(mockGetHeadersAndRows).toHaveBeenNthCalledWith(1, NATIONAL_DATA);
             expect(mockGetHeadersAndRows).toHaveBeenNthCalledWith(2, EUROPEAN_DATA);
         });
 
         it("should transform chorus national rows to entities", () => {
-            // @ts-expect-error: mock
-            ChorusParser.parse(FILE_CONTENT, () => true);
+            ChorusParser.parse(FILE_CONTENT);
             expect(mockedNationalDataToEntities).toHaveBeenCalledWith(NATIONAL_HEADERS_AND_ROWS);
         });
         it("should transform chorus european rows to entities", () => {
-            // @ts-expect-error: mock
-            ChorusParser.parse(FILE_CONTENT, () => true);
+            ChorusParser.parse(FILE_CONTENT);
             expect(mockedEuropeanDataToEntities).toHaveBeenCalledWith(EUROPEAN_HEADERS_AND_ROWS);
+        });
+
+        it("only transform chorus nation when options contains withoutEuropeanData", () => {
+            ChorusParser.parse(FILE_CONTENT, { withoutEuropeanData: true });
+            expect(mockedEuropeanDataToEntities).not.toHaveBeenCalled();
+        });
+
+        it("throws error if chorus european tab is not present in the file", () => {
+            mockedGenericParser.xlsxParse.mockReturnValueOnce([
+                { data: [[], []], name: "TAB" },
+                { data: NATIONAL_DATA, name: "1. Extraction" },
+            ]);
+
+            expect(() => ChorusParser.parse(FILE_CONTENT)).toThrow(
+                "No european data found in the file, please check if page name as changed. \n If you are trying to import prior to 2026 file, please use --no-fse option",
+            );
         });
     });
 });

@@ -23,7 +23,7 @@ export default class ChorusCli extends CliController {
      * @param file path to file
      * @param logger
      */
-    protected async _parse(file: string, logger) {
+    protected async _parse(file: string, logger, ...args) {
         if (typeof file !== "string") {
             throw new Error("Parse command need file args");
         }
@@ -37,9 +37,18 @@ export default class ChorusCli extends CliController {
 
         const fileContent = fs.readFileSync(file);
 
-        const { national, european } = ChorusParser.parse(fileContent);
+        let withEuropeanData = true; // since 2026 we got european data
+        if (args.includes("--no-fse")) withEuropeanData = false;
 
-        await Promise.all([this.persistChorusEntities(national, logger), this.persistChorusFseEntities(european)]);
+        const { national, european } = ChorusParser.parse(fileContent, {
+            withoutEuropeanData: !withEuropeanData,
+        });
+
+        const promises = [this.persistChorusEntities(national, logger)];
+
+        if (withEuropeanData) promises.push(this.persistChorusFseEntities(european!));
+
+        await Promise.all(promises);
     }
 
     private async persistChorusEntities(entities: ChorusEntity[], logger) {

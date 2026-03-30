@@ -62,7 +62,7 @@ export const EUROPEAN_PAGE = [
         "AA01/0776-C001-4000",
         "TG ILE ET VILAINE",
         "FSE00-14",
-        "Prog. FSE",
+        "Prog. FSE+",
         89988.3,
     ],
     [
@@ -82,7 +82,7 @@ export const EUROPEAN_PAGE = [
         "TG VIENNE",
         "XXXX-C001",
         "FSE00-14",
-        "Prog. FSE",
+        "Prog. FSE+",
         89931.9,
     ],
     [
@@ -100,8 +100,8 @@ export const EUROPEAN_PAGE = [
         "05/05/2023",
         "AA99/0102-DR25-DR25",
         "TG RHONE",
-        "FSE00-14",
-        "Prog. FSE",
+        "FTJ00-14",
+        "Prog. FTJ",
         62655.2,
     ],
 ];
