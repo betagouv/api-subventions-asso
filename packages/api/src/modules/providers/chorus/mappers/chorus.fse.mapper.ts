@@ -70,8 +70,8 @@ export class ChorusFseMapper {
 
     static toPaymentFlat(entity: ChorusFseEntity): PaymentFlatEntity {
         const PROGRAM_NAMES_MAP = new Map([
-            ["FSE", "Fond solidaire européen"],
-            ["FTJ", "Fond transition juste"],
+            ["FSE", { code: "FSE+", desc: "Fonds solidaire européen+" }],
+            ["FTJ", { code: "FTJ", desc: "Fonds de transition juste" }],
         ]);
 
         const beneficiaryEstablishmentId = entity.identifier;
@@ -79,7 +79,8 @@ export class ChorusFseMapper {
         const beneficiaryCompanyId = EstablishmentIdentifier.getAssociationIdentifier(entity.identifier);
         const beneficiaryCompanyIdType = beneficiaryCompanyId.name;
 
-        const programNumber = entity.functionalDomainCode.slice(0, 3);
+        const programNumber = PROGRAM_NAMES_MAP.get(entity.functionalDomainCode.slice(0, 3))?.code ?? "";
+        const programName = PROGRAM_NAMES_MAP.get(entity.functionalDomainCode.slice(0, 3))?.desc ?? "";
 
         const optionalFields = {
             budgetaryYear: Number(entity.budgetaryYear),
@@ -89,7 +90,7 @@ export class ChorusFseMapper {
             financialCenterLabel: entity.financialCenter,
             accountingAttachment: entity.societyCode,
             accountingAttachmentRegion: ChorusMapper.getRegionAttachementComptable(entity.societyCode),
-            programName: PROGRAM_NAMES_MAP.get(programNumber) ?? "",
+            programName,
             // @TODO: rename PaymentFlat.programNumber into programCode to be more accurate
             programNumber,
             mission: GenericAdapter.NOT_APPLICABLE_VALUE,

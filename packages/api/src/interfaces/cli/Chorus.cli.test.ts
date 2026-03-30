@@ -100,6 +100,12 @@ describe("Chorus CLI", () => {
             await controller._parse(FILE_PATH, LOGGER);
             expect(mockPersistChorusFseEntities).toHaveBeenCalledWith(EUROPEAN_CHORUS_ENTITIES);
         });
+
+        it("handle --no-fse option for old files (prior to 2026)", async () => {
+            // @ts-expect-error: test protected method
+            await controller._parse(FILE_PATH, LOGGER, "--no-fse");
+            expect(mockPersistChorusFseEntities).not.toHaveBeenCalled();
+        });
     });
 
     describe("resyncPaymentFlatByExercise", () => {
