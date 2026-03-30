@@ -11,8 +11,8 @@ import FileSizeError from "$lib/errors/file-errors/FileSizeError";
 import FileFormatError from "$lib/errors/file-errors/FileFormatError";
 import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
 import { depositLogStore } from "$lib/store/depositLog.store";
-import type { DepositScdlLogDto } from "dto/build/depositScdlProcess/DepositScdlLogDto";
 import type { EventDispatcher } from "svelte";
+import type { DepositScdlLogDto } from "dto";
 
 type EventMap = {
     prevStep: void;
