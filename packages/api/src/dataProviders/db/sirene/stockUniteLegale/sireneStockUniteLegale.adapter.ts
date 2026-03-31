@@ -3,15 +3,19 @@ import { SireneUniteLegaleDbo } from "../../../../modules/providers/sirene/stock
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
 import SireneStockUniteLegaleMapper from "../../../../modules/providers/sirene/stockUniteLegale/mappers/sirene-stock-unite-legale.mapper";
 import Siren from "../../../../identifierObjects/Siren";
+import { SireneStockUniteLegalePort } from "./sirene-stock-unite-legale.port";
 
-export class SireneUniteLegaleDbAdapter extends MongoAdapter<SireneUniteLegaleDbo> {
+export class SireneUniteLegaleDbAdapter
+    extends MongoAdapter<SireneUniteLegaleDbo>
+    implements SireneStockUniteLegalePort
+{
     collectionName = "sirene";
 
     public async createIndexes(): Promise<void> {
         await this.collection.createIndex({ siren: 1 }, { unique: true });
     }
 
-    public upsertMany(entities: SireneStockUniteLegaleEntity[]) {
+    public async upsertMany(entities: SireneStockUniteLegaleEntity[]): Promise<void> {
         if (!entities.length) return;
         const bulk = entities.map(entity => ({
             updateOne: {
@@ -20,15 +24,15 @@ export class SireneUniteLegaleDbAdapter extends MongoAdapter<SireneUniteLegaleDb
                 upsert: true,
             },
         }));
-        return this.collection.bulkWrite(bulk, { ordered: false });
+        await this.collection.bulkWrite(bulk, { ordered: false });
     }
 
-    public insertOne(entity: SireneStockUniteLegaleEntity) {
-        return this.collection.insertOne(SireneStockUniteLegaleMapper.entityToDbo(entity));
+    public async insertOne(entity: SireneStockUniteLegaleEntity): Promise<void> {
+        await this.collection.insertOne(SireneStockUniteLegaleMapper.entityToDbo(entity));
     }
 
-    public updateOne(entity: SireneStockUniteLegaleEntity) {
-        return this.collection.updateOne(
+    public async updateOne(entity: SireneStockUniteLegaleEntity): Promise<void> {
+        await this.collection.updateOne(
             { siren: entity.siren },
             { $set: SireneStockUniteLegaleMapper.entityToDbo(entity) },
         );
@@ -44,8 +48,8 @@ export class SireneUniteLegaleDbAdapter extends MongoAdapter<SireneUniteLegaleDb
         return dbo ? SireneStockUniteLegaleMapper.dboToEntity(dbo) : null;
     }
 
-    public deleteAll() {
-        return this.collection.deleteMany({});
+    public async deleteAll(): Promise<void> {
+        await this.collection.deleteMany({});
     }
 }
 

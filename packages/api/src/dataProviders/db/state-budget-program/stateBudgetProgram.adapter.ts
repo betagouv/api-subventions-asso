@@ -2,11 +2,12 @@ import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity
 import MongoAdapter from "../MongoAdapter";
 import StateBudgetProgramDbo from "./StateBudgetProgramDbo";
 import StateBudgetProgramMapper from "./state-budget-program.mapper";
+import { StateBudgetProgramPort } from "./state-budget-program.port";
 
 /**
  * Represents a data provider for state budget programs.
  */
-export class StateBudgetProgramAdapter extends MongoAdapter<StateBudgetProgramDbo> {
+export class StateBudgetProgramAdapter extends MongoAdapter<StateBudgetProgramDbo> implements StateBudgetProgramPort {
     collectionName = "state-budget-program";
 
     /**
@@ -35,9 +36,9 @@ export class StateBudgetProgramAdapter extends MongoAdapter<StateBudgetProgramDb
      * @param programs - The state budget programs to replace with.
      * @returns A promise that resolves when the replacement is complete.
      */
-    public async replace(programs: StateBudgetProgramEntity[]) {
+    public async replace(programs: StateBudgetProgramEntity[]): Promise<void> {
         await this.collection.deleteMany({});
-        return this.collection.insertMany(programs.map(program => StateBudgetProgramMapper.toDbo(program)));
+        await this.collection.insertMany(programs.map(program => StateBudgetProgramMapper.toDbo(program)));
     }
 
     /**

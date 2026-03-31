@@ -4,8 +4,10 @@ import OsirisActionEntity from "../../../../modules/providers/osiris/entities/Os
 import MongoAdapter from "../../MongoAdapter";
 import Siren from "../../../../identifierObjects/Siren";
 import OsirisActionMapper from "./osiris-action.mapper";
+import { OsirisActionPort } from "./osiris-action.port";
+import { BulkUpsertResult } from "../../@types/bulk-upsert-result";
 
-export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> {
+export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implements OsirisActionPort {
     collectionName = "osiris-actions";
 
     async createIndexes() {
@@ -21,7 +23,7 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> {
     };
 
     // Action Part
-    public async add(osirisAction: OsirisActionEntity) {
+    public async add(osirisAction: OsirisActionEntity): Promise<OsirisActionEntity> {
         await this.collection.insertOne(osirisAction);
         return osirisAction;
     }
@@ -29,7 +31,7 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> {
     /*
      * @deprecated
      * */
-    public async update(osirisAction: OsirisActionEntity) {
+    public async update(osirisAction: OsirisActionEntity): Promise<OsirisActionEntity> {
         const options: FindOneAndUpdateOptions = { returnDocument: "after", includeResultMetadata: true };
         const updateRes = await this.collection.findOneAndUpdate(
             { "indexedInformations.uniqueId": osirisAction.indexedInformations.uniqueId },
@@ -52,7 +54,7 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> {
         );
     }
 
-    public async bulkUpsert(osirisActions: OsirisActionEntity[]) {
+    public async bulkUpsert(osirisActions: OsirisActionEntity[]): Promise<BulkUpsertResult> {
         const bulk = osirisActions.map(action => {
             return {
                 updateOne: {
@@ -62,7 +64,24 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> {
                 },
             };
         });
-        return bulk.length ? this.collection.bulkWrite(bulk, { ordered: false }) : Promise.resolve();
+
+        if (!bulk.length) {
+            return {
+                insertedCount: 0,
+                upsertedCount: 0,
+                modifiedCount: 0,
+                matchedCount: 0,
+            };
+        }
+
+        const result = await this.collection.bulkWrite(bulk, { ordered: false });
+
+        return {
+            insertedCount: result.insertedCount,
+            upsertedCount: result.upsertedCount,
+            modifiedCount: result.modifiedCount,
+            matchedCount: result.matchedCount,
+        };
     }
 
     public cursorFind(query = {}) {
@@ -77,12 +96,12 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> {
         return this.cursorFind({ indexedInformations: { exercise } }).toArray();
     }
 
-    public async findByRequestUniqueId(requestUniqueId: string) {
+    public async findByRequestUniqueId(requestUniqueId: string): Promise<OsirisActionEntity[]> {
         const dbos = await this.collection.find({ "indexedInformations.requestUniqueId": requestUniqueId }).toArray();
         return dbos.map(dbo => OsirisActionMapper.toEntity(dbo));
     }
 
-    public async findBySiren(siren: Siren) {
+    public async findBySiren(siren: Siren): Promise<OsirisActionEntity[]> {
         const dbos = await this.collection
             .find({ "indexedInformations.siret": new RegExp(`^${siren.value}\\d{5}`) })
             .toArray();

@@ -5,6 +5,7 @@ import userCrudService from "../user/services/crud/user.crud.service";
 import metabaseDumpAdapter from "../../dataProviders/db/dump/metabase-dump.adapter";
 import dataLogService from "../data-log/dataLog.service";
 import { DepositScdlProcessService } from "../deposit-scdl-process/depositScdlProcess.service";
+import { WinstonLog } from "../../@types/WinstonLog";
 
 export class DumpService {
     constructor(private readonly depositScdlProcessService: DepositScdlProcessService) {}
@@ -18,10 +19,10 @@ export class DumpService {
         const lastExecution = await configurationsService.getLastPublishDumpDate();
         await metabaseDumpAdapter.cleanAfterDate(lastExecution); // ensures not to duplicate logs. should usually do nothing
         const now = new Date();
-        const lastLogsCursor = statsService.getAnonymizedLogsOnPeriod(lastExecution, now);
-        const batch: unknown[] = [];
-        while (await lastLogsCursor.hasNext()) {
-            const log = await lastLogsCursor.next();
+        const lastLogs = await statsService.getAnonymizedLogsOnPeriod(lastExecution, now);
+        const batch: WinstonLog[] = [];
+
+        for (const log of lastLogs) {
             batch.push(log);
 
             if (batch.length > 1000) {

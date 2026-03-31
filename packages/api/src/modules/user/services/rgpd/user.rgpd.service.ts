@@ -47,7 +47,7 @@ export class UserRgpdService {
         return this.disable(user, self);
     }
 
-    public async disable(user: UserDto | null, self = true, whileBatch = false) {
+    public async disable(user: UserDto | null, self = true, whileBatch = false): Promise<boolean> {
         if (!user) return false;
         // Anonymize the user when it is being deleted to keep use stats consistent
         // It keeps roles and signupAt in place to avoid breaking any stats

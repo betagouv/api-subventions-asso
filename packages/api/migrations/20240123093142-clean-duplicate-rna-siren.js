@@ -1,5 +1,5 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
-const ranSirenPort = require("../build/src/dataProviders/db/rnaSiren/rnaSiren.port").default;
+const ranSirenPort = require("../build/src/dataProviders/db/rnaSiren/rnaSiren.adapter").default;
 
 module.exports = {
     async up(db) {

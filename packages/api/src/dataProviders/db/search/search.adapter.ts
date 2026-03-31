@@ -1,15 +1,21 @@
 import { AssociationNameDto } from "dto";
 import db from "../../../shared/MongoConnection";
 import SearchCacheEntity from "./searchCacheDbo";
+import { SearchPort } from "./search.port";
 
-export class SearchCacheAdapter {
+export class SearchCacheAdapter implements SearchPort {
     private readonly collection = db.collection<SearchCacheEntity>("search-cache");
 
-    saveResults(searchToken: string, results: AssociationNameDto[]) {
-        return this.collection.insertOne(new SearchCacheEntity(searchToken, results));
+    async saveResults(searchToken: string, results: AssociationNameDto[]): Promise<void> {
+        await this.collection.insertOne(new SearchCacheEntity(searchToken, results));
     }
 
-    async getResults(searchToken: string, page: number, pageSize: number, maxTimestamp: Date) {
+    async getResults(
+        searchToken: string,
+        page: number,
+        pageSize: number,
+        maxTimestamp: Date,
+    ): Promise<{ results: AssociationNameDto[]; total: number } | null> {
         const aggregationResult = (await this.collection
             .aggregate([
                 { $match: { searchToken, timestamp: { $gt: maxTimestamp } } },
@@ -26,8 +32,8 @@ export class SearchCacheAdapter {
         return { results: aggregationResult[0].results, total: aggregationResult[0].total };
     }
 
-    deleteAll() {
-        return this.collection.deleteMany({});
+    async deleteAll(): Promise<void> {
+        await this.collection.deleteMany({});
     }
 }
 

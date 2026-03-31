@@ -21,8 +21,13 @@ import {
     DataBretagneProgrammeValidator,
     DataBretagneRefProgrammationValidator,
 } from "./DataBretagneValidator";
+import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
+import MinistryEntity from "../../../entities/MinistryEntity";
+import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
+import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
+import { DataBretagnePort } from "./data-bretagne.port";
 
-export class DataBretagneAdapter {
+export class DataBretagneAdapter implements DataBretagnePort {
     private basepath = "https://api.databretagne.fr/budget/api/v1";
     private http: ProviderRequestService;
     private token: null | string = null;
@@ -30,7 +35,7 @@ export class DataBretagneAdapter {
         this.http = ProviderRequestFactory("data-bretagne");
     }
 
-    async login() {
+    async login(): Promise<void> {
         try {
             this.token = (
                 await this.http.post<string>(`${this.basepath}/auth/login`, {
@@ -54,28 +59,28 @@ export class DataBretagneAdapter {
         )?.data?.items;
     }
 
-    async getStateBudgetPrograms() {
+    async getStateBudgetPrograms(): Promise<StateBudgetProgramEntity[]> {
         const validData = DataBretagneProgrammeValidator.validate(
             await this.getCollection<DataBretagneProgrammeDto>("programme"),
         );
         return validData.valids.map(DataBretagneProgrammeMapper.toEntity);
     }
 
-    async getMinistry() {
+    async getMinistry(): Promise<MinistryEntity[]> {
         const validData = DataBretagneMinistryValidator.validate(
             await this.getCollection<DataBretagneMinistryDto>("ministere"),
         );
         return validData.valids.map(DataBretagneMinistryMapper.toEntity);
     }
 
-    async getDomaineFonctionnel() {
+    async getDomaineFonctionnel(): Promise<DomaineFonctionnelEntity[]> {
         const validData = DataBretagneDomaineFonctionnelValidator.validate(
             await this.getCollection<DataBretagneDomaineFonctionnelDto>("domaine-fonct"),
         );
         return validData.valids.map(DataBretagneDomaineFonctionnelMapper.toEntity);
     }
 
-    async getRefProgrammation() {
+    async getRefProgrammation(): Promise<RefProgrammationEntity[]> {
         const validData = DataBretagneRefProgrammationValidator.validate(
             await this.getCollection<DataBretagneRefProgrammationDto>("ref-programmation"),
         );

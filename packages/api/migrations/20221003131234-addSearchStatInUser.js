@@ -1,6 +1,6 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
-const userPort = require("../build/src/dataProviders/db/user/user.port").default;
+const userAdapter = require("../build/src/dataProviders/db/user/user.adapter").default;
 const asyncForEach = require("../build/src/shared/helpers/ArrayHelper").asyncForEach;
 
 module.exports = {
@@ -42,10 +42,10 @@ module.exports = {
                 result.push(partialUser);
             });
 
-        await asyncForEach(result, async partialUser => await userPort.update(partialUser));
+        await asyncForEach(result, async partialUser => await userAdapter.update(partialUser));
 
-        const users = await userPort.find({ stats: { $exists: false } });
+        const users = await userAdapter.find({ stats: { $exists: false } });
 
-        await asyncForEach(users, async user => await userPort.update({ ...user, stats: { searchCount: 0 } }));
+        await asyncForEach(users, async user => await userAdapter.update({ ...user, stats: { searchCount: 0 } }));
     },
 };

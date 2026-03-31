@@ -13,5 +13,6 @@ export interface DauphinPort {
     migrateDauphinCacheToDauphin(logger: (message: string, writeOnSameLine?: boolean) => void): Promise<void>;
     createSimplifiedDauphinBeforeJoin(): Promise<void>;
     joinGisproToSimplified(): Promise<void>;
+    findAllTempCursor(): unknown; // todo: precise return type (refacto AsyncIterable)
     cleanTempCollection(): Promise<void>;
 }

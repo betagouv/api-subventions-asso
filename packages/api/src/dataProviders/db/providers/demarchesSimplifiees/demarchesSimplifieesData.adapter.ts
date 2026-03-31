@@ -50,7 +50,6 @@ export class DemarchesSimplifieesDataAdapter
     }
 
     findAllCursor() {
-        // todo: add to port
         return this.collection.find({});
     }
 }

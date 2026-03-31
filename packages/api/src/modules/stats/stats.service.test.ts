@@ -69,20 +69,20 @@ describe("StatsService", () => {
             ${"firstName"}
             ${"lastName"}
             ${"phoneNumber"}
-        `("deletes $arg", ({ property }) => {
-            const actual = statsService.getAnonymizedLogsOnPeriod(START, END)[0].meta.req.body[property];
+        `("deletes $arg", async ({ property }) => {
+            const actual = (await statsService.getAnonymizedLogsOnPeriod(START, END))[0].meta.req.body[property];
             expect(actual).toBeUndefined();
         });
 
-        it("sets user id as ObjectId", () => {
+        it("sets user id as ObjectId", async () => {
             const expected = new ObjectId(ID_STRING);
-            const req = statsService.getAnonymizedLogsOnPeriod(START, END)[0].meta.req;
+            const req = (await statsService.getAnonymizedLogsOnPeriod(START, END))[0].meta.req as { userId?: ObjectId };
             const actual = req.userId;
             expect(actual).toEqual(expected);
         });
 
-        it("removes user's properties", () => {
-            const actual = statsService.getAnonymizedLogsOnPeriod(START, END)[0].meta.req.user;
+        it("removes user's properties", async () => {
+            const actual = (await statsService.getAnonymizedLogsOnPeriod(START, END))[0].meta.req.user;
             expect(actual).toBeUndefined();
         });
     });

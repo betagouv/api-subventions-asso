@@ -1,4 +1,4 @@
-const { default: osirisPort } = require("../build/src/dataProviders/db/providers/osiris/osiris.request.port");
+const { default: osirisAdapter } = require("../build/src/dataProviders/db/providers/osiris/osiris.request.adapter");
 const {
     default: associationNameRepository,
 } = require("../build/src/modules/association-name/repositories/associationName.repository");
@@ -11,7 +11,7 @@ module.exports = {
         console.log("Connecting to DB...");
         await connectDB();
         const associationNameCollection = db.collection("association-name");
-        const cursor = osirisPort.cursorFindRequests();
+        const cursor = osirisAdapter.cursorFindRequests();
 
         let counter = 0;
         console.log("Starting to fill association-name with osiris requests...");

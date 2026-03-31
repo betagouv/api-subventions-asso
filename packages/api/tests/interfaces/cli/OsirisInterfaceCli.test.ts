@@ -63,7 +63,7 @@ describe("OsirisCli", () => {
                 "../../modules/providers/osiris/__fixtures__/SuiviDossiers_test.xls",
             );
             await controller.parse("requests", filePath, "2022");
-            const requests = await osirisRequestAdapter.cursorFindRequests().toArray();
+            const requests = await osirisRequestAdapter.findAll();
             expect(
                 requests.map(request => ({ ...request, _id: expect.any(String), updateDate: expect.any(Date) })),
             ).toMatchSnapshot();

@@ -24,9 +24,11 @@ class StatsService {
         return logsAdapter.findByEmail(email);
     }
 
-    getAnonymizedLogsOnPeriod(start: Date, end: Date) {
-        const cursor = logsAdapter.getLogsOnPeriod(start, end);
-        return cursor.map(log => {
+    async getAnonymizedLogsOnPeriod(start: Date, end: Date): Promise<WinstonLog[]> {
+        const logsOnPeriod = logsAdapter.getLogsOnPeriod(start, end);
+        const result: WinstonLog[] = [];
+
+        for await (const log of logsOnPeriod) {
             const logToAnonymize: WinstonLog & { meta: { req: { userId?: ObjectId } } } = { ...log };
             if (logToAnonymize.meta.req?.body?.email) delete logToAnonymize.meta.req.body.email;
             if (logToAnonymize.meta.req?.body?.firstName) delete logToAnonymize.meta.req.body.firstName;
@@ -37,11 +39,11 @@ class StatsService {
                 // userId is needed for joins with another table, but is saved as a string because of a dependency bug
                 logToAnonymize.meta.req.userId = new ObjectId(logToAnonymize.meta.req.user._id);
                 delete logToAnonymize.meta.req.user;
-                return logToAnonymize;
-            } else {
-                return logToAnonymize;
             }
-        });
+            result.push(logToAnonymize);
+        }
+
+        return result;
     }
 
     getAssociationsVisitsOnPeriod(start: Date, end: Date) {

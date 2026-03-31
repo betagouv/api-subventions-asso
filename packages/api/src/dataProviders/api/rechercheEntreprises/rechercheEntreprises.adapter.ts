@@ -3,8 +3,9 @@ import ProviderRequestFactory, {
     ProviderRequestService,
 } from "../../../modules/provider-request/providerRequest.service";
 import { RechercheEntreprisesDto } from "./RechercheEntreprisesDto";
+import { RechercheEntreprisesPort } from "./recherche-entreprises.port";
 
-export class RechercheEntreprisesAdapter {
+export class RechercheEntreprisesAdapter implements RechercheEntreprisesPort {
     private static URL = "https://recherche-entreprises.api.gouv.fr/search";
     private http: ProviderRequestService;
 
@@ -12,7 +13,7 @@ export class RechercheEntreprisesAdapter {
         this.http = ProviderRequestFactory("recherche-entreprise");
     }
 
-    public async search(query: string, page = 1) {
+    public async search(query: string, page = 1): Promise<RechercheEntreprisesDto | null> {
         try {
             const result = await this.http.get<RechercheEntreprisesDto>(
                 RechercheEntreprisesAdapter.URL +

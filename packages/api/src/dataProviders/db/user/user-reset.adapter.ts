@@ -1,32 +1,33 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import UserReset from "../../../modules/user/entities/UserReset";
 import MongoAdapter from "../MongoAdapter";
+import { UserResetPort } from "./user-reset.port";
 
-export class UserResetAdapter extends MongoAdapter<UserReset> {
+export class UserResetAdapter extends MongoAdapter<UserReset> implements UserResetPort {
     collectionName = "users-reset";
 
-    public async findByToken(token: string) {
+    public async findByToken(token: string): Promise<UserReset | null> {
         return this.collection.findOne({ token });
     }
 
-    public async findByUserId(userId: ObjectId | string) {
+    public async findByUserId(userId: ObjectId | string): Promise<WithId<UserReset>[]> {
         return this.collection.find({ userId: new ObjectId(userId) }).toArray();
     }
 
-    public async findOneByUserId(userId: ObjectId | string) {
+    public async findOneByUserId(userId: ObjectId | string): Promise<UserReset | null> {
         return this.collection.findOne({ userId: new ObjectId(userId) });
     }
 
-    public async create(reset: UserReset) {
+    public async create(reset: UserReset): Promise<UserReset> {
         await this.collection.insertOne(reset);
         return reset;
     }
 
-    public async remove(reset: UserReset) {
-        return this.collection.deleteOne(reset);
+    public async remove(reset: UserReset): Promise<void> {
+        await this.collection.deleteOne(reset);
     }
 
-    public async removeAllByUserId(userId: ObjectId) {
+    public async removeAllByUserId(userId: ObjectId): Promise<boolean> {
         const result = await this.collection.deleteMany({ userId });
         return result.acknowledged;
     }

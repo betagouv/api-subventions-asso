@@ -1,5 +1,5 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
-const configRepo = require("../build/src/dataProviders/db/configurations/configurations.port").default;
+const configRepo = require("../build/src/dataProviders/db/configurations/configurations.adapter").default;
 module.exports = {
     async up() {
         await connectDB();

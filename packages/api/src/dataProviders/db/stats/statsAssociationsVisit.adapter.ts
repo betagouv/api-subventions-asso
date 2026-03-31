@@ -1,17 +1,20 @@
 import { ObjectId } from "mongodb";
 import MongoAdapter from "../MongoAdapter";
 import AssociationVisitEntity from "../../../modules/stats/entities/AssociationVisitEntity";
+import { StatsAssociationVisitPort } from "./stats-association-visit.port";
 
-export class StatsAssociationsVisitAdapter extends MongoAdapter<AssociationVisitEntity> {
+export class StatsAssociationsVisitAdapter
+    extends MongoAdapter<AssociationVisitEntity>
+    implements StatsAssociationVisitPort
+{
     collectionName = "stats-association-visits";
 
     joinIndexes = {
         user: "userId",
     };
 
-    async add(entity: AssociationVisitEntity) {
+    async add(entity: AssociationVisitEntity): Promise<void> {
         await this.collection.insertOne(entity);
-        return true;
     }
 
     async createIndexes() {
@@ -20,7 +23,7 @@ export class StatsAssociationsVisitAdapter extends MongoAdapter<AssociationVisit
         await this.collection.createIndex({ userId: 1 });
     }
 
-    async getLastSearchDate(userId) {
+    async getLastSearchDate(userId): Promise<Date | null> {
         const result = await this.collection.find({ userId }).sort({ date: -1 }).toArray();
         if (!result.length) return null;
         return result[0].date;
@@ -35,7 +38,7 @@ export class StatsAssociationsVisitAdapter extends MongoAdapter<AssociationVisit
         };
     }
 
-    findGroupedByAssociationIdentifier() {
+    findGroupedByAssociationIdentifier(): Promise<{ _id: string; visits: AssociationVisitEntity[] }[]> {
         return this.collection.aggregate([this._getGroupByAssociationIdentifierMatcher()]).toArray() as Promise<
             { _id: string; visits: AssociationVisitEntity[] }[]
         >;
@@ -58,7 +61,10 @@ export class StatsAssociationsVisitAdapter extends MongoAdapter<AssociationVisit
         return result.map(document => ({ ...document, _id: document._id.toString() }));
     }
 
-    async findGroupedByUserIdentifierOnPeriod(start: Date, end: Date) {
+    async findGroupedByUserIdentifierOnPeriod(
+        start: Date,
+        end: Date,
+    ): Promise<{ _id: string; associationVisits: AssociationVisitEntity[] }[]> {
         const result = (await this.collection
             .aggregate([
                 {
@@ -80,11 +86,11 @@ export class StatsAssociationsVisitAdapter extends MongoAdapter<AssociationVisit
         return result.map(document => ({ ...document, _id: document._id.toString() }));
     }
 
-    findByUserId(userId: string) {
+    findByUserId(userId: string): Promise<AssociationVisitEntity[]> {
         return this.collection.find({ userId: new ObjectId(userId) }).toArray();
     }
 
-    findOnPeriod(start: Date, end: Date) {
+    findOnPeriod(start: Date, end: Date): Promise<AssociationVisitEntity[]> {
         return this.collection
             .find({
                 date: {

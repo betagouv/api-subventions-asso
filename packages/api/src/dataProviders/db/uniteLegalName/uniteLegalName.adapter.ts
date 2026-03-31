@@ -4,16 +4,17 @@ import MongoAdapter from "../MongoAdapter";
 import Siren from "../../../identifierObjects/Siren";
 import UniteLegalNameMapper from "./unite-legal-name.mapper";
 import UniteLegalNameDbo from "./UniteLegalNameDbo";
+import { UniteLegalNamePort } from "./unite-legale-name.port";
 
-export class UniteLegalNameAdapter extends MongoAdapter<UniteLegalNameDbo> {
+export class UniteLegalNameAdapter extends MongoAdapter<UniteLegalNameDbo> implements UniteLegalNamePort {
     collectionName = "unite-legal-names";
 
-    async createIndexes() {
+    async createIndexes(): Promise<void> {
         await this.collection.createIndex({ searchKey: 1 }, { unique: true });
         await this.collection.createIndex({ siren: 1 });
     }
 
-    search(searchQuery: string) {
+    search(searchQuery: string): Promise<UniteLegalNameEntity[]> {
         return this.collection
             .find({
                 searchKey: { $regex: searchQuery },
@@ -28,7 +29,7 @@ export class UniteLegalNameAdapter extends MongoAdapter<UniteLegalNameDbo> {
      * @param {Siren} siren
      * @returns the latest name associate at the siren
      */
-    async findOneBySiren(siren: Siren) {
+    async findOneBySiren(siren: Siren): Promise<UniteLegalNameEntity | null> {
         const cursor = this.collection.find({ siren: siren.value }).sort({ updatedDate: 1 });
 
         if (!cursor.hasNext()) return null;
@@ -38,8 +39,8 @@ export class UniteLegalNameAdapter extends MongoAdapter<UniteLegalNameDbo> {
         return UniteLegalNameMapper.toEntity(dbo);
     }
 
-    upsert(entity: UniteLegalNameEntity) {
-        return this.collection.updateOne(
+    async upsert(entity: UniteLegalNameEntity): Promise<void> {
+        await this.collection.updateOne(
             { searchKey: entity.searchKey },
             { $set: UniteLegalNameMapper.toDbo(entity) },
             {
@@ -48,7 +49,7 @@ export class UniteLegalNameAdapter extends MongoAdapter<UniteLegalNameDbo> {
         );
     }
 
-    public upsertMany(entities: UniteLegalNameEntity[]) {
+    public async upsertMany(entities: UniteLegalNameEntity[]): Promise<void> {
         const operations = entities.map(
             e =>
                 ({
@@ -59,7 +60,7 @@ export class UniteLegalNameAdapter extends MongoAdapter<UniteLegalNameDbo> {
                     },
                 }) as AnyBulkWriteOperation<UniteLegalNameDbo>,
         );
-        return this.collection.bulkWrite(operations);
+        await this.collection.bulkWrite(operations);
     }
 }
 

@@ -1,12 +1,12 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
-    default: statsAssociationsVisitPort,
-} = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.port");
+    default: statsAssociationsVisitAdapter,
+} = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.adapter");
 
 module.exports = {
     async up() {
         await connectDB();
 
-        await statsAssociationsVisitPort.createIndexes();
+        await statsAssociationsVisitAdapter.createIndexes();
     },
 };

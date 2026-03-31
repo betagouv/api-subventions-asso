@@ -5,8 +5,9 @@ import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared
 import MongoAdapter from "../MongoAdapter";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/PortHelper";
 import UserDbo, { UserNotPersisted } from "./UserDbo";
+import { UserPort } from "./user.port";
 
-export class UserAdapter extends MongoAdapter<UserDbo> {
+export class UserAdapter extends MongoAdapter<UserDbo> implements UserPort {
     collectionName = "users";
 
     joinIndexes = {
@@ -16,11 +17,11 @@ export class UserAdapter extends MongoAdapter<UserDbo> {
     // must be removed with removeSecrets when returning UserDto
     secretFields = ["hashPassword", "jwt"];
 
-    async findAll() {
+    async findAll(): Promise<UserDto[]> {
         return this.collection.find({}).toArray();
     }
 
-    async findByEmail(email: string) {
+    async findByEmail(email: string): Promise<UserDto | null> {
         const user = await this.collection.findOne({ email: email });
         if (!user) return null;
         return removeSecrets(user);
@@ -142,17 +143,17 @@ export class UserAdapter extends MongoAdapter<UserDbo> {
         return this.collection.findOne({ _id: id });
     }
 
-    countTotalUsersOnDate(date, withAdmin: boolean) {
+    countTotalUsersOnDate(date, withAdmin: boolean): Promise<number> {
         const query: Filter<UserDbo> = { signupAt: { $lt: date } };
         if (!withAdmin) query.roles = { $ne: "admin" };
         return this.collection.find(query).count();
     }
 
-    async createIndexes() {
+    async createIndexes(): Promise<void> {
         await this.collection.createIndex({ email: 1 }, { unique: true });
     }
 
-    async updateNbRequests(countByUser: { count: number; _id: string }[]) {
+    async updateNbRequests(countByUser: { count: number; _id: string }[]): Promise<void> {
         const bulk = countByUser.map(({ _id, count }) => ({
             updateOne: {
                 filter: { _id: new ObjectId(_id) },
@@ -160,7 +161,7 @@ export class UserAdapter extends MongoAdapter<UserDbo> {
             },
         }));
         if (!bulk.length) return;
-        return this.db.collection("users").bulkWrite(bulk);
+        await this.db.collection("users").bulkWrite(bulk);
     }
 }
 
