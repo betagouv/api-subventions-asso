@@ -20,12 +20,12 @@ import paymentFlatAdapter from "../../../src/dataProviders/db/paymentFlat/paymen
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,
-} from "../../../src/modules/applicationFlat/__fixtures__";
+} from "../../../src/modules/applicationFlat/__fixtures__/application-flat.fixture";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY_2,
-} from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+} from "../../../src/modules/paymentFlat/__fixtures__/payment-flat.fixture";
 
 const g = global as unknown as { app: App };
 

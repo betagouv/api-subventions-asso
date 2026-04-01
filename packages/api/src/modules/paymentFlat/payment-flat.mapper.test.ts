@@ -3,7 +3,7 @@ import {
     CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS,
     FONJEP_PAYMENT_FLAT_ENTITY,
     PAYMENT_FROM_PAYMENT_FLAT,
-} from "./__fixtures__/paymentFlatEntity.fixture";
+} from "./__fixtures__/payment-flat.fixture";
 import PaymentFlatMapper from "./payment-flat.mapper";
 import {
     PAYMENT_FLAT_DBO,
@@ -85,6 +85,13 @@ describe("PaymentFlatAdapter", () => {
         it("given dbo with nulls, should return a PaymentFlatEntity with nulls", () => {
             const result = PaymentFlatMapper.dboToEntity(PAYMENT_FLAT_DBO_WITH_NULLS);
             expect(result).toMatchSnapshot();
+        });
+    });
+
+    describe("toDto", () => {
+        it("returns dto", () => {
+            const actual = PaymentFlatMapper.toDto(CHORUS_PAYMENT_FLAT_ENTITY);
+            expect(actual).toMatchSnapshot();
         });
     });
 });

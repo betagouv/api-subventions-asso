@@ -40,8 +40,8 @@ import {
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import { DATA_BRETAGNE_RECORDS } from "../dataBretagne/__fixtures__/dataBretagne.fixture";
-import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-import { APPLICATION_LINK_TO_FONJEP } from "../../applicationFlat/__fixtures__";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/payment-flat.fixture";
+import { APPLICATION_LINK_TO_FONJEP } from "../../applicationFlat/__fixtures__/application-flat.fixture";
 import { ReadableStream } from "node:stream/web";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import * as NumberHelper from "../../../shared/helpers/NumberHelper";

@@ -10,8 +10,8 @@ import type {
 import type { AxiosResponse } from "axios";
 import type { MockedFunction, MockInstance } from "vitest";
 import { type Input, type Options, stringify } from "csv-stringify/browser/esm/sync";
-import type { MissingHeadersDto } from "dto/build/depositScdlProcess/MissingHeadersDto";
 import { depositLogStore } from "$lib/store/depositLog.store";
+import type { MissingHeadersDto } from "dto/build/src/depositScdlProcess/MissingHeadersDto";
 
 vi.mock("csv-stringify/browser/esm/sync", () => ({
     stringify: vi.fn(),
@@ -48,7 +48,6 @@ describe("DepositLogService", () => {
         it("should return data when exists", async () => {
             const response = {
                 data: {
-                    overwriteAlert: true,
                     allocatorSiret: "12345678901234",
                     step: 1,
                 },
@@ -76,7 +75,6 @@ describe("DepositLogService", () => {
         it("should return data", async () => {
             const response = {
                 data: {
-                    overwriteAlert: true,
                     allocatorSiret: "12345678901234",
                     step: 1,
                 },
@@ -104,7 +102,6 @@ describe("DepositLogService", () => {
         it("should return data", async () => {
             const response = {
                 data: {
-                    overwriteAlert: true,
                     allocatorSiret: "12345678901234",
                     step: 1,
                 },
@@ -158,7 +155,6 @@ describe("DepositLogService", () => {
 
             const response = {
                 data: {
-                    overwriteAlert: true,
                     allocatorSiret: "12345678901234",
                     step: 2,
                     permissionAlert: true,
@@ -271,6 +267,7 @@ describe("DepositLogService", () => {
             errorStats: { count: 0, errorSample: [] },
             existingLinesInDbOnSamePeriod: 122,
             parseableLines: 123,
+            lineCountsByExercice: [{ exercice: 2024, parsedLines: 123, linesInDb: 122 }],
             fileName: "test.csv",
             uploadDate: new Date(),
             grantCoverageYears: [2024],
@@ -294,9 +291,19 @@ describe("DepositLogService", () => {
             expect(actual).toEqual(expected);
         });
 
+        it("should return lessGrantData when less grant data than in db for an exercice", () => {
+            fileInfos.lineCountsByExercice = [{ exercice: 2024, parsedLines: 123, linesInDb: 124 }];
+
+            const actual = depositLogService.determineFileValidationState("98765432101234", fileInfos);
+            const expected = FILE_VALIDATION_STATES.LESS_GRANT_DATA;
+
+            expect(actual).toEqual(expected);
+        });
+
         it("should return blockingErrors when blocking errors", () => {
             fileInfos.errorStats = { count: 1, errorSample: [{ bloquant: "oui" } as never] };
             fileInfos.parseableLines = 125;
+            fileInfos.lineCountsByExercice = [{ exercice: 2024, parsedLines: 123, linesInDb: 122 }];
 
             const actual = depositLogService.determineFileValidationState("98765432101234", fileInfos);
             const expected = FILE_VALIDATION_STATES.BLOCKING_ERRORS;
@@ -328,6 +335,7 @@ describe("DepositLogService", () => {
             errorStats: errorStats,
             existingLinesInDbOnSamePeriod: 125,
             parseableLines: 123,
+            lineCountsByExercice: [{ exercice: 2024, parsedLines: 123, linesInDb: 125 }],
             fileName: "test.csv",
             uploadDate: new Date(),
             grantCoverageYears: [2024],

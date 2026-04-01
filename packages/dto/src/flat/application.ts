@@ -4,62 +4,122 @@ import { OrDefault } from "../shared";
 
 interface MandatoryApplicationFlatDto extends CommonFlatDto {
     __data__?: Record<string, unknown>;
-    idSubvention: string; // nomProvider-idSubventionProvider
-    idSubventionProvider: string; // id interne (du provider) d'identification d'une subvention permettant de faire le lien avec les actions. En cas de financement pluriannuel, cet identifiant est le même pour chaque exercice budgétaire. Dans le cas où la subvention concerne plusieurs bénéficiaires, cet identifiant est le même pour chaque bénéficiaire
+    /** Identifiant unique de la demande : "{nomProvider}-{idSubventionProvider}" */
+    idSubvention: string;
+    /**
+     * Identifiant interne de la demande chez le fournisseur.
+     * En cas de financement pluriannuel, identique pour chaque exercice budgétaire.
+     * En cas de bénéficiaires multiples, identique pour chaque bénéficiaire.
+     */
+    idSubventionProvider: string;
+    /** Statut de la demande */
     statutLabel: ApplicationStatus;
-    montantDemande: number | null; // Montant demandé par le demandeur pour un exercice budgetaire donné
-    montantAccorde: number | null; // Montant accordé au demandeur pour un exercice budgetaire donné
-
-    exerciceBudgetaire: number | null; // subventia ne donne pas d'exercice budgétaire donc on est bloqué pour le moment
+    /**
+     * Montant demandé en euros pour l'exercice budgétaire.
+     * @example 15000
+     */
+    montantDemande: number | null;
+    /**
+     * Montant accordé en euros pour l'exercice budgétaire.
+     * @example 12000
+     */
+    montantAccorde: number | null;
+    /**
+     * Année de l'exercice budgétaire concerné.
+     * @example 2024
+     */
+    exerciceBudgetaire: number | null;
 }
 
 type OptionalApplicationFlatDto = {
-    idJointure: string; // id permettant de faire une jointure avec une autre source de données
-    descriptionIdJointure: string; // description de l'idJointure et de la jointure que l'idJointure permet d'effectuer
-    nomAttribuant: string; // Nom de l'autorité administrative qui pilote le dispositif ou programme de subvention ou en delegue la gestion
-    typeIdAttribuant: IdentifierIdName; // type identifiant de l'idAttribuant entre siren, siret, rid, ridet, tahiti, tahiti-t
-    idAttribuant: string; // identifiant de l'autorité administrative qui pilote le dispositif ou programme de subvention ou en delegue la gestion
-    nomAutoriteGestion: string; // Si l'attribuant delegue la gestion, nom de l'autorité administrative qui gère le dispositif ou programme de subvention.
-    idAutoriteGestion: string; // Si l'attribuant delegue la gestion, identifiant de l'autorité administrative qui gère le dispositif ou programme de subvention.
+    /** Identifiant permettant de faire une jointure avec une autre source de données */
+    idJointure: string;
+    /** Description de l'idJointure et de la jointure qu'il permet d'effectuer */
+    descriptionIdJointure: string;
+    /** Nom de l'autorité administrative qui pilote le dispositif ou programme de subvention */
+    nomAttribuant: string;
+    /** Type d'identifiant de l'attribuant (siren, siret, rid, ridet, tahiti...) */
+    typeIdAttribuant: IdentifierIdName;
+    /** Identifiant de l'autorité administrative qui pilote le dispositif ou programme de subvention */
+    idAttribuant: string;
+    /** Si l'attribuant délègue la gestion, nom de l'autorité administrative qui gère le dispositif */
+    nomAutoriteGestion: string;
+    /** Si l'attribuant délègue la gestion, identifiant de l'autorité administrative qui gère le dispositif */
+    idAutoriteGestion: string;
+    /** Type d'identifiant de l'autorité de gestion */
     typeIdAutoriteGestion: IdentifierIdName;
-    nomServiceInstructeur: string; // Nom du service qui instruit la demande
+    /** Nom du service qui instruit la demande */
+    nomServiceInstructeur: string;
+    /** Type d'identifiant du service instructeur */
     typeIdServiceInstructeur: IdentifierIdName;
-    idServiceInstructeur: string; // identifiant du service qui instruit la demande.
+    /** Identifiant du service qui instruit la demande */
+    idServiceInstructeur: string;
+    /** Indique si la subvention est pluriannuelle */
     pluriannualite: boolean;
+    /** Années concernées par la pluriannualité */
     anneesPluriannualite: number[];
-    dateDecision: string; // Date de la commission statuant sur l'attribution ou le refus de la subvention.
-    dateConvention: string; // Date de signature de la convention.
-    referenceDecision: string; // Identifiant interne de l’acte matérialisant la décision d’attribution de la subvention.
+    /** Date de la commission statuant sur l'attribution ou le refus de la subvention */
+    dateDecision: string;
+    /** Date de signature de la convention */
+    dateConvention: string;
+    /** Identifiant interne de l'acte matérialisant la décision d'attribution */
+    referenceDecision: string;
+    /** Date de dépôt de la demande */
     dateDepotDemande: string;
+    /** Année de la demande */
     anneeDemande: number;
-    dispositif: string; // Nom du dispositif de financement ou du programme de subvention (FIPDR, MILDECA, Fonds social européen...).
+    /** Nom du dispositif de financement ou du programme de subvention (FIPDR, MILDECA, FSE...) */
+    dispositif: string;
+    /** Sous-dispositif de financement */
     sousDispositif: string;
+    /** Objet de la demande */
     objet: string;
+    /** Nature de l'aide (numéraire ou en nature) */
     nature: ApplicationNature;
-    montantTotal: number; // Montant total de la subvention accordé pour un exercice budgetaire donné, avant répartition entre les béneficiaires.
+    /**
+     * Montant total accordé pour l'exercice budgétaire, avant répartition entre bénéficiaires.
+     * @example 30000
+     */
+    montantTotal: number;
+    /** Engagement juridique associé */
     ej: string;
-    idVersement: string; // Identifiant permettant de relier la demande de subvention aux versements.
+    /** Identifiant permettant de relier la demande aux versements */
+    idVersement: string;
+    /** Modalités de versement */
     conditionsVersements: PaymentCondition;
+    /** Description des modalités de versement */
     descriptionConditionsVersements: string;
+    /** Périodes de versement */
     datesPeriodeVersement: string[];
-    cofinancementsSollicites: boolean; // Indiquer si d'autres subventions publiques ont été sollicités pour le même projet.
-    nomsAttribuantsCofinanceurs: string[]; // Liste des noms des attribuants cofinanceurs qui ont été sollicités pour le projet.
+    /** Indique si d'autres subventions publiques ont été sollicitées pour le même projet */
+    cofinancementsSollicites: boolean;
+    /** Noms des attribuants cofinanceurs sollicités */
+    nomsAttribuantsCofinanceurs: string[];
+    /** Types d'identifiants des cofinanceurs sollicités */
     typeIdCofinanceursSollicites: IdentifierIdName[];
-    idCofinanceursSollicites: string[]; // Liste des identifiants des attribuants cofinanceurs qui ont été sollicités pour le projet
-    idRAE: string; // Numéro unique de référencement au répertoire des aides aux entreprises (RAE)
-    notificationUE: boolean; // Subvention attribuée au titre d’une aide de minimis notifiée à la Commission Européenne en vertu des dispositions du règlement n° 1407/2013 du 18 décembre 2013.
-    pourcentageSubvention: number; // Pourcentage du montant de la subvention attribuée au bénéficiaire
-    dateMiseAJour: string;
+    /** Identifiants des attribuants cofinanceurs sollicités */
+    idCofinanceursSollicites: string[];
+    /** Numéro unique de référencement au répertoire des aides aux entreprises (RAE) */
+    idRAE: string;
+    /** Subvention attribuée au titre d'une aide de minimis notifiée à la Commission Européenne */
+    notificationUE: boolean;
+    /**
+     * Pourcentage du montant de la subvention attribuée au bénéficiaire.
+     * @example 80
+     */
+    pourcentageSubvention: number;
 };
 
 export type ApplicationFlatDto = MandatoryApplicationFlatDto &
     OrDefault<OptionalApplicationFlatDto, NOT_APPLICABLE | null>;
 
+/** Nature de l'aide accordée */
 export enum ApplicationNature {
     MONEY = "Aide en numéraire",
     NATURE = "Aide en nature",
 }
 
+/** Modalités de versement de la subvention */
 export enum PaymentCondition {
     UNIQUE = "UNIQUE",
     PHASED = "PHASED",

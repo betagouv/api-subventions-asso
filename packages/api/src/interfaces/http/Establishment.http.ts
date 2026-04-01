@@ -1,14 +1,15 @@
-import type {
-    GetDocumentsResponseDto,
-    GetEstablishmentResponseDto,
-    GetSubventionsResponseDto,
-    GetPaymentsResponseDto,
-    EstablishmentIdentifierDto,
-    SiretDto,
-    PaymentFlatDto,
-    ApplicationFlatDto,
-    GetOldGrantsResponseDto,
-    GetGrantsResponseDto,
+import {
+    type GetDocumentsResponseDto,
+    type GetEstablishmentResponseDto,
+    type GetSubventionsResponseDto,
+    type GetPaymentsResponseDto,
+    type EstablishmentIdentifierDto,
+    type SiretDto,
+    type PaymentFlatDto,
+    type ApplicationFlatDto,
+    type GetOldGrantsResponseDto,
+    type GetGrantsResponseDto,
+    ApplicationStatus,
 } from "dto";
 
 import {
@@ -23,6 +24,7 @@ import {
     Hidden,
     Request,
     Deprecated,
+    Example,
 } from "tsoa";
 import { Readable } from "stream";
 import { NotAssociationError, HttpErrorInterface } from "core";
@@ -34,6 +36,9 @@ import associationHelper from "../../modules/associations/associations.helper";
 import paymentFlatService from "../../modules/paymentFlat/paymentFlat.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
 import grantService from "../../modules/grant/grant.service";
+import { APPLICATION_DTO_EXAMPLE, PAYMENT_DTO_EXAMPLE } from "./examples/Grants";
+import { OLD_APPLICATON_DTO, OLD_PAYMENT_DTO } from "./examples/OldGrants";
+import { DOCUMENT_DTO, DOCUMENT_RIB_DTO } from "./examples/Documents";
 
 export async function isEstabIdentifierFromAssoMiddleware(req, _res, next) {
     /*
@@ -63,9 +68,26 @@ export async function isEstabIdentifierFromAssoMiddleware(req, _res, next) {
 export class EstablishmentHttp extends Controller {
     /**
      * Remonte les informations d'un établissement
+     *
+     * @summary Informations d'un établissement
      * @param identifier  Identifiant Siret
      * @param req
      */
+    @Example<GetEstablishmentResponseDto>({
+        etablissement: {
+            siret: [
+                {
+                    type: "string",
+                    value: "12345678900012",
+                    provider: "Sirene",
+                    last_update: new Date("2024-01-15"),
+                },
+            ],
+            nic: [{ type: "string", value: "00012", provider: "Sirene", last_update: new Date("2024-01-15") }],
+            siege: [{ type: "boolean", value: true, provider: "Sirene", last_update: new Date("2024-01-15") }],
+            ouvert: [{ type: "boolean", value: true, provider: "Sirene", last_update: new Date("2024-01-15") }],
+        },
+    })
     @Get("/")
     @Response<HttpErrorInterface>("400", "SIRET incorrect", {
         message: "You must provide a valid SIRET",
@@ -88,6 +110,40 @@ export class EstablishmentHttp extends Controller {
      * @param req
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
+    @Example<GetOldGrantsResponseDto>({
+        subventions: [
+            {
+                application: {
+                    service_instructeur: {
+                        type: "string",
+                        value: "DRAJES Île-de-France",
+                        provider: "LeCompteAsso",
+                        last_update: new Date("2024-01-15"),
+                    },
+                    siret: {
+                        type: "string",
+                        value: "12345678900012",
+                        provider: "LeCompteAsso",
+                        last_update: new Date("2024-01-15"),
+                    },
+                    statut_label: {
+                        type: "string",
+                        value: ApplicationStatus.GRANTED,
+                        provider: "LeCompteAsso",
+                        last_update: new Date("2024-01-15"),
+                    },
+                    status: {
+                        type: "string",
+                        value: "Accordé",
+                        provider: "LeCompteAsso",
+                        last_update: new Date("2024-01-15"),
+                    },
+                },
+                payments: [],
+            },
+        ],
+        count: 1,
+    })
     @Deprecated()
     @Get("grants")
     public async getOldGrants(
@@ -109,6 +165,10 @@ export class EstablishmentHttp extends Controller {
      * @param req
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
+    @Example<GetGrantsResponseDto>({
+        subventions: [{ application: APPLICATION_DTO_EXAMPLE, payments: [PAYMENT_DTO_EXAMPLE] }],
+        count: 1,
+    })
     @Get("/grants/v2")
     public async getGrants(identifier: EstablishmentIdentifierDto, @Request() req): Promise<GetGrantsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
@@ -123,6 +183,9 @@ export class EstablishmentHttp extends Controller {
      * @param identifier  Identifiant Siret
      * @param req
      */
+    @Example<GetSubventionsResponseDto>({
+        subventions: [OLD_APPLICATON_DTO],
+    })
     @Get("subventions")
     public async getDemandeSubventions(
         identifier: EstablishmentIdentifierDto,
@@ -141,6 +204,9 @@ export class EstablishmentHttp extends Controller {
      * @param identifier  Identifiant Siret
      * @param req
      */
+    @Example<GetPaymentsResponseDto>({
+        versements: [OLD_PAYMENT_DTO],
+    })
     @Get("versements")
     public async getPaymentsEstablishement(
         identifier: EstablishmentIdentifierDto,
@@ -158,6 +224,7 @@ export class EstablishmentHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
+    @Example<PaymentFlatDto[]>([PAYMENT_DTO_EXAMPLE])
     @Get("/paiements")
     public async getEntitiesByIdentifier(
         identifier: EstablishmentIdentifierDto,
@@ -174,6 +241,7 @@ export class EstablishmentHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
+    @Example<ApplicationFlatDto[]>([APPLICATION_DTO_EXAMPLE])
     @Get("/applications")
     @Response<HttpErrorInterface>("404")
     public async getApplicationFlat(
@@ -191,6 +259,9 @@ export class EstablishmentHttp extends Controller {
      * @param identifier  Identifiant Siret
      * @param req
      */
+    @Example<GetDocumentsResponseDto>({
+        documents: [DOCUMENT_DTO],
+    })
     @Get("documents")
     public async getDocuments(
         identifier: EstablishmentIdentifierDto,
@@ -201,6 +272,14 @@ export class EstablishmentHttp extends Controller {
         return { documents };
     }
 
+    /**
+     * @summary RIBs d'un établissement
+     * @param identifier Identifiant Siret
+     * @param req
+     */
+    @Example<GetDocumentsResponseDto>({
+        documents: [DOCUMENT_RIB_DTO],
+    })
     @Get("documents/rib")
     public async getRibs(identifier: EstablishmentIdentifierDto, @Request() req): Promise<GetDocumentsResponseDto> {
         const estabIdentifier = req.estabIdentifier;

@@ -1,9 +1,10 @@
 import { AddEmailDomainDto, GetEmailDomainsDto, MainInfoBannerDto } from "dto";
-import { Controller, Get, Post, Route, Security, Tags, Response, Body, SuccessResponse } from "tsoa";
+import { Controller, Get, Post, Route, Security, Tags, Response, Body, SuccessResponse, Example, Hidden } from "tsoa";
 import { HttpErrorInterface } from "core";
 import configurationsService from "../../modules/configurations/configurations.service";
 
 @Route("/config")
+@Hidden()
 @Security("jwt", ["admin"])
 @Tags("Configurations Controller")
 export class ConfigurationsHttp extends Controller {
@@ -12,6 +13,7 @@ export class ConfigurationsHttp extends Controller {
      * @param domain String nom du domaine (ex @rhone.fr ou rhone.fr)
      * @returns {AddEmailDomainDto}
      */
+    @Example<AddEmailDomainDto>({ domain: "rhone.fr" })
     @Post("/domains")
     @SuccessResponse("201", "Created")
     @Response<HttpErrorInterface>(500, "Internal Server Error", {
@@ -27,6 +29,7 @@ export class ConfigurationsHttp extends Controller {
      * @summary Liste les noms de domaine authorisés
      * @returns {GetEmailDomainsDto}
      */
+    @Example<GetEmailDomainsDto>({ domains: ["rhone.fr", "lyon.fr", "metropole-lyon.fr"] })
     @Get("/domains")
     @Response<HttpErrorInterface>(500, "Internal Server Error", {
         message: "Internal Server Error",
@@ -42,6 +45,10 @@ export class ConfigurationsHttp extends Controller {
      * @param desc Contenu du bandeau - en HTML
      * @returns {MainInfoBannerDto}
      */
+    @Example<MainInfoBannerDto>({
+        title: "Maintenance planifiée",
+        desc: "<p>Le service sera indisponible le 20 janvier de 8h à 10h.</p>",
+    })
     @Post("/main-info-banner")
     @SuccessResponse("201", "Updated")
     @Response<HttpErrorInterface>(500, "Internal Server Error", {
@@ -57,6 +64,10 @@ export class ConfigurationsHttp extends Controller {
      * @summary Récupère les infos du bandeau d'informations de la homepage
      * @returns {MainInfoBannerDto}
      */
+    @Example<MainInfoBannerDto>({
+        title: "Maintenance planifiée",
+        desc: "<p>Le service sera indisponible le 20 janvier de 8h à 10h.</p>",
+    })
     @Get("/main-info-banner")
     @Security("jwt")
     @Response<HttpErrorInterface>(500, "Internal Server Error", {

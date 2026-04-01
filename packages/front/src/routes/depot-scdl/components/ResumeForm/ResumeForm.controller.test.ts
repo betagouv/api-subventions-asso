@@ -14,7 +14,6 @@ describe("ResumeFormController", () => {
             step: 2,
             permissionAlert: true,
             allocatorSiret: "12345678901234",
-            overwriteAlert: true,
             uploadedFileInfos: {
                 fileName: "test.csv",
                 errorStats: { count: 0, errorSample: [] },
@@ -22,6 +21,7 @@ describe("ResumeFormController", () => {
                 missingHeaders: { mandatory: [], optional: [] },
                 existingLinesInDbOnSamePeriod: 12,
                 totalLines: 124,
+                lineCountsByExercice: [{ exercice: 2014, linesInDb: 12, parsedLines: 123 }],
                 uploadDate: new Date(),
                 grantCoverageYears: [2024],
                 allocatorsSiret: ["12345678901234"],
@@ -54,7 +54,6 @@ describe("ResumeFormController", () => {
                 step: 1,
                 permissionAlert: true,
                 allocatorSiret: "12345678901234",
-                overwriteAlert: true,
             };
             const controller = new ResumeFormController();
             expect(controller.currentView).toBe("siretView");

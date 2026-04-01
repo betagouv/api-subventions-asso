@@ -1,63 +1,159 @@
-import type { CreateDepositScdlLogDto } from "dto";
+import {
+    EXCEL_EXT,
+    type FileFormat,
+    getExcelSheetNames,
+    getFileExtension,
+    validateFile,
+} from "$lib/helpers/fileHelper";
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
+import Store from "$lib/core/Store";
+import FileSizeError from "$lib/errors/file-errors/FileSizeError";
+import FileFormatError from "$lib/errors/file-errors/FileFormatError";
+import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
 import { depositLogStore } from "$lib/store/depositLog.store";
-import StaticError from "$lib/errors/StaticError";
-import Store, { derived, ReadStore } from "$lib/core/Store";
-import { isSiret } from "$lib/helpers/identifierHelper";
-import errorService from "$lib/services/error.service";
+import type { EventDispatcher } from "svelte";
+import type { DepositScdlLogDto } from "dto";
+
+type EventMap = {
+    prevStep: void;
+    nextStep: void;
+    loading: string;
+    endLoading: void;
+    error: string;
+};
 
 export default class Step2Controller {
-    private DEPOSIT_LOG_STEP = 1;
-    public hasError: ReadStore<boolean>;
-    public isDisabled: ReadStore<boolean>;
-    public touched: Store<boolean> = new Store(false);
-    public inputValue: Store<string> = new Store("");
+    private selectedFile: File | null = null;
+    private MAX_MO_FILE_SIZE = 30;
+    private MIN_LOADING_TIME = 2000;
+    private readonly dispatch: EventDispatcher<EventMap>;
 
-    constructor() {
-        if (depositLogStore.value?.allocatorSiret) {
-            this.inputValue.set(depositLogStore.value.allocatorSiret);
+    constructor(dispatch: EventDispatcher<EventMap>) {
+        this.dispatch = dispatch;
+        this.allocatorSiret = depositLogStore.value!.allocatorSiret!;
+        this.allocatorName = depositLogStore.value!.allocatorName;
+    }
+
+    public uploadConfig = {
+        label: "Ajouter un fichier",
+        hint: "Formats supportés : csv., xls., xlsx <br> Un seul fichier possible.",
+        acceptedFormats: ["csv", "xls"] as FileFormat[],
+    };
+
+    public noFileOrInvalid: Store<boolean> = new Store(true);
+    public excelSheets: Store<string[]> = new Store([]);
+    public view: Store<"upload" | "sheetSelector"> = new Store("upload");
+    public uploadErrorMessage: Store<string | undefined> = new Store(undefined);
+    public uploadError: Store<boolean> = new Store(false);
+    public errorAlertVisible: Store<boolean> = new Store(false);
+    public allocatorSiret: string;
+    public allocatorName?: string;
+
+    async handleFileChange(event: CustomEvent<{ files: FileList | null }>) {
+        const files = event.detail.files;
+        if (!files || files.length === 0) {
+            this.selectedFile = null;
+            this.clearUploadError();
+            return;
         }
 
-        this.hasError = derived([this.inputValue, this.touched], ([input, touched]) => {
-            if (!input) {
-                this.setTouch(false);
-                return false;
-            } else if (isSiret(input)) return false;
-            return touched && !isSiret(input);
-        });
-        this.isDisabled = derived(this.inputValue, input => {
-            return !isSiret(input);
-        });
+        const file = files[0];
+
+        try {
+            await validateFile(file, this.uploadConfig.acceptedFormats, this.MAX_MO_FILE_SIZE);
+        } catch (error) {
+            this.uploadError.set(true);
+            this.noFileOrInvalid.set(true);
+
+            if (error instanceof FileSizeError) {
+                this.uploadErrorMessage.set(
+                    `Le fichier est trop volumineux. Il doit faire moins de ${error.maxSizeMb} Mo.`,
+                );
+            } else if (error instanceof FileFormatError) {
+                this.uploadErrorMessage.set(
+                    "Ce format de fichier n'est pas supporté. Veuillez déposer un fichier au format CSV, XLS ou XLSX.",
+                );
+            } else if (error instanceof FileEncodingError) {
+                this.uploadErrorMessage.set(
+                    "Veuillez déposer un fichier au format CSV, XLS ou XLSX avec encodage UTF-8 ou Windows-1252.",
+                );
+            } else {
+                console.error("Unexpected validation error:", error);
+                this.uploadErrorMessage.set("Une erreur est survenue lors de la validation du fichier.");
+            }
+            return;
+        }
+
+        this.selectedFile = file;
+        this.clearUploadError();
     }
 
-    setTouch(bool: boolean) {
-        this.touched.set(bool);
+    clearUploadError() {
+        this.uploadError.set(false);
+        this.uploadErrorMessage.set("");
+        this.noFileOrInvalid.set(false);
     }
 
-    async handleValidate(): Promise<"success" | "resume" | void> {
-        const data: CreateDepositScdlLogDto = {
-            overwriteAlert: true,
-            allocatorSiret: this.inputValue.value.replace(/\s+/g, ""), // sanitize
+    async handleValidate() {
+        const file = this.selectedFile;
+        if (!file) {
+            return;
+        }
+
+        const fileExtension = getFileExtension(file.name);
+        if (fileExtension && EXCEL_EXT.includes(fileExtension)) {
+            const sheetNames = await getExcelSheetNames(file);
+            if (sheetNames.length > 1) {
+                this.excelSheets.set(sheetNames);
+                this.view.set("sheetSelector");
+                return;
+            }
+        }
+        await this.uploadFile();
+    }
+
+    async handleSheetSelected(event: CustomEvent<string>) {
+        const selectedSheet = event.detail;
+        await this.uploadFile(selectedSheet);
+    }
+
+    private async uploadFile(selectedSheet?: string) {
+        const startTime = Date.now();
+        this.dispatch("loading", "Veuillez patientez, nous analysons vos données");
+
+        const depositLog: DepositScdlLogDto = {
+            permissionAlert: true,
         };
 
         try {
-            if (depositLogStore.value) {
-                if (depositLogStore.value?.allocatorSiret !== data.allocatorSiret) {
-                    const depositLog = await depositLogService.updateDepositLog(this.DEPOSIT_LOG_STEP, data);
-                    depositLogStore.set(depositLog);
-                }
-            } else {
-                const depositLog = await depositLogService.createDepositLog(data);
-                depositLogStore.set(depositLog);
+            const updatedDepositLog = await depositLogService.postScdlFile(
+                this.selectedFile!,
+                depositLog,
+                selectedSheet,
+            );
+            depositLogStore.set(updatedDepositLog);
+
+            const elapsed = Date.now() - startTime;
+            const remainingTime = this.MIN_LOADING_TIME - elapsed;
+
+            if (remainingTime > 0) {
+                await new Promise(resolve => setTimeout(resolve, remainingTime));
             }
 
-            return "success";
+            this.dispatch("nextStep");
         } catch (e) {
-            const typedError = (e as StaticError).data as { code?: number; message?: string }; // todo : create type
-            errorService.handleError(e);
-            if (typedError.code === 409) {
-                return "resume";
-            }
+            console.error("Erreur lors de l'upload du fichier", e);
+            this.errorAlertVisible.set(true);
+        } finally {
+            this.dispatch("endLoading");
+            this.errorAlertVisible.set(true);
         }
+    }
+
+    handleRestartUpload() {
+        this.selectedFile = null;
+        this.noFileOrInvalid.set(true);
+        this.excelSheets.set([]);
+        this.view.set("upload");
     }
 }

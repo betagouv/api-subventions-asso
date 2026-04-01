@@ -165,6 +165,7 @@ export default class ScdlGrantParser {
                 grantCoverageYears: [],
                 parseableLines: 0,
                 totalLines,
+                lineCountsByExercice: [],
                 missingHeaders: headerValidation,
             },
         };
@@ -181,6 +182,7 @@ export default class ScdlGrantParser {
         const updateDate = new Date();
         const allocatorsSiret: Set<string> = new Set();
         const grantCoverageYears: Set<number> = new Set();
+        const lineCountByExercice: Record<number, number> = {};
 
         const headerValidation = ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
         if (headerValidation.mandatory.length > 0) {
@@ -213,6 +215,7 @@ export default class ScdlGrantParser {
                 }
                 if (entity.exercice != null) {
                     grantCoverageYears.add(entity.exercice);
+                    lineCountByExercice[entity.exercice] = (lineCountByExercice[entity.exercice] || 0) + 1;
                 }
             } else {
                 invalidEntities.push(entity);
@@ -235,6 +238,7 @@ export default class ScdlGrantParser {
             grantCoverageYears: Array.from(grantCoverageYears).sort((a, b) => a - b),
             parseableLines: storableChunk.length,
             totalLines: parsedChunk.length + 1, // + 1 for headers, empty lines are lost
+            lineCountsByExercice: lineCountByExercice,
             missingHeaders: headerValidation,
         };
         return { entities: storableChunk, problems: errors, parsedInfos: parsedInfos };

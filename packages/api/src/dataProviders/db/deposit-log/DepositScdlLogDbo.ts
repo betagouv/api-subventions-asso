@@ -6,8 +6,8 @@ export default interface DepositScdlLogDbo {
     updateDate: Date;
     userId: string;
     step: number;
-    overwriteAlert?: boolean;
     permissionAlert?: boolean;
     allocatorSiret?: string;
+    allocatorName?: string;
     uploadedFileInfos?: UploadedFileInfosDbo;
 }

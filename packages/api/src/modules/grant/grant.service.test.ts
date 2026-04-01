@@ -11,13 +11,16 @@ import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import Siret from "../../identifierObjects/Siret";
-import { APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_FONJEP } from "../applicationFlat/__fixtures__";
+import {
+    APPLICATION_LINK_TO_CHORUS,
+    APPLICATION_LINK_TO_FONJEP,
+} from "../applicationFlat/__fixtures__/application-flat.fixture";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY_2,
     LONELY_CHORUS_PAYMENT,
-} from "../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+} from "../paymentFlat/__fixtures__/payment-flat.fixture";
 import applicationFlatService from "../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../paymentFlat/paymentFlat.service";
 

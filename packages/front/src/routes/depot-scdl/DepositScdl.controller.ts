@@ -8,7 +8,6 @@ import { derived } from "svelte/store";
 export class DepositScdlController {
     private lastStep: number;
     public stepsDesc = [
-        "Information sur la mise à jour des données",
         "Pour qui déposez-vous ce jeu de données ?",
         "Déposer votre fichier au format SCDL",
         "Résumé de votre dépôt",
@@ -59,9 +58,9 @@ export class DepositScdlController {
         this.currentView.set("form");
 
         if (depositLogStore.value!.step === 1) {
-            this.currentStep.set(3);
+            this.currentStep.set(2);
         } else if (depositLogStore.value!.step === 2) {
-            this.currentStep.set(4);
+            this.currentStep.set(3);
         }
     }
 

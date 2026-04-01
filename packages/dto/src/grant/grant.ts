@@ -10,4 +10,10 @@ export type PublishableFullGrantDto = PublishablePaymentDto & PublishableApplica
 
 export type PublishableGrantDto = PublishableFullGrantDto | PublishablePaymentDto | PublishableApplicationDto;
 
-export type Grant = { application: DemandeSubvention | null; payments: Payment[] };
+/** Subvention agrégée : demande et versements associés (format legacy) */
+export type Grant = {
+    /** Demande de subvention associée. Null si versements sans demande connue. */
+    application: DemandeSubvention | null;
+    /** Versements liés à cette demande */
+    payments: Payment[];
+};

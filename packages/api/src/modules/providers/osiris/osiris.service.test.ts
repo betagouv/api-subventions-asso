@@ -7,7 +7,7 @@ import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import { ReadableStream } from "stream/web";
-import { APPLICATION_LINK_TO_CHORUS } from "../../applicationFlat/__fixtures__";
+import { APPLICATION_LINK_TO_CHORUS } from "../../applicationFlat/__fixtures__/application-flat.fixture";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { REQUEST_DBO } from "./__fixtures__/osiris.request.fixtures";
 import { ACTION_ENTITY } from "./__fixtures__/osiris.action.fixtures";

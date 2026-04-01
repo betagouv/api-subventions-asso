@@ -16,13 +16,13 @@ describe("toStatusFactory", () => {
     });
 
     it("returns unknown if no match found", () => {
-        const expected = ApplicationStatus.UNKNWON;
+        const expected = ApplicationStatus.UNKNOWN;
         const actual = helper("I am nowhere");
         expect(actual).toBe(expected);
     });
 
     it("returns unknown if not an array", () => {
-        const expected = ApplicationStatus.UNKNWON;
+        const expected = ApplicationStatus.UNKNOWN;
         // @ts-expect-error test edge cases
         const helper = toStatusFactory("tata");
         const actual = helper(PROVIDER_STATUS);

@@ -1,12 +1,18 @@
 import { SiretDto, ProviderValue } from "../shared";
 import { Payment } from "../payments";
 
+/** Statut d'une demande de subvention */
 export enum ApplicationStatus {
+    /** Demande en cours d'instruction */
     PENDING = "En instruction",
+    /** Demande inéligible */
     INELIGIBLE = "Inéligible",
+    /** Subvention accordée */
     GRANTED = "Accordé",
+    /** Demande refusée */
     REFUSED = "Refusé",
-    UNKNWON = "",
+    /** Statut inconnu ou non renseigné */
+    UNKNOWN = "",
 }
 
 export interface DemandeSubvention {

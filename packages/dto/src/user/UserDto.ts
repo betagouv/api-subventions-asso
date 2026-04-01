@@ -29,6 +29,11 @@ export interface UserDto extends FutureUserDto, Omit<UserActivationInfoDto, "pas
     nbVisits: number;
 }
 
+export interface ActivateUserBody {
+    token: string;
+    data: UserActivationInfoDto;
+}
+
 export interface UserActivationInfoDto {
     password: string;
     agentType: AgentTypeEnum;

@@ -142,6 +142,34 @@ export default class PaymentFlatMapper {
     }
 
     static toDto(entity: PaymentFlatEntity) {
-        return PaymentFlatMapper.toDbo(entity) as PaymentFlatDto;
+        const dto: PaymentFlatDto = {
+            idUnique: entity.uniqueId,
+            typeIdEntrepriseBeneficiaire: entity.beneficiaryCompanyIdType,
+            idEntrepriseBeneficiaire: entity.beneficiaryCompanyId.value,
+            typeIdEtablissementBeneficiaire: entity.beneficiaryEstablishmentIdType,
+            idEtablissementBeneficiaire: entity.beneficiaryEstablishmentId.value,
+            fournisseur: entity.provider,
+            idVersement: entity.paymentId,
+            exerciceBudgetaire: entity.budgetaryYear,
+            montant: entity.amount,
+            dateOperation: entity.operationDate,
+            programme: entity.programName,
+            numeroProgramme: entity.programNumber.toString(),
+            mission: entity.mission,
+            ministere: entity.ministry,
+            sigleMinistere: entity.ministryAcronym,
+            ej: entity.ej,
+            codeAction: entity.actionCode,
+            action: entity.actionLabel,
+            codeActivite: entity.activityCode,
+            activite: entity.activityLabel,
+            codeCentreFinancier: entity.financialCenterCode,
+            libelleCentreFinancier: entity.financialCenterLabel,
+            attachementComptable: entity.accountingAttachment,
+            regionAttachementComptable: entity.accountingAttachmentRegion,
+            dateMiseAJour: entity.updateDate.toISOString(),
+        };
+
+        return dto;
     }
 }
