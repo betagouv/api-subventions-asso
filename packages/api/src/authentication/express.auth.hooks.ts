@@ -8,7 +8,7 @@ import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
 import { JWT_SECRET } from "../configurations/jwt.conf";
 import { getJtwTokenFromRequest } from "../shared/helpers/HttpHelper";
 import userAuthService from "../modules/user/services/auth/user.auth.service";
-import { AGENT_CONNECT_ENABLED } from "../configurations/agentConnect.conf";
+import { AGENT_CONNECT_ENABLED } from "../configurations/pro-connect.conf";
 import userAgentConnectService from "../modules/user/services/agentConnect/user.agentConnect.service";
 import { AgentConnectUser } from "../modules/user/@types/AgentConnectUser";
 import nonce = generators.nonce;

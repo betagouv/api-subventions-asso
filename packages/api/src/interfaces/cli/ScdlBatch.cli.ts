@@ -14,7 +14,7 @@ import {
 import {
     SCDL_FILE_PROCESSING_CONFIG_FILENAME,
     SCDL_FILE_PROCESSING_PATH,
-} from "../../configurations/scdlIntegration.conf";
+} from "../../configurations/scdl-process.conf";
 import { FileExtensionEnum } from "../../@enums/FileExtensionEnum";
 import { isNumberValid, isShortISODateValid, isStringValid } from "../../shared/Validators";
 import scdlService from "../../modules/providers/scdl/scdl.service";

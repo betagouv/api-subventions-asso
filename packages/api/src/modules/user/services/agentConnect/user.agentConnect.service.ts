@@ -17,7 +17,7 @@ import {
     AGENT_CONNECT_CLIENT_ID,
     AGENT_CONNECT_CLIENT_SECRET,
     AGENT_CONNECT_URL,
-} from "../../../../configurations/agentConnect.conf";
+} from "../../../../configurations/pro-connect.conf";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 
 export class UserAgentConnectService {

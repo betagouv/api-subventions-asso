@@ -22,7 +22,7 @@ import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
 import { headersMiddleware } from "./middlewares/headersMiddleware";
 import { DEV, ENV } from "./configurations/env.conf";
-import { SESSION_SECRET } from "./configurations/agentConnect.conf";
+import { SESSION_SECRET } from "./configurations/pro-connect.conf";
 import { mongoSessionStoreConfig } from "./shared/MongoConnection";
 import { FRONT_OFFICE_URL } from "./configurations/front.conf";
 

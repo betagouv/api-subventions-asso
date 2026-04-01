@@ -18,7 +18,7 @@ import type { IdentifiedRequest, LoginRequest } from "../../@types";
 
 import { DEV } from "../../configurations/env.conf";
 import { DOMAIN } from "../../configurations/domain.conf";
-import { AGENT_CONNECT_ENABLED } from "../../configurations/agentConnect.conf";
+import { AGENT_CONNECT_ENABLED } from "../../configurations/pro-connect.conf";
 import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, Example } from "tsoa";
 import { BadRequestError, InternalServerError } from "core";
 import userAuthService from "../../modules/user/services/auth/user.auth.service";

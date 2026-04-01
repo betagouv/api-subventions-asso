@@ -1,5 +1,5 @@
 import userAgentConnectService, { UserAgentConnectService } from "./user.agentConnect.service";
-import { AGENT_CONNECT_URL } from "../../../../configurations/agentConnect.conf";
+import { AGENT_CONNECT_URL } from "../../../../configurations/pro-connect.conf";
 import { Issuer, TokenSet } from "openid-client";
 import { AgentConnectTokenDbo, AgentConnectUser } from "../../@types/AgentConnectUser";
 import userAdapter from "../../../../dataProviders/db/user/user.adapter";
