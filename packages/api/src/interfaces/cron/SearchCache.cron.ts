@@ -1,5 +1,5 @@
 import { AsyncCron } from "../../decorators/cronController.decorator";
-import { CronController } from "../../@types/cron";
+import { CronController } from "../../@types/CronController";
 import searchService from "../../modules/search/search.service";
 
 export class SearchCacheCron implements CronController {

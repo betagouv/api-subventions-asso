@@ -16,7 +16,7 @@ import {
     Hidden,
 } from "tsoa";
 import { BadRequestError, HttpErrorInterface } from "core";
-import { RoleEnum } from "../../@enums/Roles";
+import { RoleEnum } from "../../@enums/RolesEnum";
 import userRolesService from "../../modules/user/services/roles/user.roles.service";
 import userRgpdService from "../../modules/user/services/rgpd/user.rgpd.service";
 import userCrudService from "../../modules/user/services/crud/user.crud.service";

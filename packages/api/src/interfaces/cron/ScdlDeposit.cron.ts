@@ -1,5 +1,5 @@
 import { AsyncCron } from "../../decorators/cronController.decorator";
-import { CronController } from "../../@types/cron";
+import { CronController } from "../../@types/CronController";
 import { scdlDepositCronService } from "../../init-services";
 
 export class ScdlDepositCron implements CronController {

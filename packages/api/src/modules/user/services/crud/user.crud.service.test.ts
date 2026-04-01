@@ -36,7 +36,7 @@ import userConsumerService from "../consumer/user.consumer.service";
 jest.mock("../consumer/user.consumer.service");
 const mockedUserConsumerService = jest.mocked(userConsumerService);
 import notifyService from "../../../notify/notify.service";
-import { RoleEnum } from "../../../../@enums/Roles";
+import { RoleEnum } from "../../../../@enums/RolesEnum";
 import { UserDto } from "dto";
 import UserReset from "../../entities/UserReset";
 

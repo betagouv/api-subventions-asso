@@ -1,6 +1,6 @@
 import { UserDto } from "dto";
 import { BadRequestError, InternalServerError } from "core";
-import { RoleEnum } from "../../../../@enums/Roles";
+import { RoleEnum } from "../../../../@enums/RolesEnum";
 import userAdapter from "../../../../dataProviders/db/user/user.adapter";
 import { UserServiceErrors } from "../../user.enum";
 

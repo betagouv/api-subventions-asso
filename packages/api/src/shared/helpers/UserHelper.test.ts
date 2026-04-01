@@ -1,7 +1,7 @@
 import * as UserHelper from "./UserHelper";
 import statsService from "../../modules/stats/stats.service";
 import { ObjectId } from "mongodb";
-import { RoleEnum } from "../../@enums/Roles";
+import { RoleEnum } from "../../@enums/RolesEnum";
 import { UserDto } from "dto";
 
 describe("UserHelper", () => {

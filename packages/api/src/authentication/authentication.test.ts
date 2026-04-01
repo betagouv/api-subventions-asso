@@ -4,7 +4,7 @@ import { expressAuthentication } from "./authentication";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import { LoginRequest } from "../@types";
-import { RoleEnum } from "../@enums/Roles";
+import { RoleEnum } from "../@enums/RolesEnum";
 import { AgentTypeEnum } from "dto";
 import userAuthService from "../modules/user/services/auth/user.auth.service";
 import userActivationService from "../modules/user/services/activation/user.activation.service";

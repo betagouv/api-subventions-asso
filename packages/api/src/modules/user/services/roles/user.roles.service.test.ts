@@ -1,4 +1,4 @@
-import { RoleEnum } from "../../../../@enums/Roles";
+import { RoleEnum } from "../../../../@enums/RolesEnum";
 import { BadRequestError, InternalServerError } from "core";
 import userRolesService from "./user.roles.service";
 import userAdapter from "../../../../dataProviders/db/user/user.adapter";

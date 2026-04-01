@@ -1,4 +1,4 @@
-import { CronController } from "../../@types/cron";
+import { CronController } from "../../@types/CronController";
 import { AsyncCron } from "../../decorators/cronController.decorator";
 import sireneStockUniteLegaleFileService from "../../modules/providers/sirene/stockUniteLegale/sireneStockUniteLegale.file.service";
 

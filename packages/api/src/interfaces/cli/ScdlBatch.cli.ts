@@ -10,7 +10,7 @@ import {
     ScdlParseCsvArgs,
     ScdlParseParams,
     ScdlParseXlsArgs,
-} from "../../@types/ScdlDataIntegration";
+} from "../../@types/ScdlProcess";
 import {
     SCDL_FILE_PROCESSING_CONFIG_FILENAME,
     SCDL_FILE_PROCESSING_PATH,

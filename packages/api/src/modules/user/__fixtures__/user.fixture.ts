@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { AgentJobTypeEnum, AgentTypeEnum, UserDto } from "dto";
 import { USER_EMAIL } from "../../../../tests/__helpers__/userHelper";
 import { UserNotPersisted } from "../../../dataProviders/db/user/UserDbo";
-import { RoleEnum } from "../../../@enums/Roles";
+import { RoleEnum } from "../../../@enums/RolesEnum";
 
 export const SIGNED_TOKEN = "SIGNED_TOKEN";
 

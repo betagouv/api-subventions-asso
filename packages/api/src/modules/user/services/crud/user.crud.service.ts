@@ -8,7 +8,7 @@ import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapt
 import consumerTokenAdapter from "../../../../dataProviders/db/user/consumer-token.adapter";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import { RoleEnum } from "../../../../@enums/Roles";
+import { RoleEnum } from "../../../../@enums/RolesEnum";
 import userAuthService from "../auth/user.auth.service";
 import { UserNotPersisted } from "../../../../dataProviders/db/user/UserDbo";
 import userConsumerService from "../consumer/user.consumer.service";

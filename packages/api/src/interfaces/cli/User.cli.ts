@@ -4,7 +4,7 @@ import userStatsService from "../../modules/user/services/stats/user.stats.servi
 import userActivationService from "../../modules/user/services/activation/user.activation.service";
 import userCrudService from "../../modules/user/services/crud/user.crud.service";
 import userRgpdService from "../../modules/user/services/rgpd/user.rgpd.service";
-import { RoleEnum } from "../../@enums/Roles";
+import { RoleEnum } from "../../@enums/RolesEnum";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCli {

@@ -1,6 +1,6 @@
 import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import { RoleEnum } from "../../../src/@enums/Roles";
+import { RoleEnum } from "../../../src/@enums/RolesEnum";
 import { createAndActiveUser, createConsumerUser } from "../../__helpers__/userHelper";
 import userAdapter from "../../../src/dataProviders/db/user/user.adapter";
 import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/statsAssociationsVisit.adapter";

@@ -6,11 +6,7 @@ import {
     SCDL_FILE_PROCESSING_PATH,
     SCDL_FILE_PROCESSING_CONFIG_FILENAME,
 } from "../../configurations/scdlIntegration.conf";
-import {
-    ScdlFileProcessingConfig,
-    ScdlFileProcessingConfigList,
-    ScdlParseCsvArgs,
-} from "../../@types/ScdlDataIntegration";
+import { ScdlFileProcessingConfig, ScdlFileProcessingConfigList, ScdlParseCsvArgs } from "../../@types/ScdlProcess";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import ScdlCli from "./Scdl.cli";
 import MiscScdlProducerEntity from "../../modules/providers/scdl/entities/MiscScdlProducerEntity";

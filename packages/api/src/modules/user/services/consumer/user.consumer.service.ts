@@ -3,7 +3,7 @@ import { FutureUserDto } from "dto";
 import { InternalServerError, NotFoundError } from "core";
 import userCrudService from "../crud/user.crud.service";
 import userAuthService from "../auth/user.auth.service";
-import { RoleEnum } from "../../../../@enums/Roles";
+import { RoleEnum } from "../../../../@enums/RolesEnum";
 import { ConsumerToken } from "../../entities/ConsumerToken";
 import consumerTokenAdapter from "../../../../dataProviders/db/user/consumer-token.adapter";
 import { UserServiceErrors } from "../../user.enum";

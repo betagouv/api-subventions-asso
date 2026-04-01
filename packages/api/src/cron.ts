@@ -1,5 +1,5 @@
 import { ToadScheduler } from "toad-scheduler";
-import { CronController } from "./@types/cron";
+import { CronController } from "./@types/CronController";
 import { DemarchesSimplifieesCron } from "./interfaces/cron/DemarchesSimplifiees.cron";
 import { DumpCron } from "./interfaces/cron/Dump.cron";
 import { DEV } from "./configurations/env.conf";
