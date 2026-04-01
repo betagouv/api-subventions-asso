@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.83.0](https://github.com/betagouv/api-subventions-asso/compare/v0.82.0...v0.83.0) (2026-04-01)
+
+### Bug Fixes
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) update chorus fse program code and desc ([#3875](https://github.com/betagouv/api-subventions-asso/issues/3875)) ([9aa734d](https://github.com/betagouv/api-subventions-asso/commit/9aa734dbc37d8b1dfe9c6d8b3a124dd76bb49695))
+
+### Features
+
+- **api, front:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) apply deposit process v4 changes ([#3869](https://github.com/betagouv/api-subventions-asso/issues/3869)) ([a168f14](https://github.com/betagouv/api-subventions-asso/commit/a168f140747aa32a693d3098fa0edf84e1545b3c)), closes [#3873](https://github.com/betagouv/api-subventions-asso/issues/3873) [#3874](https://github.com/betagouv/api-subventions-asso/issues/3874)
+- **api:** [#3872](https://github.com/betagouv/api-subventions-asso/issues/3872) - fix multipart filename encoding pb ([#3876](https://github.com/betagouv/api-subventions-asso/issues/3876)) ([010e6b0](https://github.com/betagouv/api-subventions-asso/commit/010e6b0ff0702f4c57af623feb9a7909668c1949))
+- **api:** update fse desc ([c1417cb](https://github.com/betagouv/api-subventions-asso/commit/c1417cbf675d37e7347c9a23ee615c888f065386))
+
 # [0.82.0](https://github.com/betagouv/api-subventions-asso/compare/v0.81.7...v0.82.0) (2026-03-25)
 
 ### Bug Fixes

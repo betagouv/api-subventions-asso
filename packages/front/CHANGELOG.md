@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.83.0](https://github.com/betagouv/datasubvention/compare/v0.82.0...v0.83.0) (2026-04-01)
+
+### Bug Fixes
+
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) fix import ([f7dd26c](https://github.com/betagouv/datasubvention/commit/f7dd26c92c3d5d3f9148b5f238b710c70d4fcd58))
+
+### Features
+
+- **api, front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) apply deposit process v4 changes ([#3869](https://github.com/betagouv/datasubvention/issues/3869)) ([a168f14](https://github.com/betagouv/datasubvention/commit/a168f140747aa32a693d3098fa0edf84e1545b3c)), closes [#3873](https://github.com/betagouv/datasubvention/issues/3873) [#3874](https://github.com/betagouv/datasubvention/issues/3874)
+
 # [0.82.0](https://github.com/betagouv/datasubvention/compare/v0.81.7...v0.82.0) (2026-03-25)
 
 ### Bug Fixes
