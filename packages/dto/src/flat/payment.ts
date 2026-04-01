@@ -22,7 +22,7 @@ export interface PaymentFlatDto extends CommonFlatDto {
     /** Référence de pièce comptable */
     attachementComptable: string | "N/A";
     /** Région d'attachement comptable */
-    regionAttachementComptable: string | "N/A" | "code region inconnu";
+    regionAttachementComptable: string | "N/A" | null;
     /** Engagement juridique associé */
     ej: string | null;
     /** Libellé du programme budgétaire (LOLF) */
@@ -31,7 +31,7 @@ export interface PaymentFlatDto extends CommonFlatDto {
      * Numéro du programme budgétaire (LOLF).
      * @example 163
      */
-    numeroProgramme: number;
+    numeroProgramme: string;
     /** Libellé de la mission budgétaire */
     mission: string | null;
     /** Libellé du ministère */

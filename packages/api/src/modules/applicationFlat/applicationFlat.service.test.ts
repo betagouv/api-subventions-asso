@@ -12,7 +12,7 @@ import Siret from "../../identifierObjects/Siret";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
-import { APPLICATION_LINK_TO_CHORUS, DBO as APPLICATION_FLAT_DBO } from "./__fixtures__";
+import { APPLICATION_LINK_TO_CHORUS, DBO as APPLICATION_FLAT_DBO } from "./__fixtures__/application-flat.fixture";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
 
 jest.mock("../../dataProviders/db/applicationFlat/application-flat.adapter");

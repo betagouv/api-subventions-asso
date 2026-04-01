@@ -108,8 +108,6 @@ type OptionalApplicationFlatDto = {
      * @example 80
      */
     pourcentageSubvention: number;
-    /** Date de mise à jour */
-    dateMiseAJour: string;
 };
 
 export type ApplicationFlatDto = MandatoryApplicationFlatDto &

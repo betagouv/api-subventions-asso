@@ -1,7 +1,7 @@
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS,
-} from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+} from "../../paymentFlat/__fixtures__/payment-flat.fixture";
 import {
     AMOUNTS_VS_PROGRAM_REGION_DBOS,
     AMOUNTS_VS_PROGRAM_REGION_ENTITIES,

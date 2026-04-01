@@ -71,6 +71,12 @@ export const modifyDateYear = (date: Date, diff: number): Date => {
     return modifiedDateYear;
 };
 
+export const optionalDateToDto = (maybeDate: Date | "N/A" | null) => {
+    if (maybeDate instanceof Date) {
+        return new Date(maybeDate).toISOString();
+    } else return maybeDate;
+};
+
 export const getShortISODate = (date: Date) => date.toISOString().substring(0, 10);
 
 export const shortISORegExp = new RegExp(/\d{4}-[01]\d-[0-3]\d/);

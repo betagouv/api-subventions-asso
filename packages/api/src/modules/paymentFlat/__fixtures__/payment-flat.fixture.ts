@@ -1,4 +1,4 @@
-import { Payment } from "dto";
+import { Payment, PaymentFlatDto } from "dto";
 import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
 import Siren from "../../../identifierObjects/Siren";
 import Siret from "../../../identifierObjects/Siret";
@@ -6,6 +6,7 @@ import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPay
 import { GenericAdapter } from "../../../shared/GenericAdapter";
 import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import { FonjepPaymentFlatEntity } from "../../providers/fonjep/entities/FonjepFlatEntity";
+import PaymentFlatMapper from "../payment-flat.mapper";
 
 export const CHORUS_PAYMENT_ID = "1000000000019--subv001--2023";
 
@@ -36,6 +37,8 @@ export const CHORUS_PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
     activityLabel: "Label d'activité Exemple", // activity label
     updateDate: new Date("2025-02-04"), // update date
 };
+
+export const PAYMENT_FLAT_DTOS: PaymentFlatDto[] = [PaymentFlatMapper.toDto(CHORUS_PAYMENT_FLAT_ENTITY)];
 
 export const LONELY_CHORUS_PAYMENT = { ...CHORUS_PAYMENT_FLAT_ENTITY, paymentId: "lonely-payment" };
 

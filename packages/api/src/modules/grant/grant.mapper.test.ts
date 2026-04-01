@@ -1,11 +1,8 @@
 import GrantMapper from "./grant.mapper";
 import { Association, ProviderValues, EstablishmentSimplified } from "dto";
 import paymentService from "../payments/payments.service";
-import {
-    CHORUS_PAYMENT_FLAT_ENTITY,
-    LONELY_CHORUS_PAYMENT,
-} from "../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-import { APPLICATION_LINK_TO_CHORUS } from "../applicationFlat/__fixtures__";
+import { CHORUS_PAYMENT_FLAT_ENTITY, LONELY_CHORUS_PAYMENT } from "../paymentFlat/__fixtures__/payment-flat.fixture";
+import { APPLICATION_LINK_TO_CHORUS } from "../applicationFlat/__fixtures__/application-flat.fixture";
 import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
 import { addDaysToDate } from "../../shared/helpers/DateHelper";
 

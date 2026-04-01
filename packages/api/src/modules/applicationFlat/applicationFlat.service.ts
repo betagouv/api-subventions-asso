@@ -1,4 +1,4 @@
-import { ApplicationFlatDto, DemandeSubvention } from "dto";
+import type { ApplicationFlatDto, DemandeSubvention } from "dto";
 import applicationFlatAdapter from "../../dataProviders/db/applicationFlat/application-flat.adapter";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";

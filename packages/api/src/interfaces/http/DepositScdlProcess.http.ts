@@ -17,6 +17,8 @@ import {
     Path,
     UploadedFile,
     FormField,
+    Example,
+    Hidden,
 } from "tsoa";
 import DepositScdlLogDtoMapper from "../../modules/deposit-scdl-process/deposit-scdl-log.dto.mapper";
 import { depositScdlProcessService } from "../../init-services";
@@ -24,6 +26,7 @@ import { fixFilenameEncoding } from "../../shared/helpers/FileHelper";
 
 @Route("/parcours-depot")
 @Security("jwt")
+@Hidden()
 @Tags("Deposit Scdl Process Controller")
 export class DepositScdlProcessHttp extends Controller {
     /**
@@ -33,6 +36,23 @@ export class DepositScdlProcessHttp extends Controller {
      * @returns {void} 204 - No deposit log found for the user
      * @returns 401 - Unauthorized
      */
+    @Example<DepositScdlLogResponseDto>({
+        step: 2,
+        allocatorSiret: "12345678900012",
+        permissionAlert: false,
+        uploadedFileInfos: {
+            lineCountsByExercice: [{ exercice: 2025, parsedLines: 500, linesInDb: 400 }],
+            fileName: "subventions_2023.csv",
+            uploadDate: "2024-01-15T10:30:00.000Z" as unknown as Date,
+            allocatorsSiret: ["12345678900012"],
+            grantCoverageYears: [2023],
+            parseableLines: 150,
+            totalLines: 152,
+            missingHeaders: { mandatory: [], optional: [] },
+            existingLinesInDbOnSamePeriod: 50,
+            errorStats: { count: 0, errorSample: [] },
+        },
+    })
     @Get("/")
     @SuccessResponse("200", "Deposit log retrieved successfully")
     @Response("204", "No deposit log found for this user")
@@ -70,6 +90,9 @@ export class DepositScdlProcessHttp extends Controller {
      * @returns {FileDownloadUrlDto} 200 - url content
      * @returns 401 - Unauthorized
      */
+    @Example<FileDownloadUrlDto>({
+        url: "https://storage.api-subventions.fr/scdl/deposit_12345678900012_2024-01-15.csv?token=abc123",
+    })
     @Get("/fichier-depose/url-de-telechargement")
     @SuccessResponse("200", "url returned successfully")
     @Response("401", "Unauthorized")
@@ -86,7 +109,7 @@ export class DepositScdlProcessHttp extends Controller {
      * @returns 401 - Unauthorized
      */
     @Delete("/")
-    @Response("204", "no deposit log for this user")
+    @Response("204")
     @Response("401", "Unauthorized")
     public async deleteDepositLog(@Request() req: IdentifiedRequest): Promise<void> {
         await depositScdlProcessService.deleteDepositLog(req.user._id.toString());
@@ -102,6 +125,7 @@ export class DepositScdlProcessHttp extends Controller {
      * @returns 401 - Unauthorized
      * @returns 409 - Conflict, a deposit process already exists
      */
+    @Example<DepositScdlLogResponseDto>({ step: 1, allocatorSiret: "12345678900012" })
     @Post("/")
     @SuccessResponse("201", "Deposit log created successfully")
     @Response("400", "Bad Request, invalid payload")
@@ -130,6 +154,7 @@ export class DepositScdlProcessHttp extends Controller {
      * @returns 404 - No deposit log found for this user
      * @returns 409 - Request conflicts with the current state of the deposit process
      */
+    @Example<DepositScdlLogResponseDto>({ step: 3, allocatorSiret: "12345678900012" })
     @Patch("/step/{step}")
     @SuccessResponse("200", "Deposit log updated successfully to the next step")
     @Response("400", "Bad Request, invalid payload")
@@ -158,6 +183,26 @@ export class DepositScdlProcessHttp extends Controller {
      *
      * @returns {DepositScdlLogResponseDto} 200 - Deposit log updated successfully with file parsing infos
      */
+    @Example<DepositScdlLogResponseDto>({
+        step: 2,
+        allocatorSiret: "12345678900012",
+        permissionAlert: false,
+        uploadedFileInfos: {
+            lineCountsByExercice: [{ exercice: 2025, parsedLines: 500, linesInDb: 400 }],
+            fileName: "subventions_2023.csv",
+            uploadDate: "2024-01-15T10:30:00.000Z" as unknown as Date,
+            allocatorsSiret: ["12345678900012"],
+            grantCoverageYears: [2023],
+            parseableLines: 150,
+            totalLines: 152,
+            missingHeaders: { mandatory: [], optional: [] },
+            existingLinesInDbOnSamePeriod: 50,
+            errorStats: {
+                count: 0,
+                errorSample: [],
+            },
+        },
+    })
     @Post("/validation-fichier-scdl")
     @SuccessResponse("200", "File processed and validation report generated")
     @Response("400", "Bad Request, invalid payload")

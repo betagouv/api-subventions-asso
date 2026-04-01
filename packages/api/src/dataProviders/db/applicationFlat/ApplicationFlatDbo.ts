@@ -47,7 +47,6 @@ type OptionalApplicationFlatDbo = {
     idRAE: string; // Numéro unique de référencement au répertoire des aides aux entreprises (RAE)
     notificationUE: boolean; // Subvention attribuée au titre d’une aide de minimis notifiée à la Commission Européenne en vertu des dispositions du règlement n° 1407/2013 du 18 décembre 2013.
     pourcentageSubvention: number; // Pourcentage du montant de la subvention attribuée au bénéficiaire
-    dateMiseAJour: Date;
 };
 
 export type ApplicationFlatDbo = MandatoryApplicationFlatDbo &

@@ -9,6 +9,7 @@ import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdenti
 import Siret from "../../identifierObjects/Siret";
 import Ridet from "../../identifierObjects/Ridet";
 import Tahitiet from "../../identifierObjects/Tahitiet";
+import { optionalDateToDto } from "../../shared/helpers/DateHelper";
 
 // entities and draft are almost equal but we want ids to be built in constructor
 // and we want to be able to build with a properly types object
@@ -205,6 +206,16 @@ export default class ApplicationFlatMapper {
     }
 
     static toDto(entity: ApplicationFlatEntity) {
-        return ApplicationFlatMapper.entityToDbo(entity) as ApplicationFlatDto;
+        const dto: ApplicationFlatDto = {
+            ...ApplicationFlatMapper.entityToDbo(entity),
+            dateDepotDemande: optionalDateToDto(entity.depositDate),
+            dateConvention: optionalDateToDto(entity.conventionDate),
+            dateDecision: optionalDateToDto(entity.decisionDate),
+            datesPeriodeVersement: Array.isArray(entity.paymentPeriodDates)
+                ? entity.paymentPeriodDates.map(date => optionalDateToDto(date) as string) // if array it should be dates
+                : entity.paymentPeriodDates,
+            dateMiseAJour: entity.updateDate.toISOString(),
+        };
+        return dto;
     }
 }

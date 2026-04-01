@@ -115,6 +115,20 @@ describe("DateHelper", () => {
         });
     });
 
+    describe("optionalDateToDto", () => {
+        it("return ISO date string", () => {
+            const expected = "2026-03-30T00:00:00.000Z";
+            const actual = DateHelper.optionalDateToDto(new Date("2026-03-30"));
+            expect(actual).toEqual(expected);
+        });
+
+        it.each(["N/A", null])("return param if not of type date", input => {
+            const expected = input;
+            const actual = DateHelper.optionalDateToDto(input as "N/A" | null);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("getShortISODate", () => {
         it("should return AAAA-MM-JJ date", () => {
             const expected = "2023-10-12";

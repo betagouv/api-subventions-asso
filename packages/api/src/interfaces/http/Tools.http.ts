@@ -1,10 +1,11 @@
 import { Readable } from "stream";
-import { Controller, FormField, Post, Route, Security, Tags, UploadedFile } from "tsoa";
+import { Controller, FormField, Hidden, Post, Route, Security, Tags, UploadedFile } from "tsoa";
 import * as csvSyncStringifier from "csv-stringify/sync";
 import { BadRequestError } from "core";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 
 @Route("tools")
+@Hidden()
 @Tags("Tools Controller")
 @Security("jwt", ["admin"])
 export class ToolsHttp extends Controller {

@@ -1,3 +1,5 @@
+import { ProviderDataDto } from "../shared/ProviderData";
+
 export type NOT_APPLICABLE = "N/A";
 
 // could be refactored from packages/api/src/identifierObjects/@types/IdentifierName.ts
@@ -6,7 +8,7 @@ export type EstablishmentIdName = "siret" | "ridet" | "tahitiet";
 export type IdentifierIdName = CompanyIdName | EstablishmentIdName;
 
 /** Champs communs à tous les formats plats (ApplicationFlat, PaymentFlat) */
-export interface CommonFlatDto {
+export interface CommonFlatDto extends ProviderDataDto {
     /** Identifiant unique de la ligne dans la base Data Subvention */
     idUnique: string;
     /** Type d'identifiant de l'établissement bénéficiaire */
@@ -19,6 +21,4 @@ export interface CommonFlatDto {
     idEntrepriseBeneficiaire: string;
     /** Nom du fournisseur de données source (ex: "chorus", "fonjep") */
     fournisseur: string;
-    /** Date de dernière mise à jour de la donnée chez le fournisseur */
-    dateMiseAJour: Date;
 }

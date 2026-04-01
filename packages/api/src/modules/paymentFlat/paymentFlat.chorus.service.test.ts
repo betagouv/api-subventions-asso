@@ -5,7 +5,7 @@ import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
 import chorusService from "../providers/chorus/chorus.service";
 import { DATA_BRETAGNE_RECORDS } from "../providers/dataBretagne/__fixtures__/dataBretagne.fixture";
 import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
-import { CHORUS_PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "./__fixtures__/payment-flat.fixture";
 import paymentFlatChorusService from "./paymentFlat.chorus.service";
 import PaymentFlatMapper from "./payment-flat.mapper";
 import paymentFlatService from "./paymentFlat.service";

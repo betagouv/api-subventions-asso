@@ -9,7 +9,7 @@ import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.servi
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS,
-} from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+} from "../../paymentFlat/__fixtures__/payment-flat.fixture";
 import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPaymentFlat";
 
 describe("amountsVSProgramRegionService", () => {
