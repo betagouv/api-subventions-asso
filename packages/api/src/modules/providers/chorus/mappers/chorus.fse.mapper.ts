@@ -70,7 +70,7 @@ export class ChorusFseMapper {
 
     static toPaymentFlat(entity: ChorusFseEntity): PaymentFlatEntity {
         const PROGRAM_NAMES_MAP = new Map([
-            ["FSE", { code: "FSE+", desc: "Fonds solidaire européen+" }],
+            ["FSE", { code: "FSE+", desc: "Fonds social européen +" }],
             ["FTJ", { code: "FTJ", desc: "Fonds de transition juste" }],
         ]);
 
