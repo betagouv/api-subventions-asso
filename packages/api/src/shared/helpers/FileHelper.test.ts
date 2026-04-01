@@ -1,4 +1,4 @@
-import { bufferToMulterFile, detectCsvDelimiter } from "./FileHelper";
+import { bufferToMulterFile, detectCsvDelimiter, fixFilenameEncoding } from "./FileHelper";
 
 describe("FileHelper", () => {
     describe("detectCsvDelimiter", () => {
@@ -78,6 +78,22 @@ describe("FileHelper", () => {
                 size: 0,
                 stream: {},
             });
+        });
+    });
+
+    describe("fixFilenameEncoding", () => {
+        it("fix encoded file inlatin1", () => {
+            const input = "donnÃ©es ChambÃ©ry.xlsx";
+            const output = fixFilenameEncoding(input);
+
+            expect(output).toBe("données Chambéry.xlsx");
+        });
+
+        it("keep name if correct", () => {
+            const input = "données Chambéry.xlsx";
+            const output = fixFilenameEncoding(input);
+
+            expect(output).toBe("données Chambéry.xlsx");
         });
     });
 });

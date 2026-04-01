@@ -35,3 +35,19 @@ export function bufferToMulterFile(buffer: Buffer, filename: string, mimetype?: 
         stream: {} as Readable,
     };
 }
+
+export function fixFilenameEncoding(name: string): string {
+    try {
+        const converted = Buffer.from(name, "latin1").toString("utf8");
+        return isLikelyValidFilename(converted) ? converted : name;
+    } catch {
+        return name;
+    }
+}
+
+function isLikelyValidFilename(value: string): boolean {
+    if (!value) return false;
+    if (value.includes("�")) return false;
+    if (value.trim().length === 0) return false;
+    return true;
+}
