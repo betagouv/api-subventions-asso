@@ -1,5 +1,9 @@
 import { DemandeSubvention } from "dto";
-import { DBO, DRAFT_ENTITY, APPLICATION_LINK_TO_CHORUS } from "./__fixtures__";
+import {
+    DRAFT_ENTITY,
+    APPLICATION_LINK_TO_CHORUS,
+    APPLICATION_FLAT_DBOS,
+} from "./__fixtures__/application-flat.fixture";
 import ApplicationFlatMapper from "./application-flat.mapper";
 import applicationFlatService from "./applicationFlat.service";
 import Siret from "../../identifierObjects/Siret";
@@ -56,14 +60,14 @@ describe("ApplicationFlatAdapter", () => {
     describe("dboToEntity", () => {
         it("returns entity", () => {
             const expected = APPLICATION_LINK_TO_CHORUS;
-            const actual = ApplicationFlatMapper.dboToEntity(DBO);
+            const actual = ApplicationFlatMapper.dboToEntity(APPLICATION_FLAT_DBOS[0]);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("entityToDbo", () => {
         it("return dbo", () => {
-            const { _id, ...expected } = DBO;
+            const { _id, ...expected } = APPLICATION_FLAT_DBOS[0];
             const actual = ApplicationFlatMapper.entityToDbo(APPLICATION_LINK_TO_CHORUS);
             expect(actual).toEqual(expected);
         });

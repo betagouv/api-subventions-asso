@@ -9,7 +9,7 @@ import SubventiaDto from "./@types/subventia.dto";
 import { SUBVENTIA_DBO } from "./__fixtures__/subventia.fixture";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ReadableStream } from "node:stream/web";
-import { APPLICATION_LINK_TO_CHORUS } from "../../applicationFlat/__fixtures__";
+import { APPLICATION_LINK_TO_CHORUS } from "../../applicationFlat/__fixtures__/application-flat.fixture";
 jest.mock("../../applicationFlat/applicationFlat.service");
 jest.mock("./mappers/subventia.mapper");
 jest.mock("../../../dataProviders/db/providers/subventia/subventia.adapter");

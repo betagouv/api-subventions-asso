@@ -4,7 +4,7 @@ import {
     LIST_PAYMENT_FLAT_ENTITY,
     CHORUS_PAYMENT_FLAT_ENTITY,
     PAYMENT_FROM_PAYMENT_FLAT,
-} from "./__fixtures__/paymentFlatEntity.fixture";
+} from "./__fixtures__/payment-flat.fixture";
 
 import paymentFlatAdapter from "../../dataProviders/db/paymentFlat/paymentFlat.adapter";
 import Siren from "../../identifierObjects/Siren";

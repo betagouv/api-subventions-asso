@@ -1,15 +1,16 @@
 import { Readable } from "stream";
-import { Controller, FormField, Post, Route, Security, Tags, UploadedFile } from "tsoa";
+import { Controller, FormField, Hidden, Post, Route, Security, Tags, UploadedFile } from "tsoa";
 import * as csvSyncStringifier from "csv-stringify/sync";
 import { BadRequestError } from "core";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 
 @Route("tools")
+@Hidden()
 @Tags("Tools Controller")
 @Security("jwt", ["admin"])
 export class ToolsHttp extends Controller {
     /**
-     * @summary Reads an scdl file (csv or excel), validates its content and returns error report
+     * @summary Valide un fichier SCDL (CSV ou Excel) et retourne un rapport d'erreurs
      */
     @Post("/scdl/validate")
     public parse(

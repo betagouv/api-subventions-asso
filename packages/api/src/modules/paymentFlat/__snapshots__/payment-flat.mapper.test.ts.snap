@@ -128,6 +128,36 @@ exports[`PaymentFlatAdapter toDbo given entity without nulls, should return a Pa
 }
 `;
 
+exports[`PaymentFlatAdapter toDto returns dto 1`] = `
+{
+  "action": "Label d'action Exemple",
+  "activite": "Label d'activité Exemple",
+  "attachementComptable": "BRET",
+  "codeAction": "0101-01-02",
+  "codeActivite": "077601003222",
+  "codeCentreFinancier": "AA01/0776-C001-4000",
+  "dateMiseAJour": "2025-02-04T00:00:00.000Z",
+  "dateOperation": 2023-07-12T00:00:00.000Z,
+  "ej": "0001821732",
+  "exerciceBudgetaire": 2023,
+  "fournisseur": "chorus",
+  "idEntrepriseBeneficiaire": "100000000",
+  "idEtablissementBeneficiaire": "10000000000001",
+  "idUnique": "UNIQUE_ID",
+  "idVersement": "1000000000019--subv001--2023",
+  "libelleCentreFinancier": "UO DGER XXXX-C001",
+  "ministere": "Ministère Exemple",
+  "mission": "Mission Exemple",
+  "montant": 89988.3,
+  "numeroProgramme": "101",
+  "programme": "Programme Exemple",
+  "regionAttachementComptable": "Bretagne",
+  "sigleMinistere": "ME",
+  "typeIdEntrepriseBeneficiaire": "siren",
+  "typeIdEtablissementBeneficiaire": "siret",
+}
+`;
+
 exports[`PaymentFlatAdapter toPayment should return ChorusPayment 1`] = `
 {
   "activitee": {

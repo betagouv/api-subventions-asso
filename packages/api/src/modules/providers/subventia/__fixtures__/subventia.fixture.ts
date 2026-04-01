@@ -4,7 +4,7 @@ import SubventiaEntity from "../@types/subventia.entity";
 import { RawApplication } from "../../../grant/@types/rawGrant";
 import { ObjectId } from "mongodb";
 import SubventiaDto from "../@types/subventia.dto";
-import { APPLICATION_LINK_TO_CHORUS } from "../../../applicationFlat/__fixtures__";
+import { APPLICATION_LINK_TO_CHORUS } from "../../../applicationFlat/__fixtures__/application-flat.fixture";
 
 export const SUBVENTIA_ENTITY: SubventiaEntity = {
     service_instructeur: "SERVICE INSTRUCTEUR",

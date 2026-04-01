@@ -1,7 +1,8 @@
 import { CompanyIdName, EstablishmentIdName } from "dto";
 import { ObjectId } from "mongodb";
+import { ProviderDataDbo } from "./ProviderDataDbo";
 
-export interface FlatDbo {
+export interface FlatDbo extends ProviderDataDbo {
     _id: ObjectId;
     idUnique: string;
     fournisseur: string;
@@ -9,5 +10,4 @@ export interface FlatDbo {
     typeIdEtablissementBeneficiaire: EstablishmentIdName;
     idEntrepriseBeneficiaire: string;
     typeIdEntrepriseBeneficiaire: CompanyIdName;
-    dateMiseAJour: Date;
 }

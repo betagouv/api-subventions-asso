@@ -39,11 +39,11 @@ import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFla
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,
-} from "../../../src/modules/applicationFlat/__fixtures__";
+} from "../../../src/modules/applicationFlat/__fixtures__/application-flat.fixture";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
-} from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+} from "../../../src/modules/paymentFlat/__fixtures__/payment-flat.fixture";
 import { osirisActionAdapter } from "../../../src/dataProviders/db/providers/osiris";
 import fonjepPostesAdapter from "../../../src/dataProviders/db/providers/fonjep/fonjep.postes.adapter";
 import {

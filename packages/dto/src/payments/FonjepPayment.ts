@@ -6,8 +6,6 @@ export interface FonjepPayment extends BasePayment {
     periodeDebut: ProviderValue<Date>;
     periodeFin: ProviderValue<Date>;
     montantAPayer: ProviderValue<number>;
-    /**
-     * Deprecated
-     */
+    /** @deprecated Utiliser `programme` à la place */
     bop: ProviderValue<number>;
 }

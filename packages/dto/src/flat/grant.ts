@@ -1,4 +1,10 @@
 import { ApplicationFlatDto } from "./application";
 import { PaymentFlatDto } from "./payment";
 
-export type GrantFlatDto = { application: ApplicationFlatDto | null; payments: PaymentFlatDto[] };
+/** Subvention agrégée : demande et versements associés (format plat) */
+export type GrantFlatDto = {
+    /** Demande de subvention associée. Null si versements sans demande connue. */
+    application: ApplicationFlatDto | null;
+    /** Versements liés à cette demande */
+    payments: PaymentFlatDto[];
+};

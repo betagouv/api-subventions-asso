@@ -1,7 +1,7 @@
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     LIST_PAYMENT_FLAT_ENTITY,
-} from "../../../modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+} from "../../../modules/paymentFlat/__fixtures__/payment-flat.fixture";
 import PaymentFlatMapper from "../../../modules/paymentFlat/payment-flat.mapper";
 import { PAYMENT_FLAT_DBO } from "./__fixtures__/paymentFlatDbo.fixture";
 import paymentFlatAdapter from "./paymentFlat.adapter";

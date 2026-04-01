@@ -1,7 +1,21 @@
 import type { DocumentRequestDto, StructureIdentifierDto } from "dto";
 import type { IdentifiedRequest } from "../../@types";
 
-import { Route, Get, Controller, Tags, Security, Response, Query, Path, Post, Body, Request } from "tsoa";
+import {
+    Route,
+    Get,
+    Controller,
+    Tags,
+    Security,
+    Response,
+    Query,
+    Path,
+    Post,
+    Body,
+    Request,
+    Produces,
+    Hidden,
+} from "tsoa";
 import { HttpErrorInterface } from "core";
 import documentService from "../../modules/documents/documents.service";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
@@ -11,6 +25,10 @@ import associationIdentifierService from "../../modules/association-identifier/a
 @Security("jwt")
 @Tags("Document Controller")
 export class DocumentHttp extends Controller {
+    /**
+     * @summary Télécharge tous les documents d'une structure (ZIP) via son RNA, SIREN ou SIRET
+     */
+    @Produces("application/zip")
     @Get("/downloads/{identifier}")
     public async downloadDocumentsByIdentifier(@Path() identifier: StructureIdentifierDto) {
         const identifierEntity = await (establishmentIdentifierService.isEstablishmentIdentifier(identifier)
@@ -23,6 +41,10 @@ export class DocumentHttp extends Controller {
         return stream;
     }
 
+    /**
+     * @summary Télécharge une sélection de documents (ZIP)
+     */
+    @Produces("application/zip")
     @Post("/downloads")
     public async downloadRequiredDocuments(
         @Body() requiredDocs: DocumentRequestDto[],
@@ -34,11 +56,16 @@ export class DocumentHttp extends Controller {
         return stream;
     }
 
+    // @TODO: seems not used anymore ?
     /**
      * Télécharge un document dauphin
+     *
+     * @summary Télécharge un document depuis un identifiant de document fournisseur
      * @param providerId
      * @param url absolute provider's doc path
      */
+    @Produces("application/octet-stream")
+    @Hidden()
     @Get("/{providerId}")
     @Response<HttpErrorInterface>("404")
     // tsoa workaround https://github.com/lukeautry/tsoa/issues/340#issuecomment-518229063

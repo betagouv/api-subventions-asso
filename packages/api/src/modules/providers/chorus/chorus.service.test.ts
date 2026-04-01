@@ -8,7 +8,7 @@ import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import chorusFseAdapter from "../../../dataProviders/db/providers/chorus/chorus.fse.adapter";
 import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
-import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/payment-flat.fixture";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 
 jest.mock("../../../dataProviders/db/providers/chorus/chorus.adapter");

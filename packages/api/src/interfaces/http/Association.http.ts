@@ -4,13 +4,15 @@ import type {
     GetGrantsResponseDto,
     GetSubventionsResponseDto,
     GetPaymentsResponseDto,
+    GetPaymentsFlatResponseDto,
+    GetApplicationsFlatResponseDto,
     GetDocumentsResponseDto,
     StructureIdentifierDto,
     AssociationIdentifierDto,
-    ApplicationFlatDto,
-    PaymentFlatDto,
     GetOldGrantsResponseDto,
+    GetGrantsSuccessResponseDto,
 } from "dto";
+import { ApplicationStatus } from "dto";
 
 import { Readable } from "stream";
 import {
@@ -26,6 +28,7 @@ import {
     Request,
     Hidden,
     Deprecated,
+    Example,
 } from "tsoa";
 import { HttpErrorInterface, NotAssociationError } from "core";
 
@@ -38,6 +41,9 @@ import { errorHandler } from "../../middlewares/ErrorMiddleware";
 import associationHelper from "../../modules/associations/associations.helper";
 import paymentFlatService from "../../modules/paymentFlat/paymentFlat.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
+import { PAYMENT_DTO_EXAMPLE, APPLICATION_DTO_EXAMPLE } from "./examples/Grants";
+import { OLD_APPLICATON_DTO, OLD_PAYMENT_DTO } from "./examples/OldGrants";
+import { DOCUMENT_DTO } from "./examples/Documents";
 
 export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
     /*
@@ -64,14 +70,60 @@ export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
 @Middlewares(isAssoIdentifierFromAssoMiddleware)
 @Security("jwt")
 @Tags("Association Controller")
+@Response<HttpErrorInterface>("401", "Non authentifié", { message: "User not logged", code: 1, cause: {} })
+@Response<HttpErrorInterface>("422", "Identifiant invalide", {
+    message: "Votre recherche pointe vers une entité qui n'est pas une association",
+    code: 0,
+    cause: {},
+})
 export class AssociationHttp extends Controller {
     /**
-     * Remonte les informations d'une association
-     * @param identifier Siret, Siren ou Rna
+     * Remonte les informations d'une association.
+     * Accepte un RNA (ex: W123456789), un SIREN (ex: 123456789) ou un SIRET (ex:10000000000012.
+     * Seul endpoint acceptant le SIRET — les autres endpoints de cette route n'acceptent que RNA ou SIREN.
+     *
+     * @summary Informations d'une association
+     * @param identifier RNA, SIREN ou SIRET de l'association
      * @param req
      */
+    @Example<GetAssociationResponseDto>({
+        association: {
+            siren: [
+                {
+                    type: "string",
+                    value: "10000000000012",
+                    provider: "provider-siret",
+                    last_update: new Date("2024-01-15"),
+                },
+            ],
+            rna: [
+                {
+                    type: "string",
+                    value: "W751234567",
+                    provider: "provider-rna",
+                    last_update: new Date("2024-01-15"),
+                },
+            ],
+            denomination_siren: [
+                {
+                    type: "string",
+                    value: "Association Exemple",
+                    provider: "provider-siret",
+                    last_update: new Date("2024-01-15"),
+                },
+            ],
+            denomination_rna: [
+                {
+                    type: "string",
+                    value: "Association Exemple",
+                    provider: "provider-rna",
+                    last_update: new Date("2024-01-15"),
+                },
+            ],
+        },
+    })
     @Get("/")
-    @Response<HttpErrorInterface>("404")
+    @Response<HttpErrorInterface>("404", "Association introuvable")
     public async getAssociation(
         @Path() identifier: StructureIdentifierDto,
         @Request() req,
@@ -88,10 +140,13 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
+    @Example<GetSubventionsResponseDto>({
+        subventions: [OLD_APPLICATON_DTO],
+    })
     @Get("/subventions")
-    @Response<HttpErrorInterface>("404")
+    @Response<HttpErrorInterface>("404", "Association introuvable")
     public async getDemandeSubventions(
-        identifier: AssociationIdentifierDto,
+        @Path() identifier: AssociationIdentifierDto,
         @Request() req,
     ): Promise<GetSubventionsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
@@ -106,8 +161,14 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
+    @Example<GetPaymentsResponseDto>({
+        versements: [OLD_PAYMENT_DTO],
+    })
     @Get("/versements")
-    public async getPayments(identifier: AssociationIdentifierDto, @Request() req): Promise<GetPaymentsResponseDto> {
+    public async getPayments(
+        @Path() identifier: AssociationIdentifierDto,
+        @Request() req,
+    ): Promise<GetPaymentsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
 
         const payments = await associationService.getPayments(associationIdentifiers);
@@ -115,35 +176,42 @@ export class AssociationHttp extends Controller {
     }
 
     /**
-     * Recherche les versements liés à une association, au format paymentFlat
+     * Retourne les versements liés à une association au format plat (PaymentFlat).
      *
-     * @summary Recherche les payments liés à une association
-     * @param identifier Identifiant Siren ou Rna
+     * @summary Versements au format plat
+     * @param identifier RNA ou SIREN de l'association
      * @param req
      */
+    @Example<GetPaymentsFlatResponseDto>({
+        paiements: [PAYMENT_DTO_EXAMPLE],
+    })
     @Get("/paiements")
+    @Response<HttpErrorInterface>("404", "Association introuvable")
     public async getPaymentsFlat(
-        identifier: AssociationIdentifierDto,
+        @Path() identifier: AssociationIdentifierDto,
         @Request() req,
-    ): Promise<{ paiements: PaymentFlatDto[] }> {
+    ): Promise<GetPaymentsFlatResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
         const payments = await paymentFlatService.getPaymentsDto(associationIdentifiers);
         return { paiements: payments };
     }
 
     /**
-     * Recherche les demandes de subventions liées à une association
+     * Retourne les demandes de subventions au format plat (ApplicationFlat).
      *
-     * @summary Recherche les demandes de subventions liées à une association
-     * @param identifier Identifiant Siren ou Rna
+     * @summary Demandes de subventions au format plat
+     * @param identifier RNA ou SIREN de l'association
      * @param req
      */
+    @Example<GetApplicationsFlatResponseDto>({
+        applications: [APPLICATION_DTO_EXAMPLE],
+    })
     @Get("/applications")
-    @Response<HttpErrorInterface>("404")
+    @Response<HttpErrorInterface>("404", "Association introuvable")
     public async getApplicationFlat(
-        identifier: AssociationIdentifierDto,
+        @Path() identifier: AssociationIdentifierDto,
         @Request() req,
-    ): Promise<{ applications: ApplicationFlatDto[] }> {
+    ): Promise<GetApplicationsFlatResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
         const applications = await applicationFlatService.getApplicationsDto(associationIdentifiers);
         return { applications };
@@ -155,9 +223,42 @@ export class AssociationHttp extends Controller {
      * @param req
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
+    @Example<GetOldGrantsResponseDto>({
+        subventions: [
+            {
+                application: {
+                    service_instructeur: {
+                        value: "DRAJES Île-de-France",
+                        provider: "provider slug",
+                        last_update: new Date("2024-01-15"),
+                    },
+                    siret: {
+                        value: 10000000000012,
+                        provider: "provider slug",
+                        last_update: new Date("2024-01-15"),
+                    },
+                    statut_label: {
+                        value: ApplicationStatus.GRANTED,
+                        provider: "provider slug",
+                        last_update: new Date("2024-01-15"),
+                    },
+                    status: {
+                        value: "Accordé",
+                        provider: "provider slug",
+                        last_update: new Date("2024-01-15"),
+                    },
+                },
+                payments: [],
+            },
+        ],
+        count: 1,
+    } as unknown as GetOldGrantsResponseDto)
     @Deprecated()
     @Get("/grants")
-    public async getOldGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<GetOldGrantsResponseDto> {
+    public async getOldGrants(
+        @Path() identifier: AssociationIdentifierDto,
+        @Request() req,
+    ): Promise<GetOldGrantsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
         const grants = await grantService.getOldGrants(associationIdentifiers);
         return { subventions: grants, count: grants.length };
@@ -170,24 +271,35 @@ export class AssociationHttp extends Controller {
      * @param req
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
+    @Example<GetGrantsSuccessResponseDto>({
+        subventions: [{ application: APPLICATION_DTO_EXAMPLE, payments: [PAYMENT_DTO_EXAMPLE] }],
+        count: 1,
+    })
     @Get("/grants/v2")
-    public async getGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<GetGrantsResponseDto> {
+    public async getGrants(
+        @Path() identifier: AssociationIdentifierDto,
+        @Request() req,
+    ): Promise<GetGrantsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
         const grants = await grantService.getGrantsDto(associationIdentifiers);
         return { subventions: grants, count: grants.length };
     }
 
     /**
+     * Exporte les subventions d'une association (demandes ET versements) au format CSV.
+     * Le nom du fichier est transmis dans l'en-tête Content-Disposition.
      *
-     * @summary Recherche toutes les informations des subventions d'une association (demandes ET versements) et en extrait un fichier csv
+     * @summary Export CSV des subventions
      * @param identifier RNA ou SIREN de l'association
      * @param req
-     * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
     @Get("/grants/csv")
     @Produces("text/csv")
-    @Response<string>("200")
-    public async getGrantsExtract(identifier: AssociationIdentifierDto, @Request() req): Promise<Readable> {
+    @Example(
+        `Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements`,
+    )
+    @Response<HttpErrorInterface>("404", "Association introuvable")
+    public async getGrantsExtract(@Path() identifier: AssociationIdentifierDto, @Request() req): Promise<Readable> {
         const associationIdentifiers = req.assoIdentifier;
         const { csv, fileName } = await grantExtractService.buildCsv(associationIdentifiers);
         this.setHeader("Content-Type", "text/csv");
@@ -207,10 +319,15 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
+    @Deprecated()
     @Get("/raw-grants")
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>("404")
-    public async getRawGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<JoinedRawGrantDto[]> {
+    @Response<HttpErrorInterface>("403", "Accès refusé")
+    public async getRawGrants(
+        @Path() identifier: AssociationIdentifierDto,
+        @Request() req,
+    ): Promise<JoinedRawGrantDto[]> {
         const associationIdentifiers = req.assoIdentifier;
 
         return grantService.getRawGrantsDto(associationIdentifiers);
@@ -223,8 +340,14 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
+    @Example<GetDocumentsResponseDto>({
+        documents: [DOCUMENT_DTO],
+    })
     @Get("/documents")
-    public async getDocuments(identifier: AssociationIdentifierDto, @Request() req): Promise<GetDocumentsResponseDto> {
+    public async getDocuments(
+        @Path() identifier: AssociationIdentifierDto,
+        @Request() req,
+    ): Promise<GetDocumentsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
 
         const documents = await associationService.getDocuments(associationIdentifiers);
@@ -233,12 +356,53 @@ export class AssociationHttp extends Controller {
 
     /**
      * Retourne tous les établissements liés à une association
+     *
+     * @summary Établissements d'une association
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
+    @Example<GetEstablishmentsResponseDto>({
+        etablissements: [
+            {
+                siret: [
+                    {
+                        type: "string",
+                        value: "10000000000012",
+                        provider: "Sirene",
+                        last_update: new Date("2024-01-15"),
+                    },
+                ],
+                nic: [
+                    {
+                        type: "string",
+                        value: "00012",
+                        provider: "Sirene",
+                        last_update: new Date("2024-01-15"),
+                    },
+                ],
+                siege: [
+                    {
+                        type: "boolean",
+                        value: true,
+                        provider: "Sirene",
+                        last_update: new Date("2024-01-15"),
+                    },
+                ],
+                ouvert: [
+                    {
+                        type: "boolean",
+                        value: true,
+                        provider: "Sirene",
+                        last_update: new Date("2024-01-15"),
+                    },
+                ],
+            },
+        ],
+    })
     @Get("/etablissements")
+    @Response<HttpErrorInterface>("404", "Association introuvable")
     public async getEstablishments(
-        identifier: AssociationIdentifierDto,
+        @Path() identifier: AssociationIdentifierDto,
         @Request() req,
     ): Promise<GetEstablishmentsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;

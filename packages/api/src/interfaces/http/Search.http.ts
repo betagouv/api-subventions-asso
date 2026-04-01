@@ -1,4 +1,4 @@
-import { Controller, Get, Response, Route, Security, Tags, Query, Path } from "tsoa";
+import { Controller, Get, Response, Route, Security, Tags, Query, Path, Example } from "tsoa";
 import { PaginatedAssociationNameDto } from "dto";
 import { HttpErrorInterface } from "core";
 
@@ -14,6 +14,19 @@ export class SearchHttp extends Controller {
      * @param input Identifiant RNA ou Identifiant Siren ou Nom d'une association (peut-être encodé via encodeURIComponent())
      * @param page default to 1
      */
+    @Example<PaginatedAssociationNameDto>({
+        results: [
+            {
+                siren: "123456789",
+                name: "Association Exemple",
+                rna: "W751234567",
+                nbEtabs: 1,
+            },
+        ],
+        nbPages: 1,
+        page: 1,
+        total: 1,
+    })
     @Get("/associations/{input}")
     @Response<HttpErrorInterface>("404", "Aucune association trouvée", {
         message: "Could not match any association with given input : ${input}",
