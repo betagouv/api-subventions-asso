@@ -1,4 +1,4 @@
-import { AsyncCron } from "../../decorators/cronController.decorator";
+import { AsyncCron } from "../../decorators/cron.decorator";
 import { CronController } from "../../@types/CronController";
 import demarchesSimplifieesService from "../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 import dataLogService from "../../modules/data-log/dataLog.service";

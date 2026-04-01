@@ -1,4 +1,4 @@
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import { CliStaticInterface } from "../../@types";
 import geoService from "../../modules/providers/geoApi/geo.service";
 

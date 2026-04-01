@@ -1,4 +1,4 @@
-import { AsyncCron } from "../../decorators/cronController.decorator";
+import { AsyncCron } from "../../decorators/cron.decorator";
 import { CronController } from "../../@types/CronController";
 import userRgpdService from "../../modules/user/services/rgpd/user.rgpd.service";
 

@@ -2,7 +2,7 @@ import fs from "fs";
 
 import { CliStaticInterface } from "../../@types";
 import CliController from "../../shared/CliController";
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import AdminStructureParser from "../../modules/admin-structure/adminStructure.parser";
 import adminStructureService from "../../modules/admin-structure/adminStructure.service";
 

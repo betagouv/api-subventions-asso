@@ -1,5 +1,5 @@
 import { CliStaticInterface } from "../../@types";
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import amountsVsProgramRegionService from "../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.service";
 import CliController from "../../shared/CliController";
 

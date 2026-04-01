@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import { ApplicationFlatCli, CliStaticInterface } from "../../@types";
 import demarchesSimplifieesService from "../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 import DemarchesSimplifieesSchema from "../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchema";

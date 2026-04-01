@@ -1,4 +1,4 @@
-import { AsyncCron, AsyncIntervalCron, Cron, IntervalCron } from "../../decorators/cronController.decorator";
+import { AsyncCron, AsyncIntervalCron, Cron, IntervalCron } from "../../decorators/cron.decorator";
 import { CronController } from "../../@types/CronController";
 
 export class ExampleCron implements CronController {

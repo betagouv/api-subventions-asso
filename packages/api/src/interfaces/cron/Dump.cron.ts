@@ -1,4 +1,4 @@
-import { AsyncCron } from "../../decorators/cronController.decorator";
+import { AsyncCron } from "../../decorators/cron.decorator";
 import { CronController } from "../../@types/CronController";
 import { dumpService } from "../../init-services";
 

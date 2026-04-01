@@ -1,4 +1,4 @@
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import { CliStaticInterface } from "../../@types";
 import CliController from "../../shared/CliController";
 import fonjepService from "../../modules/providers/fonjep/fonjep.service";

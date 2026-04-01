@@ -1,5 +1,5 @@
 import { CliStaticInterface } from "../../@types";
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import { printAtSameLine } from "../../shared/helpers/CliHelper";
 import dauphinService from "../../modules/providers/dauphin-gispro/dauphin.service";
 import dauphinFlatService from "../../modules/providers/dauphin-gispro/dauphin.flat.service";

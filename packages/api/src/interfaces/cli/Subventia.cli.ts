@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import path from "path";
 import * as csvSyncStringifier from "csv-stringify/sync";
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import { ApplicationFlatCli, CliStaticInterface } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import * as CliHelper from "../../shared/helpers/CliHelper";

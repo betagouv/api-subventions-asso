@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import { CliStaticInterface } from "../../@types";
 
 import {

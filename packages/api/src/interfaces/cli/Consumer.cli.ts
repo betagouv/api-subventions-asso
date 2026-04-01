@@ -1,6 +1,6 @@
 import { RoleEnum } from "../../@enums/RolesEnum";
 import { CliStaticInterface } from "../../@types";
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import userCrudService from "../../modules/user/services/crud/user.crud.service";
 
 @StaticImplements<CliStaticInterface>()

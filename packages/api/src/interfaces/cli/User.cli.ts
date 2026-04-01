@@ -1,4 +1,4 @@
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import { CliStaticInterface } from "../../@types";
 import userStatsService from "../../modules/user/services/stats/user.stats.service";
 import userActivationService from "../../modules/user/services/activation/user.activation.service";

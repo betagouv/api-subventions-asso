@@ -12,7 +12,7 @@ jest.mock("toad-scheduler", () => {
 jest.mock("../modules/notify/notify.service", () => ({ notify: jest.fn() }));
 
 import { AsyncTask, CronJob, LongIntervalJob, SimpleIntervalJob, Task } from "toad-scheduler";
-import * as Decorators from "./cronController.decorator";
+import * as Decorators from "./cron.decorator";
 import notifyService from "../modules/notify/notify.service";
 import { NotificationType } from "../modules/notify/@types/NotificationType";
 // about mocking the module : https://github.com/facebook/jest/issues/936#issuecomment-545080082 use arrow functions

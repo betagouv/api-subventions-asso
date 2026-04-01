@@ -1,5 +1,5 @@
 import { CliStaticInterface } from "../../@types";
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import CliController from "../../shared/CliController";
 import sireneStockUniteLegaleFileService from "../../modules/providers/sirene/stockUniteLegale/sireneStockUniteLegale.file.service";
 

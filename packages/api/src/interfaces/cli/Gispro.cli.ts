@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import { StaticImplements } from "../../decorators/staticImplements.decorator";
+import { StaticImplements } from "../../decorators/static-implements.decorator";
 import { CliStaticInterface } from "../../@types";
 import CliController from "../../shared/CliController";
 import GisproParser from "../../modules/providers/dauphin-gispro/gispro.parser";
