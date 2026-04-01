@@ -3,8 +3,8 @@ import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__
 import { RoleEnum } from "../../../src/@enums/RolesEnum";
 import { createAndActiveUser, createConsumerUser } from "../../__helpers__/userHelper";
 import userAdapter from "../../../src/dataProviders/db/user/user.adapter";
-import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/statsAssociationsVisit.adapter";
-import UserDbo from "../../../src/dataProviders/db/user/UserDbo";
+import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/association-visit.adapter";
+import UserDbo from "../../../src/dataProviders/db/user/@types/UserDbo";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";

@@ -4,8 +4,8 @@ import { InternalServerError } from "core";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoAdapter from "../MongoAdapter";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/PortHelper";
-import UserDbo, { UserNotPersisted } from "./UserDbo";
 import { UserPort } from "./user.port";
+import UserDbo, { UserNotPersisted } from "./@types/UserDbo";
 
 export class UserAdapter extends MongoAdapter<UserDbo> implements UserPort {
     collectionName = "users";

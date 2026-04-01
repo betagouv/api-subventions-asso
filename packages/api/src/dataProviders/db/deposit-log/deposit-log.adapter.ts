@@ -1,5 +1,5 @@
 import MongoAdapter from "../MongoAdapter";
-import DepositScdlLogDbo from "./DepositScdlLogDbo";
+import DepositScdlLogDbo from "./@types/DepositScdlLogDbo";
 import { DepositLogPort } from "./deposit-log.port";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import DepositLogMapper from "./deposit-log.mapper";

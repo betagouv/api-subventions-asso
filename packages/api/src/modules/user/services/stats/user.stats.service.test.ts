@@ -8,8 +8,8 @@ import { UserDto } from "dto";
 import notifyService from "../../../notify/notify.service";
 jest.mock("../../../notify/notify.service", () => ({ notify: jest.fn() }));
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import statsAssociationsVisitAdapter from "../../../../dataProviders/db/stats/statsAssociationsVisit.adapter";
-jest.mock("../../../../dataProviders/db/stats/statsAssociationsVisit.adapter");
+import statsAssociationsVisitAdapter from "../../../../dataProviders/db/stats/association-visit.adapter";
+jest.mock("../../../../dataProviders/db/stats/association-visit.adapter");
 import configurationsService from "../../../configurations/configurations.service";
 jest.mock("../../../configurations/configurations.service");
 

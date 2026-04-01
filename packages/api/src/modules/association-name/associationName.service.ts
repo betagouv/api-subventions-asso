@@ -4,7 +4,7 @@ import rnaSirenService from "../rna-siren/rna-siren.service";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import Rna from "../../identifierObjects/Rna";
 import Siren from "../../identifierObjects/Siren";
-import rechercheEntreprisesService from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service";
+import rechercheEntreprisesService from "../../dataProviders/api/recherche-entreprises/recherche-entreprises.service";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 
 export class AssociationNameService {

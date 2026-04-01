@@ -1,4 +1,4 @@
-import sireneStockUniteLegaleDbAdapter from "../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.adapter";
+import sireneStockUniteLegaleDbAdapter from "../../../../dataProviders/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
 import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
 import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
@@ -22,7 +22,7 @@ jest.mock("../../../../entities/UniteLegalEntrepriseEntity", () => ({
         }
     },
 }));
-jest.mock("../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.adapter");
+jest.mock("../../../../dataProviders/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter");
 
 jest.mock("node-stream-zip", () => {
     const mockExtract = jest.fn();

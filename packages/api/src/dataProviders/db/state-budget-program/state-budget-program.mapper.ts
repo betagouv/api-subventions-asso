@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
-import StateBudgetProgramDbo from "./StateBudgetProgramDbo";
+import StateBudgetProgramDbo from "./@types/StateBudgetProgramDbo";
 
 /**
  * Mapper class for converting between StateBudgetProgramEntity and StateBudgetProgramDbo.

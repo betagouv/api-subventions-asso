@@ -7,7 +7,7 @@ import ScdlGrantParser from "./scdl.grant.parser";
 import { GenericAdapter } from "../../../shared/GenericAdapter";
 import { MixedParsedError, ParsedErrorDuplicate, ParsedErrorFormat } from "./@types/Validation";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
-import applicationFlatAdapter from "../../../dataProviders/db/applicationFlat/application-flat.adapter";
+import applicationFlatAdapter from "../../../dataProviders/db/application-flat/application-flat.adapter";
 import Siret from "../../../identifierObjects/Siret";
 import apiAssoService from "../apiAsso/apiAsso.service";
 import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";

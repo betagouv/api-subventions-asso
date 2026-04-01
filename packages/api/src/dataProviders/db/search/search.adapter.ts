@@ -1,7 +1,7 @@
 import { AssociationNameDto } from "dto";
 import db from "../../../shared/MongoConnection";
-import SearchCacheEntity from "./searchCacheDbo";
 import { SearchPort } from "./search.port";
+import SearchCacheEntity from "./@types/SearchCacheDbo";
 
 export class SearchCacheAdapter implements SearchPort {
     private readonly collection = db.collection<SearchCacheEntity>("search-cache");

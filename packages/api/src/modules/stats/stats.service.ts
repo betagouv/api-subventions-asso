@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import statsAssociationsVisitAdapter from "../../dataProviders/db/stats/statsAssociationsVisit.adapter";
+import statsAssociationsVisitAdapter from "../../dataProviders/db/stats/association-visit.adapter";
 import logsAdapter from "../../dataProviders/db/stats/logs.adapter";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import { WinstonLog } from "../../@types/WinstonLog";

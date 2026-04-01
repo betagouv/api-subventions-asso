@@ -1,9 +1,9 @@
 import ChorusCli from "../../../src/interfaces/cli/Chorus.cli";
 import path from "path";
 import chorusAdapter from "../../../src/dataProviders/db/providers/chorus/chorus.adapter";
-import paymentFlatAdapter from "../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
-import uniteLegalEntrepriseAdapter from "../../../src/dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.adapter";
-import sireneUniteLegaleDbAdapter from "../../../src/dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.adapter";
+import paymentFlatAdapter from "../../../src/dataProviders/db/payment-flat/payment-flat.adapter";
+import uniteLegalEntrepriseAdapter from "../../../src/dataProviders/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
+import sireneUniteLegaleDbAdapter from "../../../src/dataProviders/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
 import { SireneStockUniteLegaleEntity } from "../../../src/entities/SireneStockUniteLegaleEntity";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
 import { Association } from "dto";
@@ -13,7 +13,7 @@ import {
     CHORUS_FSE_ENTITIES,
     CHORUS_ENTITIES,
 } from "../../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
-import stateBudgetProgramAdapter from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.adapter";
+import stateBudgetProgramAdapter from "../../../src/dataProviders/db/state-budget-program/state-budget-program.adapter";
 import PROGRAMS from "../../dataProviders/db/__fixtures__/stateBudgetProgram";
 import chorusFseAdapter from "../../../src/dataProviders/db/providers/chorus/chorus.fse.adapter";
 import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";

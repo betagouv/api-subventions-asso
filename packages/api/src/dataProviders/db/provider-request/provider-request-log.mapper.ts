@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import ProviderRequestLog from "../../../modules/provider-request/entities/ProviderRequestLog";
-import ProviderRequestLogDbo from "./ProviderRequestLogDbo";
+import ProviderRequestLogDbo from "./@types/ProviderRequestLogDbo";
 
 export default class ProviderRequestLogMapper {
     static toEntity(dbo: ProviderRequestLogDbo): ProviderRequestLog {

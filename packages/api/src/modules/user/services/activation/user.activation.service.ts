@@ -10,7 +10,7 @@ import notifyService from "../../../notify/notify.service";
 import userAuthService from "../auth/user.auth.service";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import UserDbo from "../../../../dataProviders/db/user/UserDbo";
+import UserDbo from "../../../../dataProviders/db/user/@types/UserDbo";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userCrudService from "../crud/user.crud.service";
 import { UserServiceErrors } from "../../user.enum";

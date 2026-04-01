@@ -3,7 +3,7 @@ import { SireneStockUniteLegaleEntity } from "../../../../../entities/SireneStoc
 import { SireneUniteLegaleDbo } from "../@types/SireneUniteLegaleDbo";
 import Siren from "../../../../../identifierObjects/Siren";
 import UniteLegalNameEntity from "../../../../../entities/UniteLegalNameEntity";
-import UniteLegalNameMapper from "../../../../../dataProviders/db/uniteLegalName/unite-legal-name.mapper";
+import UniteLegalNameMapper from "../../../../../dataProviders/db/unite-legale-name/unite-legale-name.mapper";
 
 export default class SireneStockUniteLegaleMapper {
     static dtoToEntity(dto: SireneUniteLegaleDto): SireneStockUniteLegaleEntity {

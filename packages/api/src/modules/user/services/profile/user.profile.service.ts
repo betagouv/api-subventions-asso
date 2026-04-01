@@ -22,7 +22,7 @@ import { NotificationType } from "../../../notify/@types/NotificationType";
 import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapter";
 import UserReset from "../../entities/UserReset";
 import userAuthService from "../auth/user.auth.service";
-import UserDbo from "../../../../dataProviders/db/user/UserDbo";
+import UserDbo from "../../../../dataProviders/db/user/@types/UserDbo";
 import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
 import geoService from "../../../providers/geoApi/geo.service";

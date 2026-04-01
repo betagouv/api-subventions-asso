@@ -1,6 +1,6 @@
 import Siren from "../../identifierObjects/Siren";
 
-import applicationFlatAdapter from "../../dataProviders/db/applicationFlat/application-flat.adapter";
+import applicationFlatAdapter from "../../dataProviders/db/application-flat/application-flat.adapter";
 import applicationFlatService from "./applicationFlat.service";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import ApplicationFlatMapper from "./application-flat.mapper";
@@ -15,7 +15,7 @@ import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import { APPLICATION_LINK_TO_CHORUS, DBO as APPLICATION_FLAT_DBO } from "./__fixtures__/application-flat.fixture";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
 
-jest.mock("../../dataProviders/db/applicationFlat/application-flat.adapter");
+jest.mock("../../dataProviders/db/application-flat/application-flat.adapter");
 jest.mock("./application-flat.mapper");
 jest.mock("../../identifierObjects/Siret");
 jest.mock("../../shared/helpers/MongoHelper");

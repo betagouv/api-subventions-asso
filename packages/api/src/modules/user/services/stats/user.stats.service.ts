@@ -4,7 +4,7 @@ import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
 import userCrudService from "../crud/user.crud.service";
 import configurationsService from "../../../configurations/configurations.service";
-import statsAssociationsVisitAdapter from "../../../../dataProviders/db/stats/statsAssociationsVisit.adapter";
+import statsAssociationsVisitAdapter from "../../../../dataProviders/db/stats/association-visit.adapter";
 
 export class UserStatsService {
     public countTotalUsersOnDate(date, withAdmin = false) {

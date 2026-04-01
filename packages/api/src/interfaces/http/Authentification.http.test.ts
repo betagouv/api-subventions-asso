@@ -36,7 +36,7 @@ describe("Authentication http", () => {
 
             beforeAll(async () => {
                 jest.resetModules();
-                jest.doMock("../../configurations/agentConnect.conf", () => ({
+                jest.doMock("../../configurations/pro-connect.conf", () => ({
                     AGENT_CONNECT_ENABLED: false,
                     __esModule: true,
                 }));

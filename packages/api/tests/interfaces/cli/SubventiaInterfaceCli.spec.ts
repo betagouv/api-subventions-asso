@@ -3,7 +3,7 @@ import SubventiaCli from "../../../src/interfaces/cli/Subventia.cli";
 import subventiaAdapter from "../../../src/dataProviders/db/providers/subventia/subventia.adapter";
 import { ObjectId } from "mongodb";
 import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
-import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/application-flat.adapter";
+import applicationFlatAdapter from "../../../src/dataProviders/db/application-flat/application-flat.adapter";
 import { SUBVENTIA_DBO } from "../../../src/modules/providers/subventia/__fixtures__/subventia.fixture";
 import { ApplicationFlatEntity } from "../../../src/entities/flats/ApplicationFlatEntity";
 

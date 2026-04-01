@@ -17,7 +17,7 @@ import PRODUCER_FIXTURE from "./__fixtures__/MiscScdlProducer";
 import ScdlGrantParser from "./scdl.grant.parser";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
-import applicationFlatAdapter from "../../../dataProviders/db/applicationFlat/application-flat.adapter";
+import applicationFlatAdapter from "../../../dataProviders/db/application-flat/application-flat.adapter";
 import apiAssoService from "../apiAsso/apiAsso.service";
 import Siret from "../../../identifierObjects/Siret";
 import fs from "fs";
@@ -28,7 +28,7 @@ import { ScdlParsedInfos } from "./@types/ScdlParsedInfos";
 
 const mockedFs = jest.mocked(fs);
 
-jest.mock("../../../dataProviders/db/applicationFlat/application-flat.adapter");
+jest.mock("../../../dataProviders/db/application-flat/application-flat.adapter");
 jest.mock("../apiAsso/apiAsso.service");
 
 describe("ScdlService", () => {

@@ -8,7 +8,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { S3Adapter } from "./s3.adapter";
 import { S3_BUCKET } from "../../configurations/s3.conf";
-import { S3Error } from "./s3Errors";
+import { S3Error } from "./@errors/S3Error";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Readable } from "stream";
 

@@ -9,7 +9,7 @@ import {
 
 import { S3_ACCESS_KEY, S3_REGION, S3_BUCKET, S3_ENDPOINT, S3_SECRET_KEY } from "../../configurations/s3.conf";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { S3Error } from "./s3Errors";
+import { S3Error } from "./@errors/S3Error";
 import { S3FileData } from "../../@types/S3FileData";
 import { S3Port } from "./s3.port";
 

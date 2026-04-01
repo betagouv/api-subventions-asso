@@ -1,8 +1,8 @@
 import axios from "axios";
 import ProviderRequestFactory, { ProviderRequestService } from "./providerRequest.service";
-import providerRequestAdapter from "../../dataProviders/db/provider-request/providerRequest.adapter";
+import providerRequestAdapter from "../../dataProviders/db/provider-request/provider-request.adapter";
 
-jest.mock("../../dataProviders/db/provider-request/providerRequest.adapter");
+jest.mock("../../dataProviders/db/provider-request/provider-request.adapter");
 
 describe("ProviderRequestService", () => {
     let providerRequestService: ProviderRequestService;

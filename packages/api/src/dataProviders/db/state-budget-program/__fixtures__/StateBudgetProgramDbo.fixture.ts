@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import StateBudgetProgramDbo from "../StateBudgetProgramDbo";
+import StateBudgetProgramDbo from "../@types/StateBudgetProgramDbo";
 
 export const STATE_BUDGET_PROGRAM_DBOS: StateBudgetProgramDbo[] = [
     {

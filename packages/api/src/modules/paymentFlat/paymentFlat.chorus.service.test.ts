@@ -1,5 +1,5 @@
-import { PAYMENT_FLAT_DBO } from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
-import paymentFlatAdapter from "../../dataProviders/db/paymentFlat/paymentFlat.adapter";
+import { PAYMENT_FLAT_DBO } from "../../dataProviders/db/payment-flat/__fixtures__/payment-flat.fixture";
+import paymentFlatAdapter from "../../dataProviders/db/payment-flat/payment-flat.adapter";
 import { CHORUS_ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
 import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
 import chorusService from "../providers/chorus/chorus.service";
@@ -10,7 +10,7 @@ import paymentFlatChorusService from "./paymentFlat.chorus.service";
 import PaymentFlatMapper from "./payment-flat.mapper";
 import paymentFlatService from "./paymentFlat.service";
 
-jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.adapter");
+jest.mock("../../dataProviders/db/payment-flat/payment-flat.adapter");
 jest.mock("../providers/dataBretagne/dataBretagne.service");
 jest.mock("./payment-flat.mapper");
 jest.mock("./paymentFlat.service");

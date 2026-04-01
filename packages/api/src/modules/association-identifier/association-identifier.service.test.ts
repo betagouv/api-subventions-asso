@@ -4,11 +4,11 @@ import associationIdentifierService from "./association-identifier.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import Siren from "../../identifierObjects/Siren";
-import rechercheEntreprisesService from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service";
+import rechercheEntreprisesService from "../../dataProviders/api/recherche-entreprises/recherche-entreprises.service";
 import { ASSOCIATION_NAME } from "../association-name/__fixtures__/AssociationName";
 
 jest.mock("../rna-siren/rna-siren.service");
-jest.mock("../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service");
+jest.mock("../../dataProviders/api/recherche-entreprises/recherche-entreprises.service");
 
 describe("AssociationIdentifierService", () => {
     const SIREN = new Siren(SIREN_STR);

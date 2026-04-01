@@ -3,7 +3,7 @@ import demarchesSimplifieesService from "../../../src/modules/providers/demarche
 import demarchesSimplifieesSchemaAdapter from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
 import DemarchesSimplifieesCli from "../../../src/interfaces/cli/DemarchesSimplifiees.cli";
 import demarchesSimplifieesDataAdapter from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
-import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/application-flat.adapter";
+import applicationFlatAdapter from "../../../src/dataProviders/db/application-flat/application-flat.adapter";
 import { ApplicationFlatEntity } from "../../../src/entities/flats/ApplicationFlatEntity";
 
 import * as inquirerPrompt from "@inquirer/prompts";

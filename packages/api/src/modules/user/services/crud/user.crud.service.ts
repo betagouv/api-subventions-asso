@@ -10,7 +10,7 @@ import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import { RoleEnum } from "../../../../@enums/RolesEnum";
 import userAuthService from "../auth/user.auth.service";
-import { UserNotPersisted } from "../../../../dataProviders/db/user/UserDbo";
+import { UserNotPersisted } from "../../../../dataProviders/db/user/@types/UserDbo";
 import userConsumerService from "../consumer/user.consumer.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userActivationService from "../activation/user.activation.service";

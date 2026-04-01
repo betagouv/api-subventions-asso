@@ -1,4 +1,4 @@
-import DepositScdlLogDbo from "./DepositScdlLogDbo";
+import DepositScdlLogDbo from "./@types/DepositScdlLogDbo";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 
 export default class DepositLogMapper {

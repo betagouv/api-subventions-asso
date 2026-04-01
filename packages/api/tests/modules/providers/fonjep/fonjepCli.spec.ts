@@ -7,11 +7,11 @@ import fonjepTiersAdapter from "../../../../src/dataProviders/db/providers/fonje
 import fonjepPostesAdapter from "../../../../src/dataProviders/db/providers/fonjep/fonjep.postes.adapter";
 import fonjepTypePosteAdapter from "../../../../src/dataProviders/db/providers/fonjep/fonjep.typePoste.adapter";
 import fonjepDispositifAdapter from "../../../../src/dataProviders/db/providers/fonjep/fonjep.dispositif.adapter";
-import dataBretagneAdapter from "../../../../src/dataProviders/api/dataBretagne/dataBretagne.adapter";
+import dataBretagneAdapter from "../../../../src/dataProviders/api/data-bretagne/data-bretagne.adapter";
 import { DATA_BRETAGNE_DTOS, PROGRAMS } from "../../../__fixtures__/paymentsFlat.fixture";
-import stateBudgetProgramAdapter from "../../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.adapter";
-import paymentFlatAdapter from "../../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
-import applicationFlatAdapter from "../../../../src/dataProviders/db/applicationFlat/application-flat.adapter";
+import stateBudgetProgramAdapter from "../../../../src/dataProviders/db/state-budget-program/state-budget-program.adapter";
+import paymentFlatAdapter from "../../../../src/dataProviders/db/payment-flat/payment-flat.adapter";
+import applicationFlatAdapter from "../../../../src/dataProviders/db/application-flat/application-flat.adapter";
 
 const FILEPATH = path.resolve(__dirname, "./__fixtures__/fonjep-new.xlsx");
 const EXPORT_DATE = new Date("2022-03-03").toISOString();

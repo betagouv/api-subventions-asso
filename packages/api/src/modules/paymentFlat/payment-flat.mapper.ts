@@ -2,7 +2,7 @@ import { BasePayment, ChorusPayment, FonjepPayment, Payment, PaymentFlatDto } fr
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import { RawPayment } from "../grant/@types/rawGrant";
 import ProviderValueMapper from "../../shared/mappers/provider-value.mapper";
-import PaymentFlatDbo from "../../dataProviders/db/paymentFlat/PaymentFlatDbo";
+import PaymentFlatDbo from "../../dataProviders/db/payment-flat/@types/PaymentFlatDbo";
 import Siren from "../../identifierObjects/Siren";
 import Siret from "../../identifierObjects/Siret";
 import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymentFlat";

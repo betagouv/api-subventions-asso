@@ -51,7 +51,7 @@ jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
-import UserDbo from "../../../../dataProviders/db/user/UserDbo";
+import UserDbo from "../../../../dataProviders/db/user/@types/UserDbo";
 
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),

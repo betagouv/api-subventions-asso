@@ -7,7 +7,7 @@ import {
 } from "../../modules/providers/osiris/__fixtures__/OsirisEntities";
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
-import rnaSirenAdapter from "../../../src/dataProviders/db/rnaSiren/rnaSiren.adapter";
+import rnaSirenAdapter from "../../../src/dataProviders/db/rna-siren/rna-siren.adapter";
 import { AnyRawGrant, JoinedRawGrant } from "../../../src/modules/grant/@types/rawGrant";
 import demarchesSimplifieesDataAdapter from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
 import {
@@ -31,11 +31,11 @@ import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fix
 import Rna from "../../../src/identifierObjects/Rna";
 import miscScdlProducersAdapter from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.adapter";
 import Siren from "../../../src/identifierObjects/Siren";
-import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/statsAssociationsVisit.adapter";
+import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/association-visit.adapter";
 import { App } from "supertest/types";
-import paymentFlatAdapter from "../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
+import paymentFlatAdapter from "../../../src/dataProviders/db/payment-flat/payment-flat.adapter";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
-import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/application-flat.adapter";
+import applicationFlatAdapter from "../../../src/dataProviders/db/application-flat/application-flat.adapter";
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,
@@ -58,8 +58,8 @@ import fonjepTiersAdapter from "../../../src/dataProviders/db/providers/fonjep/f
 import fonjepVersementsAdapter from "../../../src/dataProviders/db/providers/fonjep/fonjep.versements.adapter";
 import fonjepTypePosteAdapter from "../../../src/dataProviders/db/providers/fonjep/fonjep.typePoste.adapter";
 import AssociationIdentifier from "../../../src/identifierObjects/AssociationIdentifier";
-import rechercheEntreprisesAdapter from "../../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.adapter";
-import { RECHERCHE_ENTREPRISES_DTO } from "../../../src/dataProviders/api/rechercheEntreprises/__fixtures__/RechercheEntreprises";
+import rechercheEntreprisesAdapter from "../../../src/dataProviders/api/recherche-entreprises/recherche-entreprises.adapter";
+import { RECHERCHE_ENTREPRISES_DTO } from "../../../src/dataProviders/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 

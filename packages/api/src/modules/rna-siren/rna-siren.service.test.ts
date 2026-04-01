@@ -5,12 +5,12 @@ import rnaSirenService from "./rna-siren.service";
 import Rna from "../../identifierObjects/Rna";
 import Siren from "../../identifierObjects/Siren";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
-import rnaSirenAdapter from "../../dataProviders/db/rnaSiren/rnaSiren.adapter";
+import rnaSirenAdapter from "../../dataProviders/db/rna-siren/rna-siren.adapter";
 import associationIdentifierService from "../association-identifier/association-identifier.service";
 
 jest.mock("../association-identifier/association-identifier.service");
 jest.mock("../providers/apiAsso/apiAsso.service");
-jest.mock("../../dataProviders/db/rnaSiren/rnaSiren.adapter");
+jest.mock("../../dataProviders/db/rna-siren/rna-siren.adapter");
 
 describe("RnaSirenService", () => {
     const RNA = new Rna("W123456789");

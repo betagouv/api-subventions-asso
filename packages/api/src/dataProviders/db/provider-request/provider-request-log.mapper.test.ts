@@ -1,6 +1,6 @@
 import ProviderRequestLogMapper from "./provider-request-log.mapper";
 import ProviderRequestLog from "../../../modules/provider-request/entities/ProviderRequestLog";
-import ProviderRequestLogDbo from "./ProviderRequestLogDbo";
+import ProviderRequestLogDbo from "./@types/ProviderRequestLogDbo";
 import { ObjectId } from "mongodb";
 
 describe("ProviderRequestLogAdapter", () => {

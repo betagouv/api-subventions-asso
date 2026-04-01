@@ -5,7 +5,7 @@ import miscScdlProducersAdapter from "../../../src/dataProviders/db/providers/sc
 import miscScdlGrantAdapter from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.adapter";
 import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
-import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/application-flat.adapter";
+import applicationFlatAdapter from "../../../src/dataProviders/db/application-flat/application-flat.adapter";
 import notifyService from "../../../src/modules/notify/notify.service";
 import { NotificationType } from "../../../src/modules/notify/@types/NotificationType";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";

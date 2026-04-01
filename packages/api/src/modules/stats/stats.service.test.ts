@@ -1,6 +1,6 @@
 import { RNA_STR, SIREN_STR } from "../../../tests/__fixtures__/association.fixture";
 import logsAdapter from "../../dataProviders/db/stats/logs.adapter";
-import statsAssociationsVisitAdapter from "../../dataProviders/db/stats/statsAssociationsVisit.adapter";
+import statsAssociationsVisitAdapter from "../../dataProviders/db/stats/association-visit.adapter";
 import { CONSUMER_USER } from "../user/__fixtures__/user.fixture";
 import userCrudService from "../user/services/crud/user.crud.service";
 import RouteTypesEnum from "./@types/RouteTypesEnum";
@@ -8,7 +8,7 @@ import statsService from "./stats.service";
 import { FindCursor, ObjectId } from "mongodb";
 
 jest.mocked("../user/services/crud/user.crud.service");
-jest.mock("../../dataProviders/db/stats/statsAssociationsVisit.adapter");
+jest.mock("../../dataProviders/db/stats/association-visit.adapter");
 jest.mock("../../dataProviders/db/stats/logs.adapter");
 
 describe("StatsService", () => {

@@ -2,7 +2,7 @@ import UniteLegalNameEntity from "../../entities/UniteLegalNameEntity";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import associationNameService from "./associationName.service";
-import rechercheEntreprisesService from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service";
+import rechercheEntreprisesService from "../../dataProviders/api/recherche-entreprises/recherche-entreprises.service";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 import Siren from "../../identifierObjects/Siren";
 import Rna from "../../identifierObjects/Rna";
@@ -10,7 +10,7 @@ import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier
 
 jest.mock("../providers/uniteLegalName/uniteLegal.name.service");
 jest.mock("../rna-siren/rna-siren.service");
-jest.mock("../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service");
+jest.mock("../../dataProviders/api/recherche-entreprises/recherche-entreprises.service");
 
 const mockedUniteLegalNameService = uniteLegalNameService as jest.Mocked<typeof uniteLegalNameService>;
 const mockedRnaSirenService = rnaSirenService as jest.Mocked<typeof rnaSirenService>;

@@ -5,7 +5,7 @@ import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adap
 import { osirisActionAdapter, osirisRequestAdapter } from "../../../src/dataProviders/db/providers/osiris";
 import { REQUEST_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.request.fixtures";
 import { ACTION_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.action.fixtures";
-import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/application-flat.adapter";
+import applicationFlatAdapter from "../../../src/dataProviders/db/application-flat/application-flat.adapter";
 
 describe("OsirisCli", () => {
     const spys: jest.SpyInstance<unknown>[] = [];
