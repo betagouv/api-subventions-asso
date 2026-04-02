@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs";
 import sireneStockUniteLegaleApiAdapter from "../../../src/adapters/outputs/api/sirene/sirene-stock-unite-legale.adapter";
 import sireneStockUniteLegaleDbAdapter from "../../../src/adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
-import SireneStockUniteLegaleCli from "../../../src/interfaces/cli/SireneStockUniteLegale.cli";
+import SireneStockUniteLegaleCli from "../../../src/adapters/inputs/cli/SireneStockUniteLegale.cli";
 import { ObjectId } from "mongodb";
 import uniteLegalNameAdapter from "../../../src/adapters/outputs/db/unite-legale-name/unite-legale-name.adapter";
 import uniteLegalEntrepriseAdapter from "../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";

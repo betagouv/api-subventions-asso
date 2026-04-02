@@ -2,7 +2,7 @@ import dauphinAdapter from "../../../src/adapters/outputs/db/providers/dauphin/d
 import gisproAdapter from "../../../src/adapters/outputs/db/providers/gispro.adapter";
 import DauphinSubventionDto from "../../../src/modules/providers/dauphin-gispro/dto/DauphinSubventionDto";
 import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
-import DauphinCli from "../../../src/interfaces/cli/Dauphin.cli";
+import DauphinCli from "../../../src/adapters/inputs/cli/Dauphin.cli";
 import { DAUPHIN_ENTITIES, GISPRO_ENTITIES } from "./__fixtures__/dauphinGispro.fixture";
 
 describe("Dauphin cli", () => {

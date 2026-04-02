@@ -1,0 +1,205 @@
+import path from "path";
+import fs from "fs";
+import { StaticImplements } from "../../../decorators/static-implements.decorator";
+import { CliStaticInterface } from "../../../@types";
+
+import {
+    FileConfigErrors,
+    ScdlFileProcessingConfig,
+    ScdlFileProcessingConfigList,
+    ScdlParseCsvArgs,
+    ScdlParseParams,
+    ScdlParseXlsArgs,
+} from "../../../@types/ScdlProcess";
+import {
+    SCDL_FILE_PROCESSING_CONFIG_FILENAME,
+    SCDL_FILE_PROCESSING_PATH,
+} from "../../../configurations/scdl-process.conf";
+import { FileExtensionEnum } from "../../../@enums/FileExtensionEnum";
+import { isNumberValid, isShortISODateValid, isStringValid } from "../../../shared/Validators";
+import scdlService from "../../../modules/providers/scdl/scdl.service";
+import ScdlCli from "./Scdl.cli";
+import Siret from "../../../identifierObjects/Siret";
+import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
+
+@StaticImplements<CliStaticInterface>()
+export default class ScdlBatchCli extends ScdlCli {
+    static cmdName = "scdl-batch";
+
+    protected successList: string[] = [];
+    protected errorList: string[] = [];
+    // store errors for each ScdlFileProcessingConfig format error
+    protected fileConfigErrors: FileConfigErrors = [];
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private isConfig(obj: any): obj is ScdlFileProcessingConfigList {
+        return Boolean(
+            obj &&
+            Array.isArray(obj.files) &&
+            obj.files.length &&
+            obj.files.every(file => this.validateFileConfig(file)),
+        );
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private validateFileConfig(file: any): file is ScdlFileProcessingConfig {
+        if (!file)
+            throw new Error(
+                `You must provide a config file for SCDL batch import and name it ${SCDL_FILE_PROCESSING_CONFIG_FILENAME}`,
+            );
+
+        if (!isStringValid(file.name)) this.fileConfigErrors.push({ field: "name" });
+        this.validateParseParams(file.parseParams);
+
+        if (this.fileConfigErrors.length) return false;
+        else return true;
+    }
+
+    private validateXlsArgs(params: ScdlParseXlsArgs) {
+        const errors: FileConfigErrors = [];
+        if (params.pageName && !isStringValid(params.pageName)) errors.push({ field: "pageName" });
+        if (params.rowOffset && !isNumberValid(Number(params.rowOffset))) errors.push({ field: "rowOffset" });
+        if (errors.length) {
+            this.fileConfigErrors = this.fileConfigErrors.concat(errors);
+            return false;
+        }
+        return true;
+    }
+
+    private validateCsvArgs(params: ScdlParseCsvArgs): params is ScdlParseCsvArgs {
+        const ACCEPTED_DELIMITERS = [";", ","];
+        const ACCEPTED_QUOTES = ['"', "'"];
+
+        const errors: FileConfigErrors = [];
+
+        if (params.delimiter && !ACCEPTED_DELIMITERS.includes(params.delimiter as string))
+            errors.push({ field: "delimiter" });
+        if (params.quote && !ACCEPTED_QUOTES.includes(params.quote as string)) errors.push({ field: "quote" });
+        if (errors.length) {
+            this.fileConfigErrors = this.fileConfigErrors.concat(errors);
+            return false;
+        }
+
+        return true;
+    }
+
+    private validateParseParams(params): params is ScdlParseParams {
+        // parseParam is optionnal
+        if (!params) return true;
+
+        const errors: FileConfigErrors = [];
+        if (typeof params != "object" || params instanceof Array) {
+            errors.push({ field: "parseParams" });
+        } else {
+            // csv part
+            if (params.delimiter || params.quote) this.validateCsvArgs(params);
+
+            // excel part
+            if (params.pageName || params.rowOffset) this.validateXlsArgs(params);
+        }
+        if (errors.length) {
+            this.fileConfigErrors = this.fileConfigErrors.concat(errors);
+            return false;
+        } else return true;
+    }
+
+    private loadConfig(): ScdlFileProcessingConfigList {
+        const filePath = path.resolve(SCDL_FILE_PROCESSING_PATH, SCDL_FILE_PROCESSING_CONFIG_FILENAME);
+        const data = fs.readFileSync(filePath, "utf8");
+        return JSON.parse(data) as ScdlFileProcessingConfigList;
+    }
+
+    protected async processFile(fileConfig: ScdlFileProcessingConfig): Promise<void> {
+        const { name, allocatorSiret, exportDate, parseParams, addProducer } = fileConfig;
+
+        // just to be sure but everything is supposed to be checked before calling processFile
+        if (!name) throw new Error("You must provide the file name for every file's configuration.");
+
+        const dirPath = path.resolve(SCDL_FILE_PROCESSING_PATH);
+
+        const siret = new Siret(allocatorSiret);
+
+        if (exportDate && !isShortISODateValid(exportDate))
+            throw new Error("You must provide an export date in YYYY-MM-DD");
+
+        if (addProducer) {
+            if (await scdlService.getProducer(siret)) {
+                const message = `Producer with SIRET ${siret.toString()} already exist. Used with file ${name}`;
+                this.errorList.push(message);
+            } else {
+                const producer = await scdlService.createProducer(siret);
+                this.successList.push(`added producer ${producer.name} for SIRET ${producer.siret}`);
+            }
+        }
+
+        try {
+            // use slice to remove the dot from the extension name
+            const fileType = path.extname(name).slice(1).toLowerCase();
+            const filePath = path.join(dirPath, name);
+            if (fileType === FileExtensionEnum.CSV) {
+                if (!parseParams) await this.parse(filePath, allocatorSiret, exportDate);
+                else {
+                    const { delimiter, quote } = parseParams as ScdlParseCsvArgs;
+                    await this.parse(filePath, allocatorSiret, exportDate, delimiter, quote);
+                }
+            } else if (fileType === FileExtensionEnum.XLS || fileType === FileExtensionEnum.XLSX) {
+                if (!parseParams) await this.parseXls(filePath, allocatorSiret, exportDate);
+                else {
+                    const { pageName, rowOffset } = parseParams as ScdlParseXlsArgs;
+                    await this.parseXls(filePath, allocatorSiret, exportDate, pageName, rowOffset);
+                }
+            } else {
+                console.error(`❌ Unsupported file type : ${name} (type: ${fileType})`);
+                throw new Error(`Unsupported file type : ${filePath}`);
+            }
+            this.successList.push(`parse data of ${allocatorSiret} for file ${name}`);
+        } catch (e) {
+            this.errorList.push(`parse data of ${allocatorSiret} for file ${name} : ${(e as Error).message}`);
+        }
+    }
+
+    /**
+     * main function to load the file listing .json and launch data integration
+     */
+    public async import() {
+        try {
+            const config: ScdlFileProcessingConfigList = this.loadConfig();
+            if (!this.isConfig(config)) {
+                // TODO: do something with fileConfigErrors => maybe transform it in a Map with each file name as key
+                throw new Error(
+                    `Invalid configuration file: The config does not match the expected structure. Concerned fields are ${this.fileConfigErrors
+                        .map(error => error.field)
+                        .join(",")
+                        .slice(0, -1)}.`,
+                );
+            }
+
+            // need to be sync in case we want to insert multiple year of the same allocator with different files
+            // race conditions would execute one without addProducer and throw an error
+            await asyncForEach(config.files, async fileConfig => {
+                console.log(`\n---------------Processing file: ${fileConfig.name}---------------`);
+                return this.processFile(fileConfig);
+            });
+        } catch (e) {
+            // unexpected error that doesn't make use of errorList
+            console.trace(`❌ Global execution failure : ${(e as Error).message}`);
+            throw e;
+        } finally {
+            console.log("\n---------------Summary of Operations---------------");
+            if (this.errorList.length === 0) {
+                {
+                    console.log("🚀 All operations completed successfully! 🎯");
+                }
+            }
+            if (this.successList.length > 0) {
+                console.log("✅ list of Success :");
+                this.successList.forEach(desc => console.log(`➡️ ${desc}`));
+            }
+
+            if (this.errorList.length > 0) {
+                console.log("⚠️ List of Errors :");
+                this.errorList.forEach(desc => console.log(`❌ ${desc}`));
+            }
+        }
+    }
+}

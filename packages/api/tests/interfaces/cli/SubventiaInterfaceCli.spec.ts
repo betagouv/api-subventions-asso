@@ -1,5 +1,5 @@
 import path from "node:path";
-import SubventiaCli from "../../../src/interfaces/cli/Subventia.cli";
+import SubventiaCli from "../../../src/adapters/inputs/cli/Subventia.cli";
 import subventiaAdapter from "../../../src/adapters/outputs/db/providers/subventia/subventia.adapter";
 import { ObjectId } from "mongodb";
 import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";

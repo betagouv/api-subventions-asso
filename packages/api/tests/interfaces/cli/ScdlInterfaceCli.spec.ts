@@ -1,6 +1,6 @@
 import path from "path";
 import { ObjectId } from "mongodb";
-import ScdlCli from "../../../src/interfaces/cli/Scdl.cli";
+import ScdlCli from "../../../src/adapters/inputs/cli/Scdl.cli";
 import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlProducers.adapter";
 import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlGrant.adapter";
 import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";

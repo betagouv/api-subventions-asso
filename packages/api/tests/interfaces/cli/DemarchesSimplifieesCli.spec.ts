@@ -1,7 +1,7 @@
 import { DS_DTO, DS_ENTITY, DS_FLAT, SCHEMA } from "./__fixtures__/demarchesSimplifiees.fixture";
 import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 import demarchesSimplifieesSchemaAdapter from "../../../src/adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
-import DemarchesSimplifieesCli from "../../../src/interfaces/cli/DemarchesSimplifiees.cli";
+import DemarchesSimplifieesCli from "../../../src/adapters/inputs/cli/DemarchesSimplifiees.cli";
 import demarchesSimplifieesDataAdapter from "../../../src/adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
 import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 import { ApplicationFlatEntity } from "../../../src/entities/flats/ApplicationFlatEntity";
@@ -126,7 +126,7 @@ describe("DemarchesSimplifieesCli", () => {
                     inputMock.mockResolvedValueOnce("");
                     inputMock.mockResolvedValueOnce("2025");
                 }
-                const PATH = "tests/interfaces/cli/__fixtures__/demarcheSimplifieesSeed.fixture.json";
+                const PATH = "tests/adapters/inputs/cli/__fixtures__/demarcheSimplifieesSeed.fixture.json";
                 await cli.generateSchema(PATH, 42);
 
                 // I only test flat schema because it is what is meant to remain

@@ -1,4 +1,4 @@
-import GisproCli from "../../../src/interfaces/cli/Gispro.cli";
+import GisproCli from "../../../src/adapters/inputs/cli/Gispro.cli";
 import gisproAdapter from "../../../src/adapters/outputs/db/providers/gispro.adapter";
 import path from "path";
 
