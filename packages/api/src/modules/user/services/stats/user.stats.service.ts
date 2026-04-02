@@ -1,10 +1,10 @@
 import { UserDto } from "dto";
-import userAdapter from "../../../../adapters/db/user/user.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
 import userCrudService from "../crud/user.crud.service";
 import configurationsService from "../../../configurations/configurations.service";
-import statsAssociationsVisitAdapter from "../../../../adapters/db/stats/association-visit.adapter";
+import statsAssociationsVisitAdapter from "../../../../adapters/outputs/db/stats/association-visit.adapter";
 
 export class UserStatsService {
     public countTotalUsersOnDate(date, withAdmin = false) {

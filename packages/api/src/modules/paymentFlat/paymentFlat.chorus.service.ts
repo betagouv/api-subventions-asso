@@ -1,4 +1,4 @@
-import paymentFlatAdapter from "../../adapters/db/payment-flat/payment-flat.adapter";
+import paymentFlatAdapter from "../../adapters/outputs/db/payment-flat/payment-flat.adapter";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymentFlat";

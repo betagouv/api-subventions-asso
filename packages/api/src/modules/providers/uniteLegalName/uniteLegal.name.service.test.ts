@@ -1,4 +1,4 @@
-import uniteLegalNameAdapter from "../../../adapters/db/unite-legale-name/unite-legale-name.adapter";
+import uniteLegalNameAdapter from "../../../adapters/outputs/db/unite-legale-name/unite-legale-name.adapter";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import uniteLegalNameService from "./uniteLegal.name.service";

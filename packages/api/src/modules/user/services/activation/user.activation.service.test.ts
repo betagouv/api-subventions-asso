@@ -1,5 +1,5 @@
 import userActivationService from "./user.activation.service";
-import userAdapter from "../../../../adapters/db/user/user.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import { USER_DBO, USER_SECRETS, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
@@ -9,7 +9,7 @@ import { ResetPasswordErrorCodes, TokenValidationDtoPositiveResponse, TokenValid
 
 jest.mock("../../../../dataProviders/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
-import userResetAdapter from "../../../../adapters/db/user/user-reset.adapter";
+import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
 
 jest.mock("../../../../dataProviders/db/user/user-reset.adapter");
 const mockedUserResetAdapter = jest.mocked(userResetAdapter);

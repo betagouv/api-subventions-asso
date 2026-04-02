@@ -1,11 +1,11 @@
 import path from "path";
 import OsirisCli from "../../../src/interfaces/cli/Osiris.cli";
 import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
-import dataLogAdapter from "../../../src/adapters/db/data-log/data-log.adapter";
-import { osirisActionAdapter, osirisRequestAdapter } from "../../../src/adapters/db/providers/osiris";
+import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
+import { osirisActionAdapter, osirisRequestAdapter } from "../../../src/adapters/outputs/db/providers/osiris";
 import { REQUEST_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.request.fixtures";
 import { ACTION_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.action.fixtures";
-import applicationFlatAdapter from "../../../src/adapters/db/application-flat/application-flat.adapter";
+import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 
 describe("OsirisCli", () => {
     const spys: jest.SpyInstance<unknown>[] = [];

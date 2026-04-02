@@ -19,8 +19,8 @@ import { DemarchesSimplifieesEntityMapper } from "./mappers/demarches-simplifiee
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
 import DemarchesSimplifieesSchema, { DemarchesSimplifieesSchemaLine } from "./entities/DemarchesSimplifieesSchema";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
-import demarchesSimplifieesDataAdapter from "../../../adapters/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
-import demarchesSimplifieesSchemaAdapter from "../../../adapters/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
+import demarchesSimplifieesDataAdapter from "../../../adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
+import demarchesSimplifieesSchemaAdapter from "../../../adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import { DATA_ENTITIES } from "./__fixtures__/DemarchesSimplifieesFixture";
 import { DemarchesSimplifieesSuccessDto } from "./dto/DemarchesSimplifieesDto";

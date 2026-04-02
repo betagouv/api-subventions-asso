@@ -2,7 +2,7 @@ import UniteLegalNameEntity from "../../entities/UniteLegalNameEntity";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import associationNameService from "./associationName.service";
-import rechercheEntreprisesService from "../../adapters/api/recherche-entreprises/recherche-entreprises.service";
+import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 import Siren from "../../identifierObjects/Siren";
 import Rna from "../../identifierObjects/Rna";

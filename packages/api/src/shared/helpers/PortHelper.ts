@@ -1,5 +1,5 @@
 import { WithId } from "mongodb";
-import UserDbo from "../../adapters/db/user/@types/UserDbo";
+import UserDbo from "../../adapters/outputs/db/user/@types/UserDbo";
 import { WithStringId } from "../WithStringId";
 import { DefaultObject } from "../../@types";
 

@@ -1,4 +1,4 @@
-import sireneStockUniteLegaleDbAdapter from "../../../../adapters/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
+import sireneStockUniteLegaleDbAdapter from "../../../../adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
 import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
 import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";

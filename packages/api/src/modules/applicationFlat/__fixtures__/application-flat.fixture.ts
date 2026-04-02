@@ -1,6 +1,6 @@
 import { ApplicationFlatDto, ApplicationNature, ApplicationStatus, PaymentCondition } from "dto";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
-import { ApplicationFlatDbo } from "../../../adapters/db/application-flat/@types/ApplicationFlatDbo";
+import { ApplicationFlatDbo } from "../../../adapters/outputs/db/application-flat/@types/ApplicationFlatDbo";
 import { ObjectId } from "mongodb";
 import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
 import {

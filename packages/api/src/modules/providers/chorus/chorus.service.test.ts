@@ -1,12 +1,12 @@
 import chorusService from "./chorus.service";
-import chorusAdapter from "../../../adapters/db/providers/chorus/chorus.adapter";
+import chorusAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.adapter";
 import { CHORUS_FSE_ENTITIES, CHORUS_ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import Siret from "../../../identifierObjects/Siret";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import chorusFseAdapter from "../../../adapters/db/providers/chorus/chorus.fse.adapter";
+import chorusFseAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.fse.adapter";
 import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/payment-flat.fixture";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";

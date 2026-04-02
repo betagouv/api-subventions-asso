@@ -1,7 +1,7 @@
 import { AmountsVsProgramRegionDto } from "dto";
 import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPaymentFlat";
 import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.service";
-import amountsVsProgramRegionAdapter from "../../../adapters/db/dataviz/amount-vs-program-region/amounts-vs-program-region.adapter";
+import amountsVsProgramRegionAdapter from "../../../adapters/outputs/db/dataviz/amount-vs-program-region/amounts-vs-program-region.adapter";
 import AmountsVsProgramRegionMapper from "./amounts-vs-program-region.mapper";
 import AmountsVsProgramRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
 

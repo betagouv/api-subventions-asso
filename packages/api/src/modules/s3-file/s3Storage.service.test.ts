@@ -8,7 +8,7 @@ jest.mock("../../dataProviders/s3/s3.adapter", () => ({
     getDownloadUrl: jest.fn(),
     getFile: jest.fn(),
 }));
-import s3ClientAdapter from "../../adapters/s3/s3.adapter";
+import s3ClientAdapter from "../../adapters/outputs/s3/s3.adapter";
 
 jest.mock("../../shared/helpers/FileHelper", () => ({
     bufferToMulterFile: jest.fn(),

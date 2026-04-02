@@ -1,5 +1,5 @@
 import sireneStockUniteLegaleFileService from "./sireneStockUniteLegale.file.service";
-import sireneStockUniteLegaleApiAdapter from "../../../../adapters/api/sirene/sirene-stock-unite-legale.adapter";
+import sireneStockUniteLegaleApiAdapter from "../../../../adapters/outputs/api/sirene/sirene-stock-unite-legale.adapter";
 import { Readable } from "stream";
 import fs from "fs";
 import StreamZip from "node-stream-zip";

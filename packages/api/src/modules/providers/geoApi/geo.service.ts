@@ -1,7 +1,7 @@
 import { GeoDepartementDto, GeoRegionDto } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ProviderCore from "../ProviderCore";
-import geoAdapter from "../../../adapters/db/providers/geoApi/geo.adapter";
+import geoAdapter from "../../../adapters/outputs/db/providers/geoApi/geo.adapter";
 import { GeoEntity } from "./@types/geo.types";
 
 export class GeoService extends ProviderCore {

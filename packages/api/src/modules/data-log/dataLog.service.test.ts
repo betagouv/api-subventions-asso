@@ -1,5 +1,5 @@
 import dataLogService from "./dataLog.service";
-import dataLogAdapter from "../../adapters/db/data-log/data-log.adapter";
+import dataLogAdapter from "../../adapters/outputs/db/data-log/data-log.adapter";
 import { DataLogMapper } from "./data-log.mapper";
 import { RAW_PROVIDER } from "../providers/__fixtures__/providers.fixture";
 import { ApiDataLogEntity, DataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";

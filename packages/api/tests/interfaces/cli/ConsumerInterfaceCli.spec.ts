@@ -2,8 +2,8 @@ import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../../../src/configurations/jwt.conf";
 import ConsumerCli from "../../../src/interfaces/cli/Consumer.cli";
-import consumerTokenAdapter from "../../../src/adapters/db/user/consumer-token.adapter";
-import userAdapter from "../../../src/adapters/db/user/user.adapter";
+import consumerTokenAdapter from "../../../src/adapters/outputs/db/user/consumer-token.adapter";
+import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
 import { UserDto } from "dto";
 
 describe("ConsumerCli", () => {

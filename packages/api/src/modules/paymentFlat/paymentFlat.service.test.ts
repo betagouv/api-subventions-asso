@@ -6,7 +6,7 @@ import {
     PAYMENT_FROM_PAYMENT_FLAT,
 } from "./__fixtures__/payment-flat.fixture";
 
-import paymentFlatAdapter from "../../adapters/db/payment-flat/payment-flat.adapter";
+import paymentFlatAdapter from "../../adapters/outputs/db/payment-flat/payment-flat.adapter";
 import Siren from "../../identifierObjects/Siren";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";

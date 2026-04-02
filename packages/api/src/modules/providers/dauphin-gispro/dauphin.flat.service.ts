@@ -1,4 +1,4 @@
-import dauphinAdapter from "../../../adapters/db/providers/dauphin/dauphin.adapter";
+import dauphinAdapter from "../../../adapters/outputs/db/providers/dauphin/dauphin.adapter";
 import DauphinDtoMapper, { InconsistentAggregationError } from "./mappers/dauphin-dto.mapper";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import { ReadableStream } from "stream/web";

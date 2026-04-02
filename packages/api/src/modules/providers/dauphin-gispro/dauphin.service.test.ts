@@ -1,7 +1,7 @@
 import configurationsService from "../../configurations/configurations.service";
 import DauphinDtoMapper from "./mappers/dauphin-dto.mapper";
 import dauphinService from "./dauphin.service";
-import dauphinAdapter from "../../../adapters/db/providers/dauphin/dauphin.adapter";
+import dauphinAdapter from "../../../adapters/outputs/db/providers/dauphin/dauphin.adapter";
 import SpyInstance = jest.SpyInstance;
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import Siren from "../../../identifierObjects/Siren";

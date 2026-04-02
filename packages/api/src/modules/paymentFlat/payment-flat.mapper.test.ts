@@ -8,7 +8,7 @@ import PaymentFlatMapper from "./payment-flat.mapper";
 import {
     PAYMENT_FLAT_DBO,
     PAYMENT_FLAT_DBO_WITH_NULLS,
-} from "../../adapters/db/payment-flat/__fixtures__/payment-flat.fixture";
+} from "../../adapters/outputs/db/payment-flat/__fixtures__/payment-flat.fixture";
 import FonjepEntityMapper from "../providers/fonjep/mappers/fonjep-entity.mapper";
 import { RawPayment } from "../grant/@types/rawGrant";
 

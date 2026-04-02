@@ -18,11 +18,11 @@ import {
 } from "./__fixtures__/fonjepEntities";
 import FonjepEntityMapper from "./mappers/fonjep-entity.mapper";
 jest.mock("./mappers/fonjep-entity.mapper");
-import fonjepTiersAdapter from "../../../adapters/db/providers/fonjep/fonjep.tiers.adapter";
-import fonjepPostesAdapter from "../../../adapters/db/providers/fonjep/fonjep.postes.adapter";
-import fonjepVersementsAdapter from "../../../adapters/db/providers/fonjep/fonjep.versements.adapter";
-import fonjepTypePosteAdapter from "../../../adapters/db/providers/fonjep/fonjep.typePoste.adapter";
-import fonjepDispositifAdapter from "../../../adapters/db/providers/fonjep/fonjep.dispositif.adapter";
+import fonjepTiersAdapter from "../../../adapters/outputs/db/providers/fonjep/fonjep.tiers.adapter";
+import fonjepPostesAdapter from "../../../adapters/outputs/db/providers/fonjep/fonjep.postes.adapter";
+import fonjepVersementsAdapter from "../../../adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
+import fonjepTypePosteAdapter from "../../../adapters/outputs/db/providers/fonjep/fonjep.typePoste.adapter";
+import fonjepDispositifAdapter from "../../../adapters/outputs/db/providers/fonjep/fonjep.dispositif.adapter";
 jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.tiers.adapter");
 jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.postes.adapter");
 jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.versements.adapter");

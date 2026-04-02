@@ -2,13 +2,13 @@ import userAgentConnectService, { UserAgentConnectService } from "./user.agentCo
 import { AGENT_CONNECT_URL } from "../../../../configurations/pro-connect.conf";
 import { Issuer, TokenSet } from "openid-client";
 import { AgentConnectTokenDbo, AgentConnectUser } from "../../@types/AgentConnectUser";
-import userAdapter from "../../../../adapters/db/user/user.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { USER_DBO, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
-import agentConnectTokenAdapter from "../../../../adapters/db/user/pro-connect.adapter";
+import agentConnectTokenAdapter from "../../../../adapters/outputs/db/user/pro-connect.adapter";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import { ObjectId } from "mongodb";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";

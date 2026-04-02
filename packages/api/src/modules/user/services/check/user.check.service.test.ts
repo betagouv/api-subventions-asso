@@ -4,7 +4,7 @@ import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import configurationsService from "../../../configurations/configurations.service";
 jest.mock("../../../configurations/configurations.service");
 const mockedConfigurationsService = jest.mocked(configurationsService);
-import userAdapter from "../../../../adapters/db/user/user.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 jest.mock("../../../../dataProviders/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 import * as stringHelper from "../../../../shared/helpers/StringHelper";

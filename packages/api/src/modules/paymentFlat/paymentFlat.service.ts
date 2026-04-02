@@ -1,5 +1,5 @@
 import { Payment, PaymentFlatDto } from "dto";
-import paymentFlatAdapter from "../../adapters/db/payment-flat/payment-flat.adapter";
+import paymentFlatAdapter from "../../adapters/outputs/db/payment-flat/payment-flat.adapter";
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";

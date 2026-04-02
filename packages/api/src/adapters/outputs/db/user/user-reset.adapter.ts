@@ -1,0 +1,43 @@
+import { ObjectId, WithId } from "mongodb";
+import UserReset from "../../../../modules/user/entities/UserReset";
+import MongoAdapter from "../MongoAdapter";
+import { UserResetPort } from "./user-reset.port";
+
+export class UserResetAdapter extends MongoAdapter<UserReset> implements UserResetPort {
+    collectionName = "users-reset";
+
+    public async findByToken(token: string): Promise<UserReset | null> {
+        return this.collection.findOne({ token });
+    }
+
+    public async findByUserId(userId: ObjectId | string): Promise<WithId<UserReset>[]> {
+        return this.collection.find({ userId: new ObjectId(userId) }).toArray();
+    }
+
+    public async findOneByUserId(userId: ObjectId | string): Promise<UserReset | null> {
+        return this.collection.findOne({ userId: new ObjectId(userId) });
+    }
+
+    public async create(reset: UserReset): Promise<UserReset> {
+        await this.collection.insertOne(reset);
+        return reset;
+    }
+
+    public async remove(reset: UserReset): Promise<void> {
+        await this.collection.deleteOne(reset);
+    }
+
+    public async removeAllByUserId(userId: ObjectId): Promise<boolean> {
+        const result = await this.collection.deleteMany({ userId });
+        return result.acknowledged;
+    }
+
+    async createIndexes() {
+        await this.collection.createIndex({ token: 1 }, { unique: true });
+        await this.collection.createIndex({ userId: 1 }, { unique: true });
+    }
+}
+
+const userResetAdapter = new UserResetAdapter();
+
+export default userResetAdapter;

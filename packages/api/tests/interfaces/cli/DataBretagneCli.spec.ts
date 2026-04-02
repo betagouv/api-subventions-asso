@@ -1,9 +1,9 @@
 import axios from "axios";
 import DataBretagneCli from "../../../src/interfaces/cli/DataBretagne.cli";
 import DataBretagneFixture from "../../__fixtures__/data-bretagne.fixture.json";
-import bopAdapter from "../../../src/adapters/db/state-budget-program/state-budget-program.adapter";
+import bopAdapter from "../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
 import { ObjectId } from "mongodb";
-import dataLogAdapter from "../../../src/adapters/db/data-log/data-log.adapter";
+import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
 
 describe("DataBretagneCli", () => {
     beforeEach(() => {

@@ -1,5 +1,5 @@
 import type { ApplicationFlatDto, DemandeSubvention } from "dto";
-import applicationFlatAdapter from "../../adapters/db/application-flat/application-flat.adapter";
+import applicationFlatAdapter from "../../adapters/outputs/db/application-flat/application-flat.adapter";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { RawApplication } from "../grant/@types/rawGrant";

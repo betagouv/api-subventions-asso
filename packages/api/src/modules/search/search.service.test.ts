@@ -1,5 +1,5 @@
 import searchService, { SearchService } from "./search.service";
-import searchCacheAdapter from "../../adapters/db/search/search.adapter";
+import searchCacheAdapter from "../../adapters/outputs/db/search/search.adapter";
 import associationNameService from "../association-name/associationName.service";
 import AssociationNameDtoMapper from "./mappers/association-name-dto.mapper";
 

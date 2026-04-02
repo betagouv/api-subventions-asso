@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import StreamZip from "node-stream-zip";
-import sireneStockUniteLegaleApiAdapter from "../../../../adapters/api/sirene/sirene-stock-unite-legale.adapter";
+import sireneStockUniteLegaleApiAdapter from "../../../../adapters/outputs/api/sirene/sirene-stock-unite-legale.adapter";
 import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
 
 export class SireneStockUniteLegaleFileService {

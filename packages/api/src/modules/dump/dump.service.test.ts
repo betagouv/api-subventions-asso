@@ -1,5 +1,5 @@
 import { DumpService } from "./dump.service";
-import metabaseDumpAdapter from "../../adapters/db/dump/metabase-dump.adapter";
+import metabaseDumpAdapter from "../../adapters/outputs/db/dump/metabase-dump.adapter";
 import userCrudService from "../user/services/crud/user.crud.service";
 import { DEPOSIT_LOG_ENTITY } from "../deposit-scdl-process/__fixtures__/depositLog.fixture";
 import { USER_DBO } from "../user/__fixtures__/user.fixture";

@@ -1,5 +1,5 @@
 import GisproParser from "./gispro.parser";
-import gisproAdapter from "../../../adapters/db/providers/gispro.adapter";
+import gisproAdapter from "../../../adapters/outputs/db/providers/gispro.adapter";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import Provider from "../@types/IProvider";
 

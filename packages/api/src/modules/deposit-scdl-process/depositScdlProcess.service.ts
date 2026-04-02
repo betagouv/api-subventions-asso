@@ -21,7 +21,7 @@ import ScdlErrorStats from "./entities/ScdlErrorStats";
 import notifyService from "../notify/notify.service";
 import { NotificationType } from "../notify/@types/NotificationType";
 import { isUserAdmin } from "../../shared/helpers/UserHelper";
-import { DepositLogPort } from "../../adapters/db/deposit-log/deposit-log.port";
+import { DepositLogPort } from "../../adapters/outputs/db/deposit-log/deposit-log.port";
 import associationNameService from "../association-name/associationName.service";
 import ExerciceLineCount from "./entities/exerciceLineCount";
 

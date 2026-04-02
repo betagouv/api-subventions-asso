@@ -7,7 +7,7 @@ import { UserDto } from "dto";
 import { ObjectId } from "mongodb";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import { ScdlDepositCronService } from "./scdl-deposit.cron.service";
-import { DepositLogPort } from "../../adapters/db/deposit-log/deposit-log.port";
+import { DepositLogPort } from "../../adapters/outputs/db/deposit-log/deposit-log.port";
 import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.adapter.mock";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 

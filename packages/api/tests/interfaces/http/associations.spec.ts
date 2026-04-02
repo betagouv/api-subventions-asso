@@ -1,5 +1,5 @@
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import osirisRequestAdapter from "../../../src/adapters/db/providers/osiris/osiris.request.adapter";
+import osirisRequestAdapter from "../../../src/adapters/outputs/db/providers/osiris/osiris.request.adapter";
 import request from "supertest";
 import {
     OSIRIS_REQUEST_ENTITY,
@@ -7,16 +7,16 @@ import {
 } from "../../modules/providers/osiris/__fixtures__/OsirisEntities";
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
-import rnaSirenAdapter from "../../../src/adapters/db/rna-siren/rna-siren.adapter";
+import rnaSirenAdapter from "../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
 import { AnyRawGrant, JoinedRawGrant } from "../../../src/modules/grant/@types/rawGrant";
-import demarchesSimplifieesDataAdapter from "../../../src/adapters/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
+import demarchesSimplifieesDataAdapter from "../../../src/adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
 import {
     DATA_ENTITIES as DS_DATA_ENTITIES,
     SCHEMAS as DS_SCHEMAS,
 } from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
-import demarchesSimplifieesSchemaAdapter from "../../../src/adapters/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
+import demarchesSimplifieesSchemaAdapter from "../../../src/adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
 
-import miscScdlGrantAdapter from "../../../src/adapters/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlGrant.adapter";
 import DEFAULT_ASSOCIATION, {
     API_ASSO_ASSOCIATION_FROM_SIREN,
     API_ASSO_ESTABLISHMENTS_FROM_SIREN,
@@ -25,17 +25,17 @@ import DEFAULT_ASSOCIATION, {
     SIREN_STR,
     SIRET_STR,
 } from "../../__fixtures__/association.fixture";
-import dauphinAdapter from "../../../src/adapters/db/providers/dauphin/dauphin.adapter";
+import dauphinAdapter from "../../../src/adapters/outputs/db/providers/dauphin/dauphin.adapter";
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import Rna from "../../../src/identifierObjects/Rna";
-import miscScdlProducersAdapter from "../../../src/adapters/db/providers/scdl/miscScdlProducers.adapter";
+import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlProducers.adapter";
 import Siren from "../../../src/identifierObjects/Siren";
-import statsAssociationsVisitAdapter from "../../../src/adapters/db/stats/association-visit.adapter";
+import statsAssociationsVisitAdapter from "../../../src/adapters/outputs/db/stats/association-visit.adapter";
 import { App } from "supertest/types";
-import paymentFlatAdapter from "../../../src/adapters/db/payment-flat/payment-flat.adapter";
+import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
-import applicationFlatAdapter from "../../../src/adapters/db/application-flat/application-flat.adapter";
+import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,
@@ -44,8 +44,8 @@ import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
 } from "../../../src/modules/paymentFlat/__fixtures__/payment-flat.fixture";
-import { osirisActionAdapter } from "../../../src/adapters/db/providers/osiris";
-import fonjepPostesAdapter from "../../../src/adapters/db/providers/fonjep/fonjep.postes.adapter";
+import { osirisActionAdapter } from "../../../src/adapters/outputs/db/providers/osiris";
+import fonjepPostesAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.postes.adapter";
 import {
     DISPOSITIF_ENTITIES,
     POSTE_ENTITIES,
@@ -53,13 +53,13 @@ import {
     TYPE_POSTE_ENTITIES,
     VERSEMENT_ENTITIES,
 } from "../../../src/modules/providers/fonjep/__fixtures__/fonjepEntities";
-import fonjepDispositifAdapter from "../../../src/adapters/db/providers/fonjep/fonjep.dispositif.adapter";
-import fonjepTiersAdapter from "../../../src/adapters/db/providers/fonjep/fonjep.tiers.adapter";
-import fonjepVersementsAdapter from "../../../src/adapters/db/providers/fonjep/fonjep.versements.adapter";
-import fonjepTypePosteAdapter from "../../../src/adapters/db/providers/fonjep/fonjep.typePoste.adapter";
+import fonjepDispositifAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.dispositif.adapter";
+import fonjepTiersAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.tiers.adapter";
+import fonjepVersementsAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
+import fonjepTypePosteAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.typePoste.adapter";
 import AssociationIdentifier from "../../../src/identifierObjects/AssociationIdentifier";
-import rechercheEntreprisesAdapter from "../../../src/adapters/api/recherche-entreprises/recherche-entreprises.adapter";
-import { RECHERCHE_ENTREPRISES_DTO } from "../../../src/adapters/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
+import rechercheEntreprisesAdapter from "../../../src/adapters/outputs/api/recherche-entreprises/recherche-entreprises.adapter";
+import { RECHERCHE_ENTREPRISES_DTO } from "../../../src/adapters/outputs/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 

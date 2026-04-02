@@ -1,6 +1,6 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import dataBretagneAdapter from "../../../adapters/api/data-bretagne/data-bretagne.adapter";
-import stateBudgetProgramAdapter from "../../../adapters/db/state-budget-program/state-budget-program.adapter";
+import dataBretagneAdapter from "../../../adapters/outputs/api/data-bretagne/data-bretagne.adapter";
+import stateBudgetProgramAdapter from "../../../adapters/outputs/db/state-budget-program/state-budget-program.adapter";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import ProviderCore from "../ProviderCore";
 import MinistryEntity from "../../../entities/MinistryEntity";

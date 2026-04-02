@@ -5,7 +5,7 @@ import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEn
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import { ReadableStream, TransformStream } from "node:stream/web";
-import miscScdlGrantAdapter from "../../../adapters/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlGrantAdapter from "../../../adapters/outputs/db/providers/scdl/miscScdlGrant.adapter";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 
 export class ScdlGrantService implements ApplicationFlatProvider {

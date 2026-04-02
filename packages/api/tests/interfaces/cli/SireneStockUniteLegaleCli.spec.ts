@@ -1,11 +1,11 @@
 import path from "path";
 import fs from "fs";
-import sireneStockUniteLegaleApiAdapter from "../../../src/adapters/api/sirene/sirene-stock-unite-legale.adapter";
-import sireneStockUniteLegaleDbAdapter from "../../../src/adapters/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
+import sireneStockUniteLegaleApiAdapter from "../../../src/adapters/outputs/api/sirene/sirene-stock-unite-legale.adapter";
+import sireneStockUniteLegaleDbAdapter from "../../../src/adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
 import SireneStockUniteLegaleCli from "../../../src/interfaces/cli/SireneStockUniteLegale.cli";
 import { ObjectId } from "mongodb";
-import uniteLegalNameAdapter from "../../../src/adapters/db/unite-legale-name/unite-legale-name.adapter";
-import uniteLegalEntrepriseAdapter from "../../../src/adapters/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
+import uniteLegalNameAdapter from "../../../src/adapters/outputs/db/unite-legale-name/unite-legale-name.adapter";
+import uniteLegalEntrepriseAdapter from "../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 
 const ZIP_PATH = path.resolve(__dirname, "../../../src/modules/providers/sirene/__fixtures__");
 

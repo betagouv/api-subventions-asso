@@ -1,6 +1,6 @@
 import DepositScdlLogEntity from "../entities/depositScdlLog.entity";
 import { CreateDepositScdlLogDto, DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
-import DepositScdlLogDbo from "../../../adapters/db/deposit-log/@types/DepositScdlLogDbo";
+import DepositScdlLogDbo from "../../../adapters/outputs/db/deposit-log/@types/DepositScdlLogDbo";
 import { ObjectId } from "mongodb";
 import UploadedFileInfosEntity from "../entities/uploadedFileInfos.entity";
 
