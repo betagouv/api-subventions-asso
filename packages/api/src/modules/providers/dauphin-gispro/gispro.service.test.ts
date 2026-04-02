@@ -1,6 +1,6 @@
 import gisproService from "./gispro.service";
 import GisproParser from "./gispro.parser";
-import gisproAdapter from "../../../dataProviders/db/providers/gispro.adapter";
+import gisproAdapter from "../../../adapters/db/providers/gispro.adapter";
 import GisproEntity from "./@types/GisproEntity";
 
 jest.mock("./gispro.parser");

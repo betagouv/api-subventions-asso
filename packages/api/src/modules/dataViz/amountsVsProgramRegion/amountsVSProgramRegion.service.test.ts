@@ -4,7 +4,7 @@ import {
     AMOUNTS_VS_PROGRAM_REGION_ENTITIES,
     NOT_AGGREGATED_ENTITIES,
 } from "./__fixtures__/amountsVSProgramRegion.fixture";
-import amountsVsProgramRegionAdapter from "../../../dataProviders/db/dataviz/amount-vs-program-region/amounts-vs-program-region.adapter";
+import amountsVsProgramRegionAdapter from "../../../adapters/db/dataviz/amount-vs-program-region/amounts-vs-program-region.adapter";
 import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.service";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,

@@ -1,6 +1,6 @@
 import path from "path";
 import { DataLogDto } from "dto";
-import dataLogAdapter from "../../dataProviders/db/data-log/data-log.adapter";
+import dataLogAdapter from "../../adapters/db/data-log/data-log.adapter";
 import { DataLogMapper } from "./data-log.mapper";
 import { ApiDataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
 

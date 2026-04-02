@@ -25,7 +25,7 @@ import { DefaultObject } from "../../@types";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
 import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
-import { DepositLogPort } from "../../dataProviders/db/deposit-log/deposit-log.port";
+import { DepositLogPort } from "../../adapters/db/deposit-log/deposit-log.port";
 import { DepositScdlProcessService } from "./depositScdlProcess.service";
 import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.adapter.mock";
 import associationNameService from "../association-name/associationName.service";

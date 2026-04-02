@@ -1,6 +1,6 @@
 import Siren from "../../identifierObjects/Siren";
 
-import applicationFlatAdapter from "../../dataProviders/db/application-flat/application-flat.adapter";
+import applicationFlatAdapter from "../../adapters/db/application-flat/application-flat.adapter";
 import applicationFlatService from "./applicationFlat.service";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import ApplicationFlatMapper from "./application-flat.mapper";

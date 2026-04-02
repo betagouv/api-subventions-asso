@@ -1,9 +1,9 @@
 import { DS_DTO, DS_ENTITY, DS_FLAT, SCHEMA } from "./__fixtures__/demarchesSimplifiees.fixture";
 import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
-import demarchesSimplifieesSchemaAdapter from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
+import demarchesSimplifieesSchemaAdapter from "../../../src/adapters/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
 import DemarchesSimplifieesCli from "../../../src/interfaces/cli/DemarchesSimplifiees.cli";
-import demarchesSimplifieesDataAdapter from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
-import applicationFlatAdapter from "../../../src/dataProviders/db/application-flat/application-flat.adapter";
+import demarchesSimplifieesDataAdapter from "../../../src/adapters/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
+import applicationFlatAdapter from "../../../src/adapters/db/application-flat/application-flat.adapter";
 import { ApplicationFlatEntity } from "../../../src/entities/flats/ApplicationFlatEntity";
 
 import * as inquirerPrompt from "@inquirer/prompts";

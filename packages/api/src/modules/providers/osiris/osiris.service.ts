@@ -6,7 +6,7 @@ import rnaSirenService from "../../rna-siren/rna-siren.service";
 import Siret from "../../../identifierObjects/Siret";
 import Siren from "../../../identifierObjects/Siren";
 import Rna from "../../../identifierObjects/Rna";
-import { osirisRequestAdapter, osirisActionAdapter } from "../../../dataProviders/db/providers/osiris";
+import { osirisRequestAdapter, osirisActionAdapter } from "../../../adapters/db/providers/osiris";
 import OsirisRequestMapper from "./mappers/osiris-request.mapper";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
@@ -14,9 +14,9 @@ import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFla
 import { ReadableStream } from "stream/web";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
-import osirisJoiner, { OsirisRequestWithActions } from "../../../dataProviders/db/providers/osiris/osiris.joiner";
+import osirisJoiner, { OsirisRequestWithActions } from "../../../adapters/db/providers/osiris/osiris.joiner";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
-import { BulkUpsertResult } from "../../../dataProviders/db/@types/bulk-upsert-result";
+import { BulkUpsertResult } from "../../../adapters/db/@types/bulk-upsert-result";
 
 export enum VALID_REQUEST_ERROR_CODE {
     INVALID_SIRET = 1,

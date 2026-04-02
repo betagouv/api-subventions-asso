@@ -9,13 +9,13 @@ import {
     UnauthorizedError,
     LoginError,
 } from "core";
-import userAdapter from "../../../../dataProviders/db/user/user.adapter";
+import userAdapter from "../../../../adapters/db/user/user.adapter";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../../../configurations/jwt.conf";
-import UserDbo from "../../../../dataProviders/db/user/@types/UserDbo";
+import UserDbo from "../../../../adapters/db/user/@types/UserDbo";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
-import { UserUpdateError } from "../../../../dataProviders/db/user/@errors/UserUpdateError";
+import { UserUpdateError } from "../../../../adapters/db/user/@errors/UserUpdateError";
 import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { UserConsumerService } from "../consumer/user.consumer.service";
 import { UserServiceErrors } from "../../user.enum";

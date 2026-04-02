@@ -1,6 +1,6 @@
 import adminStructureService from "./adminStructure.service";
 import { BadRequestError } from "core";
-import adminStructureAdapter from "../../dataProviders/db/admin-structure/admin-structure.adapter";
+import adminStructureAdapter from "../../adapters/db/admin-structure/admin-structure.adapter";
 import { AgentTypeEnum } from "dto";
 
 jest.mock("../../dataProviders/db/admin-structure/admin-structure.adapter");

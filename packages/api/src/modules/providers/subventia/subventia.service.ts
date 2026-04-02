@@ -1,5 +1,5 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import subventiaAdapter from "../../../dataProviders/db/providers/subventia/subventia.adapter";
+import subventiaAdapter from "../../../adapters/db/providers/subventia/subventia.adapter";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaMapper from "./mappers/subventia.mapper";

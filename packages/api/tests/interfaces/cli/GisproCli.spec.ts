@@ -1,5 +1,5 @@
 import GisproCli from "../../../src/interfaces/cli/Gispro.cli";
-import gisproAdapter from "../../../src/dataProviders/db/providers/gispro.adapter";
+import gisproAdapter from "../../../src/adapters/db/providers/gispro.adapter";
 import path from "path";
 
 describe("Gispro Cli", () => {

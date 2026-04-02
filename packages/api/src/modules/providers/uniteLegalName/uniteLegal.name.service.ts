@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import uniteLegalNameAdapter from "../../../dataProviders/db/unite-legale-name/unite-legale-name.adapter";
+import uniteLegalNameAdapter from "../../../adapters/db/unite-legale-name/unite-legale-name.adapter";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import AssociationNameMapper from "../../association-name/mappers/association-name.mapper";

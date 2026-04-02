@@ -1,5 +1,5 @@
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
-import rnaSirenAdapter from "../../dataProviders/db/rna-siren/rna-siren.adapter";
+import rnaSirenAdapter from "../../adapters/db/rna-siren/rna-siren.adapter";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
 import Rna from "../../identifierObjects/Rna";

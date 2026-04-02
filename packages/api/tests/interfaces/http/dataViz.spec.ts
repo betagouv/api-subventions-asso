@@ -1,4 +1,4 @@
-import amountsVsProgramRegionAdapter from "../../../src/dataProviders/db/dataviz/amount-vs-program-region/amounts-vs-program-region.adapter";
+import amountsVsProgramRegionAdapter from "../../../src/adapters/db/dataviz/amount-vs-program-region/amounts-vs-program-region.adapter";
 import { AMOUNTS_VS_PROGRAM_REGION_ENTITIES } from "../../../src/modules/dataViz/amountsVsProgramRegion/__fixtures__/amountsVSProgramRegion.fixture";
 import request from "supertest";
 import { createAndGetUserToken } from "../../__helpers__/tokenHelper";

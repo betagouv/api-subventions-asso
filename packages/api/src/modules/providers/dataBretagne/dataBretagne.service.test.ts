@@ -1,13 +1,11 @@
 import dataBretagneService from "./dataBretagne.service";
-import dataBretagneAdapter, {
-    DataBretagneAdapter,
-} from "../../../dataProviders/api/data-bretagne/data-bretagne.adapter";
+import dataBretagneAdapter, { DataBretagneAdapter } from "../../../adapters/api/data-bretagne/data-bretagne.adapter";
 jest.mock("../../../dataProviders/api/data-bretagne/data-bretagne.adapter");
-import stateBudgetProgramAdapter from "../../../dataProviders/db/state-budget-program/state-budget-program.adapter";
+import stateBudgetProgramAdapter from "../../../adapters/db/state-budget-program/state-budget-program.adapter";
 jest.mock("../../../dataProviders/db/state-budget-program/state-budget-program.adapter");
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
-import { PROGRAMS } from "../../../dataProviders/api/data-bretagne/__fixtures__/DataBretagne.fixture";
-import { DataBretagneProgrammeMapper } from "../../../dataProviders/api/data-bretagne/data-bretagne.mapper";
+import { PROGRAMS } from "../../../adapters/api/data-bretagne/__fixtures__/DataBretagne.fixture";
+import { DataBretagneProgrammeMapper } from "../../../adapters/api/data-bretagne/data-bretagne.mapper";
 import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
 import MinistryEntity from "../../../entities/MinistryEntity";
 import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";

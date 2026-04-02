@@ -1,9 +1,9 @@
-import userAdapter from "../../../src/dataProviders/db/user/user.adapter";
+import userAdapter from "../../../src/adapters/db/user/user.adapter";
 import { ScdlDepositCron } from "../../../src/interfaces/cron/ScdlDeposit.cron";
 import { DEPOSIT_LOG_DBO } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
 import { addDaysToDate, sameDateLastYear } from "../../../src/shared/helpers/DateHelper";
-import depositLogAdapter from "../../../src/dataProviders/db/deposit-log/deposit-log.adapter";
+import depositLogAdapter from "../../../src/adapters/db/deposit-log/deposit-log.adapter";
 import { ENV as _ENV, EnvironmentEnum } from "../../../src/configurations/env.conf";
 import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
 

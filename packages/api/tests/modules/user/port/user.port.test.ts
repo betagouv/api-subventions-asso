@@ -2,7 +2,7 @@
 
 import { UserDto } from "dto";
 import { ObjectId } from "mongodb";
-import userAdapter from "../../../../src/dataProviders/db/user/user.adapter";
+import userAdapter from "../../../../src/adapters/db/user/user.adapter";
 import userCrudService from "../../../../src/modules/user/services/crud/user.crud.service";
 
 describe("UserPort", () => {

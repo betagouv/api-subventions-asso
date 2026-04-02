@@ -12,7 +12,7 @@ import {
 } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 import path from "path";
-import miscScdlGrantAdapter from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlGrantAdapter from "../../../src/adapters/db/providers/scdl/miscScdlGrant.adapter";
 import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import UploadedFileInfosEntity from "../../../src/modules/deposit-scdl-process/entities/uploadedFileInfos.entity";
 import MiscScdlProducerEntity from "../../../src/modules/providers/scdl/entities/MiscScdlProducerEntity";
@@ -27,7 +27,7 @@ import {
 } from "@aws-sdk/client-s3";
 import fs from "fs";
 import ScdlErrorStats from "../../../src/modules/deposit-scdl-process/entities/ScdlErrorStats";
-import depositLogAdapter from "../../../src/dataProviders/db/deposit-log/deposit-log.adapter";
+import depositLogAdapter from "../../../src/adapters/db/deposit-log/deposit-log.adapter";
 
 const g = global as unknown as { app: App };
 

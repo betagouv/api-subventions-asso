@@ -1,9 +1,9 @@
 import request from "supertest";
 import { createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { createAndActiveUser, DEFAULT_PASSWORD, getDefaultUser } from "../../__helpers__/userHelper";
-import userAdapter from "../../../src/dataProviders/db/user/user.adapter";
-import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/association-visit.adapter";
-import UserDbo from "../../../src/dataProviders/db/user/@types/UserDbo";
+import userAdapter from "../../../src/adapters/db/user/user.adapter";
+import statsAssociationsVisitAdapter from "../../../src/adapters/db/stats/association-visit.adapter";
+import UserDbo from "../../../src/adapters/db/user/@types/UserDbo";
 import { ObjectId } from "mongodb";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userActivationService from "../../../src/modules/user/services/activation/user.activation.service";

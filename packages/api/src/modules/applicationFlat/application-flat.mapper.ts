@@ -3,7 +3,7 @@ import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntit
 import { RawApplication } from "../grant/@types/rawGrant";
 import ProviderValueMapper from "../../shared/mappers/provider-value.mapper";
 import applicationFlatService from "./applicationFlat.service";
-import { ApplicationFlatDbo } from "../../dataProviders/db/application-flat/@types/ApplicationFlatDbo";
+import { ApplicationFlatDbo } from "../../adapters/db/application-flat/@types/ApplicationFlatDbo";
 import { GenericAdapter } from "../../shared/GenericAdapter";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import Siret from "../../identifierObjects/Siret";

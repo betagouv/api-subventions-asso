@@ -1,11 +1,11 @@
 import path from "path";
 import { ObjectId } from "mongodb";
 import ScdlCli from "../../../src/interfaces/cli/Scdl.cli";
-import miscScdlProducersAdapter from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.adapter";
-import miscScdlGrantAdapter from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.adapter";
-import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
+import miscScdlProducersAdapter from "../../../src/adapters/db/providers/scdl/miscScdlProducers.adapter";
+import miscScdlGrantAdapter from "../../../src/adapters/db/providers/scdl/miscScdlGrant.adapter";
+import dataLogAdapter from "../../../src/adapters/db/data-log/data-log.adapter";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
-import applicationFlatAdapter from "../../../src/dataProviders/db/application-flat/application-flat.adapter";
+import applicationFlatAdapter from "../../../src/adapters/db/application-flat/application-flat.adapter";
 import notifyService from "../../../src/modules/notify/notify.service";
 import { NotificationType } from "../../../src/modules/notify/@types/NotificationType";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";

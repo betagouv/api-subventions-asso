@@ -1,4 +1,4 @@
-import s3ClientAdapter from "../../dataProviders/s3/s3.adapter";
+import s3ClientAdapter from "../../adapters/s3/s3.adapter";
 import { bufferToMulterFile } from "../../shared/helpers/FileHelper";
 import { NotFoundError } from "core";
 

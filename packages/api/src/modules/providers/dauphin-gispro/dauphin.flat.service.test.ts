@@ -1,5 +1,5 @@
 import dauphinFlatService from "./dauphin.flat.service";
-import dauphinAdapter from "../../../dataProviders/db/providers/dauphin/dauphin.adapter";
+import dauphinAdapter from "../../../adapters/db/providers/dauphin/dauphin.adapter";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import { ReadableStream } from "stream/web";

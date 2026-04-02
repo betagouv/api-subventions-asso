@@ -2,7 +2,7 @@ import subventiaService from "./subventia.service";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaMapper from "./mappers/subventia.mapper";
-import SubventiaAdapter from "../../../dataProviders/db/providers/subventia/subventia.adapter";
+import SubventiaAdapter from "../../../adapters/db/providers/subventia/subventia.adapter";
 import { SubventiaDbo } from "./@types/subventia.entity";
 import { ApplicationStatus } from "dto";
 import SubventiaDto from "./@types/subventia.dto";

@@ -5,7 +5,7 @@ import userCrudService from "../crud/user.crud.service";
 import userAuthService from "../auth/user.auth.service";
 import { RoleEnum } from "../../../../@enums/RolesEnum";
 import { ConsumerToken } from "../../entities/ConsumerToken";
-import consumerTokenAdapter from "../../../../dataProviders/db/user/consumer-token.adapter";
+import consumerTokenAdapter from "../../../../adapters/db/user/consumer-token.adapter";
 import { UserServiceErrors } from "../../user.enum";
 
 export class UserConsumerService {

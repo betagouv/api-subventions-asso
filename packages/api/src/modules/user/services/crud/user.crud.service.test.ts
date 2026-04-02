@@ -1,5 +1,5 @@
 import userCrudService from "./user.crud.service";
-import userAdapter from "../../../../dataProviders/db/user/user.adapter";
+import userAdapter from "../../../../adapters/db/user/user.adapter";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { SIGNED_TOKEN, USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import bcrypt from "bcrypt";
@@ -16,12 +16,12 @@ import userActivationService from "../activation/user.activation.service";
 jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
 
-import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapter";
+import userResetAdapter from "../../../../adapters/db/user/user-reset.adapter";
 
 jest.mock("../../../../dataProviders/db/user/user-reset.adapter");
 const mockedUserResetAdapter = jest.mocked(userResetAdapter);
 
-import consumerTokenAdapter from "../../../../dataProviders/db/user/consumer-token.adapter";
+import consumerTokenAdapter from "../../../../adapters/db/user/consumer-token.adapter";
 
 jest.mock("../../../../dataProviders/db/user/consumer-token.adapter");
 const mockedConsumerTokenAdapter = jest.mocked(consumerTokenAdapter);

@@ -1,5 +1,5 @@
 import request from "supertest";
-import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
+import dataLogAdapter from "../../../src/adapters/db/data-log/data-log.adapter";
 import { App } from "supertest/types";
 import { API_PROVIDER, RAW_PROVIDER } from "../../../src/modules/providers/__fixtures__/providers.fixture";
 import { DataLogSource } from "../../../src/modules/data-log/entities/dataLogEntity";

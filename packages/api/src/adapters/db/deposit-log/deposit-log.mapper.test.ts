@@ -1,4 +1,5 @@
-import DepositScdlLogDbo from "./DepositScdlLogDbo";
+import type DepositScdlLogDbo from "./@types/DepositScdlLogDbo";
+import type UploadedFileInfosDbo from "./@types/UploadedFileInfosDbo";
 import { ObjectId } from "mongodb";
 import DepositLogMapper from "./deposit-log.mapper";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
@@ -6,7 +7,6 @@ import {
     DEPOSIT_LOG_ENTITY,
     DEPOSIT_LOG_ENTITY_STEP_2,
 } from "../../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
-import UploadedFileInfosDbo from "./UploadedFileInfosDbo";
 
 describe("DepositLogAdapter", () => {
     describe("dboToEntity", () => {
@@ -43,6 +43,13 @@ describe("DepositLogAdapter", () => {
                 totalLines: 125,
                 missingHeaders: { optional: [], mandatory: [] },
                 existingLinesInDbOnSamePeriod: 145,
+                lineCountsByExercice: [
+                    {
+                        exercice: 2025,
+                        parsedLines: 300,
+                        linesInDb: 200,
+                    },
+                ],
                 errorStats: { count: 0, errorSample: [] },
             };
             const dbo: DepositScdlLogDbo = {

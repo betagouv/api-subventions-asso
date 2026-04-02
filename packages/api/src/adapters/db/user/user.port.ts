@@ -1,6 +1,6 @@
 import { UserDto } from "dto";
 import { Filter, FindOptions, ObjectId } from "mongodb";
-import UserDbo, { UserNotPersisted } from "./UserDbo";
+import UserDbo, { UserNotPersisted } from "./@types/UserDbo";
 
 export interface UserPort {
     createIndexes(): Promise<void>;

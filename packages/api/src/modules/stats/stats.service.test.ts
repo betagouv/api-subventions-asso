@@ -1,6 +1,6 @@
 import { RNA_STR, SIREN_STR } from "../../../tests/__fixtures__/association.fixture";
-import logsAdapter from "../../dataProviders/db/stats/logs.adapter";
-import statsAssociationsVisitAdapter from "../../dataProviders/db/stats/association-visit.adapter";
+import logsAdapter from "../../adapters/db/stats/logs.adapter";
+import statsAssociationsVisitAdapter from "../../adapters/db/stats/association-visit.adapter";
 import { CONSUMER_USER } from "../user/__fixtures__/user.fixture";
 import userCrudService from "../user/services/crud/user.crud.service";
 import RouteTypesEnum from "./@types/RouteTypesEnum";

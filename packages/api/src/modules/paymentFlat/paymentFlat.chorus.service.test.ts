@@ -1,5 +1,5 @@
-import { PAYMENT_FLAT_DBO } from "../../dataProviders/db/payment-flat/__fixtures__/payment-flat.fixture";
-import paymentFlatAdapter from "../../dataProviders/db/payment-flat/payment-flat.adapter";
+import { PAYMENT_FLAT_DBO } from "../../adapters/db/payment-flat/__fixtures__/payment-flat.fixture";
+import paymentFlatAdapter from "../../adapters/db/payment-flat/payment-flat.adapter";
 import { CHORUS_ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
 import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
 import chorusService from "../providers/chorus/chorus.service";

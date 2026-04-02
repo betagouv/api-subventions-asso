@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
-import statsAssociationsVisitAdapter from "../../dataProviders/db/stats/association-visit.adapter";
-import logsAdapter from "../../dataProviders/db/stats/logs.adapter";
+import statsAssociationsVisitAdapter from "../../adapters/db/stats/association-visit.adapter";
+import logsAdapter from "../../adapters/db/stats/logs.adapter";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import { WinstonLog } from "../../@types/WinstonLog";
 import RouteTypesEnum from "./@types/RouteTypesEnum";

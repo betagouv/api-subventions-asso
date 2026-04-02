@@ -2,15 +2,15 @@ import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { RoleEnum } from "../../../src/@enums/RolesEnum";
 import { createAndActiveUser, createConsumerUser } from "../../__helpers__/userHelper";
-import userAdapter from "../../../src/dataProviders/db/user/user.adapter";
-import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/association-visit.adapter";
-import UserDbo from "../../../src/dataProviders/db/user/@types/UserDbo";
+import userAdapter from "../../../src/adapters/db/user/user.adapter";
+import statsAssociationsVisitAdapter from "../../../src/adapters/db/stats/association-visit.adapter";
+import UserDbo from "../../../src/adapters/db/user/@types/UserDbo";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
 
 import { App } from "supertest/types";
-import logsAdapter from "../../../src/dataProviders/db/stats/logs.adapter";
+import logsAdapter from "../../../src/adapters/db/stats/logs.adapter";
 import { LoggedMeta, WinstonLog } from "../../../src/@types/WinstonLog";
 import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
 

@@ -1,10 +1,10 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DefaultObject } from "../../../@types";
-import fonjepDispositifAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.dispositif.adapter";
-import fonjepPostesAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.postes.adapter";
-import fonjepTiersAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.adapter";
-import fonjepTypePosteAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.adapter";
-import fonjepVersementsAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.versements.adapter";
+import fonjepDispositifAdapter from "../../../adapters/db/providers/fonjep/fonjep.dispositif.adapter";
+import fonjepPostesAdapter from "../../../adapters/db/providers/fonjep/fonjep.postes.adapter";
+import fonjepTiersAdapter from "../../../adapters/db/providers/fonjep/fonjep.tiers.adapter";
+import fonjepTypePosteAdapter from "../../../adapters/db/providers/fonjep/fonjep.typePoste.adapter";
+import fonjepVersementsAdapter from "../../../adapters/db/providers/fonjep/fonjep.versements.adapter";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import Ridet from "../../../identifierObjects/Ridet";

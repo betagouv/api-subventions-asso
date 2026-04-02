@@ -8,15 +8,15 @@ import DEFAULT_ASSOCIATION, {
     SIREN_STR,
     SIRET_STR,
 } from "../../__fixtures__/association.fixture";
-import rnaSirenAdapter from "../../../src/dataProviders/db/rna-siren/rna-siren.adapter";
+import rnaSirenAdapter from "../../../src/adapters/db/rna-siren/rna-siren.adapter";
 import Rna from "../../../src/identifierObjects/Rna";
 import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/identifierObjects/Siren";
-import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/association-visit.adapter";
+import statsAssociationsVisitAdapter from "../../../src/adapters/db/stats/association-visit.adapter";
 import { App } from "supertest/types";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
-import applicationFlatAdapter from "../../../src/dataProviders/db/application-flat/application-flat.adapter";
-import paymentFlatAdapter from "../../../src/dataProviders/db/payment-flat/payment-flat.adapter";
+import applicationFlatAdapter from "../../../src/adapters/db/application-flat/application-flat.adapter";
+import paymentFlatAdapter from "../../../src/adapters/db/payment-flat/payment-flat.adapter";
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,

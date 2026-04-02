@@ -1,4 +1,4 @@
-import sireneUniteLegaleDbAdapter from "../../../../dataProviders/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
+import sireneUniteLegaleDbAdapter from "../../../../adapters/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
 import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
 import { UniteLegalEntrepriseEntity } from "../../../../entities/UniteLegalEntrepriseEntity";
 import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";

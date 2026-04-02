@@ -27,7 +27,7 @@ import db, { connectDB, client } from "./src/shared/MongoConnection";
 import { initIndexes } from "./src/shared/MongoInit";
 import { startServer } from "./src/server";
 import { scheduler } from "./src/cron";
-import configurationsAdapter from "./src/dataProviders/db/configurations/configurations.adapter";
+import configurationsAdapter from "./src/adapters/db/configurations/configurations.adapter";
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
 import { initTests } from "./jest.config.integ.init";
 import { mockClient } from "aws-sdk-client-mock";

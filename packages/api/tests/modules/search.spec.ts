@@ -1,11 +1,11 @@
 import { App } from "supertest/types";
 import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
-import uniteLegalNameAdapter from "../../src/dataProviders/db/unite-legale-name/unite-legale-name.adapter";
+import uniteLegalNameAdapter from "../../src/adapters/db/unite-legale-name/unite-legale-name.adapter";
 import AssociationNameFixture from "../__fixtures__/association-name.fixture";
 import apiEntrepriseService from "../../src/modules/providers/apiEntreprise/apiEntreprise.service";
-import rechercheEntreprisesAdapter from "../../src/dataProviders/api/recherche-entreprises/recherche-entreprises.adapter";
-import { EMPTY_RECHERCHE_ENTREPRISES_DTO } from "../../src/dataProviders/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
+import rechercheEntreprisesAdapter from "../../src/adapters/api/recherche-entreprises/recherche-entreprises.adapter";
+import { EMPTY_RECHERCHE_ENTREPRISES_DTO } from "../../src/adapters/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
 
 const g = global as unknown as { app: App };
 

@@ -1,10 +1,10 @@
 import scdlService from "./scdl.service";
-import miscScdlGrantAdapter from "../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlGrantAdapter from "../../../adapters/db/providers/scdl/miscScdlGrant.adapter";
 
 jest.mock("fs");
 
 jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter");
-import miscScdlProducersAdapter from "../../../dataProviders/db/providers/scdl/miscScdlProducers.adapter";
+import miscScdlProducersAdapter from "../../../adapters/db/providers/scdl/miscScdlProducers.adapter";
 
 jest.mock("../../../dataProviders/db/providers/scdl/miscScdlProducers.adapter");
 import { getMD5 } from "../../../shared/helpers/StringHelper";
@@ -17,7 +17,7 @@ import PRODUCER_FIXTURE from "./__fixtures__/MiscScdlProducer";
 import ScdlGrantParser from "./scdl.grant.parser";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
-import applicationFlatAdapter from "../../../dataProviders/db/application-flat/application-flat.adapter";
+import applicationFlatAdapter from "../../../adapters/db/application-flat/application-flat.adapter";
 import apiAssoService from "../apiAsso/apiAsso.service";
 import Siret from "../../../identifierObjects/Siret";
 import fs from "fs";

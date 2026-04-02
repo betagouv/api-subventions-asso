@@ -1,6 +1,6 @@
 import DepositScdlLogEntity from "../entities/depositScdlLog.entity";
 import { CreateDepositScdlLogDto, DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
-import DepositScdlLogDbo from "../../../dataProviders/db/deposit-log/DepositScdlLogDbo";
+import DepositScdlLogDbo from "../../../adapters/db/deposit-log/@types/DepositScdlLogDbo";
 import { ObjectId } from "mongodb";
 import UploadedFileInfosEntity from "../entities/uploadedFileInfos.entity";
 
@@ -33,6 +33,13 @@ export const DEPOSIT_LOG_ENTITY_STEP_2: DepositScdlLogEntity = {
         grantCoverageYears: [2021, 2022],
         parseableLines: 200,
         totalLines: 202,
+        lineCountsByExercice: [
+            {
+                exercice: 2025,
+                parsedLines: 300,
+                linesInDb: 200,
+            },
+        ],
         missingHeaders: { optional: [], mandatory: [] },
         existingLinesInDbOnSamePeriod: 0,
         errorStats: { count: 0, errorSample: [] },
@@ -46,6 +53,13 @@ export const UPLOADED_FILE_INFOS_ENTITY: UploadedFileInfosEntity = {
     grantCoverageYears: [2021, 2022],
     parseableLines: 200,
     totalLines: 202,
+    lineCountsByExercice: [
+        {
+            exercice: 2025,
+            parsedLines: 300,
+            linesInDb: 200,
+        },
+    ],
     missingHeaders: { optional: [], mandatory: [] },
     existingLinesInDbOnSamePeriod: 0,
     errorStats: { count: 0, errorSample: [] },
@@ -93,6 +107,13 @@ export const DEPOSIT_LOG_RESPONSE_DTO_STEP_2: DepositScdlLogResponseDto = {
         grantCoverageYears: [2021, 2022],
         parseableLines: 200,
         totalLines: 202,
+        lineCountsByExercice: [
+            {
+                exercice: 2025,
+                parsedLines: 300,
+                linesInDb: 200,
+            },
+        ],
         missingHeaders: { optional: [], mandatory: [] },
         existingLinesInDbOnSamePeriod: 0,
         errorStats: { count: 0, errorSample: [] },

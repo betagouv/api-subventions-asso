@@ -4,7 +4,7 @@ import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEn
 import { ReadableStream } from "node:stream/web";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
-import miscScdlGrantAdapter from "../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlGrantAdapter from "../../../adapters/db/providers/scdl/miscScdlGrant.adapter";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 import { FindCursor } from "mongodb";
 

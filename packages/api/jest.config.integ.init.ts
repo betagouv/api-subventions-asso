@@ -1,5 +1,5 @@
-import miscScdlProducersAdapter from "./src/dataProviders/db/providers/scdl/miscScdlProducers.adapter";
-import stateBudgetProgramAdapter from "./src/dataProviders/db/state-budget-program/state-budget-program.adapter";
+import miscScdlProducersAdapter from "./src/adapters/db/providers/scdl/miscScdlProducers.adapter";
+import stateBudgetProgramAdapter from "./src/adapters/db/state-budget-program/state-budget-program.adapter";
 
 import { LOCAL_AUTHORITIES } from "./tests/dataProviders/db/__fixtures__/scdl.fixtures";
 import PROGRAMS from "./tests/dataProviders/db/__fixtures__/stateBudgetProgram";

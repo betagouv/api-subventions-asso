@@ -1,4 +1,4 @@
-import UserDbo from "../../../dataProviders/db/user/@types/UserDbo";
+import UserDbo from "../../../adapters/db/user/@types/UserDbo";
 import AssociationVisitEntity from "./AssociationVisitEntity";
 
 export interface UserWithAssociationVisitsEntity extends UserDbo {

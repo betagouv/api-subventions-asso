@@ -1,6 +1,6 @@
 import { WithId } from "mongodb";
 import { UserDto } from "dto";
-import UserDbo from "../../dataProviders/db/user/@types/UserDbo";
+import UserDbo from "../../adapters/db/user/@types/UserDbo";
 import statsService from "../../modules/stats/stats.service";
 import { ONE_DAY_MS } from "./DateHelper";
 import { RoleEnum } from "../../@enums/RolesEnum";

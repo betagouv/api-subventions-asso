@@ -5,7 +5,7 @@ import Siren from "../../identifierObjects/Siren";
 import Siret from "../../identifierObjects/Siret";
 import { IdentifierError } from "./IdentifierError";
 import rnaSirenService from "../rna-siren/rna-siren.service";
-import rechercheEntreprisesService from "../../dataProviders/api/recherche-entreprises/recherche-entreprises.service";
+import rechercheEntreprisesService from "../../adapters/api/recherche-entreprises/recherche-entreprises.service";
 import { AssociationIdType } from "../../identifierObjects/@types/IdentifierType";
 
 export class AssociationIdentifierService {

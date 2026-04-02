@@ -1,5 +1,5 @@
 import { GeoService } from "./geo.service";
-import geoAdapter from "../../../dataProviders/db/providers/geoApi/geo.adapter";
+import geoAdapter from "../../../adapters/db/providers/geoApi/geo.adapter";
 
 jest.mock("../../../dataProviders/db/providers/geoApi/geo.adapter");
 

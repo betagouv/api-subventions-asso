@@ -1,7 +1,7 @@
 import Rna from "../../../identifierObjects/Rna";
 import Siren from "../../../identifierObjects/Siren";
 import osirisService, { InvalidOsirisRequestError, VALID_REQUEST_ERROR_CODE } from "./osiris.service";
-import { osirisActionAdapter, osirisRequestAdapter } from "../../../dataProviders/db/providers/osiris";
+import { osirisActionAdapter, osirisRequestAdapter } from "../../../adapters/db/providers/osiris";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
@@ -12,7 +12,7 @@ import applicationFlatService from "../../applicationFlat/applicationFlat.servic
 import { REQUEST_DBO } from "./__fixtures__/osiris.request.fixtures";
 import { ACTION_ENTITY } from "./__fixtures__/osiris.action.fixtures";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
-import osirisJoiner from "../../../dataProviders/db/providers/osiris/osiris.joiner";
+import osirisJoiner from "../../../adapters/db/providers/osiris/osiris.joiner";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 
 jest.mock("../../applicationFlat/applicationFlat.helper");

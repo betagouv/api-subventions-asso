@@ -12,7 +12,7 @@ import ProviderCore from "../ProviderCore";
 import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Siren from "../../../identifierObjects/Siren";
-import dauphinAdapter from "../../../dataProviders/db/providers/dauphin/dauphin.adapter";
+import dauphinAdapter from "../../../adapters/db/providers/dauphin/dauphin.adapter";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoMapper from "./mappers/dauphin-dto.mapper";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";

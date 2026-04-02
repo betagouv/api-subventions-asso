@@ -1,5 +1,5 @@
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
-import uniteLegalEntrepriseAdapter from "../../../dataProviders/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
+import uniteLegalEntrepriseAdapter from "../../../adapters/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
 import Siren from "../../../identifierObjects/Siren";
 
