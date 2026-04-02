@@ -5,8 +5,9 @@ import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import MongoAdapter from "../MongoAdapter";
 import RnaSirenMapper from "./rna-siren.mapper";
 import RnaSirenDbo from "./RnaSirenDbo";
+import { RnaSirenPort } from "./rna-siren.port";
 
-export class RnaSirenAdapter extends MongoAdapter<RnaSirenDbo> {
+export class RnaSirenAdapter extends MongoAdapter<RnaSirenDbo> implements RnaSirenPort {
     collectionName = "rna-siren";
 
     async createIndexes() {
@@ -15,7 +16,7 @@ export class RnaSirenAdapter extends MongoAdapter<RnaSirenDbo> {
         await this.collection.createIndex({ rna: 1, siren: 1 }, { unique: true });
     }
 
-    async insertMany(entities: RnaSirenEntity[]) {
+    async insertMany(entities: RnaSirenEntity[]): Promise<void> {
         if (!entities.length) return;
         try {
             await this.collection.insertMany(
@@ -31,7 +32,7 @@ export class RnaSirenAdapter extends MongoAdapter<RnaSirenDbo> {
         }
     }
 
-    async insert(entity: RnaSirenEntity) {
+    async insert(entity: RnaSirenEntity): Promise<void> {
         try {
             await this.collection.insertOne(RnaSirenMapper.toDbo(entity));
         } catch (e: unknown) {
@@ -43,7 +44,7 @@ export class RnaSirenAdapter extends MongoAdapter<RnaSirenDbo> {
         }
     }
 
-    async find(id: Rna | Siren) {
+    async find(id: Rna | Siren): Promise<RnaSirenEntity[] | null> {
         let dbos: RnaSirenDbo[] = [];
         let rnaSirenToFind;
 

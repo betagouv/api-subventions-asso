@@ -1,6 +1,7 @@
 import MongoAdapter from "../MongoAdapter";
 import AssociationVisitEntity from "../../../modules/stats/entities/AssociationVisitEntity";
 import statsAssociationsVisitAdapter from "./statsAssociationsVisit.adapter";
+import { StatsUniqueVisitByDayPort } from "./stats-unique-visit-by-day.port";
 
 export const groupVisitByUser = (result, visit) => {
     const name = visit.userId;
@@ -19,7 +20,7 @@ export const keepOneUserVisitByDay = userVisits => {
     }, {});
 };
 
-export class StatsUniqueVisitByDay extends MongoAdapter<AssociationVisitEntity> {
+export class StatsUniqueVisitByDay extends MongoAdapter<AssociationVisitEntity> implements StatsUniqueVisitByDayPort {
     public collectionName = "stats-unique-visit-by-day";
 
     public createIndexes(): void {
@@ -49,7 +50,7 @@ export class StatsUniqueVisitByDay extends MongoAdapter<AssociationVisitEntity> 
             .flat() as AssociationVisitEntity[];
     }
 
-    public async createCollectionFromStatsAssociationVisits() {
+    public async createCollectionFromStatsAssociationVisits(): Promise<void> {
         const visitsByAssociation = await statsAssociationsVisitAdapter.findGroupedByAssociationIdentifier();
         const visits = this._reduceToOneVisitByDayByUser(visitsByAssociation);
         await this.collection.insertMany(visits);

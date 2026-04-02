@@ -12,11 +12,9 @@ class DepositLogAdapter extends MongoAdapter<DepositScdlLogDbo> implements Depos
         await this.collection.createIndex({ userId: 1 }, { unique: true });
     }
 
-    public async insertOne(entity: DepositScdlLogEntity): Promise<string> {
+    public async insertOne(entity: DepositScdlLogEntity): Promise<void> {
         const dbo = DepositLogMapper.toDbo(entity);
-        const result = await this.collection.insertOne(dbo);
-
-        return result.insertedId.toString();
+        await this.collection.insertOne(dbo);
     }
 
     async findOneByUserId(userId: string): Promise<DepositScdlLogEntity | null> {

@@ -1,7 +1,7 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
     default: demarchesSimplifieesDataPort,
-} = require("../build/src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
+} = require("../build/src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter");
 const {
     default: demarchesSimplifieesMapperPort,
 } = require("../build/src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port");

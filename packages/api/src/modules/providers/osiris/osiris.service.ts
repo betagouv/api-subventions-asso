@@ -1,4 +1,4 @@
-import { AggregationCursor, BulkWriteResult } from "mongodb";
+import { AggregationCursor } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
 import ProviderCore from "../ProviderCore";
@@ -16,6 +16,7 @@ import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEn
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import osirisJoiner, { OsirisRequestWithActions } from "../../../dataProviders/db/providers/osiris/osiris.joiner";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
+import { BulkUpsertResult } from "../../../dataProviders/db/@types/bulk-upsert-result";
 
 export enum VALID_REQUEST_ERROR_CODE {
     INVALID_SIRET = 1,
@@ -48,7 +49,7 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         });
     }
 
-    public async bulkAddRequest(requests: OsirisRequestEntity[]): Promise<void | BulkWriteResult> {
+    public async bulkAddRequest(requests: OsirisRequestEntity[]): Promise<BulkUpsertResult> {
         const rnaSirens: { rna: Rna; siren: Siren }[] = [];
         for (const request of requests) {
             const { rna, siret } = request.legalInformations;
@@ -125,7 +126,7 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         if (validation !== true) throw new InvalidOsirisRequestError(validation);
     }
 
-    public bulkAddActions(actions: OsirisActionEntity[]): Promise<void | BulkWriteResult> {
+    public bulkAddActions(actions: OsirisActionEntity[]): Promise<void | BulkUpsertResult> {
         return osirisActionAdapter.bulkUpsert(actions);
     }
 

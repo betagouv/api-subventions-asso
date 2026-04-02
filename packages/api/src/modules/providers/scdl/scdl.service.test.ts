@@ -103,7 +103,6 @@ describe("ScdlService", () => {
         beforeEach(() => {
             // @ts-expect-error: private method
             mockBuildGrantUniqueId = jest.spyOn(scdlService, "_buildGrantUniqueId").mockReturnValue(UNIQUE_ID);
-            // @ts-expect-error: mock - omit _id
             mockGetProducer = jest.spyOn(scdlService, "getProducer").mockResolvedValue(PRODUCER);
         });
 
@@ -145,7 +144,6 @@ describe("ScdlService", () => {
         beforeEach(() => {
             // @ts-expect-error: private method
             mockBuildGrantUniqueId = jest.spyOn(scdlService, "_buildGrantUniqueId").mockReturnValue(UNIQUE_ID);
-            // @ts-expect-error: mock - omit _id
             mockGetProducer = jest.spyOn(scdlService, "getProducer").mockResolvedValue(PRODUCER);
         });
 
@@ -205,7 +203,6 @@ describe("ScdlService", () => {
 
     describe("isProducerFirstImport", () => {
         it("calls miscScdlGrantPort.findOneByAllocatorSiret()", async () => {
-            // @ts-expect-error: mock return value
             jest.mocked(miscScdlGrantAdapter.findOneByAllocatorSiret).mockResolvedValue({} as MiscScdlGrantEntity);
             await scdlService.isProducerFirstImport(PRODUCER_SIRET);
             expect(miscScdlGrantAdapter.findOneByAllocatorSiret).toHaveBeenCalledWith(PRODUCER_SIRET);
@@ -464,6 +461,7 @@ describe("ScdlService", () => {
                 grantCoverageYears: [],
                 parseableLines: 0,
                 totalLines: 0,
+                lineCountsByExercice: {},
                 missingHeaders: {
                     mandatory: [],
                     optional: [],

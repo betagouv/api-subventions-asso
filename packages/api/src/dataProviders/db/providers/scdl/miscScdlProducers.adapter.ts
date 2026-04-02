@@ -1,22 +1,23 @@
 import MongoAdapter from "../../MongoAdapter";
 import MiscScdlProducerEntity from "../../../../modules/providers/scdl/entities/MiscScdlProducerEntity";
+import { MiscScdlProducersPort } from "./misc-scdl-producers.port";
 
-export class MiscScdlProducersAdapter extends MongoAdapter<MiscScdlProducerEntity> {
+export class MiscScdlProducersAdapter extends MongoAdapter<MiscScdlProducerEntity> implements MiscScdlProducersPort {
     readonly collectionName = "misc-scdl-producers";
     readonly joinIndexes = {
         miscScdlGrant: "siret",
     };
 
-    public findAll() {
+    public findAll(): Promise<MiscScdlProducerEntity[]> {
         return this.collection.find({}, { projection: { _id: 0 } }).toArray() as Promise<MiscScdlProducerEntity[]>;
     }
 
-    public findBySiret(siret: string) {
+    public findBySiret(siret: string): Promise<MiscScdlProducerEntity | null> {
         return this.collection.findOne({ siret });
     }
 
-    public create(entity: MiscScdlProducerEntity) {
-        return this.collection.insertOne(entity);
+    public async create(entity: MiscScdlProducerEntity): Promise<void> {
+        await this.collection.insertOne(entity);
     }
 
     async createIndexes() {

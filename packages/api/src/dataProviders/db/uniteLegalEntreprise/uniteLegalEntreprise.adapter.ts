@@ -4,22 +4,26 @@ import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepri
 import Siren from "../../../identifierObjects/Siren";
 import { UniteLegalEntrepriseMapper } from "./unite-legal-entreprise.mapper";
 import { UniteLegalEntrepriseDbo } from "./UniteLegalEntrepriseDbo";
+import { UniteLegalEntreprisePort } from "./unite-legale-entreprise.port";
 
-export class UniteLegalEntrepriseAdapter extends MongoAdapter<UniteLegalEntrepriseDbo> {
+export class UniteLegalEntrepriseAdapter
+    extends MongoAdapter<UniteLegalEntrepriseDbo>
+    implements UniteLegalEntreprisePort
+{
     collectionName = "unite-legal-entreprise";
 
-    async createIndexes() {
+    async createIndexes(): Promise<void> {
         await this.collection.createIndex({ siren: 1 }, { unique: true });
     }
 
-    async findOneBySiren(siren: Siren) {
+    async findOneBySiren(siren: Siren): Promise<UniteLegalEntrepriseEntity | null> {
         const dbo = await this.collection.findOne({ siren: siren.value });
         if (!dbo) return null;
 
         return UniteLegalEntrepriseMapper.toEntity(dbo);
     }
 
-    async insertMany(entities: UniteLegalEntrepriseEntity[]) {
+    async insertMany(entities: UniteLegalEntrepriseEntity[]): Promise<void> {
         try {
             const dbos = entities.map(entity => UniteLegalEntrepriseMapper.toDbo(entity));
             await this.collection.insertMany(dbos, { ordered: false });

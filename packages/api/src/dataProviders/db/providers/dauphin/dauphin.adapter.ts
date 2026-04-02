@@ -239,8 +239,7 @@ export class DauphinAdapter extends MongoAdapter<DauphinGisproDbo> implements Da
             .toArray();
     }
 
-    findAllTempCursor() {
-        // TODO: add to port
+    findAllTempCursor(): FindCursor<SimplifiedJoinedDauphinGispro> {
         return this.simplifiedTempCollection.find({}) as unknown as FindCursor<SimplifiedJoinedDauphinGispro>;
     }
 

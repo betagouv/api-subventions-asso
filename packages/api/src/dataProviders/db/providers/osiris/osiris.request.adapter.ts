@@ -4,8 +4,10 @@ import MongoAdapter from "../../MongoAdapter";
 import Siret from "../../../../identifierObjects/Siret";
 import Rna from "../../../../identifierObjects/Rna";
 import Siren from "../../../../identifierObjects/Siren";
+import { OsirisRequestPort } from "./osiris-request.port";
+import { BulkUpsertResult } from "../../@types/bulk-upsert-result";
 
-export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> {
+export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> implements OsirisRequestPort {
     collectionName = "osiris-requests";
 
     async createIndexes() {
@@ -19,14 +21,14 @@ export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> {
         osirisActionPort: "providerInformations.uniqueId",
     };
 
-    public async add(osirisRequest: OsirisRequestEntity) {
-        return this.collection.insertOne(osirisRequest);
+    public async add(osirisRequest: OsirisRequestEntity): Promise<void> {
+        await this.collection.insertOne(osirisRequest);
     }
 
     /*
      * @deprecated
      * */
-    public async update(osirisRequest: OsirisRequestEntity) {
+    public async update(osirisRequest: OsirisRequestEntity): Promise<OsirisRequestEntity> {
         const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
         const updateRes = await this.collection.findOneAndUpdate(
             { "providerInformations.uniqueId": osirisRequest.providerInformations.uniqueId },
@@ -46,7 +48,7 @@ export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> {
         );
     }
 
-    public async bulkUpsert(osirisRequests: OsirisRequestEntity[]) {
+    public async bulkUpsert(osirisRequests: OsirisRequestEntity[]): Promise<BulkUpsertResult> {
         const bulk = osirisRequests.map(request => {
             return {
                 updateOne: {
@@ -56,10 +58,27 @@ export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> {
                 },
             };
         });
-        return bulk.length ? this.collection.bulkWrite(bulk, { ordered: false }) : Promise.resolve();
+
+        if (!bulk.length) {
+            return {
+                insertedCount: 0,
+                upsertedCount: 0,
+                modifiedCount: 0,
+                matchedCount: 0,
+            };
+        }
+
+        const result = await this.collection.bulkWrite(bulk, { ordered: false });
+
+        return {
+            insertedCount: result.insertedCount,
+            upsertedCount: result.upsertedCount,
+            modifiedCount: result.modifiedCount,
+            matchedCount: result.matchedCount,
+        };
     }
 
-    public findBySiret(siret: Siret) {
+    public findBySiret(siret: Siret): Promise<OsirisRequestEntity[]> {
         return this.collection
             .find({
                 "legalInformations.siret": siret.value,
@@ -67,7 +86,7 @@ export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> {
             .toArray();
     }
 
-    public findByRna(rna: Rna) {
+    public findByRna(rna: Rna): Promise<OsirisRequestEntity[]> {
         return this.collection
             .find({
                 "legalInformations.rna": rna.value,
@@ -75,7 +94,7 @@ export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> {
             .toArray();
     }
 
-    public async findBySiren(siren: Siren) {
+    public async findBySiren(siren: Siren): Promise<OsirisRequestEntity[]> {
         return this.collection
             .find({
                 "legalInformations.siret": new RegExp(`^${siren.value}\\d{5}`),
@@ -84,8 +103,8 @@ export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> {
     }
 
     // used in migration and integration tests
-    public cursorFindRequests(query = {}) {
-        return this.collection.find(query);
+    public findAll(): Promise<OsirisRequestEntity[]> {
+        return this.collection.find().toArray();
     }
 }
 

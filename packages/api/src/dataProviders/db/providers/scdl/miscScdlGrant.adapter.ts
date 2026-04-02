@@ -2,8 +2,9 @@ import MongoAdapter from "../../MongoAdapter";
 import MiscScdlGrantEntity from "../../../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
 import { ScdlGrantDbo } from "../../../../modules/providers/scdl/dbo/ScdlGrantDbo";
+import { MiscScdlGrantPort } from "./misc-scdl-grant.port";
 
-export class MiscScdlGrantAdapter extends MongoAdapter<ScdlGrantDbo> {
+export class MiscScdlGrantAdapter extends MongoAdapter<ScdlGrantDbo> implements MiscScdlGrantPort {
     readonly collectionName = "misc-scdl-grant";
     readonly backupCollectionName = this.collectionName + "-backup";
 
@@ -11,11 +12,11 @@ export class MiscScdlGrantAdapter extends MongoAdapter<ScdlGrantDbo> {
         miscScdlProducer: "allocatorSiret",
     };
 
-    public findOneByAllocatorSiret(siret: string) {
+    public findOneByAllocatorSiret(siret: string): Promise<MiscScdlGrantEntity | null> {
         return this.collection.findOne({ allocatorSiret: siret });
     }
 
-    public async findAll() {
+    public async findAll(): Promise<MiscScdlGrantEntity[]> {
         return this.collection.find({}).toArray();
     }
 
@@ -39,9 +40,9 @@ export class MiscScdlGrantAdapter extends MongoAdapter<ScdlGrantDbo> {
                 .toArray();
     }
 
-    public async createMany(dbos: ScdlGrantDbo[]) {
+    public async createMany(dbos: ScdlGrantDbo[]): Promise<void> {
         // the port takes dbo directly because objectId from misc-scdl collection is also used in application flat
-        return this.collection.insertMany(dbos, { ordered: false }).catch(error => {
+        await this.collection.insertMany(dbos, { ordered: false }).catch(error => {
             if (isMongoDuplicateError(error)) {
                 throw buildDuplicateIndexError<MiscScdlGrantEntity[]>(error);
             }
@@ -49,13 +50,13 @@ export class MiscScdlGrantAdapter extends MongoAdapter<ScdlGrantDbo> {
     }
 
     // we use bulk instead of deleteMany as $in might cause performance issues with large arrays
-    public async bulkFindDeleteByExercices(allocatorSiret: string, exercises: number[]) {
+    public async bulkFindDeleteByExercices(allocatorSiret: string, exercises: number[]): Promise<void> {
         const bulk = this.collection.initializeUnorderedBulkOp();
         exercises.forEach(exercise => {
             const query: Partial<ScdlGrantDbo> = { allocatorSiret, exercice: exercise };
             bulk.find(query).delete();
         });
-        return bulk.execute().catch(error => {
+        await bulk.execute().catch(error => {
             throw error;
         });
     }
@@ -64,9 +65,9 @@ export class MiscScdlGrantAdapter extends MongoAdapter<ScdlGrantDbo> {
      * Save all given producer data in a backup collection
      * @param allocatorSiret Allocator SIRET
      */
-    public createBackupCollection(allocatorSiret: string) {
+    public async createBackupCollection(allocatorSiret: string): Promise<void> {
         console.log(`creating backup for allocator SIRET ${allocatorSiret} in collection ${this.backupCollectionName}`);
-        return this.collection
+        await this.collection
             .aggregate([{ $match: { allocatorSiret } }, { $out: this.backupCollectionName }])
             .toArray();
     }
@@ -74,16 +75,16 @@ export class MiscScdlGrantAdapter extends MongoAdapter<ScdlGrantDbo> {
     /**
      * Drop the backup collection
      */
-    public async dropBackupCollection() {
+    public async dropBackupCollection(): Promise<void> {
         console.log(`Dropping backup collection ${this.backupCollectionName}`);
-        return this.db.collection(this.backupCollectionName).drop();
+        await this.db.collection(this.backupCollectionName).drop();
     }
 
     /**
      * Apply backup collection created in createBackupCollection
      * @param siret Allocator SIRET
      */
-    public async applyBackupCollection(_allocatorSiret: string) {
+    public async applyBackupCollection(_allocatorSiret: string): Promise<void> {
         throw new Error("backup is disabled, please clean data manually for now");
         // await this.collection.deleteMany({ allocatorSiret: _allocatorSiret });
         // await this.db

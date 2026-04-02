@@ -1,6 +1,6 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
-const { default: osirisActionPort } = require("../build/src/dataProviders/db/providers/osiris/osiris.action.port");
-const { default: osirisRequestPort } = require("../build/src/dataProviders/db/providers/osiris/osiris.request.port");
+const { default: osirisActionPort } = require("../build/src/dataProviders/db/providers/osiris/osiris.action.adapter");
+const { default: osirisRequestPort } = require("../build/src/dataProviders/db/providers/osiris/osiris.request.adapter");
 
 module.exports = {
     async up() {

@@ -3,7 +3,7 @@ import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities
 export interface DepositLogPort {
     createIndexes(): Promise<void>;
 
-    insertOne(entity: DepositScdlLogEntity): Promise<string>;
+    insertOne(entity: DepositScdlLogEntity): Promise<void>;
     findOneByUserId(userId: string): Promise<DepositScdlLogEntity | null>;
     findAllFromFullDay(date: Date): Promise<DepositScdlLogEntity[] | null>;
     findFromPeriod(start: Date, end: Date): Promise<DepositScdlLogEntity[] | null>;

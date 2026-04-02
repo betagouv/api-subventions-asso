@@ -1,8 +1,9 @@
 import { UserDto } from "dto";
 import MongoAdapter from "../MongoAdapter";
 import { WinstonLog } from "../../../@types/WinstonLog";
+import { logsPort } from "./logs.port";
 
-export class LogsAdapter extends MongoAdapter<WinstonLog> {
+export class LogsAdapter extends MongoAdapter<WinstonLog> implements logsPort {
     collectionName = "log";
 
     async createIndexes() {
@@ -12,7 +13,7 @@ export class LogsAdapter extends MongoAdapter<WinstonLog> {
         // await this.collection.createIndex({ "meta.req.url": 1 });
     }
 
-    public findByEmail(email: string) {
+    public findByEmail(email: string): Promise<WinstonLog[]> {
         return this.collection
             .find({
                 "meta.req.user.email": email,
@@ -20,7 +21,7 @@ export class LogsAdapter extends MongoAdapter<WinstonLog> {
             .toArray();
     }
 
-    public getLogsOnPeriod(start: Date, end: Date) {
+    public getLogsOnPeriod(start: Date, end: Date): AsyncIterable<WinstonLog> {
         return this.collection.find({
             timestamp: {
                 $gte: start,
@@ -29,7 +30,7 @@ export class LogsAdapter extends MongoAdapter<WinstonLog> {
         });
     }
 
-    public async anonymizeLogsByUser(initialUser: UserDto, disabledUser: UserDto) {
+    public async anonymizeLogsByUser(initialUser: UserDto, disabledUser: UserDto): Promise<boolean> {
         await this.collection.updateMany(
             { "meta.req.user.email": initialUser.email },
             { $set: { "meta.req.email": disabledUser.email } },
@@ -42,7 +43,14 @@ export class LogsAdapter extends MongoAdapter<WinstonLog> {
      *
      * @returns List of URL grouped by month by year by userId
      */
-    public async getConsumption(userIds: string[] = []) {
+    public async getConsumption(userIds: string[] = []): Promise<
+        {
+            userId: string;
+            year: string;
+            month: string;
+            routes: Record<string, string[]>;
+        }[]
+    > {
         // for performance reason, only get last and current year
         const startYear = String(new Date().getFullYear() - 1);
         const startDate = new Date(startYear);

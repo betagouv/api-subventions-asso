@@ -9,4 +9,5 @@ export interface DemarchesSimplifieesDataProviderPort {
     findBySiret(siret: Siret): Promise<DemarchesSimplifieesDataEntity[]>;
     findBySiren(siren: Siren): Promise<DemarchesSimplifieesDataEntity[]>;
     bulkUpsert(entities: DemarchesSimplifieesDataEntity[]): Promise<void>;
+    findAllCursor(): unknown; // todo: precise return type (refacto AsyncIterable)
 }

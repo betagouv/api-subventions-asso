@@ -1,20 +1,20 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const { default: logsPort } = require("../build/src/dataProviders/db/stats/stats.port");
 const {
-    default: statsAssociationsVisitPort,
-} = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.port");
-const { default: userPort } = require("../build/src/dataProviders/db/user/user.port");
+    default: statsAssociationsVisitAdapter,
+} = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.adapter");
+const { default: userAdapter } = require("../build/src/dataProviders/db/user/user.adapter");
 const { getIdentifierType } = require("../build/src/shared/helpers/IdentifierHelper");
 const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
-const { default: rnaSirenPort } = require("../build/src/dataProviders/db/rnaSiren/rnaSiren.port");
+const { default: rnaSirenAdapter } = require("../build/src/dataProviders/db/rnaSiren/rnaSiren.adapter");
 
 module.exports = {
     async up() {
         await connectDB();
         const logsCursor = await logsPort.getLogsWithRegexUrl(/\/(association|etablissement)\/.{9,14}$/);
 
-        await statsAssociationsVisitPort.createIndexes();
-        await rnaSirenPort.createIndexes();
+        await statsAssociationsVisitAdapter.createIndexes();
+        await rnaSirenAdapter.createIndexes();
 
         while (await logsCursor.hasNext()) {
             const log = await logsCursor.next();
@@ -26,13 +26,13 @@ module.exports = {
                 continue;
             }
 
-            const user = await userPort.findByEmail(log.meta.req.user.email);
+            const user = await userAdapter.findByEmail(log.meta.req.user.email);
 
             if (!user || user.roles.includes("admin")) {
                 continue;
             }
 
-            await statsAssociationsVisitPort.add({
+            await statsAssociationsVisitAdapter.add({
                 associationIdentifier: typeIdentifier === "SIRET" ? siretToSiren(identifier) : identifier,
                 userId: user._id,
                 date: log.timestamp,
@@ -42,6 +42,6 @@ module.exports = {
 
     async down(db) {
         await connectDB();
-        db.collection(statsAssociationsVisitPort.collectionName).drop();
+        db.collection(statsAssociationsVisitAdapter.collectionName).drop();
     },
 };

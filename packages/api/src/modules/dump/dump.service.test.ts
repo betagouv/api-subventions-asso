@@ -11,7 +11,7 @@ jest.mock("../user/services/crud/user.crud.service");
 jest.mock("../../dataProviders/db/dump/metabase-dump.adapter");
 jest.mock("../configurations/configurations.service");
 jest.mock("../stats/stats.service", () => ({
-    getAnonymizedLogsOnPeriod: jest.fn((..._args) => ({ hasNext: jest.fn(() => false) })),
+    getAnonymizedLogsOnPeriod: jest.fn(() => []),
     getAssociationsVisitsOnPeriod: jest.fn(() => []),
 }));
 jest.mock("../../configurations/env.conf", () => ({
