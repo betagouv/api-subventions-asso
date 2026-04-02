@@ -1,10 +1,10 @@
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import uniteLegalEntrepriseAdapter from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
-import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
+import { UniteLegaleEntrepriseEntity } from "../../../entities/UniteLegaleEntrepriseEntity";
 import Siren from "../../../identifierObjects/Siren";
 
 export class UniteLegalEntreprisesService {
-    async insertManyEntrepriseSiren(entities: UniteLegalEntrepriseEntity[]) {
+    async insertManyEntrepriseSiren(entities: UniteLegaleEntrepriseEntity[]) {
         if (!entities.length) return;
 
         try {

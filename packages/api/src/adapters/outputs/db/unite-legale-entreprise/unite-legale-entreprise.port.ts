@@ -1,9 +1,9 @@
 import Siren from "../../../../identifierObjects/Siren";
-import { UniteLegalEntrepriseEntity } from "../../../../entities//UniteLegalEntrepriseEntity";
+import { UniteLegaleEntrepriseEntity } from "../../../../entities/UniteLegaleEntrepriseEntity";
 
 export interface UniteLegalEntreprisePort {
     createIndexes(): Promise<void>;
 
-    findOneBySiren(siren: Siren): Promise<UniteLegalEntrepriseEntity | null>;
-    insertMany(entities: UniteLegalEntrepriseEntity[]): Promise<void>;
+    findOneBySiren(siren: Siren): Promise<UniteLegaleEntrepriseEntity | null>;
+    insertMany(entities: UniteLegaleEntrepriseEntity[]): Promise<void>;
 }

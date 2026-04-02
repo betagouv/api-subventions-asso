@@ -1,6 +1,6 @@
 import uniteLegalNameAdapter from "../../../adapters/outputs/db/unite-legale-name/unite-legale-name.adapter";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
-import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
+import UniteLegaleNameEntity from "../../../entities/UniteLegaleNameEntity";
 import uniteLegalNameService from "./uniteLegal.name.service";
 import AssociationNameEntity from "../../association-name/entities/AssociationNameEntity";
 import Siren from "../../../identifierObjects/Siren";
@@ -19,7 +19,7 @@ describe("uniteLegalNameService", () => {
     const SIREN = new Siren("123456789");
     const RNA = new Rna("W123456789");
     const RNA_IDENTIFIER = AssociationIdentifier.fromRna(RNA);
-    const fakeUniteLegalNameEntity = new UniteLegalNameEntity(SIREN, "Fake Name", `${SIREN} - Fake Name`, new Date());
+    const fakeUniteLegaleNameEntity = new UniteLegaleNameEntity(SIREN, "Fake Name", `${SIREN} - Fake Name`, new Date());
 
     let fromPartialSiretStrMock: jest.SpyInstance;
 
@@ -48,19 +48,19 @@ describe("uniteLegalNameService", () => {
         });
 
         it("should return matched associations", async () => {
-            mockedUniteLegalNamePort.search.mockResolvedValueOnce([fakeUniteLegalNameEntity]);
-            const expected = new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN);
+            mockedUniteLegalNamePort.search.mockResolvedValueOnce([fakeUniteLegaleNameEntity]);
+            const expected = new AssociationNameEntity(fakeUniteLegaleNameEntity.name, SIREN);
             const result = await uniteLegalNameService.searchBySirenSiretName("knownIdentifier");
             expect(result).toEqual([expected]);
         });
 
         it("should handle cases where there are multiple rnaSiren entities for the same siren", async () => {
             const expected = [
-                new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN, RNA),
-                new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN, new Rna("W987654321")),
+                new AssociationNameEntity(fakeUniteLegaleNameEntity.name, SIREN, RNA),
+                new AssociationNameEntity(fakeUniteLegaleNameEntity.name, SIREN, new Rna("W987654321")),
             ];
 
-            mockedUniteLegalNamePort.search.mockResolvedValueOnce([fakeUniteLegalNameEntity]);
+            mockedUniteLegalNamePort.search.mockResolvedValueOnce([fakeUniteLegaleNameEntity]);
 
             // Mocking multiple rnaSiren entities for the same siren
             mockedRnaSirenService.find.mockResolvedValueOnce([
@@ -74,9 +74,9 @@ describe("uniteLegalNameService", () => {
         });
 
         it("should handle cases where the value is a start of siret", async () => {
-            mockedUniteLegalNamePort.search.mockResolvedValueOnce([fakeUniteLegalNameEntity]);
+            mockedUniteLegalNamePort.search.mockResolvedValueOnce([fakeUniteLegaleNameEntity]);
             isStartOfSiretMock.mockReturnValue(true);
-            const expected = new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN);
+            const expected = new AssociationNameEntity(fakeUniteLegaleNameEntity.name, SIREN);
 
             const result = await uniteLegalNameService.searchBySirenSiretName(SIREN.value);
             expect(result).toEqual([expected]);
@@ -87,8 +87,8 @@ describe("uniteLegalNameService", () => {
 
     describe("upsert", () => {
         it("should call uniteLegalNamePort.upsert with the provided entity", () => {
-            uniteLegalNameService.upsert(fakeUniteLegalNameEntity);
-            expect(mockedUniteLegalNamePort.upsert).toHaveBeenCalledWith(fakeUniteLegalNameEntity);
+            uniteLegalNameService.upsert(fakeUniteLegaleNameEntity);
+            expect(mockedUniteLegalNamePort.upsert).toHaveBeenCalledWith(fakeUniteLegaleNameEntity);
         });
     });
 });

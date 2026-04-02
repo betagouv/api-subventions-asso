@@ -2,10 +2,10 @@ import sireneStockUniteLegaleDbAdapter from "../../../../adapters/outputs/db/sir
 import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
 import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
-import UniteLegalNameEntity from "../../../../entities/UniteLegalNameEntity";
+import UniteLegaleNameEntity from "../../../../entities/UniteLegaleNameEntity";
 import SireneStockUniteLegaleMapper from "./mappers/sirene-stock-unite-legale.mapper";
 import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
-import { UniteLegalEntrepriseEntity } from "../../../../entities/UniteLegalEntrepriseEntity";
+import { UniteLegaleEntrepriseEntity } from "../../../../entities/UniteLegaleEntrepriseEntity";
 import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
 import { BulkWriteResult } from "mongodb";
 import Siren from "../../../../identifierObjects/Siren";
@@ -15,8 +15,8 @@ const mockUniteLegalEntrepriseConstructor = jest.fn();
 jest.mock("./mappers/sirene-stock-unite-legale.mapper");
 jest.mock("../../uniteLegalEntreprises/uniteLegal.entreprises.service");
 jest.mock("../../uniteLegalName/uniteLegal.name.service");
-jest.mock("../../../../entities/UniteLegalEntrepriseEntity", () => ({
-    UniteLegalEntrepriseEntity: class Mock {
+jest.mock("../../../../entities/UniteLegaleEntrepriseEntity", () => ({
+    UniteLegaleEntrepriseEntity: class Mock {
         constructor(public i) {
             mockUniteLegalEntrepriseConstructor(i);
         }
@@ -66,7 +66,7 @@ describe("SireneStockUniteLegaleService", () => {
 
     describe("saveBatchAssoData", () => {
         const BATCH = [1, 2] as unknown as SireneStockUniteLegaleEntity[];
-        const ADAPTED_NAME_BATCH = ["one", "two"] as unknown as UniteLegalNameEntity[];
+        const ADAPTED_NAME_BATCH = ["one", "two"] as unknown as UniteLegaleNameEntity[];
         let insertSpy: jest.SpyInstance;
 
         beforeAll(() => {
@@ -93,10 +93,10 @@ describe("SireneStockUniteLegaleService", () => {
 
         it("saves name entity", async () => {
             jest.mocked(SireneStockUniteLegaleMapper.entityToUniteLegaleNameEntity).mockReturnValueOnce(
-                "one" as unknown as UniteLegalNameEntity,
+                "one" as unknown as UniteLegaleNameEntity,
             );
             jest.mocked(SireneStockUniteLegaleMapper.entityToUniteLegaleNameEntity).mockReturnValueOnce(
-                "two" as unknown as UniteLegalNameEntity,
+                "two" as unknown as UniteLegaleNameEntity,
             );
 
             await sireneStockUniteLegaleService._saveBatchAssoData(BATCH);
@@ -106,7 +106,7 @@ describe("SireneStockUniteLegaleService", () => {
 
     describe("saveBatchNonAssoData", () => {
         const BATCH = [{ siren: 1 }, { siren: 2 }] as unknown as SireneStockUniteLegaleEntity[];
-        const ADAPTED_ENTITY_BATCH = [{ i: 1 }, { i: 2 }] as unknown as UniteLegalEntrepriseEntity;
+        const ADAPTED_ENTITY_BATCH = [{ i: 1 }, { i: 2 }] as unknown as UniteLegaleEntrepriseEntity;
 
         it("adapt to entreprise entity", async () => {
             await sireneStockUniteLegaleService._saveBatchNonAssoData(BATCH);

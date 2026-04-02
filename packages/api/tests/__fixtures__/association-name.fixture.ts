@@ -1,4 +1,4 @@
-import UniteLegalNameEntity from "../../src/entities/UniteLegalNameEntity";
+import UniteLegaleNameEntity from "../../src/entities/UniteLegaleNameEntity";
 import Siren from "../../src/identifierObjects/Siren";
 
 export default [
@@ -44,4 +44,4 @@ export default [
         searchKey: "899985618 - la caserne bascule",
         updatedDate: new Date(),
     },
-] as UniteLegalNameEntity[];
+] as UniteLegaleNameEntity[];

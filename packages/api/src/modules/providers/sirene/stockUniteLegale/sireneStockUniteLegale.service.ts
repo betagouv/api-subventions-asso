@@ -1,6 +1,6 @@
 import sireneUniteLegaleDbAdapter from "../../../../adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
 import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
-import { UniteLegalEntrepriseEntity } from "../../../../entities/UniteLegalEntrepriseEntity";
+import { UniteLegaleEntrepriseEntity } from "../../../../entities/UniteLegaleEntrepriseEntity";
 import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
 import SireneStockUniteLegaleParser from "./parser/sireneStockUniteLegale.parser";
@@ -27,7 +27,7 @@ export class SireneStockUniteLegaleService {
 
     public async _saveBatchNonAssoData(batchNonAssosToSave: SireneStockUniteLegaleEntity[]) {
         await uniteLegalEntreprisesService.insertManyEntrepriseSiren(
-            batchNonAssosToSave.map(e => new UniteLegalEntrepriseEntity(e.siren)),
+            batchNonAssosToSave.map(e => new UniteLegaleEntrepriseEntity(e.siren)),
         );
     }
 

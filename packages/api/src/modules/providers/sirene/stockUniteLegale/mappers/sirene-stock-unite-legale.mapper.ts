@@ -2,7 +2,7 @@ import SireneUniteLegaleDto from "../@types/SireneUniteLegaleDto";
 import { SireneStockUniteLegaleEntity } from "../../../../../entities/SireneStockUniteLegaleEntity";
 import { SireneUniteLegaleDbo } from "../@types/SireneUniteLegaleDbo";
 import Siren from "../../../../../identifierObjects/Siren";
-import UniteLegalNameEntity from "../../../../../entities/UniteLegalNameEntity";
+import UniteLegaleNameEntity from "../../../../../entities/UniteLegaleNameEntity";
 import UniteLegalNameMapper from "../../../../../adapters/outputs/db/unite-legale-name/unite-legale-name.mapper";
 
 export default class SireneStockUniteLegaleMapper {
@@ -20,8 +20,8 @@ export default class SireneStockUniteLegaleMapper {
         };
     }
 
-    static entityToUniteLegaleNameEntity(entity: SireneStockUniteLegaleEntity): UniteLegalNameEntity {
-        return new UniteLegalNameEntity(
+    static entityToUniteLegaleNameEntity(entity: SireneStockUniteLegaleEntity): UniteLegaleNameEntity {
+        return new UniteLegaleNameEntity(
             entity.siren,
             entity.denominationUniteLegale,
             UniteLegalNameMapper.buildSearchKey(entity.siren, entity.denominationUniteLegale),

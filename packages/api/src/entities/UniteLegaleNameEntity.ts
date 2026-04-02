@@ -1,6 +1,6 @@
 import Siren from "../identifierObjects/Siren";
 
-export default class UniteLegalNameEntity {
+export default class UniteLegaleNameEntity {
     constructor(
         public siren: Siren,
         public name: string,

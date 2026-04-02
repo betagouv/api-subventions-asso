@@ -1,5 +1,5 @@
 import { AnyBulkWriteOperation } from "mongodb";
-import UniteLegalNameEntity from "../../../../entities//UniteLegalNameEntity";
+import UniteLegaleNameEntity from "../../../../entities/UniteLegaleNameEntity";
 import MongoAdapter from "../MongoAdapter";
 import Siren from "../../../../identifierObjects/Siren";
 import { UniteLegalNamePort } from "./unite-legale-name.port";
@@ -15,7 +15,7 @@ export class UniteLegaleNameAdapter extends MongoAdapter<UniteLegaleNameDbo> imp
         await this.collection.createIndex({ siren: 1 });
     }
 
-    search(searchQuery: string): Promise<UniteLegalNameEntity[]> {
+    search(searchQuery: string): Promise<UniteLegaleNameEntity[]> {
         return this.collection
             .find({
                 searchKey: { $regex: searchQuery },
@@ -30,7 +30,7 @@ export class UniteLegaleNameAdapter extends MongoAdapter<UniteLegaleNameDbo> imp
      * @param {Siren} siren
      * @returns the latest name associate at the siren
      */
-    async findOneBySiren(siren: Siren): Promise<UniteLegalNameEntity | null> {
+    async findOneBySiren(siren: Siren): Promise<UniteLegaleNameEntity | null> {
         const cursor = this.collection.find({ siren: siren.value }).sort({ updatedDate: 1 });
 
         if (!cursor.hasNext()) return null;
@@ -40,7 +40,7 @@ export class UniteLegaleNameAdapter extends MongoAdapter<UniteLegaleNameDbo> imp
         return UniteLegalNameMapper.toEntity(dbo);
     }
 
-    async upsert(entity: UniteLegalNameEntity): Promise<void> {
+    async upsert(entity: UniteLegaleNameEntity): Promise<void> {
         await this.collection.updateOne(
             { searchKey: entity.searchKey },
             { $set: UniteLegalNameMapper.toDbo(entity) },
@@ -50,7 +50,7 @@ export class UniteLegaleNameAdapter extends MongoAdapter<UniteLegaleNameDbo> imp
         );
     }
 
-    public async upsertMany(entities: UniteLegalNameEntity[]): Promise<void> {
+    public async upsertMany(entities: UniteLegaleNameEntity[]): Promise<void> {
         const operations = entities.map(
             e =>
                 ({

@@ -1,4 +1,4 @@
-import UniteLegalNameEntity from "../../entities/UniteLegalNameEntity";
+import UniteLegaleNameEntity from "../../entities/UniteLegaleNameEntity";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import associationNameService from "./associationName.service";
@@ -21,7 +21,7 @@ describe("associationName.service", () => {
         const uniteLegalNameMock = jest.spyOn(uniteLegalNameService, "getNameFromIdentifier");
         const SIREN = new Siren("433955101");
         const IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
-        const PORT_OUTPUT = new UniteLegalNameEntity(
+        const PORT_OUTPUT = new UniteLegaleNameEntity(
             SIREN,
             "ALPCM NANTES BASKET",
             "",

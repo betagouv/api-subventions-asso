@@ -1,11 +1,11 @@
 import { WithoutId } from "mongodb";
-import UniteLegalNameEntity from "../../../../entities//UniteLegalNameEntity";
+import UniteLegaleNameEntity from "../../../../entities/UniteLegaleNameEntity";
 import Siren from "../../../../identifierObjects/Siren";
 import UniteLegalNameDbo from "./@types/UniteLegaleNameDbo";
 
 export default class UniteLegalNameMapper {
-    static toEntity(dbo: UniteLegalNameDbo): UniteLegalNameEntity {
-        return new UniteLegalNameEntity(
+    static toEntity(dbo: UniteLegalNameDbo): UniteLegaleNameEntity {
+        return new UniteLegaleNameEntity(
             new Siren(dbo.siren),
             dbo.name,
             dbo.searchKey,
@@ -14,7 +14,7 @@ export default class UniteLegalNameMapper {
         );
     }
 
-    static toDbo(entity: UniteLegalNameEntity): WithoutId<UniteLegalNameDbo> {
+    static toDbo(entity: UniteLegaleNameEntity): WithoutId<UniteLegalNameDbo> {
         return {
             siren: entity.siren.value,
             name: entity.name,

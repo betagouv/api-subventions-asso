@@ -1,6 +1,6 @@
 import Fuse from "fuse.js";
 import uniteLegalNameAdapter from "../../../adapters/outputs/db/unite-legale-name/unite-legale-name.adapter";
-import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
+import UniteLegaleNameEntity from "../../../entities/UniteLegaleNameEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import AssociationNameMapper from "../../association-name/mappers/association-name.mapper";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
@@ -8,7 +8,7 @@ import Siret from "../../../identifierObjects/Siret";
 import Siren from "../../../identifierObjects/Siren";
 
 export class UniteLegalNameService {
-    async getNameFromIdentifier(identifier: AssociationIdentifier): Promise<UniteLegalNameEntity | null> {
+    async getNameFromIdentifier(identifier: AssociationIdentifier): Promise<UniteLegaleNameEntity | null> {
         if (!identifier.siren) return null;
         return uniteLegalNameAdapter.findOneBySiren(identifier.siren);
     }
@@ -23,10 +23,10 @@ export class UniteLegalNameService {
                 acc[sirenStr].push(entity);
                 return acc;
             },
-            {} as Record<string, UniteLegalNameEntity[]>,
+            {} as Record<string, UniteLegaleNameEntity[]>,
         );
 
-        const fuseSearch = (names: UniteLegalNameEntity[]) => {
+        const fuseSearch = (names: UniteLegaleNameEntity[]) => {
             const fuse = new Fuse(names, {
                 includeScore: true,
                 findAllMatches: true,
@@ -43,21 +43,21 @@ export class UniteLegalNameService {
             }
 
             const rnaSirenEntities = await rnaSirenService.find(bestMatch.siren, true); // hotfix calls api asso way too much
-            if (!rnaSirenEntities) return [AssociationNameMapper.fromUniteLegalNameEntity(bestMatch)];
+            if (!rnaSirenEntities) return [AssociationNameMapper.fromUniteLegaleNameEntity(bestMatch)];
 
             return rnaSirenEntities?.map(entity => {
                 // For one siren its possible to have many rna from match
-                return AssociationNameMapper.fromUniteLegalNameEntity(bestMatch, entity.rna);
+                return AssociationNameMapper.fromUniteLegaleNameEntity(bestMatch, entity.rna);
             });
         });
         return (await Promise.all(rnaSirenPromises)).flat();
     }
 
-    upsert(entity: UniteLegalNameEntity) {
+    upsert(entity: UniteLegaleNameEntity) {
         return uniteLegalNameAdapter.upsert(entity);
     }
 
-    upsertMany(entities: UniteLegalNameEntity[]) {
+    upsertMany(entities: UniteLegaleNameEntity[]) {
         return uniteLegalNameAdapter.upsertMany(entities);
     }
 }

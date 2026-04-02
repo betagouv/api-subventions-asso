@@ -1,6 +1,6 @@
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
 import MongoAdapter from "../MongoAdapter";
-import { UniteLegalEntrepriseEntity } from "../../../../entities//UniteLegalEntrepriseEntity";
+import { UniteLegaleEntrepriseEntity } from "../../../../entities/UniteLegaleEntrepriseEntity";
 import Siren from "../../../../identifierObjects/Siren";
 import { UniteLegalEntreprisePort } from "./unite-legale-entreprise.port";
 import { UniteLegalEntrepriseMapper } from "./unite-legale-entreprise.mapper";
@@ -16,14 +16,14 @@ export class UniteLegalEntrepriseAdapter
         await this.collection.createIndex({ siren: 1 }, { unique: true });
     }
 
-    async findOneBySiren(siren: Siren): Promise<UniteLegalEntrepriseEntity | null> {
+    async findOneBySiren(siren: Siren): Promise<UniteLegaleEntrepriseEntity | null> {
         const dbo = await this.collection.findOne({ siren: siren.value });
         if (!dbo) return null;
 
         return UniteLegalEntrepriseMapper.toEntity(dbo);
     }
 
-    async insertMany(entities: UniteLegalEntrepriseEntity[]): Promise<void> {
+    async insertMany(entities: UniteLegaleEntrepriseEntity[]): Promise<void> {
         try {
             const dbos = entities.map(entity => UniteLegalEntrepriseMapper.toDbo(entity));
             await this.collection.insertMany(dbos, { ordered: false });

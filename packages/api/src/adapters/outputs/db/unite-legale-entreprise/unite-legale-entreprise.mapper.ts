@@ -1,14 +1,14 @@
 import { ObjectId } from "mongodb";
-import { UniteLegalEntrepriseEntity } from "../../../../entities//UniteLegalEntrepriseEntity";
+import { UniteLegaleEntrepriseEntity } from "../../../../entities/UniteLegaleEntrepriseEntity";
 import Siren from "../../../../identifierObjects/Siren";
 import { UniteLegalEntrepriseDbo } from "./@types/UniteLegalEntrepriseDbo";
 
 export class UniteLegalEntrepriseMapper {
-    static toEntity(dbo: UniteLegalEntrepriseDbo): UniteLegalEntrepriseEntity {
-        return new UniteLegalEntrepriseEntity(new Siren(dbo.siren), dbo._id.toString());
+    static toEntity(dbo: UniteLegalEntrepriseDbo): UniteLegaleEntrepriseEntity {
+        return new UniteLegaleEntrepriseEntity(new Siren(dbo.siren), dbo._id.toString());
     }
 
-    static toDbo(entity: UniteLegalEntrepriseEntity): UniteLegalEntrepriseDbo {
+    static toDbo(entity: UniteLegaleEntrepriseEntity): UniteLegalEntrepriseDbo {
         return {
             siren: entity.siren.value,
             _id: new ObjectId(entity.id),
