@@ -9,8 +9,8 @@ import { DefaultObject } from "../../../../@types";
 import { toStatusFactory } from "../../providers.mapper";
 import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import { InternalServerError } from "core";
-import Siret from "../../../../identifierObjects/Siret";
-import Siren from "../../../../identifierObjects/Siren";
+import Siret from "../../../../identifier-objects/Siret";
+import Siren from "../../../../identifier-objects/Siren";
 
 export class DemarchesSimplifieesEntityMapper {
     private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [

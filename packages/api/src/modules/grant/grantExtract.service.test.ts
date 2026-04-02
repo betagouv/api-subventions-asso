@@ -5,10 +5,10 @@ import associationsService from "../associations/associations.service";
 import GrantMapper from "./grant.mapper";
 import * as csvStringifier from "csv-stringify/sync";
 import { ExtractHeaderLabel, GrantToExtract } from "./@types/GrantToExtract";
-import Siret from "../../identifierObjects/Siret";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import Siren from "../../identifierObjects/Siren";
+import Siret from "../../identifier-objects/Siret";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import Siren from "../../identifier-objects/Siren";
 import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
 
 jest.mock("./grant.service");

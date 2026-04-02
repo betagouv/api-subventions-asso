@@ -13,7 +13,7 @@ import documentsService from "../documents/documents.service";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import establishmentService from "../establishments/establishment.service";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import AssociationsProvider from "./@types/AssociationsProvider";
 
 export class AssociationsService {

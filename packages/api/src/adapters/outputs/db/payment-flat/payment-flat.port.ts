@@ -1,8 +1,8 @@
 import PaymentFlatEntity from "../../../../entities//flats/PaymentFlatEntity";
 import { DefaultObject } from "../../../../@types";
 import { ChorusPaymentFlatEntity } from "../../../../modules/providers/chorus/@types/ChorusPaymentFlat";
-import Siret from "../../../../identifierObjects/Siret";
-import Siren from "../../../../identifierObjects/Siren";
+import Siret from "../../../../identifier-objects/Siret";
+import Siren from "../../../../identifier-objects/Siren";
 
 export interface PaymentFlatPort {
     createIndexes(): Promise<void>;

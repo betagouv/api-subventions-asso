@@ -1,7 +1,7 @@
 import { AnyBulkWriteOperation } from "mongodb";
 import UniteLegaleNameEntity from "../../../../entities/UniteLegaleNameEntity";
 import MongoAdapter from "../MongoAdapter";
-import Siren from "../../../../identifierObjects/Siren";
+import Siren from "../../../../identifier-objects/Siren";
 import { UniteLegalNamePort } from "./unite-legale-name.port";
 
 import UniteLegalNameMapper from "./unite-legale-name.mapper";

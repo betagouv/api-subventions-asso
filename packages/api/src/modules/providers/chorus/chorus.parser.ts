@@ -2,7 +2,7 @@ import * as CliHelper from "../../../shared/helpers/CliHelper";
 import { BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import { isEJ } from "../../../shared/Validators";
 import { getMD5 } from "../../../shared/helpers/StringHelper";
-import Siret from "../../../identifierObjects/Siret";
+import Siret from "../../../identifier-objects/Siret";
 import { GenericParser } from "../../../shared/GenericParser";
 import ChorusEntity from "./entities/ChorusEntity";
 import ChorusFseEntity from "./entities/ChorusFseEntity";

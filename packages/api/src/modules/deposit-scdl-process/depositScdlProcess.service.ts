@@ -10,7 +10,7 @@ import MiscScdlGrantEntity from "../providers/scdl/entities/MiscScdlGrantEntity"
 import { Stringifier, stringify } from "csv-stringify";
 import MiscScdlMapper from "../providers/scdl/mappers/misc-scdl.mapper";
 import { formatDateToYYYYMMDDWithSeparator } from "../../shared/helpers/DateHelper";
-import Siret from "../../identifierObjects/Siret";
+import Siret from "../../identifier-objects/Siret";
 import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
 import dataLogService from "../data-log/dataLog.service";
 import s3StorageService from "../s3-file/s3Storage.service";

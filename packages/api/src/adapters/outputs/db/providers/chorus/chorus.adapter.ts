@@ -1,6 +1,6 @@
 import { AnyBulkWriteOperation } from "mongodb";
-import Siret from "../../../../../identifierObjects/Siret";
-import Siren from "../../../../../identifierObjects/Siren";
+import Siret from "../../../../../identifier-objects/Siret";
+import Siren from "../../../../../identifier-objects/Siren";
 import { DefaultObject } from "../../../../../@types";
 import MongoAdapter from "../../MongoAdapter";
 import ChorusEntity from "../../../../../modules/providers/chorus/entities/ChorusEntity";

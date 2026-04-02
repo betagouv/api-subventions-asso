@@ -7,8 +7,8 @@ import {
     CHORUS_PAYMENT_ID,
     FONJEP_PAYMENT_FLAT_ID_VERSEMENT,
 } from "../../paymentFlat/__fixtures__/payment-flat.fixture";
-import Siret from "../../../identifierObjects/Siret";
-import Siren from "../../../identifierObjects/Siren";
+import Siret from "../../../identifier-objects/Siret";
+import Siren from "../../../identifier-objects/Siren";
 
 export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "applicationId"> = {
     requestYear: 2023,

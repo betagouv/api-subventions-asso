@@ -1,5 +1,5 @@
 import OsirisActionEntity from "../../../../../modules/providers/osiris/entities/OsirisActionEntity";
-import Siren from "../../../../../identifierObjects/Siren";
+import Siren from "../../../../../identifier-objects/Siren";
 import { BulkUpsertResult } from "../../@types/bulk-upsert-result";
 
 export interface OsirisActionPort {

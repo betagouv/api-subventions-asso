@@ -1,5 +1,5 @@
 import UniteLegaleNameEntity from "../../src/entities/UniteLegaleNameEntity";
-import Siren from "../../src/identifierObjects/Siren";
+import Siren from "../../src/identifier-objects/Siren";
 
 export default [
     {

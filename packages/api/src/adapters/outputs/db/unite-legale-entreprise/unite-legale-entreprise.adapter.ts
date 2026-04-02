@@ -1,7 +1,7 @@
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
 import MongoAdapter from "../MongoAdapter";
 import { UniteLegaleEntrepriseEntity } from "../../../../entities/UniteLegaleEntrepriseEntity";
-import Siren from "../../../../identifierObjects/Siren";
+import Siren from "../../../../identifier-objects/Siren";
 import { UniteLegalEntreprisePort } from "./unite-legale-entreprise.port";
 import { UniteLegalEntrepriseMapper } from "./unite-legale-entreprise.mapper";
 import { UniteLegalEntrepriseDbo } from "./@types/UniteLegalEntrepriseDbo";

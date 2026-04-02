@@ -37,7 +37,7 @@ import grantService from "../../../modules/grant/grant.service";
 import { JoinedRawGrantDto } from "../../../modules/grant/@types/rawGrant";
 import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";
 import grantExtractService from "../../../modules/grant/grantExtract.service";
-import { errorHandler } from "../../../middlewares/ErrorMiddleware";
+import { errorHandler } from "../../../middlewares/error.middleware";
 import associationHelper from "../../../modules/associations/associations.helper";
 import paymentFlatService from "../../../modules/paymentFlat/paymentFlat.service";
 import applicationFlatService from "../../../modules/applicationFlat/applicationFlat.service";

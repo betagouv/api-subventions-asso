@@ -1,14 +1,14 @@
 import { Payment, PaymentFlatDto } from "dto";
 import paymentFlatAdapter from "../../adapters/outputs/db/payment-flat/payment-flat.adapter";
 import PaymentProvider from "../payments/@types/PaymentProvider";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import { RawPayment } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import PaymentFlatMapper from "./payment-flat.mapper";
-import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { StructureProvider } from "../StructureProvider";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";

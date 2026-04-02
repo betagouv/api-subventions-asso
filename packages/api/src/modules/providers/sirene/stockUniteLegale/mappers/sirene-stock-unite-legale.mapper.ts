@@ -1,7 +1,7 @@
 import SireneUniteLegaleDto from "../@types/SireneUniteLegaleDto";
 import { SireneStockUniteLegaleEntity } from "../../../../../entities/SireneStockUniteLegaleEntity";
 import { SireneUniteLegaleDbo } from "../@types/SireneUniteLegaleDbo";
-import Siren from "../../../../../identifierObjects/Siren";
+import Siren from "../../../../../identifier-objects/Siren";
 import UniteLegaleNameEntity from "../../../../../entities/UniteLegaleNameEntity";
 import UniteLegalNameMapper from "../../../../../adapters/outputs/db/unite-legale-name/unite-legale-name.mapper";
 

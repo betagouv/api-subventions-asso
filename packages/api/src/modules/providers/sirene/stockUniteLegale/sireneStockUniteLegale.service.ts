@@ -5,7 +5,7 @@ import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service"
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
 import SireneStockUniteLegaleParser from "./parser/sireneStockUniteLegale.parser";
 import SireneStockUniteLegaleMapper from "./mappers/sirene-stock-unite-legale.mapper";
-import Siren from "../../../../identifierObjects/Siren";
+import Siren from "../../../../identifier-objects/Siren";
 
 export class SireneStockUniteLegaleService {
     public async parse(filePath: string) {

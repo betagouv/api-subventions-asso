@@ -1,4 +1,4 @@
-import Siren from "../../identifierObjects/Siren";
+import Siren from "../../identifier-objects/Siren";
 
 import applicationFlatAdapter from "../../adapters/outputs/db/application-flat/application-flat.adapter";
 import applicationFlatService from "./applicationFlat.service";
@@ -8,16 +8,16 @@ import { ApplicationFlatDto, DemandeSubvention } from "dto";
 import { RawApplication } from "../grant/@types/rawGrant";
 import { ReadableStream } from "node:stream/web";
 
-import Siret from "../../identifierObjects/Siret";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import Siret from "../../identifier-objects/Siret";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import { APPLICATION_LINK_TO_CHORUS, DBO as APPLICATION_FLAT_DBO } from "./__fixtures__/application-flat.fixture";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
 
 jest.mock("../../dataProviders/db/application-flat/application-flat.adapter");
 jest.mock("./application-flat.mapper");
-jest.mock("../../identifierObjects/Siret");
+jest.mock("../../identifier-objects/Siret");
 jest.mock("../../shared/helpers/MongoHelper");
 
 describe("ApplicationFlatService", () => {

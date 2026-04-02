@@ -6,11 +6,11 @@ import * as Sentry from "@sentry/node";
 import { applicationProvidersFixtures, paymentProvidersFixtures } from "../providers/__fixtures__/providers.fixture";
 import { DemandeSubvention, Grant, Payment } from "dto";
 import { SIRET_STR } from "../../../tests/__fixtures__/association.fixture";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
-import Siret from "../../identifierObjects/Siret";
+import Siret from "../../identifier-objects/Siret";
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,

@@ -1,6 +1,6 @@
 import MongoAdapter from "../../MongoAdapter";
-import Siren from "../../../../../identifierObjects/Siren";
-import Siret from "../../../../../identifierObjects/Siret";
+import Siren from "../../../../../identifier-objects/Siren";
+import Siret from "../../../../../identifier-objects/Siret";
 import DemarchesSimplifieesDataEntity from "../../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
 import { DemarchesSimplifieesDataProviderPort } from "./demarches-simplifiee-data.port";
 

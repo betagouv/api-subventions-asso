@@ -2,12 +2,12 @@ import { EstablishmentSimplified } from "dto";
 import * as csvStringifier from "csv-stringify/sync";
 import { BadRequestError } from "core";
 import associationsService from "../associations/associations.service";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import GrantMapper from "./grant.mapper";
 import { ExtractHeaderLabel } from "./@types/GrantToExtract";
 import grantService from "./grant.service";
-import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 
 class GrantExtractService {
     async buildCsv(identifier: StructureIdentifier): Promise<{ csv: string; fileName: string }> {

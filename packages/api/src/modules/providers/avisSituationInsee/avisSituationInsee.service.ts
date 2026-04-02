@@ -6,11 +6,11 @@ import ProviderValueMapper from "../../../shared/mappers/provider-value.mapper";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import ProviderCore from "../ProviderCore";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
-import Siren from "../../../identifierObjects/Siren";
-import Siret from "../../../identifierObjects/Siret";
-import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../../identifier-objects/EstablishmentIdentifier";
+import Siren from "../../../identifier-objects/Siren";
+import Siret from "../../../identifier-objects/Siret";
+import { StructureIdentifier } from "../../../identifier-objects/@types/StructureIdentifier";
 
 interface AvisSituationCache {
     etablissements: {

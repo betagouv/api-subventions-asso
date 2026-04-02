@@ -1,6 +1,6 @@
-import Siren from "../../../../../identifierObjects/Siren";
+import Siren from "../../../../../identifier-objects/Siren";
 import { SubventiaDbo } from "../../../../../modules/providers/subventia/@types/subventia.entity";
-import Siret from "../../../../../identifierObjects/Siret";
+import Siret from "../../../../../identifier-objects/Siret";
 
 export interface SubventiaPort {
     createIndexes(): void;

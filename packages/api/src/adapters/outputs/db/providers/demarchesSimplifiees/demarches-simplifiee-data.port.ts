@@ -1,6 +1,6 @@
 import DemarchesSimplifieesDataEntity from "../../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
-import Siret from "../../../../../identifierObjects/Siret";
-import Siren from "../../../../../identifierObjects/Siren";
+import Siret from "../../../../../identifier-objects/Siret";
+import Siren from "../../../../../identifier-objects/Siren";
 
 export interface DemarchesSimplifieesDataProviderPort {
     createIndexes(): Promise<void>;

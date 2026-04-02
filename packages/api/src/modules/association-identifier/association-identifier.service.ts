@@ -1,12 +1,12 @@
 import { MultipleAssociationsError } from "core";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import Rna from "../../identifierObjects/Rna";
-import Siren from "../../identifierObjects/Siren";
-import Siret from "../../identifierObjects/Siret";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import Rna from "../../identifier-objects/Rna";
+import Siren from "../../identifier-objects/Siren";
+import Siret from "../../identifier-objects/Siret";
 import { IdentifierError } from "./IdentifierError";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
-import { AssociationIdType } from "../../identifierObjects/@types/IdentifierType";
+import { AssociationIdType } from "../../identifier-objects/@types/IdentifierType";
 
 export class AssociationIdentifierService {
     async findFromRechercheEntreprises(identifier: AssociationIdType) {

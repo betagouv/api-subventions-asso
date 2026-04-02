@@ -1,8 +1,8 @@
 import { Collection, FindCursor } from "mongodb";
 import MongoAdapter from "../../MongoAdapter";
 import DauphinSubventionDto from "../../../../../modules/providers/dauphin-gispro/dto/DauphinSubventionDto";
-import Siret from "../../../../../identifierObjects/Siret";
-import Siren from "../../../../../identifierObjects/Siren";
+import Siret from "../../../../../identifier-objects/Siret";
+import Siren from "../../../../../identifier-objects/Siren";
 import DauphinGisproDbo from "./DauphinGisproDbo";
 import { SimplifiedJoinedDauphinGispro } from "../../../../../modules/providers/dauphin-gispro/@types/SimplifiedDauphinGispro";
 import { DauphinPort } from "./dauphin.port";

@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import RnaSirenEntity from "../../../../entities//RnaSirenEntity";
-import Siren from "../../../../identifierObjects/Siren";
-import Rna from "../../../../identifierObjects/Rna";
+import Siren from "../../../../identifier-objects/Siren";
+import Rna from "../../../../identifier-objects/Rna";
 import RnaSirenDbo from "./@types/RnaSirenDbo";
 
 export default class RnaSirenMapper {

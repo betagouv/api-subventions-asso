@@ -4,12 +4,12 @@ import type MinistryEntity from "../../../../entities/MinistryEntity";
 import type DomaineFonctionnelEntity from "../../../../entities/DomaineFonctionnelEntity";
 import type RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
 import type { ChorusPaymentFlatEntity } from "../@types/ChorusPaymentFlat";
-import type { EstablishmentIdType } from "../../../../identifierObjects/@types/IdentifierType";
+import type { EstablishmentIdType } from "../../../../identifier-objects/@types/IdentifierType";
 
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
-import Siret from "../../../../identifierObjects/Siret";
-import Ridet from "../../../../identifierObjects/Ridet";
-import Tahitiet from "../../../../identifierObjects/Tahitiet";
+import Siret from "../../../../identifier-objects/Siret";
+import Ridet from "../../../../identifier-objects/Ridet";
+import Tahitiet from "../../../../identifier-objects/Tahitiet";
 import { getShortISODate } from "../../../../shared/helpers/DateHelper";
 import REGION_MAPPING from "./ChorusRegionMapping";
 import { NOT_APPLICABLE_VALUE } from "core";

@@ -1,14 +1,14 @@
 import { DemandeSubvention, Establishment } from "dto";
 import establishmentService from "../../../modules/establishments/establishment.service";
 import { EstablishmentHttp, isEstabIdentifierFromAssoMiddleware } from "./Establishment.http";
-import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
-import Siren from "../../../identifierObjects/Siren";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../../identifier-objects/EstablishmentIdentifier";
+import Siren from "../../../identifier-objects/Siren";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 import establishmentIdentifierService from "../../../modules/establishment-identifier/establishment-identifier.service";
 import grantExtractService from "../../../modules/grant/grantExtract.service";
 import consumers from "stream/consumers";
 import associationHelper from "../../../modules/associations/associations.helper";
-import { errorHandler } from "../../../middlewares/ErrorMiddleware";
+import { errorHandler } from "../../../middlewares/error.middleware";
 import grantService from "../../../modules/grant/grant.service";
 
 jest.mock("../../../modules/grant/grant.service");

@@ -11,10 +11,10 @@ import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EstablishmentProvider from "../../establishments/@types/EstablishmentProvider";
 import { hasEmptyProperties } from "../../../shared/helpers/ObjectHelper";
 import ProviderCore from "../ProviderCore";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import Rna from "../../../identifierObjects/Rna";
-import Siren from "../../../identifierObjects/Siren";
-import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
+import Rna from "../../../identifier-objects/Rna";
+import Siren from "../../../identifier-objects/Siren";
+import EstablishmentIdentifier from "../../../identifier-objects/EstablishmentIdentifier";
 import ApiAssoDtoMapper from "./mappers/api-asso-dto.mapper";
 import StructureDto, {
     DocumentsDto,
@@ -24,7 +24,7 @@ import StructureDto, {
 } from "./dto/StructureDto";
 import { RnaStructureDto } from "./dto/RnaStructureDto";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
-import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../../identifier-objects/@types/StructureIdentifier";
 
 export class ApiAssoService
     extends ProviderCore

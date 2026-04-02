@@ -1,6 +1,6 @@
 import { Response } from "express";
 import * as HttpHelper from "../shared/helpers/HttpHelper";
-import StatsAssoVisitMiddleware from "./StatsAssoVisitMiddleware";
+import assoVisitMiddleware from "./asso-visit.middleware";
 import statsSerivce from "../modules/stats/stats.service";
 import { IdentifiedRequest } from "../@types";
 
@@ -14,14 +14,14 @@ describe("StatsAssoVisitsMiddleware", () => {
 
     it("should not call addAssociationVisit if request does not have user", async () => {
         const req = {} as IdentifiedRequest;
-        await StatsAssoVisitMiddleware(req, {} as Response);
-        expect(addAssociationVisitMock).not.toBeCalled();
+        await assoVisitMiddleware(req, {} as Response);
+        expect(addAssociationVisitMock).not.toHaveBeenCalled();
     });
 
     it("should not call addAssociationVisit because res status is not 200", async () => {
         const req = {} as IdentifiedRequest;
-        await StatsAssoVisitMiddleware(req, { statusCode: 500 } as Response);
-        expect(addAssociationVisitMock).not.toBeCalled();
+        await assoVisitMiddleware(req, { statusCode: 500 } as Response);
+        expect(addAssociationVisitMock).not.toHaveBeenCalled();
     });
 
     it("should not call addAssociationVisit because user is admin", async () => {
@@ -31,8 +31,8 @@ describe("StatsAssoVisitsMiddleware", () => {
             },
         } as IdentifiedRequest;
         isRequestFromAdminMock.mockImplementationOnce(() => true);
-        await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
-        expect(addAssociationVisitMock).not.toBeCalled();
+        await assoVisitMiddleware(req, { statusCode: 200 } as Response);
+        expect(addAssociationVisitMock).not.toHaveBeenCalled();
     });
 
     it("should not call addAssociationVisit if regex doesn't found", async () => {
@@ -41,8 +41,8 @@ describe("StatsAssoVisitsMiddleware", () => {
             originalUrl: "",
         } as IdentifiedRequest;
         isRequestFromAdminMock.mockImplementationOnce(() => false);
-        await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
-        expect(addAssociationVisitMock).not.toBeCalled();
+        await assoVisitMiddleware(req, { statusCode: 200 } as Response);
+        expect(addAssociationVisitMock).not.toHaveBeenCalled();
     });
 
     it("should not call addAssociationVisit because regex doesn't find identifier", async () => {
@@ -51,8 +51,8 @@ describe("StatsAssoVisitsMiddleware", () => {
             originalUrl: "/association/TOTO",
         } as IdentifiedRequest;
         isRequestFromAdminMock.mockImplementationOnce(() => false);
-        await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
-        expect(addAssociationVisitMock).not.toBeCalled();
+        await assoVisitMiddleware(req, { statusCode: 200 } as Response);
+        expect(addAssociationVisitMock).not.toHaveBeenCalled();
     });
 
     it.each`
@@ -65,7 +65,7 @@ describe("StatsAssoVisitsMiddleware", () => {
         "should call addAssociationVisit ($identifierType) with status $status",
         async ({ identifier, resourceType, assoIdentifier, status }) => {
             isRequestFromAdminMock.mockImplementationOnce(() => false);
-            addAssociationVisitMock.mockImplementationOnce(async () => true);
+            addAssociationVisitMock.mockImplementationOnce(jest.fn());
 
             const USER_ID = "USER_ID";
             const req = {
@@ -74,7 +74,7 @@ describe("StatsAssoVisitsMiddleware", () => {
                 },
                 originalUrl: `/${resourceType}/${identifier}`,
             } as unknown as IdentifiedRequest;
-            await StatsAssoVisitMiddleware(req, { statusCode: status } as Response);
+            await assoVisitMiddleware(req, { statusCode: status } as Response);
 
             const expected = {
                 userId: USER_ID,
@@ -82,7 +82,7 @@ describe("StatsAssoVisitsMiddleware", () => {
                 date: expect.any(Date),
             };
 
-            expect(addAssociationVisitMock).toBeCalledWith(expected);
+            expect(addAssociationVisitMock).toHaveBeenCalledWith(expected);
         },
     );
 });

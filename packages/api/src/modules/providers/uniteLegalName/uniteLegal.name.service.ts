@@ -3,9 +3,9 @@ import uniteLegalNameAdapter from "../../../adapters/outputs/db/unite-legale-nam
 import UniteLegaleNameEntity from "../../../entities/UniteLegaleNameEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import AssociationNameMapper from "../../association-name/mappers/association-name.mapper";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import Siret from "../../../identifierObjects/Siret";
-import Siren from "../../../identifierObjects/Siren";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
+import Siret from "../../../identifier-objects/Siret";
+import Siren from "../../../identifier-objects/Siren";
 
 export class UniteLegalNameService {
     async getNameFromIdentifier(identifier: AssociationIdentifier): Promise<UniteLegaleNameEntity | null> {

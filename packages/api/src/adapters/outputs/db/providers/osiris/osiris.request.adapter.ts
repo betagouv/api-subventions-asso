@@ -1,9 +1,9 @@
 import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisRequestEntity from "../../../../../modules/providers/osiris/entities/OsirisRequestEntity";
 import MongoAdapter from "../../MongoAdapter";
-import Siret from "../../../../../identifierObjects/Siret";
-import Rna from "../../../../../identifierObjects/Rna";
-import Siren from "../../../../../identifierObjects/Siren";
+import Siret from "../../../../../identifier-objects/Siret";
+import Rna from "../../../../../identifier-objects/Rna";
+import Siren from "../../../../../identifier-objects/Siren";
 import { OsirisRequestPort } from "./osiris-request.port";
 import { BulkUpsertResult } from "../../@types/bulk-upsert-result";
 

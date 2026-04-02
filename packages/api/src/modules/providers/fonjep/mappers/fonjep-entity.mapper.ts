@@ -8,17 +8,17 @@ import { FonjepPosteDtoWithJSDate } from "../../../../adapters/outputs/db/provid
 import FonjepTypePosteDto from "../../../../adapters/outputs/db/providers/fonjep/dto/fonjepTypePosteDto";
 import { FonjepVersementDto } from "../../../../adapters/outputs/db/providers/fonjep/dto/fonjepVersementDto";
 import FonjepTiersDto from "../../../../adapters/outputs/db/providers/fonjep/dto/fonjepTiersDto";
-import Siret from "../../../../identifierObjects/Siret";
-import Ridet from "../../../../identifierObjects/Ridet";
-import Rid from "../../../../identifierObjects/Rid";
-import Siren from "../../../../identifierObjects/Siren";
+import Siret from "../../../../identifier-objects/Siret";
+import Ridet from "../../../../identifier-objects/Ridet";
+import Rid from "../../../../identifier-objects/Rid";
+import Siren from "../../../../identifier-objects/Siren";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { FonjepApplicationFlatEntity, FonjepPaymentFlatEntity } from "../entities/FonjepFlatEntity";
 import { DataBretagneRecords } from "../../dataBretagne/@types/DataBretagne";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import { getShortISODate, modifyDateYear } from "../../../../shared/helpers/DateHelper";
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
-import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
+import EstablishmentIdentifier from "../../../../identifier-objects/EstablishmentIdentifier";
 import { ApplicationNature, ApplicationStatus, PaymentCondition } from "dto";
 
 /**

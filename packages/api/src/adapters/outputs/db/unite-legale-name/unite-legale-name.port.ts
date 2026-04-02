@@ -1,5 +1,5 @@
 import UniteLegaleNameEntity from "../../../../entities/UniteLegaleNameEntity";
-import Siren from "../../../../identifierObjects/Siren";
+import Siren from "../../../../identifier-objects/Siren";
 
 export interface UniteLegalNamePort {
     createIndexes(): Promise<void>;

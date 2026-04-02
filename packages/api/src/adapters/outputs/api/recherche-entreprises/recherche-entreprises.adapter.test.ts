@@ -1,6 +1,6 @@
 import rechercheEntreprisesAdapter, { RechercheEntreprisesAdapter } from "./recherche-entreprises.adapter";
 import { ProviderRequestService } from "../../../../modules/provider-request/providerRequest.service";
-import Siren from "../../../../identifierObjects/Siren";
+import Siren from "../../../../identifier-objects/Siren";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../shared/LegalCategoriesAccepted";
 import { AxiosResponse } from "axios";
 

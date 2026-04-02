@@ -1,6 +1,6 @@
 import MongoAdapter from "../MongoAdapter";
-import Siren from "../../../../identifierObjects/Siren";
-import Siret from "../../../../identifierObjects/Siret";
+import Siren from "../../../../identifier-objects/Siren";
+import Siret from "../../../../identifier-objects/Siret";
 import { DefaultObject } from "../../../../@types";
 import ApplicationFlatMapper from "../../../../modules/applicationFlat/application-flat.mapper";
 import { ApplicationFlatDbo } from "./@types/ApplicationFlatDbo";

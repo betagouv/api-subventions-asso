@@ -4,7 +4,7 @@ import { parse } from "csv-parse";
 import SireneUniteLegaleDto from "../@types/SireneUniteLegaleDto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategoriesAccepted";
 import SireneStockUniteLegaleMapper from "../mappers/sirene-stock-unite-legale.mapper";
-import Siren from "../../../../../identifierObjects/Siren";
+import Siren from "../../../../../identifier-objects/Siren";
 import { SireneStockUniteLegaleEntity } from "../../../../../entities/SireneStockUniteLegaleEntity";
 
 export default class SireneStockUniteLegaleParser {

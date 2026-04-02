@@ -1,7 +1,7 @@
 import subventionsService from "./subventions.service";
 import * as providers from "../providers";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import Rna from "../../identifierObjects/Rna";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import Rna from "../../identifier-objects/Rna";
 jest.mock("../providers/index");
 
 const DEMANDES_SUBVENTIONS_PROVIDERS = providers.applicationProviders;

@@ -7,8 +7,8 @@ import fonjepTypePosteAdapter from "../../../adapters/outputs/db/providers/fonje
 import fonjepVersementsAdapter from "../../../adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
-import Ridet from "../../../identifierObjects/Ridet";
-import Siret from "../../../identifierObjects/Siret";
+import Ridet from "../../../identifier-objects/Ridet";
+import Siret from "../../../identifier-objects/Siret";
 import { addWithNull } from "../../../shared/helpers/NumberHelper";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";

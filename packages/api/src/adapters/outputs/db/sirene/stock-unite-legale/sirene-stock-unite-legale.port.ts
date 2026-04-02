@@ -1,5 +1,5 @@
 import { SireneStockUniteLegaleEntity } from "../../../../../entities//SireneStockUniteLegaleEntity";
-import Siren from "../../../../../identifierObjects/Siren";
+import Siren from "../../../../../identifier-objects/Siren";
 
 export interface SireneStockUniteLegalePort {
     createIndexes(): Promise<void>;

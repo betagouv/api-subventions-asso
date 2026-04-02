@@ -1,6 +1,6 @@
 import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
 import { BadRequestError, ConflictError } from "core";
-import Siret from "../../../identifierObjects/Siret";
+import Siret from "../../../identifier-objects/Siret";
 import DepositScdlLogEntity from "../entities/depositScdlLog.entity";
 import MiscScdlGrantEntity from "../../providers/scdl/entities/MiscScdlGrantEntity";
 import scdlService from "../../providers/scdl/scdl.service";

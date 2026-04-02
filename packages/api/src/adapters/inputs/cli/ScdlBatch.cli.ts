@@ -19,7 +19,7 @@ import { FileExtensionEnum } from "../../../@enums/FileExtensionEnum";
 import { isNumberValid, isShortISODateValid, isStringValid } from "../../../shared/Validators";
 import scdlService from "../../../modules/providers/scdl/scdl.service";
 import ScdlCli from "./Scdl.cli";
-import Siret from "../../../identifierObjects/Siret";
+import Siret from "../../../identifier-objects/Siret";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 
 @StaticImplements<CliStaticInterface>()

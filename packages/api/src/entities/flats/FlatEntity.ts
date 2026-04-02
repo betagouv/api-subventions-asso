@@ -1,6 +1,6 @@
 import { CompanyIdName, EstablishmentIdName } from "dto";
 import { ProviderDataEntity } from "../../@types/ProviderData";
-import { EstablishmentIdType, CompanyIdType } from "../../identifierObjects/@types/IdentifierType";
+import { EstablishmentIdType, CompanyIdType } from "../../identifier-objects/@types/IdentifierType";
 
 export interface MandatoryFlatEntity extends ProviderDataEntity {
     uniqueId: string;

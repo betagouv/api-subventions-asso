@@ -6,9 +6,9 @@ import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uni
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
 import sireneStockUniteLegaleService from "../providers/sirene/stockUniteLegale/sireneStockUniteLegale.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
-import Rna from "../../identifierObjects/Rna";
-import Siren from "../../identifierObjects/Siren";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import Rna from "../../identifier-objects/Rna";
+import Siren from "../../identifier-objects/Siren";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 
 jest.mock("../providers/index");
 

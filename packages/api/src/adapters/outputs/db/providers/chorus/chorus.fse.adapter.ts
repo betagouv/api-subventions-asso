@@ -1,10 +1,10 @@
 import { WithId } from "mongodb";
 import ChorusFseEntity from "../../../../../modules/providers/chorus/entities/ChorusFseEntity";
 import MongoAdapter from "../../MongoAdapter";
-import EstablishmentIdentifier from "../../../../../identifierObjects/EstablishmentIdentifier";
-import Siret from "../../../../../identifierObjects/Siret";
-import Ridet from "../../../../../identifierObjects/Ridet";
-import Tahitiet from "../../../../../identifierObjects/Tahitiet";
+import EstablishmentIdentifier from "../../../../../identifier-objects/EstablishmentIdentifier";
+import Siret from "../../../../../identifier-objects/Siret";
+import Ridet from "../../../../../identifier-objects/Ridet";
+import Tahitiet from "../../../../../identifier-objects/Tahitiet";
 import { ChorusFsePort } from "./chorus.fse.port";
 
 type ChorusFseDbo = Omit<ChorusFseEntity, "identifier"> & { identifier: string };

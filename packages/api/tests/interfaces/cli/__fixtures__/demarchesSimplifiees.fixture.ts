@@ -4,8 +4,8 @@ import { SIRET_STR } from "../../../__fixtures__/association.fixture";
 import DemarchesSimplifieesDataEntity from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
 import { ApplicationFlatEntity } from "../../../../src/entities/flats/ApplicationFlatEntity";
 import { ApplicationStatus } from "dto";
-import Siret from "../../../../src/identifierObjects/Siret";
-import Siren from "../../../../src/identifierObjects/Siren";
+import Siret from "../../../../src/identifier-objects/Siret";
+import Siren from "../../../../src/identifier-objects/Siren";
 
 export const DEMARCHE_ID = 42;
 export const SCHEMA: DemarchesSimplifieesSchema = {

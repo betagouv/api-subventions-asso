@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import * as csvSyncStringifier from "csv-stringify/sync";
 import scdlService from "../../../modules/providers/scdl/scdl.service";
-import Siret from "../../../identifierObjects/Siret";
+import Siret from "../../../identifier-objects/Siret";
 import {
     MixedParsedError,
     ParsedErrorDuplicate,

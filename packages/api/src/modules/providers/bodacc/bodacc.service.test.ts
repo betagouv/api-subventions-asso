@@ -2,8 +2,8 @@ import BodaccMapper from "./mappers/bodacc.mapper";
 import bodaccService from "./bodacc.service";
 import { BodaccDto } from "./dto/BodaccDto";
 
-import Siren from "../../../identifierObjects/Siren";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import Siren from "../../../identifier-objects/Siren";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 
 describe("Bodacc Service", () => {
     const SIREN = new Siren("123456789");

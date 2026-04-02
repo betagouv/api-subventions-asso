@@ -24,7 +24,7 @@ import {
     JoinedRawGrantDto,
 } from "./@types/rawGrant";
 import commonGrantService from "./commonGrant.service";
-import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 import applicationFlatService from "../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../paymentFlat/paymentFlat.service";
 import { GrantFlatEntity } from "../../entities/GrantFlatEntity";

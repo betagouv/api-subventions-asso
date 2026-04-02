@@ -8,7 +8,7 @@ import { SireneStockUniteLegaleEntity } from "../../../src/entities/SireneStockU
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
 import { Association } from "dto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../src/shared/LegalCategoriesAccepted";
-import Siren from "../../../src/identifierObjects/Siren";
+import Siren from "../../../src/identifier-objects/Siren";
 import {
     CHORUS_FSE_ENTITIES,
     CHORUS_ENTITIES,

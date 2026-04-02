@@ -1,7 +1,7 @@
 import { ApplicationFlatEntity } from "../../../../entities//flats/ApplicationFlatEntity";
 import { DefaultObject } from "../../../../@types";
-import Siret from "../../../../identifierObjects/Siret";
-import Siren from "../../../../identifierObjects/Siren";
+import Siret from "../../../../identifier-objects/Siret";
+import Siren from "../../../../identifier-objects/Siren";
 
 export interface ApplicationFlatPort {
     createIndexes(): Promise<void>;

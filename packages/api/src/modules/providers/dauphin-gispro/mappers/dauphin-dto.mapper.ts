@@ -6,7 +6,7 @@ import DauphinDocumentDto from "../dto/DauphinDocumentDto";
 import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import { SimplifiedJoinedDauphinGispro } from "../@types/SimplifiedDauphinGispro";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
-import Siret from "../../../../identifierObjects/Siret";
+import Siret from "../../../../identifier-objects/Siret";
 
 export class InconsistentAggregationError extends Error {
     public field: string;

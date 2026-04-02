@@ -7,9 +7,9 @@ import establishmentService from "../establishments/establishment.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
 import { NotFoundError } from "core";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import Siren from "../../identifierObjects/Siren";
-import Rna from "../../identifierObjects/Rna";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import Siren from "../../identifier-objects/Siren";
+import Rna from "../../identifier-objects/Rna";
 
 jest.mock("../providers/index");
 

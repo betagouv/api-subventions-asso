@@ -1,5 +1,5 @@
-import Rna from "../../../identifierObjects/Rna";
-import Siren from "../../../identifierObjects/Siren";
+import Rna from "../../../identifier-objects/Rna";
+import Siren from "../../../identifier-objects/Siren";
 import osirisService, { InvalidOsirisRequestError, VALID_REQUEST_ERROR_CODE } from "./osiris.service";
 import { osirisActionAdapter, osirisRequestAdapter } from "../../../adapters/outputs/db/providers/osiris";
 import OsirisActionEntity from "./entities/OsirisActionEntity";

@@ -1,9 +1,9 @@
 import qs from "qs";
 import { StructureIdentifiersError } from "core";
 import apiEntrepriseService from "./apiEntreprise.service";
-import Siren from "../../../identifierObjects/Siren";
-import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import Siren from "../../../identifier-objects/Siren";
+import EstablishmentIdentifier from "../../../identifier-objects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 
 describe("ApiEntrepriseService", () => {
     jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));

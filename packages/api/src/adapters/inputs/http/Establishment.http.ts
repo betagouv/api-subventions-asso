@@ -31,7 +31,7 @@ import { NotAssociationError, HttpErrorInterface } from "core";
 import establishmentService from "../../../modules/establishments/establishment.service";
 import establishmentIdentifierService from "../../../modules/establishment-identifier/establishment-identifier.service";
 import grantExtractService from "../../../modules/grant/grantExtract.service";
-import { errorHandler } from "../../../middlewares/ErrorMiddleware";
+import { errorHandler } from "../../../middlewares/error.middleware";
 import associationHelper from "../../../modules/associations/associations.helper";
 import paymentFlatService from "../../../modules/paymentFlat/paymentFlat.service";
 import applicationFlatService from "../../../modules/applicationFlat/applicationFlat.service";

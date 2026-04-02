@@ -2,7 +2,7 @@ import { FindOneAndUpdateOptions } from "mongodb";
 import { MongoCnxError } from "../../../../../shared/errors/MongoCnxError";
 import OsirisActionEntity from "../../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import MongoAdapter from "../../MongoAdapter";
-import Siren from "../../../../../identifierObjects/Siren";
+import Siren from "../../../../../identifier-objects/Siren";
 import OsirisActionMapper from "./osiris-action.mapper";
 import { OsirisActionPort } from "./osiris-action.port";
 import { BulkUpsertResult } from "../../@types/bulk-upsert-result";

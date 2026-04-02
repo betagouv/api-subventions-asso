@@ -9,9 +9,9 @@ import DEFAULT_ASSOCIATION, {
     SIRET_STR,
 } from "../../__fixtures__/association.fixture";
 import rnaSirenAdapter from "../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
-import Rna from "../../../src/identifierObjects/Rna";
+import Rna from "../../../src/identifier-objects/Rna";
 import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
-import Siren from "../../../src/identifierObjects/Siren";
+import Siren from "../../../src/identifier-objects/Siren";
 import statsAssociationsVisitAdapter from "../../../src/adapters/outputs/db/stats/association-visit.adapter";
 import { App } from "supertest/types";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";

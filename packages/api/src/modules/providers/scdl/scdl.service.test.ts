@@ -19,7 +19,7 @@ import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import applicationFlatAdapter from "../../../adapters/outputs/db/application-flat/application-flat.adapter";
 import apiAssoService from "../apiAsso/apiAsso.service";
-import Siret from "../../../identifierObjects/Siret";
+import Siret from "../../../identifier-objects/Siret";
 import fs from "fs";
 import { ObjectId } from "mongodb";
 import scdlGrantService from "./scdl.grant.service";

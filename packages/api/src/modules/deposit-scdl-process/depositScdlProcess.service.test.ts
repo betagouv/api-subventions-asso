@@ -18,7 +18,7 @@ import MiscScdlGrantEntity from "../providers/scdl/entities/MiscScdlGrantEntity"
 import MiscScdlGrant from "../providers/scdl/__fixtures__/MiscScdlGrant";
 import depositScdlProcessCheckService from "./check/DepositScdlProcess.check.service";
 import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
-import Siret from "../../identifierObjects/Siret";
+import Siret from "../../identifier-objects/Siret";
 import dataLogService from "../data-log/dataLog.service";
 import s3FileService from "../s3-file/s3Storage.service";
 import { DefaultObject } from "../../@types";

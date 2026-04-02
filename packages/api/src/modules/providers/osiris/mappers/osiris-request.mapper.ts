@@ -4,10 +4,10 @@ import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import { toStatusFactory } from "../../providers.mapper";
 import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
-import Siret, { SIRET_NAME } from "../../../../identifierObjects/Siret";
-import Ridet, { RIDET_NAME } from "../../../../identifierObjects/Ridet";
+import Siret, { SIRET_NAME } from "../../../../identifier-objects/Siret";
+import Ridet, { RIDET_NAME } from "../../../../identifier-objects/Ridet";
 import { GenericParser } from "../../../../shared/GenericParser";
-import { CompanyIdType, EstablishmentIdType } from "../../../../identifierObjects/@types/IdentifierType";
+import { CompanyIdType, EstablishmentIdType } from "../../../../identifier-objects/@types/IdentifierType";
 
 export default class OsirisRequestMapper {
     static PROVIDER_NAME = "Osiris";

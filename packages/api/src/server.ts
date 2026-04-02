@@ -1,5 +1,4 @@
 import express, { NextFunction, Response } from "express";
-
 import { rateLimit } from "express-rate-limit";
 import session from "express-session";
 import passport from "passport";
@@ -11,16 +10,16 @@ import cors from "cors";
 import MongoStoreBuilder from "connect-mongodb-session";
 import { RegisterRoutes } from "../tsoa/routes";
 import { registerAuthMiddlewares } from "./authentication/express.auth.hooks";
-import { expressLogger } from "./middlewares/LogMiddleware";
-import { AssetsMiddleware } from "./middlewares/AssetsMiddleware";
-import { BodyParserJSON, BodyParserUrlEncoded } from "./middlewares/BodyParserMiddleware";
-import { docsMiddlewares } from "./middlewares/DocsMiddleware";
-import { errorHandler } from "./middlewares/ErrorMiddleware";
-import StatsAssoVisitMiddleware, { StatsAssoVisitRoutesRegex } from "./middlewares/StatsAssoVisitMiddleware";
-import UserActivityMiddleware from "./middlewares/UserActivityMiddleware";
+import { expressLogger } from "./middlewares/log.middleware";
+import { assetsMiddleware } from "./middlewares/assets.middleware";
+import { urlEncoded, json } from "./middlewares/body-parser.middleware";
+import { docsMiddlewares } from "./middlewares/docs.middleware";
+import { errorHandler } from "./middlewares/error.middleware";
+import assoVisitMiddleware, { StatsAssoVisitRoutesRegex } from "./middlewares/asso-visit.middleware";
+import userActivityMiddleware from "./middlewares/user-activity.middleware";
 import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
-import { headersMiddleware } from "./middlewares/headersMiddleware";
+import { headersMiddleware } from "./middlewares/headers.middleware";
 import { DEV, ENV } from "./configurations/env.conf";
 import { SESSION_SECRET } from "./configurations/pro-connect.conf";
 import { mongoSessionStoreConfig } from "./shared/MongoConnection";
@@ -85,9 +84,9 @@ export async function startServer(port = "8080", isTest = false) {
     // NB : if app is deployed on a multi server infrastructure, use store like "rate-limit-mongo"
     app.use(limiter);
 
-    app.use("/assets", AssetsMiddleware);
-    app.use(BodyParserUrlEncoded);
-    app.use(BodyParserJSON);
+    app.use("/assets", assetsMiddleware);
+    app.use(urlEncoded);
+    app.use(json);
 
     app.use(passport.initialize());
 
@@ -95,11 +94,11 @@ export async function startServer(port = "8080", isTest = false) {
 
     StatsAssoVisitRoutesRegex.forEach(route =>
         app.use(route, (req, res, next) =>
-            factoryEndMiddleware(req as IdentifiedRequest, res, next, StatsAssoVisitMiddleware),
+            factoryEndMiddleware(req as IdentifiedRequest, res, next, assoVisitMiddleware),
         ),
     );
 
-    app.use((req, res, next) => UserActivityMiddleware(req as IdentifiedRequest, res, next));
+    app.use((req, res, next) => userActivityMiddleware(req as IdentifiedRequest, res, next));
 
     app.use(headersMiddleware);
 

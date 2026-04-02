@@ -28,9 +28,9 @@ import DEFAULT_ASSOCIATION, {
 import dauphinAdapter from "../../../src/adapters/outputs/db/providers/dauphin/dauphin.adapter";
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
-import Rna from "../../../src/identifierObjects/Rna";
+import Rna from "../../../src/identifier-objects/Rna";
 import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlProducers.adapter";
-import Siren from "../../../src/identifierObjects/Siren";
+import Siren from "../../../src/identifier-objects/Siren";
 import statsAssociationsVisitAdapter from "../../../src/adapters/outputs/db/stats/association-visit.adapter";
 import { App } from "supertest/types";
 import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
@@ -57,7 +57,7 @@ import fonjepDispositifAdapter from "../../../src/adapters/outputs/db/providers/
 import fonjepTiersAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.tiers.adapter";
 import fonjepVersementsAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
 import fonjepTypePosteAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.typePoste.adapter";
-import AssociationIdentifier from "../../../src/identifierObjects/AssociationIdentifier";
+import AssociationIdentifier from "../../../src/identifier-objects/AssociationIdentifier";
 import rechercheEntreprisesAdapter from "../../../src/adapters/outputs/api/recherche-entreprises/recherche-entreprises.adapter";
 import { RECHERCHE_ENTREPRISES_DTO } from "../../../src/adapters/outputs/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
 

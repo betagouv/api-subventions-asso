@@ -1,5 +1,5 @@
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import Siret from "../../identifierObjects/Siret";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
+import Siret from "../../identifier-objects/Siret";
 import associationIdentifierService from "../association-identifier/association-identifier.service";
 
 export class EstablishmentIdentifierService {

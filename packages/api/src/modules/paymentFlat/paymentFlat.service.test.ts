@@ -7,12 +7,12 @@ import {
 } from "./__fixtures__/payment-flat.fixture";
 
 import paymentFlatAdapter from "../../adapters/outputs/db/payment-flat/payment-flat.adapter";
-import Siren from "../../identifierObjects/Siren";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import Siren from "../../identifier-objects/Siren";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import Siret from "../../identifierObjects/Siret";
-import Rna from "../../identifierObjects/Rna";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
+import Siret from "../../identifier-objects/Siret";
+import Rna from "../../identifier-objects/Rna";
 import { PAYMENTS } from "../providers/chorus/__fixtures__/ChorusFixtures";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";

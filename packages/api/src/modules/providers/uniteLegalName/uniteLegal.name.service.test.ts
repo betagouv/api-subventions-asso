@@ -3,10 +3,10 @@ import rnaSirenService from "../../rna-siren/rna-siren.service";
 import UniteLegaleNameEntity from "../../../entities/UniteLegaleNameEntity";
 import uniteLegalNameService from "./uniteLegal.name.service";
 import AssociationNameEntity from "../../association-name/entities/AssociationNameEntity";
-import Siren from "../../../identifierObjects/Siren";
-import Rna from "../../../identifierObjects/Rna";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import Siret from "../../../identifierObjects/Siret";
+import Siren from "../../../identifier-objects/Siren";
+import Rna from "../../../identifier-objects/Rna";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
+import Siret from "../../../identifier-objects/Siret";
 
 jest.mock("../../../dataProviders/db/unite-legale-name/unite-legale-name.adapter");
 jest.mock("../../rna-siren/rna-siren.service");

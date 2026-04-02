@@ -1,7 +1,7 @@
 import OsirisRequestEntity from "../../../../../modules/providers/osiris/entities/OsirisRequestEntity";
-import Siret from "../../../../../identifierObjects/Siret";
-import Rna from "../../../../../identifierObjects/Rna";
-import Siren from "../../../../../identifierObjects/Siren";
+import Siret from "../../../../../identifier-objects/Siret";
+import Rna from "../../../../../identifier-objects/Rna";
+import Siren from "../../../../../identifier-objects/Siren";
 import { BulkUpsertResult } from "../../@types/bulk-upsert-result";
 
 export interface OsirisRequestPort {

@@ -1,6 +1,6 @@
 import { NotificationType } from "../../../../modules/notify/@types/NotificationType";
 import { RechercheEntreprisesDto, RechercheEntreprisesResultDto } from "./@types/RechercheEntreprisesDto";
-import Siren from "../../../../identifierObjects/Siren";
+import Siren from "../../../../identifier-objects/Siren";
 import rechercheEntreprisesService from "./recherche-entreprises.service";
 import rechercheEntreprisesAdapter from "./recherche-entreprises.adapter";
 import { RechercheEntreprisesMapper } from "./recherche-entreprises.mapper";

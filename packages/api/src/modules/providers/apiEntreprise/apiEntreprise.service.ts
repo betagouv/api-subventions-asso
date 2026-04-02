@@ -9,11 +9,11 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import ProviderCore from "../ProviderCore";
-import Siret from "../../../identifierObjects/Siret";
-import Siren from "../../../identifierObjects/Siren";
-import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
+import Siret from "../../../identifier-objects/Siret";
+import Siren from "../../../identifier-objects/Siren";
+import EstablishmentIdentifier from "../../../identifier-objects/EstablishmentIdentifier";
 import type ApiEntrepriseHeadcount from "./@types/ApiEntrepriseHeadcount";
-import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../../identifier-objects/@types/StructureIdentifier";
 
 export class ApiEntrepriseService extends ProviderCore {
     static API_URL = "https://entreprise.api.gouv.fr/";

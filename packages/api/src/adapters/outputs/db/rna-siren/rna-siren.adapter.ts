@@ -1,5 +1,5 @@
-import Siren from "../../../../identifierObjects/Siren";
-import Rna from "../../../../identifierObjects/Rna";
+import Siren from "../../../../identifier-objects/Siren";
+import Rna from "../../../../identifier-objects/Rna";
 import { isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
 import RnaSirenEntity from "../../../../entities//RnaSirenEntity";
 import MongoAdapter from "../MongoAdapter";

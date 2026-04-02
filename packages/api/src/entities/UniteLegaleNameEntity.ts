@@ -1,4 +1,4 @@
-import Siren from "../identifierObjects/Siren";
+import Siren from "../identifier-objects/Siren";
 
 export default class UniteLegaleNameEntity {
     constructor(

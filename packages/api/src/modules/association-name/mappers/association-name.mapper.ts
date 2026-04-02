@@ -1,5 +1,5 @@
 import UniteLegaleNameEntity from "../../../entities/UniteLegaleNameEntity";
-import Rna from "../../../identifierObjects/Rna";
+import Rna from "../../../identifier-objects/Rna";
 import AssociationNameEntity from "../entities/AssociationNameEntity";
 
 export default class AssociationNameMapper {

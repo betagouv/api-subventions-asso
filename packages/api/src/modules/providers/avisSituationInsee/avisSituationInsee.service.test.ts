@@ -1,7 +1,7 @@
 import ProviderValueMapper from "../../../shared/mappers/provider-value.mapper";
 import avisSituationInseeService from "./avisSituationInsee.service";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import Siren from "../../../identifierObjects/Siren";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
+import Siren from "../../../identifier-objects/Siren";
 
 describe("AvisSituationInseeService", () => {
     describe("getInseeEstablishmentsBySiren", () => {

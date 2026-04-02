@@ -1,9 +1,9 @@
 import { NotAssociationError } from "core";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import Rna from "../../identifierObjects/Rna";
-import Siren from "../../identifierObjects/Siren";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import Rna from "../../identifier-objects/Rna";
+import Siren from "../../identifier-objects/Siren";
 import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 

@@ -1,7 +1,7 @@
 import MongoAdapter from "../MongoAdapter";
 import { ChorusPaymentFlatEntity } from "../../../../modules/providers/chorus/@types/ChorusPaymentFlat";
-import Siren from "../../../../identifierObjects/Siren";
-import Siret from "../../../../identifierObjects/Siret";
+import Siren from "../../../../identifier-objects/Siren";
+import Siret from "../../../../identifier-objects/Siret";
 import { DefaultObject } from "../../../../@types";
 import PaymentFlatMapper from "../../../../modules/paymentFlat/payment-flat.mapper";
 import PaymentFlatEntity from "../../../../entities//flats/PaymentFlatEntity";

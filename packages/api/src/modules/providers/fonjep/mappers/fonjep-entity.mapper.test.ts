@@ -14,7 +14,7 @@ import { DISPOSITIF_ENTITY, POSTE_ENTITY, TIERS_ENTITY, VERSEMENT_ENTITY } from 
 
 import FonjepEntityMapper from "./fonjep-entity.mapper";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
-import Siret from "../../../../identifierObjects/Siret";
+import Siret from "../../../../identifier-objects/Siret";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 jest.mock("../../dataBretagne/dataBretagne.service");
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
@@ -23,9 +23,9 @@ import * as DateHelper from "../../../../shared/helpers/DateHelper";
 import FonjepPosteEntity from "../entities/FonjepPosteEntity";
 import FonjepDispositifEntity from "../entities/FonjepDispositifEntity";
 import FonjepTiersEntity from "../entities/FonjepTiersEntity";
-import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
+import EstablishmentIdentifier from "../../../../identifier-objects/EstablishmentIdentifier";
 import { FonjepPaymentFlatEntity } from "../entities/FonjepFlatEntity";
-jest.mock("../../../../identifierObjects/EstablishmentIdentifier");
+jest.mock("../../../../identifier-objects/EstablishmentIdentifier");
 jest.mock("../../../../shared/helpers/DateHelper");
 
 describe("FonjepEntityAdapter", () => {

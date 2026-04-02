@@ -1,4 +1,4 @@
-import { expressLogger } from "./LogMiddleware";
+import { expressLogger } from "./log.middleware";
 import expressWinston from "express-winston";
 import { ObjectId } from "mongodb";
 

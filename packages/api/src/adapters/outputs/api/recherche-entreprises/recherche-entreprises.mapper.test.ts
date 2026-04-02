@@ -1,6 +1,6 @@
 import AssociationNameEntity from "../../../../modules/association-name/entities/AssociationNameEntity";
-import Rna from "../../../../identifierObjects/Rna";
-import Siren from "../../../../identifierObjects/Siren";
+import Rna from "../../../../identifier-objects/Rna";
+import Siren from "../../../../identifier-objects/Siren";
 import { RechercheEntreprisesMapper } from "./recherche-entreprises.mapper";
 import { RechercheEntreprisesResultDto } from "./@types/RechercheEntreprisesDto";
 

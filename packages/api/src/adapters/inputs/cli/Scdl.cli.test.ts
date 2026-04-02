@@ -25,7 +25,7 @@ jest.mock("../../../modules/data-log/dataLog.service");
 import scdlGrantService from "../../../modules/providers/scdl/scdl.grant.service";
 import applicationFlatService from "../../../modules/applicationFlat/applicationFlat.service";
 import { ScdlParsedInfos } from "../../../modules/providers/scdl/@types/ScdlParsedInfos";
-import Siret from "../../../identifierObjects/Siret";
+import Siret from "../../../identifier-objects/Siret";
 jest.mock("../../../modules/providers/scdl/scdl.grant.service");
 jest.mock("../../../modules/applicationFlat/applicationFlat.service");
 jest.mock("../../../modules/notify/notify.service", () => ({ notify: jest.fn() }));

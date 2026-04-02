@@ -1,6 +1,6 @@
 import type { FlatDbo } from "../../@types/FlatDbo";
 import { ApplicationNature, ApplicationStatus, OrDefault, PaymentCondition, NOT_APPLICABLE } from "dto";
-import { IdentifierIdName } from "../../../../../identifierObjects/@types/IdentifierName";
+import { IdentifierIdName } from "../../../../../identifier-objects/@types/IdentifierName";
 
 interface MandatoryApplicationFlatDbo extends FlatDbo {
     exerciceBudgetaire: number | null; // subventia ne donne pas d'exercice budgétaire donc on est bloqué pour le moment. Pourra être ajouté à FlatDbo une fois que subventia aura donné les exercices

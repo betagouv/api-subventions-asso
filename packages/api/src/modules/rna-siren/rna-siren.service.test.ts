@@ -1,9 +1,9 @@
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
-import { ASSOCIATION_IDENTIFIER } from "../../identifierObjects/__fixtures__/IdentifierFixture";
+import { ASSOCIATION_IDENTIFIER } from "../../identifier-objects/__fixtures__/IdentifierFixture";
 import rnaSirenService from "./rna-siren.service";
 
-import Rna from "../../identifierObjects/Rna";
-import Siren from "../../identifierObjects/Siren";
+import Rna from "../../identifier-objects/Rna";
+import Siren from "../../identifier-objects/Siren";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import rnaSirenAdapter from "../../adapters/outputs/db/rna-siren/rna-siren.adapter";
 import associationIdentifierService from "../association-identifier/association-identifier.service";

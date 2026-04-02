@@ -2,8 +2,8 @@ import { Association } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import ProviderCore from "../ProviderCore";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import Siren from "../../../identifierObjects/Siren";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
+import Siren from "../../../identifier-objects/Siren";
 import BodaccMapper from "./mappers/bodacc.mapper";
 import { BodaccDto } from "./dto/BodaccDto";
 

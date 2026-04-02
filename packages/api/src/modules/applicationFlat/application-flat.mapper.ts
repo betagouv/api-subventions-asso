@@ -5,10 +5,10 @@ import ProviderValueMapper from "../../shared/mappers/provider-value.mapper";
 import applicationFlatService from "./applicationFlat.service";
 import { ApplicationFlatDbo } from "../../adapters/outputs/db/application-flat/@types/ApplicationFlatDbo";
 import { GenericAdapter } from "../../shared/GenericAdapter";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import Siret from "../../identifierObjects/Siret";
-import Ridet from "../../identifierObjects/Ridet";
-import Tahitiet from "../../identifierObjects/Tahitiet";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
+import Siret from "../../identifier-objects/Siret";
+import Ridet from "../../identifier-objects/Ridet";
+import Tahitiet from "../../identifier-objects/Tahitiet";
 import { optionalDateToDto } from "../../shared/helpers/DateHelper";
 
 // entities and draft are almost equal but we want ids to be built in constructor

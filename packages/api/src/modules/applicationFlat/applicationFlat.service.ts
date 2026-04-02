@@ -1,14 +1,14 @@
 import type { ApplicationFlatDto, DemandeSubvention } from "dto";
 import applicationFlatAdapter from "../../adapters/outputs/db/application-flat/application-flat.adapter";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import { RawApplication } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
 import ApplicationProvider from "../subventions/@types/ApplicationProvider";
-import Siret from "../../identifierObjects/Siret";
+import Siret from "../../identifier-objects/Siret";
 import ApplicationFlatMapper from "./application-flat.mapper";
-import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 import { ReadableStream } from "node:stream/web";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import GrantProvider from "../grant/@types/GrantProvider";

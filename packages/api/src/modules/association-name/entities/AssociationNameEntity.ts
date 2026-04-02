@@ -1,6 +1,6 @@
 import { Adresse } from "dto";
-import Rna from "../../../identifierObjects/Rna";
-import Siren from "../../../identifierObjects/Siren";
+import Rna from "../../../identifier-objects/Rna";
+import Siren from "../../../identifier-objects/Siren";
 
 export default class AssociationNameEntity {
     constructor(

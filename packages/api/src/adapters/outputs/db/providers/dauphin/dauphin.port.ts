@@ -1,6 +1,6 @@
 import DauphinGisproDbo from "./DauphinGisproDbo";
-import Siret from "../../../../../identifierObjects/Siret";
-import Siren from "../../../../../identifierObjects/Siren";
+import Siret from "../../../../../identifier-objects/Siret";
+import Siren from "../../../../../identifier-objects/Siren";
 
 export interface DauphinPort {
     createIndexes(): Promise<void>;

@@ -6,10 +6,10 @@ import {
 } from "./__fixtures__/application-flat.fixture";
 import ApplicationFlatMapper from "./application-flat.mapper";
 import applicationFlatService from "./applicationFlat.service";
-import Siret from "../../identifierObjects/Siret";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import Siret from "../../identifier-objects/Siret";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 
-jest.mock("../../identifierObjects/EstablishmentIdentifier");
+jest.mock("../../identifier-objects/EstablishmentIdentifier");
 jest.mock("./applicationFlat.service");
 
 describe("ApplicationFlatAdapter", () => {

@@ -1,8 +1,8 @@
 import * as csvSyncParser from "csv-parse/sync";
 import { isNumberValid } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
-import Siret from "../../../identifierObjects/Siret";
-import Rna from "../../../identifierObjects/Rna";
+import Siret from "../../../identifier-objects/Siret";
+import Rna from "../../../identifier-objects/Rna";
 import { BeforeAdaptation, DefaultObject, NestedDefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
 import { ValueWithPath } from "../../../shared/@types/ValueWithPath";

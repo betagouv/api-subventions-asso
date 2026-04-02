@@ -1,9 +1,9 @@
 import { RNA_STR, SIREN_STR } from "../../../tests/__fixtures__/association.fixture";
-import Rna from "../../identifierObjects/Rna";
+import Rna from "../../identifier-objects/Rna";
 import associationIdentifierService from "./association-identifier.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import Siren from "../../identifierObjects/Siren";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import Siren from "../../identifier-objects/Siren";
 import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
 import { ASSOCIATION_NAME } from "../association-name/__fixtures__/AssociationName";
 

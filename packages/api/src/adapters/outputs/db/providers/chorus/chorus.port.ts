@@ -1,5 +1,5 @@
-import Siren from "../../../../../identifierObjects/Siren";
-import Siret from "../../../../../identifierObjects/Siret";
+import Siren from "../../../../../identifier-objects/Siren";
+import Siret from "../../../../../identifier-objects/Siret";
 import ChorusEntity from "../../../../../modules/providers/chorus/entities/ChorusEntity";
 
 export interface ChorusPort {

@@ -9,7 +9,7 @@ import Provider from "../../../../modules/providers/@types/IProvider";
 import { ProviderEnum } from "../../../../@enums/ProviderEnum";
 import associationHelper from "../../../../modules/associations/associations.helper";
 import { NotAssociationError } from "core";
-import Siren from "../../../../identifierObjects/Siren";
+import Siren from "../../../../identifier-objects/Siren";
 
 export class RechercheEntreprisesService implements Provider {
     public meta = {

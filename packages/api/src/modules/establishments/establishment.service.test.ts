@@ -5,10 +5,10 @@ import paymentService from "../payments/payments.service";
 import establishmentService from "./establishment.service";
 import { NotFoundError } from "core";
 import grantService from "../grant/grant.service";
-import Siren from "../../identifierObjects/Siren";
-import Siret from "../../identifierObjects/Siret";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import Siren from "../../identifier-objects/Siren";
+import Siret from "../../identifier-objects/Siret";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import { DemandeSubvention } from "dto";
 jest.mock("../grant/grant.service");
 

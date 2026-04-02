@@ -2,7 +2,7 @@ import { ApplicationStatus, ApplicationNature, PaymentCondition, ScdlGrantDto, S
 import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
-import Siret from "../../../../identifierObjects/Siret";
+import Siret from "../../../../identifier-objects/Siret";
 import MiscScdlGrantEntity from "../entities/MiscScdlGrantEntity";
 import { formatDateToYYYYMMDDWithSeparator, formatIsoDateRangeWithSlash } from "../../../../shared/helpers/DateHelper";
 

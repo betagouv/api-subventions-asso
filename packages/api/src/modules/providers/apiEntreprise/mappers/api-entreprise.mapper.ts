@@ -2,7 +2,7 @@ import { Establishment } from "dto";
 import { getMonthFromFrenchStr } from "../../../../shared/helpers/DateHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import type ApiEntrepriseHeadcount from "../@types/ApiEntrepriseHeadcount";
-import Siret from "../../../../identifierObjects/Siret";
+import Siret from "../../../../identifier-objects/Siret";
 
 export default class ApiEntrepriseMapper {
     static PROVIDER_NAME = "API Entreprise";

@@ -10,7 +10,7 @@ import {
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { RnaStructureDto } from "../dto/RnaStructureDto";
 import { SirenStructureDto, SirenStructureEstablishmentDto } from "../dto/SirenStructureDto";
-import Siret from "../../../../identifierObjects/Siret";
+import Siret from "../../../../identifier-objects/Siret";
 
 export default class ApiAssoDtoMapper {
     static providerNameRna = "RNA";
