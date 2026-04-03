@@ -1,3 +1,4 @@
+import { env } from "$env/dynamic/private";
 import authService from "$lib/resources/auth/auth.service";
 
 export class TrackerService {
@@ -7,15 +8,15 @@ export class TrackerService {
 
     init(ENV) {
         if (ENV.toLowerCase() != "prod") return;
-
+        if (!env.MATOMO_URL || !env.MATOMO_APP_ID) console.warn("Matomo is not configured.");
         const user = authService.getCurrentUser();
         /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
         if (user && user._id) this._paq.push(["setUserId", user._id]);
         this._paq.push(["trackPageView"]);
         this._paq.push(["enableLinkTracking"]);
-        var u = "https://matomo-datasubvention.osc-secnum-fr1.scalingo.io/";
+        var u = env.MATOMO_URL;
         this._paq.push(["setTrackerUrl", u + "matomo.php"]);
-        this._paq.push(["setSiteId", "1"]);
+        this._paq.push(["setSiteId", env.MATOMO_APP_ID]);
         var d = document,
             g = d.createElement("script"),
             s = d.getElementsByTagName("script")[0];
