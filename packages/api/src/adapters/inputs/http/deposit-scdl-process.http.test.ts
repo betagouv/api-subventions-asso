@@ -185,6 +185,7 @@ describe("DepositScdlProcessHttp", () => {
                 DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
                 REQ.user._id.toString(),
                 undefined,
+                undefined,
             );
         });
 

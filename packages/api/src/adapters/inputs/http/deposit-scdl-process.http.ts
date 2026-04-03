@@ -180,6 +180,7 @@ export class DepositScdlProcessHttp extends Controller {
      * @param depositScdlLogDto - dto containing uploaded file infos
      * @param req
      * @param pageName - Optional page name for excel file with multiple sheets
+     * @param processedExercises - Optional list of exercices to filter the file by
      *
      * @returns {DepositScdlLogResponseDto} 200 - Deposit log updated successfully with file parsing infos
      */
@@ -213,14 +214,17 @@ export class DepositScdlProcessHttp extends Controller {
         @FormField() depositScdlLogDto: string,
         @Request() req: IdentifiedRequest,
         @FormField() pageName?: string,
+        @FormField() processedExercises?: string,
     ): Promise<DepositScdlLogResponseDto> {
         const parsedDto = JSON.parse(depositScdlLogDto);
+        const parsedProcessedExercises = processedExercises ? (JSON.parse(processedExercises) as number[]) : undefined;
         file.originalname = fixFilenameEncoding(file.originalname); // accented char pb: see if other way to fix this
         const updatedDepositLog = await depositScdlProcessService.validateScdlFile(
             file,
             parsedDto,
             req.user._id.toString(),
             pageName,
+            parsedProcessedExercises,
         );
         return DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(updatedDepositLog);
     }

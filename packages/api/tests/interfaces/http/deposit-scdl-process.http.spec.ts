@@ -392,6 +392,35 @@ describe("/parcours-depot", () => {
             expect(response.statusCode).toBe(400);
         });
 
+        it("should validate concerned exercices to csv scdl file", async () => {
+            s3Mock.on(ListObjectsV2Command).resolvesOnce({});
+            s3Mock.on(PutObjectCommand).resolvesOnce({});
+
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, "12345678901234"));
+
+            const csvPath = path.join(FILE_PATH, "test-csv-valid.csv");
+
+            const response = await request(g.app)
+                .post(`/parcours-depot/validation-fichier-scdl`)
+                .attach("file", csvPath)
+                .field("depositScdlLogDto", JSON.stringify(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2))
+                .field("processedExercises", JSON.stringify([2017, 2019]))
+                .set("x-access-token", token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    uploadedFileInfos: expect.objectContaining({
+                        grantCoverageYears: [2017, 2019],
+                        processedExercises: [2017, 2019],
+                    }),
+                }),
+            );
+        });
+
         it("Return depositLog with missing headers names", async () => {
             s3Mock.on(ListObjectsV2Command).resolvesOnce({});
             s3Mock.on(PutObjectCommand).resolvesOnce({});

@@ -14,4 +14,5 @@ export interface UploadedFileInfosDto {
     existingLinesInDbOnSamePeriod: number;
     errorStats: ScdlErrorStatsDto;
     sheetName?: string;
+    processedExercises?: number[];
 }
