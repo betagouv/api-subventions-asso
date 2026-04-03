@@ -8,7 +8,7 @@ import {
 
 import { Controller, Get, Route, Tags, Example } from "tsoa";
 import Siret from "../../../identifier-objects/Siret";
-import openDataGrantService from "../../../modules/_open-data/grant/openDataGrantService";
+import openDataGrantService from "../../../modules/open-data/grant/open-data-grant.service";
 import establishmentIdentifierService from "../../../modules/establishment-identifier/establishment-identifier.service";
 import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";
 

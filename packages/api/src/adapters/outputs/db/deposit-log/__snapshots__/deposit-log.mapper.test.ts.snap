@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DepositLogAdapter toDbo should convert DepositScdlLog with uploadedFileInfos to DepositLogDbo 1`] = `
+{
+  "allocatorName": "ASSO NAME",
+  "allocatorSiret": "12345678901234",
+  "permissionAlert": true,
+  "step": 2,
+  "updateDate": 2025-09-26T00:00:00.000Z,
+  "uploadedFileInfos": {
+    "allocatorsSiret": [
+      "12345678901234",
+    ],
+    "errorStats": {
+      "count": 0,
+      "errorSample": [],
+    },
+    "existingLinesInDbOnSamePeriod": 0,
+    "fileName": "test.csv",
+    "grantCoverageYears": [
+      2021,
+      2022,
+    ],
+    "lineCountsByExercice": [
+      {
+        "exercice": 2025,
+        "linesInDb": 200,
+        "parsedLines": 300,
+      },
+    ],
+    "missingHeaders": {
+      "mandatory": [],
+      "optional": [],
+    },
+    "parseableLines": 200,
+    "totalLines": 202,
+    "uploadDate": 2025-11-03T00:00:00.000Z,
+  },
+  "userId": "68d6ab9b48ce4a950f7e96df",
+}
+`;

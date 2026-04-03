@@ -1,10 +1,10 @@
 import dauphinAdapter from "../../../adapters/outputs/db/providers/dauphin/dauphin.adapter";
 import DauphinDtoMapper, { InconsistentAggregationError } from "./mappers/dauphin-dto.mapper";
-import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import ApplicationFlatProvider from "../../application-flat/@types/applicationFlatProvider";
 import { ReadableStream } from "stream/web";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
-import applicationFlatService from "../../applicationFlat/applicationFlat.service";
-import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
+import applicationFlatService from "../../application-flat/application-flat.service";
+import { cursorToStream } from "../../application-flat/application-flat.helper";
 
 export class DauphinFlatService implements ApplicationFlatProvider {
     /**

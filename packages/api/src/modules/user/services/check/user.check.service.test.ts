@@ -5,7 +5,7 @@ import configurationsService from "../../../configurations/configurations.servic
 jest.mock("../../../configurations/configurations.service");
 const mockedConfigurationsService = jest.mocked(configurationsService);
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 import * as stringHelper from "../../../../shared/helpers/StringHelper";
 jest.mock("../../../../shared/helpers/StringHelper");

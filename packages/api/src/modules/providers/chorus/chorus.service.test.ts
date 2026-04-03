@@ -2,22 +2,22 @@ import chorusService from "./chorus.service";
 import chorusAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.adapter";
 import { CHORUS_FSE_ENTITIES, CHORUS_ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
-import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import Siret from "../../../identifier-objects/Siret";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 import chorusFseAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.fse.adapter";
 import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
-import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/payment-flat.fixture";
-import paymentFlatService from "../../paymentFlat/paymentFlat.service";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../payment-flat/__fixtures__/payment-flat.fixture";
+import paymentFlatService from "../../payment-flat/payment-flat.service";
+import { PROGRAMS } from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 
-jest.mock("../../../dataProviders/db/providers/chorus/chorus.adapter");
+jest.mock("../../../adapters/outputs/db/providers/chorus/chorus.adapter");
 jest.mock("./mappers/chorus.mapper");
 jest.mock("../../../shared/helpers/StringHelper");
-jest.mock("../../paymentFlat/paymentFlat.service");
+jest.mock("../../payment-flat/payment-flat.service");
 jest.mock("./mappers/chorus.fse.mapper");
 jest.mock("../../associations/associations.helper");
-jest.mock("../../paymentFlat/paymentFlat.chorus.service");
+jest.mock("../../payment-flat/payment-flat.chorus.service");
 
 const mockedChorusPort = jest.mocked(chorusAdapter);
 

@@ -1,5 +1,5 @@
 import type { Payment } from "dto";
-import type { RawPayment } from "../../grant/@types/rawGrant";
+import type { RawPayment } from "../../grant/@types/RawGrant";
 import type GrantProvider from "../../grant/@types/GrantProvider";
 import type { StructureIdentifier } from "../../../identifier-objects/@types/StructureIdentifier";
 import type PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";

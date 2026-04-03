@@ -13,7 +13,7 @@ export class MiscScdlProducersAdapter extends MongoAdapter<MiscScdlProducerEntit
     }
 
     public findBySiret(siret: string): Promise<MiscScdlProducerEntity | null> {
-        return this.collection.findOne({ siret });
+        return this.collection.findOne({ siret }, { projection: { _id: 0 } });
     }
 
     public async create(entity: MiscScdlProducerEntity): Promise<void> {

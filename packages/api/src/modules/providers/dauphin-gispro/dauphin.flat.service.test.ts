@@ -1,16 +1,16 @@
 import dauphinFlatService from "./dauphin.flat.service";
 import dauphinAdapter from "../../../adapters/outputs/db/providers/dauphin/dauphin.adapter";
-import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import applicationFlatService from "../../application-flat/application-flat.service";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import { ReadableStream } from "stream/web";
 import { FindCursor, WithId } from "mongodb";
 import { SimplifiedJoinedDauphinGispro } from "./@types/SimplifiedDauphinGispro";
-import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
+import { cursorToStream } from "../../application-flat/application-flat.helper";
 import DauphinDtoMapper, { InconsistentAggregationError } from "./mappers/dauphin-dto.mapper";
 
-jest.mock("../../../dataProviders/db/providers/dauphin/dauphin.adapter");
-jest.mock("../../applicationFlat/applicationFlat.service");
-jest.mock("../../applicationFlat/applicationFlat.helper");
+jest.mock("../../../adapters/outputs/db/providers/dauphin/dauphin.adapter");
+jest.mock("../../application-flat/application-flat.service");
+jest.mock("../../application-flat/application-flat.helper");
 jest.mock("./mappers/dauphin-dto.mapper", () => {
     const actualAdapterModule = jest.requireActual("./mappers/dauphin-dto.mapper");
     return {

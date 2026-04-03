@@ -23,11 +23,11 @@ import fonjepPostesAdapter from "../../../adapters/outputs/db/providers/fonjep/f
 import fonjepVersementsAdapter from "../../../adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
 import fonjepTypePosteAdapter from "../../../adapters/outputs/db/providers/fonjep/fonjep.typePoste.adapter";
 import fonjepDispositifAdapter from "../../../adapters/outputs/db/providers/fonjep/fonjep.dispositif.adapter";
-jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.tiers.adapter");
-jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.postes.adapter");
-jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.versements.adapter");
-jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.typePoste.adapter");
-jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.dispositif.adapter");
+jest.mock("../../../adapters/outputs/db/providers/fonjep/fonjep.tiers.adapter");
+jest.mock("../../../adapters/outputs/db/providers/fonjep/fonjep.postes.adapter");
+jest.mock("../../../adapters/outputs/db/providers/fonjep/fonjep.versements.adapter");
+jest.mock("../../../adapters/outputs/db/providers/fonjep/fonjep.typePoste.adapter");
+jest.mock("../../../adapters/outputs/db/providers/fonjep/fonjep.dispositif.adapter");
 import FonjepParser from "./fonjep.parser";
 import fonjepService from "./fonjep.service";
 import {
@@ -40,13 +40,13 @@ import {
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import { DATA_BRETAGNE_RECORDS } from "../dataBretagne/__fixtures__/dataBretagne.fixture";
-import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/payment-flat.fixture";
-import { APPLICATION_LINK_TO_FONJEP } from "../../applicationFlat/__fixtures__/application-flat.fixture";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../payment-flat/__fixtures__/payment-flat.fixture";
+import { APPLICATION_LINK_TO_FONJEP } from "../../application-flat/__fixtures__/application-flat.fixture";
 import { ReadableStream } from "node:stream/web";
-import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import applicationFlatService from "../../application-flat/application-flat.service";
 import * as NumberHelper from "../../../shared/helpers/NumberHelper";
 import { FonjepApplicationFlatEntity } from "./entities/FonjepFlatEntity";
-jest.mock("../../applicationFlat/applicationFlat.service");
+jest.mock("../../application-flat/application-flat.service");
 
 const PARSED_DATA = {
     tiers: [TIER_DTO],

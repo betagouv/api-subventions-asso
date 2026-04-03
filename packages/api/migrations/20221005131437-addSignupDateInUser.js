@@ -1,6 +1,6 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
-const userAdapter = require("../build/src/dataProviders/db/user/user.adapter").default;
+const userAdapter = require("../build/src/adapters/outputs/db/user/user.adapter").default;
 const asyncForEach = require("../build/src/shared/helpers/ArrayHelper").asyncForEach;
 
 module.exports = {

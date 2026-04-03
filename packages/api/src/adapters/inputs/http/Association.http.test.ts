@@ -6,14 +6,14 @@ import grantService from "../../../modules/grant/grant.service";
 import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 import Siren from "../../../identifier-objects/Siren";
-import grantExtractService from "../../../modules/grant/grantExtract.service";
+import grantExtractService from "../../../modules/grant/grant-extract.service";
 import { errorHandler } from "../../../middlewares/error.middleware";
 import associationHelper from "../../../modules/associations/associations.helper";
 
 jest.mock("../../../modules/grant/grant.service");
-jest.mock("../../../modules/grant/grantExtract.service");
+jest.mock("../../../modules/grant/grant-extract.service");
 jest.mock("../../../modules/association-identifier/association-identifier.service");
-jest.mock("../../../middlewares/ErrorMiddleware");
+jest.mock("../../../middlewares/error.middleware");
 jest.mock("../../../modules/associations/associations.service");
 jest.mock("../../../modules/associations/associations.helper");
 

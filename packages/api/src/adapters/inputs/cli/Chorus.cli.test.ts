@@ -3,7 +3,7 @@ import ChorusParser from "../../../modules/providers/chorus/chorus.parser";
 import chorusService from "../../../modules/providers/chorus/chorus.service";
 import ChorusCli from "./Chorus.cli";
 import { CHORUS_ENTITIES } from "../../../modules/providers/chorus/__fixtures__/ChorusFixtures";
-import paymentFlatChorusService from "../../../modules/paymentFlat/paymentFlat.chorus.service";
+import paymentFlatChorusService from "../../../modules/payment-flat/payment-flat.chorus.service";
 
 jest.mock("fs");
 const mockedFs = jest.mocked(fs);
@@ -11,7 +11,7 @@ jest.mock("../../../modules/providers/chorus/chorus.parser");
 jest.mock("../../../shared/helpers/CliHelper");
 jest.mock("../../../modules/providers/chorus/chorus.service");
 const mockedService = jest.mocked(chorusService);
-jest.mock("../../../modules/paymentFlat/paymentFlat.chorus.service");
+jest.mock("../../../modules/payment-flat/payment-flat.chorus.service");
 
 describe("Chorus CLI", () => {
     const LOGGER = { push: jest.fn(), join: jest.fn() };

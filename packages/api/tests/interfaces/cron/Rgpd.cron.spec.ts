@@ -1,9 +1,9 @@
 import { RgpdCron } from "../../../src/adapters/inputs/cron/Rgpd.cron";
 import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
 import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
-import brevoContactNotifyPipe from "../../../src/modules/notify/outPipes/BrevoContactNotifyPipe";
+import brevoContactNotifyPipe from "../../../src/modules/notify/out-pipes/brevo-contact.pipe";
 import axios from "axios";
-import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
+import brevoMailNotifyPipe from "../../../src/modules/notify/out-pipes/brevo-mail.pipe";
 import userResetAdapter from "../../../src/adapters/outputs/db/user/user-reset.adapter";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../src/modules/configurations/configurations.service";
 import { ENV as _ENV, EnvironmentEnum } from "../../../src/configurations/env.conf";

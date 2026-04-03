@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { DATA_BRETAGNE_PASSWORD, DATA_BRETAGNE_USERNAME } from "../../../../configurations/apis.conf";
 import ProviderRequestFactory, {
     ProviderRequestService,
-} from "../../../../modules/provider-request/providerRequest.service";
+} from "../../../../modules/provider-request/provider-request.service";
 import {
     DataBretagneProgrammeDto,
     DataBretagneMinistryDto,

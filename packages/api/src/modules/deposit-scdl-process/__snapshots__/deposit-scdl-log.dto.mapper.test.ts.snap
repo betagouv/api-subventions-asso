@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`depositScdlLogDtoAdapter entityToDepositScdlLogResponseDto should convert DepositScdlLogEntity to DepositScdlLogResponseDto 1`] = `
+{
+  "allocatorName": "Test",
+  "allocatorSiret": "12345678901234",
+  "permissionAlert": false,
+  "step": 1,
+  "uploadedFileInfos": undefined,
+}
+`;
+
+exports[`depositScdlLogDtoAdapter entityToDepositScdlLogResponseDto should convert DepositScdlLogEntity to DepositScdlLogResponseDto 2`] = `
+{
+  "allocatorName": "ASSO NAME",
+  "allocatorSiret": "12345678901234",
+  "permissionAlert": true,
+  "step": 2,
+  "uploadedFileInfos": {
+    "allocatorsSiret": [
+      "12345678901234",
+    ],
+    "errorStats": {
+      "count": 0,
+      "errorSample": [],
+    },
+    "existingLinesInDbOnSamePeriod": 0,
+    "fileName": "test.csv",
+    "grantCoverageYears": [
+      2021,
+      2022,
+    ],
+    "lineCountsByExercice": [
+      {
+        "exercice": 2025,
+        "linesInDb": 200,
+        "parsedLines": 300,
+      },
+    ],
+    "missingHeaders": {
+      "mandatory": [],
+      "optional": [],
+    },
+    "parseableLines": 200,
+    "sheetName": "SHEET NAME",
+    "totalLines": 202,
+    "uploadDate": 2025-11-03T00:00:00.000Z,
+  },
+}
+`;
+
+exports[`depositScdlLogDtoAdapter entityUploadedFileInfosToDto should convert UploadedFileInfosEntity to UploadedFileInfosDto 1`] = `
+{
+  "allocatorsSiret": [
+    "12345678901234",
+  ],
+  "errorStats": {
+    "count": 0,
+    "errorSample": [],
+  },
+  "existingLinesInDbOnSamePeriod": 0,
+  "fileName": "test.csv",
+  "grantCoverageYears": [
+    2021,
+    2022,
+  ],
+  "lineCountsByExercice": [
+    {
+      "exercice": 2025,
+      "linesInDb": 200,
+      "parsedLines": 300,
+    },
+  ],
+  "missingHeaders": {
+    "mandatory": [],
+    "optional": [],
+  },
+  "parseableLines": 200,
+  "sheetName": "SHEET NAME",
+  "totalLines": 202,
+  "uploadDate": 2025-11-03T00:00:00.000Z,
+}
+`;

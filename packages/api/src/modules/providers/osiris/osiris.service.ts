@@ -10,12 +10,12 @@ import { osirisRequestAdapter, osirisActionAdapter } from "../../../adapters/out
 import OsirisRequestMapper from "./mappers/osiris-request.mapper";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
-import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import ApplicationFlatProvider from "../../application-flat/@types/applicationFlatProvider";
 import { ReadableStream } from "stream/web";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
-import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import applicationFlatService from "../../application-flat/application-flat.service";
 import osirisJoiner, { OsirisRequestWithActions } from "../../../adapters/outputs/db/providers/osiris/osiris.joiner";
-import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
+import { cursorToStream } from "../../application-flat/application-flat.helper";
 import { BulkUpsertResult } from "../../../adapters/outputs/db/@types/bulk-upsert-result";
 
 export enum VALID_REQUEST_ERROR_CODE {

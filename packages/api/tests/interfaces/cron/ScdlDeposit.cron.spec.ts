@@ -1,11 +1,11 @@
 import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
 import { ScdlDepositCron } from "../../../src/adapters/inputs/cron/ScdlDeposit.cron";
-import { DEPOSIT_LOG_DBO } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
+import { DEPOSIT_LOG_DBO } from "../../../src/modules/deposit-scdl-process/__fixtures__/deposit-log.fixture";
 import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
 import { addDaysToDate, sameDateLastYear } from "../../../src/shared/helpers/DateHelper";
 import depositLogAdapter from "../../../src/adapters/outputs/db/deposit-log/deposit-log.adapter";
 import { ENV as _ENV, EnvironmentEnum } from "../../../src/configurations/env.conf";
-import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
+import brevoMailNotifyPipe from "../../../src/modules/notify/out-pipes/brevo-mail.pipe";
 
 describe("ScdlDeposit CRON", () => {
     let cron: ScdlDepositCron;

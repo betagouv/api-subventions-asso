@@ -23,11 +23,11 @@ import dataLogService from "../../../modules/data-log/dataLog.service";
 
 jest.mock("../../../modules/data-log/dataLog.service");
 import scdlGrantService from "../../../modules/providers/scdl/scdl.grant.service";
-import applicationFlatService from "../../../modules/applicationFlat/applicationFlat.service";
+import applicationFlatService from "../../../modules/application-flat/application-flat.service";
 import { ScdlParsedInfos } from "../../../modules/providers/scdl/@types/ScdlParsedInfos";
 import Siret from "../../../identifier-objects/Siret";
 jest.mock("../../../modules/providers/scdl/scdl.grant.service");
-jest.mock("../../../modules/applicationFlat/applicationFlat.service");
+jest.mock("../../../modules/application-flat/application-flat.service");
 jest.mock("../../../modules/notify/notify.service", () => ({ notify: jest.fn() }));
 jest.mock("csv-stringify/sync");
 

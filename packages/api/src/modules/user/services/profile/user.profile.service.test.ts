@@ -34,9 +34,9 @@ jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
 jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
-jest.mock("../../../../dataProviders/db/user/user-reset.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user-reset.adapter");
 const mockedUserResetAdapter = jest.mocked(userResetAdapter);
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),

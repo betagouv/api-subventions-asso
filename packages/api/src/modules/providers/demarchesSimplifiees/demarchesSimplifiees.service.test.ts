@@ -3,14 +3,14 @@ import {
     DemarchesSimplifieesSchemaSeedLine,
 } from "./entities/DemarchesSimplifieesSchemaSeed";
 
-jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter");
-jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter");
+jest.mock("../../../adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter");
+jest.mock("../../../adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter");
 jest.mock("./mappers/demarches-simplifiees-entity.mapper");
 jest.mock("./mappers/demarches-simplifiees-dto.mapper");
 jest.mock("@inquirer/prompts");
 jest.mock("../../configurations/configurations.service");
-jest.mock("../../applicationFlat/applicationFlat.service");
-jest.mock("../../applicationFlat/applicationFlat.helper");
+jest.mock("../../application-flat/application-flat.service");
+jest.mock("../../application-flat/application-flat.helper");
 jest.mock("stream/web");
 
 import configurationsService from "../../configurations/configurations.service";
@@ -26,8 +26,8 @@ import { DATA_ENTITIES } from "./__fixtures__/DemarchesSimplifieesFixture";
 import { DemarchesSimplifieesSuccessDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 import { input } from "@inquirer/prompts";
-import applicationFlatService from "../../applicationFlat/applicationFlat.service";
-import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
+import applicationFlatService from "../../application-flat/application-flat.service";
+import { cursorToStream } from "../../application-flat/application-flat.helper";
 import { DefaultObject } from "../../../@types";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import { FindCursor, WithId } from "mongodb";

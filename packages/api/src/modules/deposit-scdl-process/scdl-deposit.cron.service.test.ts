@@ -1,4 +1,4 @@
-import { DEPOSIT_LOG_ENTITY } from "./__fixtures__/depositLog.fixture";
+import { DEPOSIT_LOG_ENTITY } from "./__fixtures__/deposit-log.fixture";
 import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
 import notifyService from "../notify/notify.service";
 import { NotificationType } from "../notify/@types/NotificationType";
@@ -13,7 +13,7 @@ import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 
 jest.mock("../../shared/helpers/DateHelper");
 jest.mock("../user/services/crud/user.crud.service");
-jest.mock("../../dataProviders/db/deposit-log/deposit-log.port");
+jest.mock("../../adapters/outputs/db/deposit-log/deposit-log.port");
 jest.mock("../notify/notify.service", () => ({
     notify: jest.fn().mockResolvedValue(true),
 }));

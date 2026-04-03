@@ -1,0 +1,204 @@
+import {
+    AdminTerritorialLevel,
+    AgentJobTypeEnum,
+    AgentTypeEnum,
+    TerritorialScopeEnum,
+    RegistrationSrcTypeEnum,
+} from "dto";
+import { API_BREVO_CONTACT_LIST } from "../../../configurations/apis.conf";
+import { NotificationType } from "../@types/NotificationType";
+import BrevoContactPipe from "./brevo-contact.pipe";
+import * as Brevo from "@getbrevo/brevo";
+jest.mock("@getbrevo/brevo");
+
+describe("BrevoContactPipe", () => {
+    const USER_EMAIL = "user@beta.gouv.fr";
+
+    const mockRequestContactImport = jest.spyOn(Brevo, "RequestContactImport");
+    // @ts-expect-error apiInstance is private attribute
+    const mockUpdateContact = jest.spyOn(BrevoContactPipe.apiInstance, "updateContact");
+    // @ts-expect-error apiInstance is private attribute
+    const mockDeleteContact = jest.spyOn(BrevoContactPipe.apiInstance, "deleteContact");
+    // @ts-expect-error apiInstance is private attribute
+    const mockImportContacts = jest.spyOn(BrevoContactPipe.apiInstance, "importContacts");
+
+    beforeAll(() => {
+        // @ts-expect-error: mock
+        mockUpdateContact.mockResolvedValue({ body: { id: 1 } } as unknown);
+        // @ts-expect-error: mock
+        mockDeleteContact.mockResolvedValue({ body: { id: 1 } } as unknown);
+        // @ts-expect-error: mock
+        mockImportContacts.mockResolvedValue({ body: { id: 1 } } as unknown);
+        mockRequestContactImport.mockImplementation(() => ({}));
+    });
+
+    describe("notify", () => {
+        let userCreatedSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            // @ts-expect-error userCreated is private methode
+            userCreatedSpy = jest.spyOn(BrevoContactPipe, "userCreated").mockResolvedValue(true);
+        });
+
+        afterAll(() => {
+            userCreatedSpy.mockRestore();
+        });
+
+        it("should call userCreated", () => {
+            BrevoContactPipe.notify(NotificationType.USER_CREATED, {});
+
+            expect(userCreatedSpy).toBeCalled();
+        });
+
+        it("should not call userCreated", () => {
+            BrevoContactPipe.notify(NotificationType.TEST_EMAIL, {});
+
+            expect(userCreatedSpy).not.toBeCalled();
+        });
+    });
+
+    describe("userCreated", () => {
+        let createContactSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            createContactSpy = jest
+                // @ts-expect-error apiInstance is private attribute
+                .spyOn(BrevoContactPipe.apiInstance, "createContact")
+                // @ts-expect-error: mock
+                .mockResolvedValue({ body: { id: 1 } } as unknown);
+        });
+
+        afterAll(() => {
+            createContactSpy.mockRestore();
+        });
+
+        it("should call create data", async () => {
+            const expected = {
+                email: USER_EMAIL,
+                attributes: {
+                    DATE_INSCRIPTION: new Date(),
+                    COMPTE_ACTIVE: true,
+                    SOURCE_IMPORT: "Data.Subvention",
+                    LIEN_ACTIVATION: "TOKEN",
+                },
+                listIds: [Number(API_BREVO_CONTACT_LIST)],
+            };
+
+            // @ts-expect-error userCreated is private method
+            await BrevoContactPipe.userCreated({
+                email: expected.email,
+                signupAt: expected.attributes.DATE_INSCRIPTION,
+                active: expected.attributes.COMPTE_ACTIVE,
+                url: expected.attributes.LIEN_ACTIVATION,
+            });
+
+            expect(createContactSpy).toHaveBeenCalledWith(expected);
+        });
+    });
+
+    describe("userActivated", () => {
+        it("call updateContact()", async () => {
+            // @ts-expect-error userCreated is private method
+            await BrevoContactPipe.userActivated({ email: USER_EMAIL });
+            expect(mockUpdateContact).toHaveBeenCalledWith(USER_EMAIL, {
+                attributes: { COMPTE_ACTIVE: true, LIEN_ACTIVATION: "" },
+                listIds: [Number(API_BREVO_CONTACT_LIST)],
+            });
+        });
+    });
+
+    describe("userLogged", () => {
+        it("should call updateContact()", async () => {
+            const email = "UserEmail";
+            const now = new Date();
+
+            // @ts-expect-error userLogged is private method
+            await BrevoContactPipe.userLogged({ email, date: now });
+
+            expect(mockUpdateContact).toHaveBeenCalledWith(email, {
+                attributes: { DERNIERE_CONNEXION: now },
+                listIds: [Number(API_BREVO_CONTACT_LIST)],
+            });
+        });
+    });
+
+    describe("userUpdated", () => {
+        const UPDATE_PAYLOAD = {
+            agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
+            service: "SERVICE",
+            phoneNumber: "+33625859685",
+            jobType: [AgentJobTypeEnum.ADMINISTRATOR, AgentJobTypeEnum.EXPERT],
+            centralStructure: "ADMIN_CENTRALE",
+            decentralizedLevel: AdminTerritorialLevel.INTERDEPARTMENTAL,
+            decentralizedTerritory: "ECHELON_TERRITORIAL",
+            decentralizedStructure: "SERVICE_DECONCENTRE",
+            operatorStructure: "OPERATEUR",
+            territorialStructure: "COLLECTIVITES",
+            territorialScope: TerritorialScopeEnum.DEPARTMENTAL,
+            lastName: "NOM",
+            firstName: "PRENOM",
+            lastActivityDate: new Date("2023-04-06"),
+            registrationSrc: [
+                RegistrationSrcTypeEnum.DEMO,
+                RegistrationSrcTypeEnum.COLLEAGUES_HIERARCHY,
+                RegistrationSrcTypeEnum.OTHER,
+            ],
+            registrationSrcEmail: "test@mail.com",
+            registrationSrcDetails: "Autre raison",
+        };
+
+        it("should call updateContact()", async () => {
+            //@ts-expect-error: private method
+            await BrevoContactPipe.userUpdated({ email: "test@datasubvention.gouv.fr", ...UPDATE_PAYLOAD });
+            expect(mockUpdateContact.mock.calls[0]).toMatchSnapshot();
+        });
+    });
+
+    describe("userDeleted", () => {
+        const UPDATE_PAYLOAD = { email: "test@datasubvention.gouv.fr" };
+
+        it("should call deleteContact()", async () => {
+            //@ts-expect-error: private method
+            await BrevoContactPipe.userDeleted(UPDATE_PAYLOAD);
+            expect(mockDeleteContact.mock.calls[0]).toMatchSnapshot();
+        });
+    });
+
+    describe("batchUsersDeleted", () => {
+        const UPDATE_PAYLOAD = {
+            users: [
+                {
+                    email: "test@datasubvention.gouv.fr",
+                },
+                {
+                    email: "test2@datasubvention.gouv.fr",
+                },
+            ],
+        };
+
+        it("should call deleteContact() for each user", async () => {
+            //@ts-expect-error: private method
+            await BrevoContactPipe.batchUsersDeleted(UPDATE_PAYLOAD);
+            expect(mockDeleteContact.mock.calls).toMatchSnapshot();
+        });
+    });
+
+    describe("updateNbRequests", () => {
+        it("should create a Brevo RequestContactImport", () => {
+            // @ts-expect-error: test private method
+            BrevoContactPipe.updateNbRequests([]);
+            expect(jest.mocked(Brevo.RequestContactImport)).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call importContacts", () => {
+            const data = [
+                { email: "john.doe@gouv.fr", nbVisits: 13 },
+                { email: "arsene.lupin@gouv.fr", nbVisits: "45" },
+            ];
+            // @ts-expect-error: test private method
+            BrevoContactPipe.updateNbRequests(data);
+            const expected = data.map(d => ({ email: d.email, attributes: { NB_REQUETES: d.nbVisits } }));
+            expect(mockImportContacts).toHaveBeenCalledWith({ jsonBody: expected, listIds: [1] });
+        });
+    });
+});

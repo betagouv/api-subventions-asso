@@ -1,6 +1,6 @@
-import AmountsVsProgramRegionMapper from "../../../../../modules/dataViz/amountsVsProgramRegion/amounts-vs-program-region.mapper";
-import { AmountsVsProgramRegionDbo } from "../../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.dbo";
-import AmountsVsProgramRegionEntity from "../../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.entity";
+import AmountsVsProgramRegionMapper from "../../../../../modules/dataviz/amounts-vs-program-region/amounts-vs-program-region.mapper";
+import { AmountsVsProgramRegionDbo } from "../../../../../modules/dataviz/amounts-vs-program-region/@types/AmountsVsProgramRegionDbo";
+import AmountsVsProgramRegionEntity from "../../../../../modules/dataviz/amounts-vs-program-region/entities/AmountsVsProgramRegionEntity";
 import MongoAdapter from "../../MongoAdapter";
 import { AmountsVSProgramRegionPort } from "./amounts-vs-program-region.port";
 

@@ -22,7 +22,7 @@ jest.mock("../../../../entities/UniteLegaleEntrepriseEntity", () => ({
         }
     },
 }));
-jest.mock("../../../../dataProviders/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter");
+jest.mock("../../../../adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter");
 
 jest.mock("node-stream-zip", () => {
     const mockExtract = jest.fn();

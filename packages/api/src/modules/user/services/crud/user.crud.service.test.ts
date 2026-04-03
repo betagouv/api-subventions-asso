@@ -5,7 +5,7 @@ import { SIGNED_TOKEN, USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/
 import bcrypt from "bcrypt";
 
 jest.mock("bcrypt");
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 import userCheckService from "../check/user.check.service";
 
@@ -18,12 +18,12 @@ const mockedUserActivationService = jest.mocked(userActivationService);
 
 import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user-reset.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user-reset.adapter");
 const mockedUserResetAdapter = jest.mocked(userResetAdapter);
 
 import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
 
-jest.mock("../../../../dataProviders/db/user/consumer-token.adapter");
+jest.mock("../../../../adapters/outputs/db/user/consumer-token.adapter");
 const mockedConsumerTokenAdapter = jest.mocked(consumerTokenAdapter);
 
 import { NotificationType } from "../../../notify/@types/NotificationType";

@@ -12,7 +12,7 @@ describe("Tools http interface", () => {
                 .set("x-access-token", await createAndGetAdminToken())
                 .field("type", "csv")
                 .field("delimiter", ",")
-                .attach("file", "tests/adapters/inputs/http/fixtures/fixture.csv");
+                .attach("file", "tests/interfaces/http/fixtures/fixture.csv");
             expect(response.statusCode).toBe(200);
             // @ts-expect-error -- weird supertest typing
             expect(response.res.text);
@@ -24,7 +24,7 @@ describe("Tools http interface", () => {
                 .set("x-access-token", await createAndGetAdminToken())
                 .field("type", "csv")
                 .field("delimiter", ",")
-                .attach("file", "tests/adapters/inputs/http/fixtures/fixture-errors.csv");
+                .attach("file", "tests/interfaces/http/fixtures/fixture-errors.csv");
             expect(response.statusCode).toBe(200);
             // @ts-expect-error -- weird supertest typing
             expect(response.res.text).toMatchSnapshot();
@@ -37,7 +37,7 @@ describe("Tools http interface", () => {
                 .field("type", "excel")
                 .field("pageName", "fixture")
                 .field("rowOffset", "2")
-                .attach("file", "tests/adapters/inputs/http/fixtures/fixture.xlsx");
+                .attach("file", "tests/interfaces/http/fixtures/fixture.xlsx");
             expect(response.statusCode).toBe(200);
             // @ts-expect-error -- weird supertest typing
             expect(response.res.text);
@@ -50,7 +50,7 @@ describe("Tools http interface", () => {
                 .field("type", "excel")
                 .field("pageName", "fixture")
                 .field("rowOffset", "2")
-                .attach("file", "tests/adapters/inputs/http/fixtures/fixture-errors.xlsx");
+                .attach("file", "tests/interfaces/http/fixtures/fixture-errors.xlsx");
             expect(response.statusCode).toBe(200);
             // @ts-expect-error -- weird supertest typing
             expect(response.res.text).toMatchSnapshot();

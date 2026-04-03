@@ -594,7 +594,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-- **api, dto:** [#3107](https://github.com/betagouv/api-subventions-asso/issues/3107) implement paymentProvider in paymentFlat.service ([#3229](https://github.com/betagouv/api-subventions-asso/issues/3229)) ([98e4131](https://github.com/betagouv/api-subventions-asso/commit/98e4131d18f528a0d184ff0c09867d9a23ac7da2))
+- **api, dto:** [#3107](https://github.com/betagouv/api-subventions-asso/issues/3107) implement paymentProvider in payment-flat.service ([#3229](https://github.com/betagouv/api-subventions-asso/issues/3229)) ([98e4131](https://github.com/betagouv/api-subventions-asso/commit/98e4131d18f528a0d184ff0c09867d9a23ac7da2))
 - **api:** [#3111](https://github.com/betagouv/api-subventions-asso/issues/3111) update users nb requests in brevo ([#3192](https://github.com/betagouv/api-subventions-asso/issues/3192)) ([a7bdd2e](https://github.com/betagouv/api-subventions-asso/commit/a7bdd2ee81fcab284e2f9ce2710b7a3b224aca7d))
 - **api:** [#3149](https://github.com/betagouv/api-subventions-asso/issues/3149) http routes to get csv scdl errors ([#3221](https://github.com/betagouv/api-subventions-asso/issues/3221)) ([e364fa9](https://github.com/betagouv/api-subventions-asso/commit/e364fa94d0de16375d9ca169293dc290f94c3049))
 

@@ -2,7 +2,7 @@ import MongoAdapter from "../MongoAdapter";
 import Siren from "../../../../identifier-objects/Siren";
 import Siret from "../../../../identifier-objects/Siret";
 import { DefaultObject } from "../../../../@types";
-import ApplicationFlatMapper from "../../../../modules/applicationFlat/application-flat.mapper";
+import ApplicationFlatMapper from "../../../../modules/application-flat/application-flat.mapper";
 import { ApplicationFlatDbo } from "./@types/ApplicationFlatDbo";
 import { ApplicationFlatEntity } from "../../../../entities//flats/ApplicationFlatEntity";
 import { insertStreamByBatch } from "../../../../shared/helpers/MongoHelper";

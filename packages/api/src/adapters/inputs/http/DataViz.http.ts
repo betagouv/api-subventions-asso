@@ -1,7 +1,7 @@
 import { Controller, Get, Route, Security, Tags, Response, Example, Hidden } from "tsoa";
 import { GetAmountsVsProgramRegionResponseDto } from "dto";
 import { HttpErrorInterface } from "core";
-import amountsVsProgramRegionService from "../../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.service";
+import amountsVsProgramRegionService from "../../../modules/dataviz/amounts-vs-program-region/amounts-vs-program-region.service";
 
 @Route("dataviz")
 @Hidden()

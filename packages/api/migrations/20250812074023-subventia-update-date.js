@@ -1,4 +1,4 @@
-const { default: dataLogAdapter } = require("../build/src/dataProviders/db/data-log/data-log.adapter");
+const { default: dataLogAdapter } = require("../build/src/adapters/outputs/db/data-log/data-log.adapter");
 
 module.exports = {
     async up(db) {

@@ -1,7 +1,7 @@
 import {
     DEPOSIT_LOG_DBO,
     DEPOSIT_LOG_ENTITY,
-} from "../../../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
+} from "../../../../modules/deposit-scdl-process/__fixtures__/deposit-log.fixture";
 import DepositLogMapper from "./deposit-log.mapper";
 import { NotFoundError } from "core";
 import depositLogAdapter from "./deposit-log.adapter";

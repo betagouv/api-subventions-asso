@@ -1,7 +1,7 @@
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../shared/LegalCategoriesAccepted";
 import ProviderRequestFactory, {
     ProviderRequestService,
-} from "../../../../modules/provider-request/providerRequest.service";
+} from "../../../../modules/provider-request/provider-request.service";
 import { RechercheEntreprisesPort } from "./recherche-entreprises.port";
 import { RechercheEntreprisesDto } from "./@types/RechercheEntreprisesDto";
 

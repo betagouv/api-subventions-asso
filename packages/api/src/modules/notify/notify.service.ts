@@ -1,8 +1,8 @@
 import * as Sentry from "@sentry/node";
 import { NotifyOutPipe, NotifierMethodType } from "./@types/NotifyOutPipe";
-import outPipes from "./outPipes";
+import outPipes from "./out-pipes";
 import { ENV } from "../../configurations/env.conf";
-import { NOTIFICATION_ENV_CONFIG } from "./NotificationEnvConfig";
+import { NOTIFICATION_ENV_CONFIG } from "./notificiation-env.conf";
 import { NotificationType } from "./@types/NotificationType";
 
 export class NotifyService {

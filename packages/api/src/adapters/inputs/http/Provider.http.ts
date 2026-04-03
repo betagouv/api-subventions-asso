@@ -1,7 +1,7 @@
 import { Controller, Get, Route, Tags, Example } from "tsoa";
 import { DataLogDto } from "dto";
-import ProvidersInfos from "../../../modules/_open-data/provider/entities/ProvidersInfos";
-import providerService from "../../../modules/_open-data/provider/provider.service";
+import ProvidersInfos from "../../../modules/open-data/provider/entities/ProvidersInfos";
+import providerService from "../../../modules/open-data/provider/open-data-provider.service";
 import dataLogService from "../../../modules/data-log/dataLog.service";
 
 @Route("open-data/fournisseurs")

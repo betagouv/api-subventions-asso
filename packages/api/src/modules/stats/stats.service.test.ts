@@ -8,8 +8,8 @@ import statsService from "./stats.service";
 import { FindCursor, ObjectId } from "mongodb";
 
 jest.mocked("../user/services/crud/user.crud.service");
-jest.mock("../../dataProviders/db/stats/association-visit.adapter");
-jest.mock("../../dataProviders/db/stats/logs.adapter");
+jest.mock("../../adapters/outputs/db/stats/association-visit.adapter");
+jest.mock("../../adapters/outputs/db/stats/logs.adapter");
 
 describe("StatsService", () => {
     // pass-through methods

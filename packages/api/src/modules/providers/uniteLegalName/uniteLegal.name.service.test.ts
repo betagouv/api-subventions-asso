@@ -8,7 +8,7 @@ import Rna from "../../../identifier-objects/Rna";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 import Siret from "../../../identifier-objects/Siret";
 
-jest.mock("../../../dataProviders/db/unite-legale-name/unite-legale-name.adapter");
+jest.mock("../../../adapters/outputs/db/unite-legale-name/unite-legale-name.adapter");
 jest.mock("../../rna-siren/rna-siren.service");
 jest.mock("../../../shared/Validators");
 

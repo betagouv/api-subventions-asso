@@ -12,7 +12,7 @@ import { DEV } from "../../../configurations/env.conf";
 import dataLogService from "../../../modules/data-log/dataLog.service";
 import { detectAndEncode, validateDate } from "../../../shared/helpers/CliHelper";
 import scdlGrantService from "../../../modules/providers/scdl/scdl.grant.service";
-import applicationFlatService from "../../../modules/applicationFlat/applicationFlat.service";
+import applicationFlatService from "../../../modules/application-flat/application-flat.service";
 import MiscScdlProducerEntity from "../../../modules/providers/scdl/entities/MiscScdlProducerEntity";
 import notifyService from "../../../modules/notify/notify.service";
 import { NotificationType } from "../../../modules/notify/@types/NotificationType";

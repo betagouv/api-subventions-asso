@@ -1,8 +1,8 @@
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     LIST_PAYMENT_FLAT_ENTITY,
-} from "../../../../modules/paymentFlat/__fixtures__/payment-flat.fixture";
-import PaymentFlatMapper from "../../../../modules/paymentFlat/payment-flat.mapper";
+} from "../../../../modules/payment-flat/__fixtures__/payment-flat.fixture";
+import PaymentFlatMapper from "../../../../modules/payment-flat/payment-flat.mapper";
 import { PAYMENT_FLAT_DBO } from "./__fixtures__/payment-flat.fixture";
 import paymentFlatAdapter from "./payment-flat.adapter";
 const mockDeleteMany = jest.fn();

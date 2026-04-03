@@ -3,8 +3,8 @@ import fs from "fs";
 import { CliStaticInterface } from "../../../@types";
 import CliController from "../../../shared/CliController";
 import { StaticImplements } from "../../../decorators/static-implements.decorator";
-import AdminStructureParser from "../../../modules/admin-structure/adminStructure.parser";
-import adminStructureService from "../../../modules/admin-structure/adminStructure.service";
+import AdminStructureParser from "../../../modules/admin-structure/admin-structure.parser";
+import adminStructureService from "../../../modules/admin-structure/admin-structure.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class AdminStructureCli extends CliController {

@@ -2,9 +2,9 @@ import dataBretagneService from "./dataBretagne.service";
 import dataBretagneAdapter, {
     DataBretagneAdapter,
 } from "../../../adapters/outputs/api/data-bretagne/data-bretagne.adapter";
-jest.mock("../../../dataProviders/api/data-bretagne/data-bretagne.adapter");
+jest.mock("../../../adapters/outputs/api/data-bretagne/data-bretagne.adapter");
 import stateBudgetProgramAdapter from "../../../adapters/outputs/db/state-budget-program/state-budget-program.adapter";
-jest.mock("../../../dataProviders/db/state-budget-program/state-budget-program.adapter");
+jest.mock("../../../adapters/outputs/db/state-budget-program/state-budget-program.adapter");
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import { PROGRAMS } from "../../../adapters/outputs/api/data-bretagne/__fixtures__/DataBretagne.fixture";
 import { DataBretagneProgrammeMapper } from "../../../adapters/outputs/api/data-bretagne/data-bretagne.mapper";

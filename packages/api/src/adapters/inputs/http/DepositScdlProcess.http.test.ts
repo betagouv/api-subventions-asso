@@ -8,10 +8,13 @@ import {
     DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
     DEPOSIT_LOG_RESPONSE_DTO,
     DEPOSIT_LOG_RESPONSE_DTO_STEP_2,
-} from "../../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
+} from "../../../modules/deposit-scdl-process/__fixtures__/deposit-log.fixture";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import { ConflictError, NotFoundError } from "core";
 import { depositScdlProcessService } from "../../../init-services";
+import DepositScdlLogDtoMapper from "../../../modules/deposit-scdl-process/deposit-scdl-log.dto.mapper";
+
+jest.mock("../../../modules/deposit-scdl-process/deposit-scdl-log.dto.mapper");
 
 const controller = new DepositScdlProcessHttp();
 
@@ -29,6 +32,9 @@ describe("DepositScdlProcessHttp", () => {
 
         it("should return depositLogDto", async () => {
             getDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            jest.spyOn(DepositScdlLogDtoMapper, "entityToDepositScdlLogResponseDto").mockReturnValue(
+                DEPOSIT_LOG_RESPONSE_DTO_STEP_2,
+            );
             const result = await controller.getDepositLog(REQ);
             expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO_STEP_2);
         });
@@ -84,6 +90,13 @@ describe("DepositScdlProcessHttp", () => {
 
     describe("createDepositLog", () => {
         const createDepositLogSpy = jest.spyOn(depositScdlProcessService, "createDepositLog");
+
+        beforeAll(() => {
+            jest.spyOn(DepositScdlLogDtoMapper, "entityToDepositScdlLogResponseDto").mockReturnValue(
+                DEPOSIT_LOG_RESPONSE_DTO,
+            );
+        });
+
         it("should call service with args", async () => {
             const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
             createDepositLogSpy.mockReturnValueOnce(depositScdlLog);
@@ -107,6 +120,12 @@ describe("DepositScdlProcessHttp", () => {
         const STEP = 2;
         const updateDepositLogSpy = jest.spyOn(depositScdlProcessService, "updateDepositLog");
 
+        beforeAll(() => {
+            jest.spyOn(DepositScdlLogDtoMapper, "entityToDepositScdlLogResponseDto").mockReturnValue(
+                DEPOSIT_LOG_RESPONSE_DTO_STEP_2,
+            );
+        });
+
         it("should call service with args", async () => {
             const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
             updateDepositLogSpy.mockReturnValueOnce(depositScdlLog);
@@ -118,25 +137,18 @@ describe("DepositScdlProcessHttp", () => {
             );
         });
 
-        it("should return DepositScdlLogResponseDto", async () => {
+        it("maps entity to dto", async () => {
+            updateDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            await controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ);
+            expect(DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto).toHaveBeenCalledWith(
+                DEPOSIT_LOG_ENTITY_STEP_2,
+            );
+        });
+
+        it("returns dto", async () => {
             updateDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
             const result = await controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ);
-            expect(result).toEqual({
-                step: STEP,
-                allocatorSiret: "12345678901234",
-                permissionAlert: true,
-                uploadedFileInfos: {
-                    fileName: "test.csv",
-                    uploadDate: new Date("2025-11-03T00:00:00.000Z"),
-                    allocatorsSiret: ["12345678901234"],
-                    grantCoverageYears: [2021, 2022],
-                    parseableLines: 200,
-                    totalLines: 202,
-                    missingHeaders: { optional: [], mandatory: [] },
-                    existingLinesInDbOnSamePeriod: 0,
-                    errorStats: { count: 0, errorSample: [] },
-                },
-            });
+            expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO_STEP_2);
         });
 
         it("should reject and throw Error when error throw by service", async () => {

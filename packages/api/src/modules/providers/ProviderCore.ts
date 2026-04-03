@@ -1,5 +1,5 @@
 import { ProviderEnum } from "../../@enums/ProviderEnum";
-import ProviderRequestFactory, { ProviderRequestService } from "../provider-request/providerRequest.service";
+import ProviderRequestFactory, { ProviderRequestService } from "../provider-request/provider-request.service";
 import Provider from "./@types/IProvider";
 
 export default abstract class ProviderCore implements Provider {

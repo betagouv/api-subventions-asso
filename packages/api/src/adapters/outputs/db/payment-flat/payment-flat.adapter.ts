@@ -3,7 +3,7 @@ import { ChorusPaymentFlatEntity } from "../../../../modules/providers/chorus/@t
 import Siren from "../../../../identifier-objects/Siren";
 import Siret from "../../../../identifier-objects/Siret";
 import { DefaultObject } from "../../../../@types";
-import PaymentFlatMapper from "../../../../modules/paymentFlat/payment-flat.mapper";
+import PaymentFlatMapper from "../../../../modules/payment-flat/payment-flat.mapper";
 import PaymentFlatEntity from "../../../../entities//flats/PaymentFlatEntity";
 import PaymentFlatDbo from "./@types/PaymentFlatDbo";
 import { PaymentFlatPort } from "./payment-flat.port";

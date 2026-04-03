@@ -34,13 +34,13 @@ import { HttpErrorInterface, NotAssociationError } from "core";
 
 import associationService from "../../../modules/associations/associations.service";
 import grantService from "../../../modules/grant/grant.service";
-import { JoinedRawGrantDto } from "../../../modules/grant/@types/rawGrant";
+import { JoinedRawGrantDto } from "../../../modules/grant/@types/RawGrant";
 import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";
-import grantExtractService from "../../../modules/grant/grantExtract.service";
+import grantExtractService from "../../../modules/grant/grant-extract.service";
 import { errorHandler } from "../../../middlewares/error.middleware";
 import associationHelper from "../../../modules/associations/associations.helper";
-import paymentFlatService from "../../../modules/paymentFlat/paymentFlat.service";
-import applicationFlatService from "../../../modules/applicationFlat/applicationFlat.service";
+import paymentFlatService from "../../../modules/payment-flat/payment-flat.service";
+import applicationFlatService from "../../../modules/application-flat/application-flat.service";
 import { PAYMENT_DTO_EXAMPLE, APPLICATION_DTO_EXAMPLE } from "./examples/Grants";
 import { OLD_APPLICATON_DTO, OLD_PAYMENT_DTO } from "./examples/OldGrants";
 import { DOCUMENT_DTO } from "./examples/Documents";

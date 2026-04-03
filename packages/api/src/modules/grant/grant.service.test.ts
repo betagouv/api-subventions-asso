@@ -1,7 +1,7 @@
 import grantService from "./grant.service";
-import commonGrantService from "./commonGrant.service";
+import commonGrantService from "./common-grant.service";
 import mocked = jest.mocked;
-import { JoinedRawGrant, RawApplication, RawPayment } from "./@types/rawGrant";
+import { JoinedRawGrant, RawApplication, RawPayment } from "./@types/RawGrant";
 import * as Sentry from "@sentry/node";
 import { applicationProvidersFixtures, paymentProvidersFixtures } from "../providers/__fixtures__/providers.fixture";
 import { DemandeSubvention, Grant, Payment } from "dto";
@@ -14,26 +14,26 @@ import Siret from "../../identifier-objects/Siret";
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,
-} from "../applicationFlat/__fixtures__/application-flat.fixture";
+} from "../application-flat/__fixtures__/application-flat.fixture";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY_2,
     LONELY_CHORUS_PAYMENT,
-} from "../paymentFlat/__fixtures__/payment-flat.fixture";
-import applicationFlatService from "../applicationFlat/applicationFlat.service";
-import paymentFlatService from "../paymentFlat/paymentFlat.service";
+} from "../payment-flat/__fixtures__/payment-flat.fixture";
+import applicationFlatService from "../application-flat/application-flat.service";
+import paymentFlatService from "../payment-flat/payment-flat.service";
 
 jest.mock("../providers/scdl/scdl.service");
 jest.mock("@sentry/node");
 jest.mock("../providers");
 jest.mock("../../shared/Validators");
-jest.mock("./commonGrant.service");
+jest.mock("./common-grant.service");
 jest.mock("../associations/associations.service");
 jest.mock("../subventions/subventions.service");
 jest.mock("../payments/payments.service");
-jest.mock("../applicationFlat/applicationFlat.service");
-jest.mock("../paymentFlat/paymentFlat.service");
+jest.mock("../application-flat/application-flat.service");
+jest.mock("../payment-flat/payment-flat.service");
 
 describe("GrantService", () => {
     const SIRET = new Siret(SIRET_STR);

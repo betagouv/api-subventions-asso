@@ -126,7 +126,7 @@ describe("DemarchesSimplifieesCli", () => {
                     inputMock.mockResolvedValueOnce("");
                     inputMock.mockResolvedValueOnce("2025");
                 }
-                const PATH = "tests/adapters/inputs/cli/__fixtures__/demarcheSimplifieesSeed.fixture.json";
+                const PATH = "tests/interfaces/cli/__fixtures__/demarcheSimplifieesSeed.fixture.json";
                 await cli.generateSchema(PATH, 42);
 
                 // I only test flat schema because it is what is meant to remain

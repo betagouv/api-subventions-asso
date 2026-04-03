@@ -1,5 +1,5 @@
-import ProviderRequestFactory from "../../../../modules/provider-request/providerRequest.service";
-jest.mock("../../../../modules/provider-request/providerRequest.service", () => ({
+import ProviderRequestFactory from "../../../../modules/provider-request/provider-request.service";
+jest.mock("../../../../modules/provider-request/provider-request.service", () => ({
     __esModule: true,
     default: jest.fn(() => {
         return new (class ProviderRequestService {

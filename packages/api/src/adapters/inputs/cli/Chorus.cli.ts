@@ -6,7 +6,7 @@ import chorusService from "../../../modules/providers/chorus/chorus.service";
 import * as CliHelper from "../../../shared/helpers/CliHelper";
 import CliController from "../../../shared/CliController";
 import ChorusEntity from "../../../modules/providers/chorus/entities/ChorusEntity";
-import paymentFlatChorusService from "../../../modules/paymentFlat/paymentFlat.chorus.service";
+import paymentFlatChorusService from "../../../modules/payment-flat/payment-flat.chorus.service";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import ChorusFseEntity from "../../../modules/providers/chorus/entities/ChorusFseEntity";
 

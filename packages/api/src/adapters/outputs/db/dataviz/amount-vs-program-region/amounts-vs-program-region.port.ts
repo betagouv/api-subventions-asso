@@ -1,4 +1,4 @@
-import AmountsVsProgramRegionEntity from "../../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.entity";
+import AmountsVsProgramRegionEntity from "../../../../../modules/dataviz/amounts-vs-program-region/entities/AmountsVsProgramRegionEntity";
 
 export interface AmountsVSProgramRegionPort {
     createIndexes(): Promise<void>;

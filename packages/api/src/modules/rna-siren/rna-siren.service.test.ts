@@ -10,7 +10,7 @@ import associationIdentifierService from "../association-identifier/association-
 
 jest.mock("../association-identifier/association-identifier.service");
 jest.mock("../providers/apiAsso/apiAsso.service");
-jest.mock("../../dataProviders/db/rna-siren/rna-siren.adapter");
+jest.mock("../../adapters/outputs/db/rna-siren/rna-siren.adapter");
 
 describe("RnaSirenService", () => {
     const RNA = new Rna("W123456789");

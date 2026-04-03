@@ -8,7 +8,7 @@ import {
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenAdapter from "../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
-import { AnyRawGrant, JoinedRawGrant } from "../../../src/modules/grant/@types/rawGrant";
+import { AnyRawGrant, JoinedRawGrant } from "../../../src/modules/grant/@types/RawGrant";
 import demarchesSimplifieesDataAdapter from "../../../src/adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
 import {
     DATA_ENTITIES as DS_DATA_ENTITIES,
@@ -26,8 +26,6 @@ import DEFAULT_ASSOCIATION, {
     SIRET_STR,
 } from "../../__fixtures__/association.fixture";
 import dauphinAdapter from "../../../src/adapters/outputs/db/providers/dauphin/dauphin.adapter";
-import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
-import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import Rna from "../../../src/identifier-objects/Rna";
 import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlProducers.adapter";
 import Siren from "../../../src/identifier-objects/Siren";
@@ -39,11 +37,11 @@ import applicationFlatAdapter from "../../../src/adapters/outputs/db/application
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,
-} from "../../../src/modules/applicationFlat/__fixtures__/application-flat.fixture";
+} from "../../../src/modules/application-flat/__fixtures__/application-flat.fixture";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
-} from "../../../src/modules/paymentFlat/__fixtures__/payment-flat.fixture";
+} from "../../../src/modules/payment-flat/__fixtures__/payment-flat.fixture";
 import { osirisActionAdapter } from "../../../src/adapters/outputs/db/providers/osiris";
 import fonjepPostesAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.postes.adapter";
 import {
@@ -60,8 +58,10 @@ import fonjepTypePosteAdapter from "../../../src/adapters/outputs/db/providers/f
 import AssociationIdentifier from "../../../src/identifier-objects/AssociationIdentifier";
 import rechercheEntreprisesAdapter from "../../../src/adapters/outputs/api/recherche-entreprises/recherche-entreprises.adapter";
 import { RECHERCHE_ENTREPRISES_DTO } from "../../../src/adapters/outputs/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
+import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
+import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 
-jest.mock("../../../src/modules/provider-request/providerRequest.service");
+jest.mock("../../../src/modules/provider-request/provider-request.service");
 
 const g = global as unknown as { app: App };
 
@@ -77,7 +77,7 @@ const insertData = async (firstTest: boolean) => {
     await fonjepTypePosteAdapter.insertMany(TYPE_POSTE_ENTITIES);
 
     // APPLICATIONS
-    // @ts-expect-error: DBO not fully mocked
+    // @ts-expect-error: not fully mocked
     await dauphinAdapter.upsert(DAUPHIN_GISPRO_DBOS[0]);
     await osirisRequestAdapter.add(OSIRIS_REQUEST_ENTITY);
     await osirisActionAdapter.add(OSIRIS_ACTION_ENTITY);

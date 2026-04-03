@@ -7,11 +7,11 @@ import { ObjectId, WithId } from "mongodb";
 import { BadRequestError, InternalServerError, NotFoundError, ResetTokenNotFoundError } from "core";
 import { ResetPasswordErrorCodes, TokenValidationDtoPositiveResponse, TokenValidationType, UserDto } from "dto";
 
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user-reset.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user-reset.adapter");
 const mockedUserResetAdapter = jest.mocked(userResetAdapter);
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 

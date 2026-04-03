@@ -22,7 +22,7 @@ const mockedBcrypt = jest.mocked(bcrypt);
 
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 import {
     CONSUMER_USER,
@@ -33,7 +33,7 @@ import {
 } from "../../__fixtures__/user.fixture";
 import { BadRequestError, UnauthorizedError, LoginError } from "core";
 
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 import * as portHelper from "../../../../shared/helpers/PortHelper";
 
 jest.mock("../../../../shared/helpers/PortHelper", () => ({

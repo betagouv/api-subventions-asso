@@ -1,14 +1,13 @@
 import path from "path";
-import { ObjectId } from "mongodb";
 import ScdlCli from "../../../src/adapters/inputs/cli/Scdl.cli";
 import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlProducers.adapter";
 import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlGrant.adapter";
 import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
-import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 import notifyService from "../../../src/modules/notify/notify.service";
 import { NotificationType } from "../../../src/modules/notify/@types/NotificationType";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
+import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 
 describe("SCDL CLI", () => {
     let mockApiAsso: jest.SpyInstance;
@@ -41,7 +40,7 @@ describe("SCDL CLI", () => {
             // use second item because first is already created in beforeEach
             await cli.addProducer(LOCAL_AUTHORITIES[1].siret);
             const document = await miscScdlProducersAdapter.findBySiret(LOCAL_AUTHORITIES[1].siret);
-            expect(document).toMatchSnapshot({ _id: expect.any(ObjectId) });
+            expect(document).toMatchSnapshot();
         });
     });
 

@@ -1,5 +1,5 @@
 import depositLogAdapter from "./adapters/outputs/db/deposit-log/deposit-log.adapter";
-import { DepositScdlProcessService } from "./modules/deposit-scdl-process/depositScdlProcess.service";
+import { DepositScdlProcessService } from "./modules/deposit-scdl-process/deposit-scdl-process.service";
 import { DumpService } from "./modules/dump/dump.service";
 import { ScdlDepositCronService } from "./modules/deposit-scdl-process/scdl-deposit.cron.service";
 

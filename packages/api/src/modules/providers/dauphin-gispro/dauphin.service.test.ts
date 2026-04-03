@@ -15,7 +15,7 @@ jest.mock("axios", () => ({
     get: jest.fn(),
 }));
 
-jest.mock("../../../dataProviders/db/providers/dauphin/dauphin.adapter", () => ({
+jest.mock("../../../adapters/outputs/db/providers/dauphin/dauphin.adapter", () => ({
     getLastImportDate: jest.fn(() => new Date()),
     upsert: jest.fn(),
     findBySiret: jest.fn(),

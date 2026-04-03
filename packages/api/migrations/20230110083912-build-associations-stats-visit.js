@@ -1,12 +1,12 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
-const { default: logsPort } = require("../build/src/dataProviders/db/stats/stats.port");
+const { default: logsPort } = require("../build/src/adapters/outputs/db/stats/stats.port");
 const {
     default: statsAssociationsVisitAdapter,
-} = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.adapter");
-const { default: userAdapter } = require("../build/src/dataProviders/db/user/user.adapter");
+} = require("../build/src/adapters/outputs/db/stats/statsAssociationsVisit.adapter");
+const { default: userAdapter } = require("../build/src/adapters/outputs/db/user/user.adapter");
 const { getIdentifierType } = require("../build/src/shared/helpers/IdentifierHelper");
 const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
-const { default: rnaSirenAdapter } = require("../build/src/dataProviders/db/rnaSiren/rnaSiren.adapter");
+const { default: rnaSirenAdapter } = require("../build/src/adapters/outputs/db/rnaSiren/rnaSiren.adapter");
 
 module.exports = {
     async up() {

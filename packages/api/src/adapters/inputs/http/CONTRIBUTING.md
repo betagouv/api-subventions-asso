@@ -20,7 +20,7 @@ Any custom error should be checked and handled in between those two blocks.
 Any custom error should set the proper response status and return the generic error message and if needed the cause (cf [Error: cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause))
 
 ```ts
-// src/middlewares/ErrorMiddleware.ts
+// src/middlewares/error.middleware.ts
 if (error instanceof CustomError) {
     res.status(400).json({
         message: error.message,

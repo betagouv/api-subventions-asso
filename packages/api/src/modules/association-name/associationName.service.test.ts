@@ -10,7 +10,7 @@ import AssociationIdentifier from "../../identifier-objects/AssociationIdentifie
 
 jest.mock("../providers/uniteLegalName/uniteLegal.name.service");
 jest.mock("../rna-siren/rna-siren.service");
-jest.mock("../../dataProviders/api/recherche-entreprises/recherche-entreprises.service");
+jest.mock("../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service");
 
 const mockedUniteLegalNameService = uniteLegalNameService as jest.Mocked<typeof uniteLegalNameService>;
 const mockedRnaSirenService = rnaSirenService as jest.Mocked<typeof rnaSirenService>;

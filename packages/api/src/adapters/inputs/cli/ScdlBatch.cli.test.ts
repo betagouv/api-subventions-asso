@@ -14,8 +14,8 @@ import { FileExtensionEnum } from "../../../@enums/FileExtensionEnum";
 
 import { isStringValid, isBooleanValid, isNumberValid, isShortISODateValid } from "../../../shared/Validators";
 import MiscScdlProducer from "../../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
-import { LOCAL_AUTHORITIES } from "../../../../tests/dataProviders/db/__fixtures__/scdl.fixtures";
 import Siret from "../../../identifier-objects/Siret";
+import { LOCAL_AUTHORITIES } from "../../../../tests/dataProviders/db/__fixtures__/scdl.fixtures";
 
 jest.mock("../../../modules/providers/scdl/scdl.service");
 jest.mock("../cli/Scdl.cli");
@@ -394,7 +394,6 @@ describe("SCDL Batch Import CLI", () => {
             });
 
             it("add an error to the list if producer already exist", async () => {
-                // @ts-expect-error: mock resolve value
                 jest.mocked(scdlService.getProducer).mockResolvedValueOnce({} as MiscScdlProducerEntity);
                 // @ts-expect-error: test private method
                 await scdlBatchCli.processFile({ ...FILES_CONFIG[0] });

@@ -1,6 +1,6 @@
 import ProviderRequestFactory, {
     ProviderRequestService,
-} from "../../../../modules/provider-request/providerRequest.service";
+} from "../../../../modules/provider-request/provider-request.service";
 import { SireneStockUniteLegalePort } from "./sirene-stock-unite-legale.port";
 
 export class SireneStockUniteLegaleApiAdapter implements SireneStockUniteLegalePort {

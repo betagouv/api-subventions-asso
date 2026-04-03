@@ -1,7 +1,7 @@
 import { DTOS, DBOS, ENTITIES } from "../../__fixtures__/sireneStockUniteLegale.fixture";
 import SireneStockUniteLegaleMapper from "./sirene-stock-unite-legale.mapper";
 
-jest.mock("../../../../../dataProviders/db/unite-legale-name/unite-legale-name.mapper", () => ({
+jest.mock("../../../../../adapters/outputs/db/unite-legale-name/unite-legale-name.mapper", () => ({
     default: class UniteLegalNameMapper {
         static buildSearchKey(a, b) {
             return `${a} +++ ${b}`;

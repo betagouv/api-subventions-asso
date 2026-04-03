@@ -30,8 +30,8 @@ jest.mock("../../../notify/notify.service", () => ({
 }));
 jest.mock("../../../../shared/helpers/PortHelper");
 jest.mock("../crud/user.crud.service");
-jest.mock("../../../../dataProviders/db/user/user.adapter");
-jest.mock("../../../../dataProviders/db/user/pro-connect.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/pro-connect.adapter");
 jest.mock("../../../configurations/configurations.service");
 jest.mock("../auth/user.auth.service");
 

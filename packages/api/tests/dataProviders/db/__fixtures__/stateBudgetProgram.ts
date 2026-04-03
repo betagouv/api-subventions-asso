@@ -1,4 +1,4 @@
-export default [
+export const PROGRAMS = [
     {
         code_programme: 101,
         label_programme: "PROGRAM 101",

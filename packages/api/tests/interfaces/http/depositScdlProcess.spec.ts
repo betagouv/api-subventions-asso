@@ -9,11 +9,10 @@ import {
     DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_1,
     DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
     DEPOSIT_LOG_RESPONSE_DTO,
-} from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
+} from "../../../src/modules/deposit-scdl-process/__fixtures__/deposit-log.fixture";
 import { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 import path from "path";
 import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlGrant.adapter";
-import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import UploadedFileInfosEntity from "../../../src/modules/deposit-scdl-process/entities/uploadedFileInfos.entity";
 import MiscScdlProducerEntity from "../../../src/modules/providers/scdl/entities/MiscScdlProducerEntity";
 import scdlService from "../../../src/modules/providers/scdl/scdl.service";
@@ -28,6 +27,7 @@ import {
 import fs from "fs";
 import ScdlErrorStats from "../../../src/modules/deposit-scdl-process/entities/ScdlErrorStats";
 import depositLogAdapter from "../../../src/adapters/outputs/db/deposit-log/deposit-log.adapter";
+import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 
 const g = global as unknown as { app: App };
 
@@ -431,7 +431,6 @@ describe("/parcours-depot", () => {
             s3Mock.on(GetObjectCommand).resolvesOnce({ Body: stream as never, ContentType: "text/csv" });
             s3Mock.on(DeleteObjectCommand).resolvesOnce({});
 
-            // @ts-expect-error: mock - omit _id
             jest.spyOn(scdlService, "getProducer").mockResolvedValueOnce({
                 siret: "12345676541230",
                 name: "Test Producer",
@@ -468,7 +467,6 @@ describe("/parcours-depot", () => {
 
             s3Mock.on(GetObjectCommand).resolvesOnce({ Body: stream as never, ContentType: "text/csv" });
 
-            // @ts-expect-error: mock - omit _id
             jest.spyOn(scdlService, "getProducer").mockResolvedValueOnce({
                 siret: "12345676541230",
             } as MiscScdlProducerEntity);

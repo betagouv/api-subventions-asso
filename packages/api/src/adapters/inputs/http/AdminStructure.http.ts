@@ -1,7 +1,7 @@
 import { Controller, Get, Route, Tags, Response, Example, Hidden } from "tsoa";
 import { AdminStructureDto, AdminTerritorialLevel, AgentTypeEnum } from "dto";
 import { HttpErrorInterface } from "core";
-import adminStructureService from "../../../modules/admin-structure/adminStructure.service";
+import adminStructureService from "../../../modules/admin-structure/admin-structure.service";
 
 @Route("/admin-structures")
 @Hidden()

@@ -4,7 +4,7 @@ import statsService from "../stats/stats.service";
 import userCrudService from "../user/services/crud/user.crud.service";
 import metabaseDumpAdapter from "../../adapters/outputs/db/dump/metabase-dump.adapter";
 import dataLogService from "../data-log/dataLog.service";
-import { DepositScdlProcessService } from "../deposit-scdl-process/depositScdlProcess.service";
+import { DepositScdlProcessService } from "../deposit-scdl-process/deposit-scdl-process.service";
 import { WinstonLog } from "../../@types/WinstonLog";
 
 export class DumpService {

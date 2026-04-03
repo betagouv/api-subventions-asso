@@ -22,15 +22,15 @@ import {
     AnyRawGrant,
     RawGrant,
     JoinedRawGrantDto,
-} from "./@types/rawGrant";
-import commonGrantService from "./commonGrant.service";
+} from "./@types/RawGrant";
+import commonGrantService from "./common-grant.service";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
-import applicationFlatService from "../applicationFlat/applicationFlat.service";
-import paymentFlatService from "../paymentFlat/paymentFlat.service";
+import applicationFlatService from "../application-flat/application-flat.service";
+import paymentFlatService from "../payment-flat/payment-flat.service";
 import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
-import ApplicationFlatMapper from "../applicationFlat/application-flat.mapper";
-import PaymentFlatMapper from "../paymentFlat/payment-flat.mapper";
+import ApplicationFlatMapper from "../application-flat/application-flat.mapper";
+import PaymentFlatMapper from "../payment-flat/payment-flat.mapper";
 
 export class GrantService {
     applicationProvidersById: Record<string, ApplicationProvider>;

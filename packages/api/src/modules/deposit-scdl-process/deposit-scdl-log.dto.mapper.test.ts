@@ -2,7 +2,7 @@ import {
     DEPOSIT_LOG_ENTITY,
     DEPOSIT_LOG_ENTITY_STEP_2,
     UPLOADED_FILE_INFOS_ENTITY,
-} from "./__fixtures__/depositLog.fixture";
+} from "./__fixtures__/deposit-log.fixture";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import DepositScdlLogDtoMapper from "./deposit-scdl-log.dto.mapper";
 import { CreateDepositScdlLogDto, DepositScdlLogDto, MixedParsedErrorDto, UploadedFileInfosDto } from "dto";
@@ -33,28 +33,25 @@ describe("depositScdlLogDtoAdapter", () => {
     });
 
     describe("entityToDepositScdlLogResponseDto", () => {
-        it("should convert DepositScdlLogEntity to DepositScdlLogResponseDto", () => {
-            const entity: DepositScdlLogEntity = DEPOSIT_LOG_ENTITY;
-            const result = DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(entity);
+        let mockEntityUploadedFileInfosToDto;
 
-            expect(result).toEqual({
-                allocatorSiret: entity.allocatorSiret,
-                allocatorName: entity.allocatorName,
-                permissionAlert: entity.permissionAlert,
-                step: entity.step,
-            });
+        beforeEach(() => {
+            mockEntityUploadedFileInfosToDto = jest
+                .spyOn(DepositScdlLogDtoMapper, "entityUploadedFileInfosToDto")
+                .mockReturnValue(UPLOADED_FILE_INFOS_ENTITY);
         });
 
-        it("should convert DepositScdlLogEntity with uploadedFileInfos to DepositScdlLogResponseDto", () => {
-            const entity: DepositScdlLogEntity = DEPOSIT_LOG_ENTITY_STEP_2;
-            const result = DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(entity);
+        afterAll(() => {
+            mockEntityUploadedFileInfosToDto.mockRestore();
+        });
 
-            expect(result).toEqual({
-                allocatorSiret: entity.allocatorSiret,
-                permissionAlert: entity.permissionAlert,
-                step: entity.step,
-                uploadedFileInfos: entity.uploadedFileInfos,
-            });
+        it.each`
+            entity
+            ${DEPOSIT_LOG_ENTITY}
+            ${DEPOSIT_LOG_ENTITY_STEP_2}
+        `("should convert DepositScdlLogEntity to DepositScdlLogResponseDto", ({ entity }) => {
+            const result = DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(entity);
+            expect(result).toMatchSnapshot();
         });
     });
 
@@ -62,18 +59,7 @@ describe("depositScdlLogDtoAdapter", () => {
         it("should convert UploadedFileInfosEntity to UploadedFileInfosDto", () => {
             const entity = UPLOADED_FILE_INFOS_ENTITY;
             const result = DepositScdlLogDtoMapper.entityUploadedFileInfosToDto(entity);
-
-            expect(result).toEqual({
-                fileName: entity.fileName,
-                uploadDate: entity.uploadDate,
-                allocatorsSiret: entity.allocatorsSiret,
-                grantCoverageYears: entity.grantCoverageYears,
-                parseableLines: entity.parseableLines,
-                totalLines: entity.totalLines,
-                missingHeaders: entity.missingHeaders,
-                existingLinesInDbOnSamePeriod: entity.existingLinesInDbOnSamePeriod,
-                errorStats: entity.errorStats,
-            });
+            expect(result).toMatchSnapshot();
         });
     });
 

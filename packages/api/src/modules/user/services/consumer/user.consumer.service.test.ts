@@ -10,7 +10,7 @@ jest.mock("../auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService);
 import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
 import { UserServiceErrors } from "../../user.enum";
-jest.mock("../../../../dataProviders/db/user/consumer-token.adapter");
+jest.mock("../../../../adapters/outputs/db/user/consumer-token.adapter");
 const mockedConsumerTokenAdapter = jest.mocked(consumerTokenAdapter);
 
 describe("user consumer service", () => {

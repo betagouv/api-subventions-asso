@@ -1,6 +1,6 @@
-import amountsVsProgramRegionService from "../../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.service";
+import { AMOUNTS_VS_PROGRAM_REGION_ENTITIES } from "../../../modules/dataviz/amounts-vs-program-region/__fixtures__/amounts-vs-program-region.fixture";
+import amountsVsProgramRegionService from "../../../modules/dataviz/amounts-vs-program-region/amounts-vs-program-region.service";
 import { DataVizHttp } from "./DataViz.http";
-import { AMOUNTS_VS_PROGRAM_REGION_ENTITIES } from "../../../modules/dataViz/amountsVsProgramRegion/__fixtures__/amountsVSProgramRegion.fixture";
 import { AmountsVsProgramRegionDto } from "dto";
 
 const controller = new DataVizHttp();

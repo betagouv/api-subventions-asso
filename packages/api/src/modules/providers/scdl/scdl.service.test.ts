@@ -3,10 +3,10 @@ import miscScdlGrantAdapter from "../../../adapters/outputs/db/providers/scdl/mi
 
 jest.mock("fs");
 
-jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter");
+jest.mock("../../../adapters/outputs/db/providers/scdl/miscScdlGrant.adapter");
 import miscScdlProducersAdapter from "../../../adapters/outputs/db/providers/scdl/miscScdlProducers.adapter";
 
-jest.mock("../../../dataProviders/db/providers/scdl/miscScdlProducers.adapter");
+jest.mock("../../../adapters/outputs/db/providers/scdl/miscScdlProducers.adapter");
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 
 jest.mock("../../../shared/helpers/StringHelper");
@@ -28,7 +28,7 @@ import { ScdlParsedInfos } from "./@types/ScdlParsedInfos";
 
 const mockedFs = jest.mocked(fs);
 
-jest.mock("../../../dataProviders/db/application-flat/application-flat.adapter");
+jest.mock("../../../adapters/outputs/db/application-flat/application-flat.adapter");
 jest.mock("../apiAsso/apiAsso.service");
 
 describe("ScdlService", () => {

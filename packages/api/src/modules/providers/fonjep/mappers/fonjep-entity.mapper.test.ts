@@ -1,7 +1,7 @@
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
-} from "../../../paymentFlat/__fixtures__/payment-flat.fixture";
+} from "../../../payment-flat/__fixtures__/payment-flat.fixture";
 import { DATA_BRETAGNE_RECORDS, MINISTRY_ENTITIES } from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
 import {
     DISPOSITIF_DTOS,

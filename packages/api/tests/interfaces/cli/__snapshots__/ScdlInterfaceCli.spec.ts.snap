@@ -2,7 +2,6 @@
 
 exports[`SCDL CLI addProducer() should create MiscScdlProducerEntity 1`] = `
 {
-  "_id": Any<ObjectId>,
   "name": "ALLOCATOR_2",
   "siret": "88000000000001",
 }

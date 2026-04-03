@@ -6,7 +6,7 @@ import DepositScdlLogEntity from "../../../../modules/deposit-scdl-process/entit
 import {
     DEPOSIT_LOG_ENTITY,
     DEPOSIT_LOG_ENTITY_STEP_2,
-} from "../../../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
+} from "../../../../modules/deposit-scdl-process/__fixtures__/deposit-log.fixture";
 
 describe("DepositLogAdapter", () => {
     describe("dboToEntity", () => {
@@ -102,14 +102,7 @@ describe("DepositLogAdapter", () => {
 
             const result = DepositLogMapper.toDbo(entity);
 
-            expect(result).toEqual({
-                updateDate: result.updateDate,
-                userId: entity.userId,
-                step: entity.step,
-                permissionAlert: entity.permissionAlert,
-                allocatorSiret: entity.allocatorSiret,
-                uploadedFileInfos: entity.uploadedFileInfos,
-            });
+            expect(result).toMatchSnapshot();
         });
     });
 });

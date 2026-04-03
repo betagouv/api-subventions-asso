@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MattermostPipe badEmailDomain sends message with proper payload 1`] = `
+{
+  "channel": "datasubvention---comptes-app",
+  "icon_emoji": "no_entry",
+  "text": "L'inscription de l'utilisateur some@email.fr a échouée car le nom de domaine de l'adresse mail n'est pas accepté.",
+  "username": "Nom de domaine rejeté",
+}
+`;
+
+exports[`MattermostPipe batchUsersDeleted sends message with proper payload 1`] = `
+{
+  "channel": "datasubvention---comptes-app",
+  "icon_emoji": "door",
+  "text": "Les comptes suivants ont été supprimés pour inactivité trop longue.
+
+- Prénom  (some@email.fr)
+-  Nom (some-other@email.fr) 
+N'oubliez pas de supprimer toutes leurs données !",
+  "username": "Suppression de comptes",
+}
+`;
+
+exports[`MattermostPipe dataImportSuccess sends message 1`] = `
+{
+  "channel": "datasubvention---produit",
+  "icon_emoji": "white_check_mark",
+  "text": "Import de données réussi pour le fournisseur **Ville de Rennes** (SIRET : \`12345678900012\`) avec une date d'export au **2025-09-03**.",
+  "username": "Import de données",
+}
+`;
+
+exports[`MattermostPipe depositScdlSuccess sends message 1`] = `
+{
+  "channel": "datasubvention---produit",
+  "icon_emoji": "white_check_mark",
+  "text": "Nouveau dépôt SCDL réalisé pour le fournisseur **Ville d'Angers** (SIRET : \`12345678900013\`) pour l'exercice 2023.
+123 données de subventions ont été déposées.",
+  "username": "Dépôt de données SCDL",
+}
+`;
+
+exports[`MattermostPipe depositUnfinished sends message with proper payload 1`] = `
+{
+  "channel": "datasubvention---comptes-app",
+  "icon_emoji": "bookmark_tabs",
+  "text": "Bonjour Data.Subvention !
+
+        Voici la liste du jour des utilisateurs à relancer pour finaliser leur dépôt de données :
+
+        - some@email.fr (John Doe)
+- griffin@email.fr (Petter Griffin)
+",
+  "username": "Relance de dépôt de données",
+}
+`;
+
+exports[`MattermostPipe userDeleted sends message with proper payload with false selfDeleted 1`] = `
+{
+  "channel": "datasubvention---comptes-app",
+  "icon_emoji": "door",
+  "text": "Le compte de Prénom NOM (email) a été supprimé par un administrateur. N'oubliez pas de supprimer toutes ses données !",
+  "username": "Suppression de compte",
+}
+`;
+
+exports[`MattermostPipe userDeleted sends message with proper payload with truthy selfDeleted 1`] = `
+{
+  "channel": "datasubvention---comptes-app",
+  "icon_emoji": "door",
+  "text": "Prénom NOM (email) a supprimé son compte, veuillez supprimer toutes ses données !",
+  "username": "Suppression de compte",
+}
+`;

@@ -5,7 +5,7 @@ import { DocumentDto, DocumentRequestDto } from "dto";
 import * as Sentry from "@sentry/node";
 import mime from "mime-types";
 import providers from "../providers";
-import { ProviderRequestService } from "../provider-request/providerRequest.service";
+import { ProviderRequestService } from "../provider-request/provider-request.service";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import ProviderCore from "../providers/ProviderCore";
 import { DauphinService } from "../providers/dauphin-gispro/dauphin.service";
