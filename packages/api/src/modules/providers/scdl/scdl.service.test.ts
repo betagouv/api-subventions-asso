@@ -166,8 +166,8 @@ describe("ScdlService", () => {
 
     describe.each`
         service       | parser                        | args
-        ${"parseCsv"} | ${ScdlGrantParser.parseCsv}   | ${[",", "'"]}
-        ${"parseXls"} | ${ScdlGrantParser.parseExcel} | ${["page", 2]}
+        ${"parseCsv"} | ${ScdlGrantParser.parseCsv}   | ${[",", "'", undefined]}
+        ${"parseXls"} | ${ScdlGrantParser.parseExcel} | ${["page", 2, undefined]}
     `("parser boilerplate $service", ({ service, parser, args }) => {
         const FILE_CONTENT = Buffer.from("toto");
         const RES = { errors: [], entities: [] };

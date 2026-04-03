@@ -35,14 +35,21 @@ export default class ScdlCli {
         exportDate: string | undefined = undefined,
         pageName: string | undefined = undefined,
         rowOffset: number | string = 0,
+        processedExercises: string | undefined = undefined,
     ) {
+        const exercices = processedExercises ? (JSON.parse(processedExercises) as number[]) : undefined;
         const siret = new Siret(allocatorSiret);
         const producer = await scdlService.getProducer(siret);
         await this.validateGenericInput(producer, exportDate);
         const fileContent = detectAndEncode(filePath);
 
         const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
-        const { entities, errors, parsedInfos } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
+        const { entities, errors, parsedInfos } = scdlService.parseXls(
+            fileContent,
+            pageName,
+            parsedRowOffset,
+            exercices,
+        );
 
         scdlService.validateHeaders(parsedInfos, path.basename(filePath));
 
@@ -59,6 +66,7 @@ export default class ScdlCli {
      * @param exportDate  (string | format YYYY-MM-DD | optionnal): IF PROVIDED => date of production or end date of covered period
      * @param delimiter
      * @param quote
+     * @param concernedExercices (string | optional): JSON stringified array of numbers, e.g. "[2022,2023]". If not provided, all exercises are considered.
      */
     public async parse(
         filePath: string,
@@ -66,14 +74,16 @@ export default class ScdlCli {
         exportDate: string | undefined = undefined,
         delimiter = ";",
         quote = '"',
+        concernedExercices: string | undefined = undefined,
     ) {
+        const exercices = concernedExercices ? (JSON.parse(concernedExercices) as number[]) : undefined;
         const siret = new Siret(allocatorSiret);
         const producer = await scdlService.getProducer(siret);
         await this.validateGenericInput(producer, exportDate);
         const fileContent = detectAndEncode(filePath);
 
         const parsedQuote = quote === "false" ? false : quote;
-        const { entities, errors, parsedInfos } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
+        const { entities, errors, parsedInfos } = scdlService.parseCsv(fileContent, delimiter, parsedQuote, exercices);
 
         scdlService.validateHeaders(parsedInfos, path.basename(filePath));
 

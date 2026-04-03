@@ -116,6 +116,7 @@ export class DepositScdlProcessService {
         depositScdlLogDto: DepositScdlLogDto,
         userId: string,
         pageName?: string | undefined,
+        processedExercises?: number[],
     ): Promise<DepositScdlLogEntity> {
         const existingDepositLog = await this.getDepositLog(userId);
         if (!existingDepositLog) {
@@ -125,7 +126,7 @@ export class DepositScdlProcessService {
 
         depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, this.SECOND_STEP);
 
-        const { parsedInfos, errors } = this.parseFile(file, pageName);
+        const { parsedInfos, errors } = this.parseFile(file, pageName, processedExercises);
 
         await s3StorageService.uploadAndReplaceUserFile(file, userId);
 
@@ -167,6 +168,7 @@ export class DepositScdlProcessService {
             existingLinesInDbOnSamePeriod,
             new ScdlErrorStats(errors),
             pageName,
+            processedExercises,
         );
 
         return this.depositLogPort.updatePartial(
@@ -185,6 +187,7 @@ export class DepositScdlProcessService {
     private parseFile(
         file: Express.Multer.File,
         pageName: string | undefined,
+        processedExercises?: number[],
     ): {
         entities: ScdlStorableGrant[];
         errors: MixedParsedError[];
@@ -195,9 +198,9 @@ export class DepositScdlProcessService {
 
         if (isCsv) {
             const delimiter = detectCsvDelimiter(fileContent);
-            return scdlService.parseCsv(fileContent, delimiter);
+            return scdlService.parseCsv(fileContent, delimiter, undefined, processedExercises);
         } else {
-            return scdlService.parseXls(fileContent, pageName);
+            return scdlService.parseXls(fileContent, pageName, undefined, processedExercises);
         }
     }
 
@@ -284,7 +287,11 @@ export class DepositScdlProcessService {
 
         const file = await s3StorageService.getUserFile(userId, existingDepositLog.uploadedFileInfos!.fileName);
 
-        const { entities, errors, parsedInfos } = this.parseFile(file, existingDepositLog.uploadedFileInfos?.sheetName);
+        const { entities, errors, parsedInfos } = this.parseFile(
+            file,
+            existingDepositLog.uploadedFileInfos?.sheetName,
+            existingDepositLog.uploadedFileInfos?.processedExercises,
+        );
 
         const hasBlockingErrors = errors.some(error => error.bloquant === "oui");
         if (hasBlockingErrors) {

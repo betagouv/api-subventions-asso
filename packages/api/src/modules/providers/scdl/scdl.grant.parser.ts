@@ -111,7 +111,7 @@ export default class ScdlGrantParser {
         return duplicatesLines;
     }
 
-    static parseCsv(chunk: Buffer, delimiter = ";", quote: boolean | string = '"') {
+    static parseCsv(chunk: Buffer, delimiter = ";", quote: boolean | string = '"', processedExercises?: number[]) {
         const parsedChunk: DefaultObject<string>[] = csvSyncParser.parse(chunk, {
             columns: (header: string[]): string[] => header.map(h => h.trim()),
             skip_empty_lines: true,
@@ -123,12 +123,15 @@ export default class ScdlGrantParser {
         });
 
         const duplicates = ScdlGrantParser.findDuplicates(parsedChunk);
-        const { entities, problems, parsedInfos } = ScdlGrantParser.convertValidateData(parsedChunk);
+        const { entities, problems, parsedInfos } = ScdlGrantParser.convertValidateData(
+            parsedChunk,
+            processedExercises,
+        );
 
         return { entities, errors: [...duplicates, ...problems], parsedInfos };
     }
 
-    static parseExcel(content: Buffer, pageName?: string, rowOffset = 0) {
+    static parseExcel(content: Buffer, pageName?: string, rowOffset = 0, processedExercises?: number[]) {
         // todo : supprimer les rowOffset car parcours depot ne permet plus d'en placer et refuser les xls avec offset
         console.log("Open and read file ...");
         const pagesWithName = GenericParser.xlsxParse(content);
@@ -145,7 +148,7 @@ export default class ScdlGrantParser {
             .slice(rowOffset + 1)
             .map(row => GenericParser.linkHeaderToData(headerRow, row)) as DefaultObject<string>[];
         const duplicates = ScdlGrantParser.findDuplicates(data);
-        const { entities, problems, parsedInfos } = ScdlGrantParser.convertValidateData(data);
+        const { entities, problems, parsedInfos } = ScdlGrantParser.convertValidateData(data, processedExercises);
         return { entities, errors: [...duplicates, ...problems], parsedInfos };
     }
 
@@ -171,7 +174,10 @@ export default class ScdlGrantParser {
         };
     }
 
-    protected static convertValidateData(parsedChunk): {
+    protected static convertValidateData(
+        parsedChunk,
+        processedExercises?: number[],
+    ): {
         entities: ScdlStorableGrant[];
         problems: ParsedErrorFormat[];
         parsedInfos: ScdlParsedInfos;
@@ -195,6 +201,14 @@ export default class ScdlGrantParser {
                 annotations,
                 errors: errorsEntity,
             } = ScdlGrantParser.indexDataByPathAndAnnotate<string, ScdlStorableGrant>(SCDL_MAPPER, parsedData);
+
+            const shouldSkipLine =
+                processedExercises !== undefined &&
+                entity.exercice !== undefined &&
+                !processedExercises.includes(entity.exercice);
+
+            if (shouldSkipLine) continue;
+
             errors.push(
                 ...errorsEntity.map(
                     error => ({ ...error, bloquant: "non" }) as ParsedErrorFormat, // don't understand why TS needs me to define type here

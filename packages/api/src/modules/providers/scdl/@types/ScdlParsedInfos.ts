@@ -7,4 +7,5 @@ export interface ScdlParsedInfos {
     totalLines: number;
     lineCountsByExercice: Record<number, number>;
     missingHeaders: MissingHeaders;
+    yearsConcerned?: number[];
 }

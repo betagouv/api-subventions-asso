@@ -56,7 +56,12 @@ describe("DepositScdlProcessService", () => {
     let mockS3uploadAndReplaceUserFile: jest.SpyInstance<Promise<string>, [file: Express.Multer.File, userId: string]>;
     let mockParseCsv: jest.SpyInstance<
         { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; parsedInfos: ScdlParsedInfos },
-        [fileContent: Buffer<ArrayBufferLike>, delimiter?: string | undefined, quote?: string | boolean | undefined]
+        [
+            fileContent: Buffer<ArrayBufferLike>,
+            delimiter?: string | undefined,
+            quote?: string | boolean | undefined,
+            yearsConcerned?: number[],
+        ]
     >;
     let mockGetGrantsOnPeriodByAllocator: jest.SpyInstance<
         Promise<MiscScdlGrantEntity[]>,
@@ -64,7 +69,12 @@ describe("DepositScdlProcessService", () => {
     >;
     let mockParseXls: jest.SpyInstance<
         { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; parsedInfos: ScdlParsedInfos },
-        [fileContent: Buffer<ArrayBufferLike>, pageName?: string | undefined, rowOffset?: number | undefined]
+        [
+            fileContent: Buffer<ArrayBufferLike>,
+            pageName?: string | undefined,
+            rowOffset?: number | undefined,
+            yearsConcerned?: number[],
+        ]
     >;
     let mockDetectCsvDelimiter: jest.SpyInstance<string, [fileContent: Buffer<ArrayBufferLike>]>;
 
@@ -384,11 +394,12 @@ describe("DepositScdlProcessService", () => {
             mockDetectCsvDelimiter.mockReturnValue(expectedDelimiter);
             mockParseCsv.mockReturnValue(expectedResult);
 
+            const processedExercices = [2025];
             // @ts-expect-error - test private method
-            const result = depositScdlProcessService.parseFile(file, undefined);
+            const result = depositScdlProcessService.parseFile(file, undefined, processedExercices);
 
             expect(mockDetectCsvDelimiter).toHaveBeenCalledWith(file.buffer);
-            expect(mockParseCsv).toHaveBeenCalledWith(file.buffer, expectedDelimiter);
+            expect(mockParseCsv).toHaveBeenCalledWith(file.buffer, expectedDelimiter, undefined, processedExercices);
             expect(mockParseXls).not.toHaveBeenCalled();
             expect(result).toBe(expectedResult);
         });
@@ -400,10 +411,11 @@ describe("DepositScdlProcessService", () => {
 
             mockParseXls.mockReturnValue(expectedResult);
 
+            const processedExercices = [2025];
             // @ts-expect-error - test private method
-            const result = depositScdlProcessService.parseFile(file, pageName);
+            const result = depositScdlProcessService.parseFile(file, pageName, processedExercices);
 
-            expect(mockParseXls).toHaveBeenCalledWith(file.buffer, pageName);
+            expect(mockParseXls).toHaveBeenCalledWith(file.buffer, pageName, undefined, processedExercices);
             expect(mockDetectCsvDelimiter).not.toHaveBeenCalled();
             expect(mockParseCsv).not.toHaveBeenCalled();
             expect(result).toBe(expectedResult);
@@ -415,10 +427,11 @@ describe("DepositScdlProcessService", () => {
 
             mockParseXls.mockReturnValue(expectedResult);
 
+            const processedExercices = [2025];
             // @ts-expect-error - test private method
-            const result = depositScdlProcessService.parseFile(file, undefined);
+            const result = depositScdlProcessService.parseFile(file, undefined, processedExercices);
 
-            expect(mockParseXls).toHaveBeenCalledWith(file.buffer, undefined);
+            expect(mockParseXls).toHaveBeenCalledWith(file.buffer, undefined, undefined, processedExercices);
             expect(mockDetectCsvDelimiter).not.toHaveBeenCalled();
             expect(mockParseCsv).not.toHaveBeenCalled();
             expect(result).toBe(expectedResult);
