@@ -1,9 +1,9 @@
 import { ObjectId, WithId } from "mongodb";
-import { ScdlGrantDbo } from "../../../../src/modules/providers/scdl/dbo/ScdlGrantDbo";
-import MiscScdlProducerEntity from "../../../../src/modules/providers/scdl/entities/MiscScdlProducerEntity";
-import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
-import ALLOCATORS from "../../../__fixtures__/allocators.fixture";
-import { getMD5 } from "../../../../src/shared/helpers/StringHelper";
+import { ScdlGrantDbo } from "../../../../../src/modules/providers/scdl/dbo/ScdlGrantDbo";
+import MiscScdlProducerEntity from "../../../../../src/modules/providers/scdl/entities/MiscScdlProducerEntity";
+import { getMD5 } from "../../../../../src/shared/helpers/StringHelper";
+import ALLOCATORS from "../../../../__fixtures__/allocators.fixture";
+import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";
 
 export const LOCAL_AUTHORITIES: WithId<MiscScdlProducerEntity>[] = [
     {

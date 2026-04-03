@@ -27,7 +27,7 @@ import {
 import fs from "fs";
 import ScdlErrorStats from "../../../src/modules/deposit-scdl-process/entities/ScdlErrorStats";
 import depositLogAdapter from "../../../src/adapters/outputs/db/deposit-log/deposit-log.adapter";
-import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
+import { SCDL_GRANT_DBOS } from "../../adapters/outputs/db/__fixtures__/scdl.fixtures";
 
 const g = global as unknown as { app: App };
 

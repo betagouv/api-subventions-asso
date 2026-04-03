@@ -17,7 +17,7 @@ import stateBudgetProgramAdapter from "../../../src/adapters/outputs/db/state-bu
 import chorusFseAdapter from "../../../src/adapters/outputs/db/providers/chorus/chorus.fse.adapter";
 import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
 import { toArray } from "../../__helpers__/ayncIterableHelper";
-import { PROGRAMS } from "../../dataProviders/db/__fixtures__/stateBudgetProgram";
+import { PROGRAMS } from "../../adapters/outputs/db/__fixtures__/state-budget-program.fixtures";
 
 describe("ChorusCli", () => {
     // it contains :

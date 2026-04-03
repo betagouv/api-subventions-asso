@@ -9,7 +9,7 @@ import chorusFseAdapter from "../../../adapters/outputs/db/providers/chorus/chor
 import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../payment-flat/__fixtures__/payment-flat.fixture";
 import paymentFlatService from "../../payment-flat/payment-flat.service";
-import { PROGRAMS } from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
+import { PROGRAMS } from "../../../../tests/adapters/outputs/db/__fixtures__/state-budget-program.fixtures";
 
 jest.mock("../../../adapters/outputs/db/providers/chorus/chorus.adapter");
 jest.mock("./mappers/chorus.mapper");

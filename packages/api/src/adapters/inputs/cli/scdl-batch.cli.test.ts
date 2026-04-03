@@ -15,7 +15,7 @@ import { FileExtensionEnum } from "../../../@enums/FileExtensionEnum";
 import { isStringValid, isBooleanValid, isNumberValid, isShortISODateValid } from "../../../shared/Validators";
 import MiscScdlProducer from "../../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import Siret from "../../../identifier-objects/Siret";
-import { LOCAL_AUTHORITIES } from "../../../../tests/dataProviders/db/__fixtures__/scdl.fixtures";
+import { LOCAL_AUTHORITIES } from "../../../../tests/adapters/outputs/db/__fixtures__/scdl.fixtures";
 
 jest.mock("../../../modules/providers/scdl/scdl.service");
 jest.mock("../cli/scdl.cli");

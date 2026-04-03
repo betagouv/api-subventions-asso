@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
-import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
-import Siret from "../../../../src/identifier-objects/Siret";
+import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";
+import Siret from "../../../../../src/identifier-objects/Siret";
 
 export const DAUPHIN_GISPRO_DBOS = [
     {

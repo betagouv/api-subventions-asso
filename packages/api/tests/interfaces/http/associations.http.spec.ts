@@ -10,10 +10,7 @@ import associationsService from "../../../src/modules/associations/associations.
 import rnaSirenAdapter from "../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
 import { AnyRawGrant, JoinedRawGrant } from "../../../src/modules/grant/@types/RawGrant";
 import demarchesSimplifieesDataAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter";
-import {
-    DATA_ENTITIES as DS_DATA_ENTITIES,
-    SCHEMAS as DS_SCHEMAS,
-} from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
+
 import demarchesSimplifieesSchemaAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-schema.adapter";
 
 import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
@@ -58,8 +55,12 @@ import fonjepTypePosteAdapter from "../../../src/adapters/outputs/db/providers/f
 import AssociationIdentifier from "../../../src/identifier-objects/AssociationIdentifier";
 import rechercheEntreprisesAdapter from "../../../src/adapters/outputs/api/recherche-entreprises/recherche-entreprises.adapter";
 import { RECHERCHE_ENTREPRISES_DTO } from "../../../src/adapters/outputs/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
-import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
-import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
+import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../adapters/outputs/db/__fixtures__/scdl.fixtures";
+import { DAUPHIN_GISPRO_DBOS } from "../../adapters/outputs/db/__fixtures__/dauphin-gispro.fixtures";
+import {
+    DATA_ENTITIES as DS_DATA_ENTITIES,
+    SCHEMAS as DS_SCHEMAS,
+} from "../../adapters/outputs/db/__fixtures__/demarches-simplifiees.fixtures";
 
 jest.mock("../../../src/modules/provider-request/provider-request.service");
 

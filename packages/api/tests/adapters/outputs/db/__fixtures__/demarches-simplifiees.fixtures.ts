@@ -1,6 +1,6 @@
-import DemarchesSimplifieesDataEntity from "../../../../src/modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesDataEntity";
-import DemarchesSimplifieesSchema from "../../../../src/modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesSchema";
-import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
+import DemarchesSimplifieesDataEntity from "../../../../../src/modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesDataEntity";
+import DemarchesSimplifieesSchema from "../../../../../src/modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesSchema";
+import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";
 
 export const DATA_ENTITIES: DemarchesSimplifieesDataEntity[] = [
     {
