@@ -10,7 +10,7 @@ jest.mock("fs");
 jest.mocked(fs);
 import * as CliHelper from "../../../shared/helpers/CliHelper";
 jest.mock("../../../shared/helpers/CliHelper");
-import ScdlCli from "./Scdl.cli";
+import ScdlCli from "./scdl.cli";
 import scdlService from "../../../modules/providers/scdl/scdl.service";
 
 jest.mock("../../../modules/providers/scdl/scdl.service");

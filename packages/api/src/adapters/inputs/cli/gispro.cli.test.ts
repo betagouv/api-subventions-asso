@@ -1,4 +1,4 @@
-import GisproCli from "./Gispro.cli";
+import GisproCli from "./gispro.cli";
 import fs from "fs";
 import gisproService from "../../../modules/providers/dauphin-gispro/gispro.service";
 

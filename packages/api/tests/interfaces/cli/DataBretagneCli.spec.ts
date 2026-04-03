@@ -1,5 +1,5 @@
 import axios from "axios";
-import DataBretagneCli from "../../../src/adapters/inputs/cli/DataBretagne.cli";
+import DataBretagneCli from "../../../src/adapters/inputs/cli/data-bretagne.cli";
 import DataBretagneFixture from "../../__fixtures__/data-bretagne.fixture.json";
 import bopAdapter from "../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
 import { ObjectId } from "mongodb";

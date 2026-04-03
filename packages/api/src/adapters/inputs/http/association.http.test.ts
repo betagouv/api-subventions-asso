@@ -1,6 +1,6 @@
 import { DemandeSubvention } from "dto";
 import associationsService from "../../../modules/associations/associations.service";
-import { AssociationHttp, isAssoIdentifierFromAssoMiddleware } from "./Association.http";
+import { AssociationHttp, isAssoIdentifierFromAssoMiddleware } from "./association.http";
 import consumers from "stream/consumers";
 import grantService from "../../../modules/grant/grant.service";
 import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";

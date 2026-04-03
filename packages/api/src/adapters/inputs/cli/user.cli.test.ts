@@ -1,6 +1,6 @@
 import userStatsService from "../../../modules/user/services/stats/user.stats.service";
 jest.mock("../../../modules/user/services/stats/user.stats.service");
-import UserCli from "./User.cli";
+import UserCli from "./user.cli";
 import userCrudService from "../../../modules/user/services/crud/user.crud.service";
 import userActivationService from "../../../modules/user/services/activation/user.activation.service";
 jest.mock("../../../modules/user/services/crud/user.crud.service");

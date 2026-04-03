@@ -11,7 +11,7 @@ import userCrudService from "../../../src/modules/user/services/crud/user.crud.s
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
 import configurationsService from "../../../src/modules/configurations/configurations.service";
 import { App } from "supertest/types";
-import UserCli from "../../../src/adapters/inputs/cli/User.cli";
+import UserCli from "../../../src/adapters/inputs/cli/user.cli";
 import userAuthService from "../../../src/modules/user/services/auth/user.auth.service";
 
 const g = global as unknown as { app: App };

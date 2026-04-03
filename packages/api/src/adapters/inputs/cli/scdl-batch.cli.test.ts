@@ -1,5 +1,5 @@
 import path from "path";
-import ScdlBatchCli from "./ScdlBatch.cli";
+import ScdlBatchCli from "./scdl-batch.cli";
 import fs from "fs";
 
 import {
@@ -8,7 +8,7 @@ import {
 } from "../../../configurations/scdl-process.conf";
 import { ScdlFileProcessingConfig, ScdlFileProcessingConfigList, ScdlParseCsvArgs } from "../../../@types/ScdlProcess";
 import scdlService from "../../../modules/providers/scdl/scdl.service";
-import ScdlCli from "./Scdl.cli";
+import ScdlCli from "./scdl.cli";
 import MiscScdlProducerEntity from "../../../modules/providers/scdl/entities/MiscScdlProducerEntity";
 import { FileExtensionEnum } from "../../../@enums/FileExtensionEnum";
 
@@ -18,7 +18,7 @@ import Siret from "../../../identifier-objects/Siret";
 import { LOCAL_AUTHORITIES } from "../../../../tests/dataProviders/db/__fixtures__/scdl.fixtures";
 
 jest.mock("../../../modules/providers/scdl/scdl.service");
-jest.mock("../cli/Scdl.cli");
+jest.mock("../cli/scdl.cli");
 jest.mock("fs");
 jest.mock("path");
 jest.mock("../../../shared/Validators");

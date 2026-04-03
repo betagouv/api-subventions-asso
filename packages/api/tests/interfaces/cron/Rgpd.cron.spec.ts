@@ -1,4 +1,4 @@
-import { RgpdCron } from "../../../src/adapters/inputs/cron/Rgpd.cron";
+import { RgpdCron } from "../../../src/adapters/inputs/cron/rgpd.cron";
 import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
 import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
 import brevoContactNotifyPipe from "../../../src/modules/notify/out-pipes/brevo-contact.pipe";

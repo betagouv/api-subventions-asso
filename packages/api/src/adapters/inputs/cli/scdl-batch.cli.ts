@@ -18,7 +18,7 @@ import {
 import { FileExtensionEnum } from "../../../@enums/FileExtensionEnum";
 import { isNumberValid, isShortISODateValid, isStringValid } from "../../../shared/Validators";
 import scdlService from "../../../modules/providers/scdl/scdl.service";
-import ScdlCli from "./Scdl.cli";
+import ScdlCli from "./scdl.cli";
 import Siret from "../../../identifier-objects/Siret";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 

@@ -1,6 +1,6 @@
 import documentsService from "../../../modules/documents/documents.service";
 import SpyInstance = jest.SpyInstance;
-import { DocumentHttp } from "./Document.http";
+import { DocumentHttp } from "./document.http";
 import { IncomingMessage } from "http";
 import { ReadStream } from "node:fs";
 import { DocumentRequestDto } from "dto";

@@ -1,5 +1,5 @@
 import dataBretagneService from "../../../modules/providers/data-bretagne/data-bretagne.service";
-import { DataBretagneCron } from "./DataBretagne.cron";
+import { DataBretagneCron } from "./data-bretagne.cron";
 
 jest.mock("../../../modules/providers/data-bretagne/data-bretagne.service");
 

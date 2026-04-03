@@ -1,6 +1,6 @@
 import { DemandeSubvention, Establishment } from "dto";
 import establishmentService from "../../../modules/establishments/establishment.service";
-import { EstablishmentHttp, isEstabIdentifierFromAssoMiddleware } from "./Establishment.http";
+import { EstablishmentHttp, isEstabIdentifierFromAssoMiddleware } from "./establishment.http";
 import EstablishmentIdentifier from "../../../identifier-objects/EstablishmentIdentifier";
 import Siren from "../../../identifier-objects/Siren";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";

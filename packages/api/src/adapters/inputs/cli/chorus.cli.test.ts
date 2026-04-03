@@ -1,7 +1,7 @@
 import fs from "fs";
 import ChorusParser from "../../../modules/providers/chorus/chorus.parser";
 import chorusService from "../../../modules/providers/chorus/chorus.service";
-import ChorusCli from "./Chorus.cli";
+import ChorusCli from "./chorus.cli";
 import { CHORUS_ENTITIES } from "../../../modules/providers/chorus/__fixtures__/ChorusFixtures";
 import paymentFlatChorusService from "../../../modules/payment-flat/payment-flat.chorus.service";
 

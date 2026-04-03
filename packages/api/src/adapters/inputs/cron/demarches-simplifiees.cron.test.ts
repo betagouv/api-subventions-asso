@@ -1,5 +1,5 @@
 import demarchesSimplifieesService from "../../../modules/providers/demarches-simplifiees/demarches-simplifiees.service";
-import { DemarchesSimplifieesCron } from "./DemarchesSimplifiees.cron";
+import { DemarchesSimplifieesCron } from "./demarches-simplifiees.cron";
 import dataLogService from "../../../modules/data-log/dataLog.service";
 
 jest.mock("../../../modules/providers/demarches-simplifiees/demarches-simplifiees.service", () => ({

@@ -1,4 +1,4 @@
-import FonjepCli from "./Fonjep.cli";
+import FonjepCli from "./fonjep.cli";
 import {
     DISPOSITIF_ENTITY,
     POSTE_ENTITY,

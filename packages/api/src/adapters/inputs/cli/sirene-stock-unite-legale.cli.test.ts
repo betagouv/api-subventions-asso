@@ -1,5 +1,5 @@
 import sireneStockUniteLegaleFileService from "../../../modules/providers/sirene/stock-unite-legale/sirene-stock-unite-legale.file.service";
-import SireneStockUniteLegaleCli from "./SireneStockUniteLegale.cli";
+import SireneStockUniteLegaleCli from "./sirene-stock-unite-legale.cli";
 
 describe("SireneStockUniteLegaleCli", () => {
     let sireneCli: SireneStockUniteLegaleCli;

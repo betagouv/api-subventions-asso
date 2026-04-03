@@ -1,4 +1,4 @@
-import SubventiaCli from "./Subventia.cli";
+import SubventiaCli from "./subventia.cli";
 import subventiaService from "../../../modules/providers/subventia/subventia.service";
 jest.mock("csv-stringify/sync", () => ({
     stringify: jest.fn(() => ""),

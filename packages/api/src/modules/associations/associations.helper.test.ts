@@ -15,7 +15,7 @@ jest.mock("../providers/index");
 jest.mock("../providers/api-asso/api-asso.service");
 jest.mock("../providers/unite-legale-entreprise/unite-legale.entreprise.service");
 jest.mock("../../shared/LegalCategoriesAccepted", () => ({ LEGAL_CATEGORIES_ACCEPTED: "asso" }));
-jest.mock("../providers/sirene/stockUniteLegale/sirene-stock-unite-legale.service");
+jest.mock("../providers/sirene/stock-unite-legale/sirene-stock-unite-legale.service");
 
 const DEFAULT_PROVIDERS = providers.default;
 

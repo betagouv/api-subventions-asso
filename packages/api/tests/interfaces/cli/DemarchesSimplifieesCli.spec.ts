@@ -1,7 +1,7 @@
 import { DS_DTO, DS_ENTITY, DS_FLAT, SCHEMA } from "./__fixtures__/demarchesSimplifiees.fixture";
 import demarchesSimplifieesService from "../../../src/modules/providers/demarches-simplifiees/demarches-simplifiees.service";
 import demarchesSimplifieesSchemaAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-schema.adapter";
-import DemarchesSimplifieesCli from "../../../src/adapters/inputs/cli/DemarchesSimplifiees.cli";
+import DemarchesSimplifieesCli from "../../../src/adapters/inputs/cli/demarches-simplifiees.cli";
 import demarchesSimplifieesDataAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter";
 import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 import { ApplicationFlatEntity } from "../../../src/entities/flats/ApplicationFlatEntity";

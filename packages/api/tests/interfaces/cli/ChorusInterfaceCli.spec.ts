@@ -1,4 +1,4 @@
-import ChorusCli from "../../../src/adapters/inputs/cli/Chorus.cli";
+import ChorusCli from "../../../src/adapters/inputs/cli/chorus.cli";
 import path from "path";
 import chorusAdapter from "../../../src/adapters/outputs/db/providers/chorus/chorus.adapter";
 import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";

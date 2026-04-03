@@ -1,4 +1,4 @@
-import { DepositScdlProcessHttp } from "./DepositScdlProcess.http";
+import { DepositScdlProcessHttp } from "./deposit-scdl-process.http";
 import { IdentifiedRequest } from "../../../@types";
 import { ObjectId } from "mongodb";
 import {

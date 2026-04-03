@@ -1,5 +1,5 @@
 import configurationsService from "../../../modules/configurations/configurations.service";
-import { ConfigurationsHttp } from "./Configurations.http";
+import { ConfigurationsHttp } from "./configurations.http";
 
 jest.mock("../../../modules/configurations/configurations.service");
 

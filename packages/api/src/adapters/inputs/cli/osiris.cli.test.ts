@@ -1,6 +1,6 @@
 import OsirisParser from "../../../modules/providers/osiris/osiris.parser";
 import osirisService from "../../../modules/providers/osiris/osiris.service";
-import OsirisCli from "./Osiris.cli";
+import OsirisCli from "./osiris.cli";
 
 jest.mock("../../../modules/providers/osiris/osiris.parser");
 jest.mock("../../../modules/providers/osiris/osiris.service");

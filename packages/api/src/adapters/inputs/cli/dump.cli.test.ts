@@ -4,7 +4,7 @@ jest.mock("../../../modules/dump/dump.service");
 import fs from "fs";
 
 import DumpPipedriveParser from "../../../modules/dump/dump.pipedrive.parser";
-import DumpCli from "./Dump.cli";
+import DumpCli from "./dump.cli";
 
 describe("importPipedriveData", () => {
     const FILE_PATH = "path/file.xlsx";

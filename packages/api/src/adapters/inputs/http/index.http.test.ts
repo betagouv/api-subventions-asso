@@ -1,5 +1,5 @@
 import indexService from "../../../modules/index/index.service";
-import { IndexHttp } from "./Index.http";
+import { IndexHttp } from "./index.http";
 
 describe("IndexHttp", () => {
     describe("index", () => {

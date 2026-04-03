@@ -1,6 +1,6 @@
 import path from "path";
 import db from "../../../../src/shared/MongoConnection";
-import FonjepCli from "../../../../src/adapters/inputs/cli/Fonjep.cli";
+import FonjepCli from "../../../../src/adapters/inputs/cli/fonjep.cli";
 import fonjepVersementAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
 import { ObjectId } from "mongodb";
 import fonjepTiersAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.tiers.adapter";

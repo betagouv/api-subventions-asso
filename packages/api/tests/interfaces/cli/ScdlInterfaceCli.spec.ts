@@ -1,5 +1,5 @@
 import path from "path";
-import ScdlCli from "../../../src/adapters/inputs/cli/Scdl.cli";
+import ScdlCli from "../../../src/adapters/inputs/cli/scdl.cli";
 import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter";
 import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
 import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";

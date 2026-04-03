@@ -1,6 +1,6 @@
 import { AMOUNTS_VS_PROGRAM_REGION_ENTITIES } from "../../../modules/dataviz/amounts-vs-program-region/__fixtures__/amounts-vs-program-region.fixture";
 import amountsVsProgramRegionService from "../../../modules/dataviz/amounts-vs-program-region/amounts-vs-program-region.service";
-import { DataVizHttp } from "./DataViz.http";
+import { DataVizHttp } from "./dataviz.http";
 import { AmountsVsProgramRegionDto } from "dto";
 
 const controller = new DataVizHttp();

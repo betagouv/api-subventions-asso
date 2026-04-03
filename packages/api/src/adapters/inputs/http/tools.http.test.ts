@@ -1,4 +1,4 @@
-import { ToolsHttp } from "./Tools.http";
+import { ToolsHttp } from "./tools.http";
 import * as csvSyncStringifier from "csv-stringify/sync";
 import { MixedParsedError } from "../../../modules/providers/scdl/@types/Validation";
 import scdlService from "../../../modules/providers/scdl/scdl.service";

@@ -1,4 +1,4 @@
-import { AuthentificationHttp } from "./Authentification.http";
+import { AuthentificationHttp } from "./authentification.http";
 import { IdentifiedRequest } from "../../../@types";
 import userAgentConnectService from "../../../modules/user/services/agentConnect/user.agentConnect.service";
 import userAuthService from "../../../modules/user/services/auth/user.auth.service";
@@ -40,7 +40,7 @@ describe("Authentication http", () => {
                     AGENT_CONNECT_ENABLED: false,
                     __esModule: true,
                 }));
-                const { AuthentificationHttp: NoAcController } = await import("./Authentification.http.ts");
+                const { AuthentificationHttp: NoAcController } = await import("./authentification.http");
                 noAcCtrl = new NoAcController();
             });
             afterAll(() => {

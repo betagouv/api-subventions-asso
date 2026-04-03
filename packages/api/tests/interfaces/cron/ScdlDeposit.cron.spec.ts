@@ -1,5 +1,5 @@
 import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
-import { ScdlDepositCron } from "../../../src/adapters/inputs/cron/ScdlDeposit.cron";
+import { ScdlDepositCron } from "../../../src/adapters/inputs/cron/scdl-deposit.cron";
 import { DEPOSIT_LOG_DBO } from "../../../src/modules/deposit-scdl-process/__fixtures__/deposit-log.fixture";
 import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
 import { addDaysToDate, sameDateLastYear } from "../../../src/shared/helpers/DateHelper";

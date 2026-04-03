@@ -1,4 +1,4 @@
-import { DTOS, ENTITIES } from "../../__fixtures__/sirene-stock-unite-legale.fixture";
+import { DBOS, DTOS, ENTITIES } from "../../__fixtures__/sirene-stock-unite-legale.fixture";
 import SireneStockUniteLegaleMapper from "./sirene-stock-unite-legale.mapper";
 
 jest.mock("../../../../../adapters/outputs/db/unite-legale-name/unite-legale-name.mapper", () => ({

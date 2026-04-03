@@ -1,5 +1,5 @@
 import statsService from "../../../modules/stats/stats.service";
-import { AdminHttp } from "./Admin.http";
+import { AdminHttp } from "./admin.http";
 
 jest.mock("../../../modules/stats/stats.service");
 
