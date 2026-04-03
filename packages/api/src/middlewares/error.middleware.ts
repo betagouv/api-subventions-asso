@@ -8,7 +8,7 @@ export function errorHandler(isTest: boolean) {
          * TSOA Validation error handling
          */
         if (err instanceof ValidateError) {
-            console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
+            console.warn(`Caught Validation Error for %s:`, req.path, err.fields);
             // TODO: change this for 422 as it is more accurate
             return res.status(400).json({
                 message: "Validation Failed",

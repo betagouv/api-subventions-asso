@@ -20,7 +20,7 @@ import userActivityMiddleware from "./middlewares/user-activity.middleware";
 import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
 import { headersMiddleware } from "./middlewares/headers.middleware";
-import { DEV, ENV } from "./configurations/env.conf";
+import { DEV, ENV, PROD } from "./configurations/env.conf";
 import { SESSION_SECRET } from "./configurations/pro-connect.conf";
 import { mongoSessionStoreConfig } from "./shared/MongoConnection";
 import { FRONT_OFFICE_URL } from "./configurations/front.conf";
@@ -63,11 +63,16 @@ export async function startServer(port = "8080", isTest = false) {
     app.use(cookieParser());
     app.use(
         session({
-            pauseStream: false,
             secret: SESSION_SECRET,
             resave: false, // don't save session if unmodified
             saveUninitialized: false, // don't create session until something stored
             store: new MongoStore(mongoSessionStoreConfig),
+            pauseStream: false,
+            cookie: {
+                secure: PROD,
+                httpOnly: true,
+                sameSite: "lax",
+            },
         }),
     );
 
