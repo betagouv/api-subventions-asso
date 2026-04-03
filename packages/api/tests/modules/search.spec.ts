@@ -3,7 +3,7 @@ import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
 import uniteLegalNameAdapter from "../../src/adapters/outputs/db/unite-legale-name/unite-legale-name.adapter";
 import AssociationNameFixture from "../__fixtures__/association-name.fixture";
-import apiEntrepriseService from "../../src/modules/providers/api-entreprise/apiEntreprise.service";
+import apiEntrepriseService from "../../src/modules/providers/api-entreprise/api-entreprise.service";
 import rechercheEntreprisesAdapter from "../../src/adapters/outputs/api/recherche-entreprises/recherche-entreprises.adapter";
 import { EMPTY_RECHERCHE_ENTREPRISES_DTO } from "../../src/adapters/outputs/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
 

@@ -5,7 +5,7 @@ import * as providerAdapter from "../../providers.mapper";
 
 const mockAdaptStatus = jest.fn();
 
-jest.mock("../demarchesSimplifiees.service");
+jest.mock("../demarches-simplifiees.service");
 jest.mock("../../providers.mapper", () => ({
     toStatusFactory: jest.fn(_conversionArray => mockAdaptStatus),
 }));

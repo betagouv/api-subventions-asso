@@ -1,0 +1,11 @@
+import { ProviderEnum } from "../../@enums/ProviderEnum";
+import ProviderRequestFactory, { ProviderRequestService } from "../provider-request/provider-request.service";
+import Provider from "./@types/IProvider";
+
+export default abstract class ProviderCore implements Provider {
+    public http: ProviderRequestService;
+
+    constructor(public readonly meta: { name: string; type: ProviderEnum; description: string; id: string }) {
+        this.http = ProviderRequestFactory(this.meta.id);
+    }
+}

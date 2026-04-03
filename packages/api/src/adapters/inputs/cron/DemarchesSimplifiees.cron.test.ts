@@ -1,8 +1,8 @@
-import demarchesSimplifieesService from "../../../modules/providers/demarches-simplifiees/demarchesSimplifiees.service";
+import demarchesSimplifieesService from "../../../modules/providers/demarches-simplifiees/demarches-simplifiees.service";
 import { DemarchesSimplifieesCron } from "./DemarchesSimplifiees.cron";
 import dataLogService from "../../../modules/data-log/dataLog.service";
 
-jest.mock("../../../modules/providers/demarches-simplifiees/demarchesSimplifiees.service", () => ({
+jest.mock("../../../modules/providers/demarches-simplifiees/demarches-simplifiees.service", () => ({
     updateAllForms: jest.fn(),
     meta: { id: "mockedId", name: "mockedName" },
 }));

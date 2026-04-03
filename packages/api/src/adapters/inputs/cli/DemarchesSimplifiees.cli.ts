@@ -2,7 +2,7 @@ import fs from "fs";
 
 import { StaticImplements } from "../../../decorators/static-implements.decorator";
 import { ApplicationFlatCli, CliStaticInterface } from "../../../@types";
-import demarchesSimplifieesService from "../../../modules/providers/demarches-simplifiees/demarchesSimplifiees.service";
+import demarchesSimplifieesService from "../../../modules/providers/demarches-simplifiees/demarches-simplifiees.service";
 import DemarchesSimplifieesSchema from "../../../modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesSchema";
 import { DemarchesSimplifieesSchemaSeed } from "../../../modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesSchemaSeed";
 

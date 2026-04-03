@@ -1,10 +1,10 @@
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import associationHelper from "./associations.helper";
 import providers from "../providers";
-import apiAssoService from "../providers/api-asso/apiAsso.service";
-import uniteLegalEntreprisesService from "../providers/unite-legale-entreprise/uniteLegal.entreprises.service";
+import apiAssoService from "../providers/api-asso/api-asso.service";
+import uniteLegaleEntrepriseService from "../providers/unite-legale-entreprise/unite-legale.entreprise.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
-import sireneStockUniteLegaleService from "../providers/sirene/stockUniteLegale/sireneStockUniteLegale.service";
+import sireneStockUniteLegaleService from "../providers/sirene/stock-unite-legale/sirene-stock-unite-legale.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
@@ -12,10 +12,10 @@ import AssociationIdentifier from "../../identifier-objects/AssociationIdentifie
 
 jest.mock("../providers/index");
 
-jest.mock("../providers/api-asso/apiAsso.service");
-jest.mock("../providers/unite-legale-entreprise/uniteLegal.entreprises.service");
+jest.mock("../providers/api-asso/api-asso.service");
+jest.mock("../providers/unite-legale-entreprise/unite-legale.entreprise.service");
 jest.mock("../../shared/LegalCategoriesAccepted", () => ({ LEGAL_CATEGORIES_ACCEPTED: "asso" }));
-jest.mock("../providers/sirene/stockUniteLegale/sireneStockUniteLegale.service");
+jest.mock("../providers/sirene/stockUniteLegale/sirene-stock-unite-legale.service");
 
 const DEFAULT_PROVIDERS = providers.default;
 
@@ -63,7 +63,7 @@ describe("associationHelper", () => {
             // @ts-expect-error: mock
             jest.mocked(sireneStockUniteLegaleService.findOneBySiren).mockResolvedValueOnce(false);
             // @ts-expect-error: mock
-            uniteLegalEntreprisesService.isEntreprise.mockResolvedValueOnce(true);
+            uniteLegaleEntrepriseService.isEntreprise.mockResolvedValueOnce(true);
             const actual = await associationHelper.isIdentifierFromAsso(IDENTIFIER_WITHOUT_RNA);
             expect(actual).toBeFalsy();
         });
@@ -72,7 +72,7 @@ describe("associationHelper", () => {
             // @ts-expect-error: mock
             rnaSirenServiceFindOne.mockImplementationOnce(() => null);
             // @ts-expect-error: mock
-            uniteLegalEntreprisesService.isEntreprise.mockResolvedValueOnce(false);
+            uniteLegaleEntrepriseService.isEntreprise.mockResolvedValueOnce(false);
             // @ts-expect-error: mock
             apiAssoService.findAssociationBySiren.mockImplementationOnce(() => ({ categorie_juridique: [] }));
             const actual = await associationHelper.isIdentifierFromAsso(IDENTIFIER_WITHOUT_RNA);

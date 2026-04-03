@@ -1,6 +1,6 @@
 import { GeoDepartementDto, GeoRegionDto } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import ProviderCore from "../ProviderCore";
+import ProviderCore from "../provider.core";
 import geoAdapter from "../../../adapters/outputs/db/providers/geo-api/geo.adapter";
 import { GeoEntity } from "./@types/geo.types";
 

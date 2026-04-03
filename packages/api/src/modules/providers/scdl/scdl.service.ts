@@ -9,7 +9,7 @@ import { MixedParsedError, ParsedErrorDuplicate, ParsedErrorFormat } from "./@ty
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import applicationFlatAdapter from "../../../adapters/outputs/db/application-flat/application-flat.adapter";
 import Siret from "../../../identifier-objects/Siret";
-import apiAssoService from "../api-asso/apiAsso.service";
+import apiAssoService from "../api-asso/api-asso.service";
 import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
 import scdlGrantService from "./scdl.grant.service";
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";

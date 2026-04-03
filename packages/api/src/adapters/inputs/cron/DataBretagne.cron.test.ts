@@ -1,7 +1,7 @@
-import dataBretagneService from "../../../modules/providers/data-bretagne/dataBretagne.service";
+import dataBretagneService from "../../../modules/providers/data-bretagne/data-bretagne.service";
 import { DataBretagneCron } from "./DataBretagne.cron";
 
-jest.mock("../../../modules/providers/data-bretagne/dataBretagne.service");
+jest.mock("../../../modules/providers/data-bretagne/data-bretagne.service");
 
 describe("DataBretagne Cron", () => {
     // TODO test that it saves import log

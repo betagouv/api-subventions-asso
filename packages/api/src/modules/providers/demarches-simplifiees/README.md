@@ -104,7 +104,7 @@ Les statuts de démarches simplifiées viennent du système lui-même (ni des ch
 
 / signifie de ne rien rentrer pour cette question. Ça prend alors la valeur par défaut ou acte qu'on sait pas
 
-### conformément au schemaSeed `ministereCulture.json`
+### conformément au schemaSeed `ministere-culture.json`
 
 | demarcheId | service_instructeur | exercice / budgetaryYear                | commentaire                                                                                                                                              |
 | ---------- | ------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |

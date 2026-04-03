@@ -1,6 +1,6 @@
 import { CronController } from "../../../@types/CronController";
 import { AsyncCron } from "../../../decorators/cron.decorator";
-import sireneStockUniteLegaleFileService from "../../../modules/providers/sirene/stockUniteLegale/sireneStockUniteLegale.file.service";
+import sireneStockUniteLegaleFileService from "../../../modules/providers/sirene/stock-unite-legale/sirene-stock-unite-legale.file.service";
 
 export class SireneStockUniteLegaleCron implements CronController {
     name = "sirene";

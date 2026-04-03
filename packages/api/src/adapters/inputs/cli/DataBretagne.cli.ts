@@ -1,6 +1,6 @@
 import { CliStaticInterface } from "../../../@types";
 import { StaticImplements } from "../../../decorators/static-implements.decorator";
-import dataBretagneService from "../../../modules/providers/data-bretagne/dataBretagne.service";
+import dataBretagneService from "../../../modules/providers/data-bretagne/data-bretagne.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class DataBretagneCli {

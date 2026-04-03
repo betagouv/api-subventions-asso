@@ -14,7 +14,7 @@ import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/identifier-objects/Siren";
 import statsAssociationsVisitAdapter from "../../../src/adapters/outputs/db/stats/association-visit.adapter";
 import { App } from "supertest/types";
-import apiAssoService from "../../../src/modules/providers/api-asso/apiAsso.service";
+import apiAssoService from "../../../src/modules/providers/api-asso/api-asso.service";
 import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
 import {

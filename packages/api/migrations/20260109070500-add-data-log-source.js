@@ -1,6 +1,6 @@
 const dauphinService = require("../build/src/modules/providers/dauphin-gispro/dauphin.service").default;
-const dsService = require("../build/src/modules/providers/demarches-simplifiees/demarchesSimplifiees.service").default;
-const dataBretagneService = require("../build/src/modules/providers/data-bretagne/dataBretagne.service").default;
+const dsService = require("../build/src/modules/providers/demarches-simplifiees/demarches-simplifiees.service").default;
+const dataBretagneService = require("../build/src/modules/providers/data-bretagne/data-bretagne.service").default;
 const gisproService = require("../build/src/modules/providers/dauphin-gispro/gispro.service").default;
 const { DataLogSource } = require("../build/src/modules/data-log/entities/dataLogEntity");
 

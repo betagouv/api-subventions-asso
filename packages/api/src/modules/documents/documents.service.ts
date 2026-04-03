@@ -7,7 +7,7 @@ import mime from "mime-types";
 import providers from "../providers";
 import { ProviderRequestService } from "../provider-request/provider-request.service";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
-import ProviderCore from "../providers/ProviderCore";
+import ProviderCore from "../providers/provider.core";
 import { DauphinService } from "../providers/dauphin-gispro/dauphin.service";
 import { providersById } from "../providers/providers.helper";
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";

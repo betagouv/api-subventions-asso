@@ -1,7 +1,7 @@
 import MongoAdapter from "../../MongoAdapter";
-import { SireneUniteLegaleDbo } from "../../../../../modules/providers/sirene/stockUniteLegale/@types/SireneUniteLegaleDbo";
+import { SireneUniteLegaleDbo } from "../../../../../modules/providers/sirene/stock-unite-legale/@types/SireneUniteLegaleDbo";
 import { SireneStockUniteLegaleEntity } from "../../../../../entities//SireneStockUniteLegaleEntity";
-import SireneStockUniteLegaleMapper from "../../../../../modules/providers/sirene/stockUniteLegale/mappers/sirene-stock-unite-legale.mapper";
+import SireneStockUniteLegaleMapper from "../../../../../modules/providers/sirene/stock-unite-legale/mappers/sirene-stock-unite-legale.mapper";
 import Siren from "../../../../../identifier-objects/Siren";
 import { SireneStockUniteLegalePort } from "./sirene-stock-unite-legale.port";
 

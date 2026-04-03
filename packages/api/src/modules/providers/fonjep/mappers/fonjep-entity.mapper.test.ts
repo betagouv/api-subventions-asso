@@ -13,10 +13,10 @@ import {
 import { DISPOSITIF_ENTITY, POSTE_ENTITY, TIERS_ENTITY, VERSEMENT_ENTITY } from "../__fixtures__/fonjepEntities";
 
 import FonjepEntityMapper from "./fonjep-entity.mapper";
-import dataBretagneService from "../../data-bretagne/dataBretagne.service";
+import dataBretagneService from "../../data-bretagne/data-bretagne.service";
 import Siret from "../../../../identifier-objects/Siret";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
-jest.mock("../../data-bretagne/dataBretagne.service");
+jest.mock("../../data-bretagne/data-bretagne.service");
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
 jest.mock("../../../../shared/helpers/StringHelper");
 import * as DateHelper from "../../../../shared/helpers/DateHelper";

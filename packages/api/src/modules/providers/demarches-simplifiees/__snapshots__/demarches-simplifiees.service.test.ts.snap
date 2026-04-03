@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DemarchesSimplifieesService buildSchema should returns aggregated results by field 1`] = `
+[
+  {
+    "from": 1,
+    "to": 1,
+  },
+  {
+    "from": 2,
+    "to": 2,
+  },
+]
+`;
+
+exports[`DemarchesSimplifieesService sendQuery fails if empty demarche 1`] = `"empty Démarches Simplifiées result (not normal with graphQL)"`;
+
+exports[`DemarchesSimplifieesService sendQuery fails if graphQL errors 1`] = `"il y a des pbs"`;

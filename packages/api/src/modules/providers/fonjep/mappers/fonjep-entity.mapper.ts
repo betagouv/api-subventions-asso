@@ -15,7 +15,7 @@ import Siren from "../../../../identifier-objects/Siren";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { FonjepApplicationFlatEntity, FonjepPaymentFlatEntity } from "../entities/FonjepFlatEntity";
 import { DataBretagneRecords } from "../../data-bretagne/@types/DataBretagne";
-import dataBretagneService from "../../data-bretagne/dataBretagne.service";
+import dataBretagneService from "../../data-bretagne/data-bretagne.service";
 import { getShortISODate, modifyDateYear } from "../../../../shared/helpers/DateHelper";
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
 import EstablishmentIdentifier from "../../../../identifier-objects/EstablishmentIdentifier";

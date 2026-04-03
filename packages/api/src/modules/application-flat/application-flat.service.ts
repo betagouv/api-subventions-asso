@@ -4,7 +4,7 @@ import AssociationIdentifier from "../../identifier-objects/AssociationIdentifie
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import { RawApplication } from "../grant/@types/RawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
-import ProviderCore from "../providers/ProviderCore";
+import ProviderCore from "../providers/provider.core";
 import ApplicationProvider from "../subventions/@types/ApplicationProvider";
 import Siret from "../../identifier-objects/Siret";
 import ApplicationFlatMapper from "./application-flat.mapper";

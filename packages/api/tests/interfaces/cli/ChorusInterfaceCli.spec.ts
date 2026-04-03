@@ -5,7 +5,7 @@ import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/pa
 import uniteLegalEntrepriseAdapter from "../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 import sireneUniteLegaleDbAdapter from "../../../src/adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
 import { SireneStockUniteLegaleEntity } from "../../../src/entities/SireneStockUniteLegaleEntity";
-import apiAssoService from "../../../src/modules/providers/api-asso/apiAsso.service";
+import apiAssoService from "../../../src/modules/providers/api-asso/api-asso.service";
 import { Association } from "dto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../src/shared/LegalCategoriesAccepted";
 import Siren from "../../../src/identifier-objects/Siren";

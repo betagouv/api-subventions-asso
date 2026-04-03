@@ -5,7 +5,7 @@ import AssociationIdentifier from "../../identifier-objects/AssociationIdentifie
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import { RawPayment } from "../grant/@types/RawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
-import ProviderCore from "../providers/ProviderCore";
+import ProviderCore from "../providers/provider.core";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import PaymentFlatMapper from "./payment-flat.mapper";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";

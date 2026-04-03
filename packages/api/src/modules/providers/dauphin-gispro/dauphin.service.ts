@@ -8,7 +8,7 @@ import configurationsService from "../../configurations/configurations.service";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
-import ProviderCore from "../ProviderCore";
+import ProviderCore from "../provider.core";
 import EstablishmentIdentifier from "../../../identifier-objects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 import Siren from "../../../identifier-objects/Siren";

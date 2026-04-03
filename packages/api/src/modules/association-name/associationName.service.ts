@@ -1,5 +1,5 @@
 import { NotAssociationError } from "core";
-import uniteLegalNameService from "../providers/unite-legale-name/uniteLegal.name.service";
+import UniteLegaleNameService from "../providers/unite-legale-name/unite-legale.name.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import Rna from "../../identifier-objects/Rna";
@@ -9,7 +9,7 @@ import AssociationNameEntity from "./entities/AssociationNameEntity";
 
 export class AssociationNameService {
     async getNameFromIdentifier(identifier: AssociationIdentifier): Promise<string | undefined> {
-        const result = await uniteLegalNameService.getNameFromIdentifier(identifier);
+        const result = await UniteLegaleNameService.getNameFromIdentifier(identifier);
 
         if (!result) return;
 
@@ -45,7 +45,7 @@ export class AssociationNameService {
 
             const promiseResults = [
                 ...(await Promise.all(
-                    identifiers.map(identifierStr => uniteLegalNameService.searchBySirenSiretName(identifierStr)),
+                    identifiers.map(identifierStr => UniteLegaleNameService.searchBySirenSiretName(identifierStr)),
                 )),
                 ...(await Promise.all(identifiers.map(identifierStr => searchEntreprisesCatch(identifierStr)))),
             ];
@@ -55,7 +55,7 @@ export class AssociationNameService {
             // Siret Or Name
 
             const promiseResults = [
-                ...(await uniteLegalNameService.searchBySirenSiretName(value.toLowerCase().trim())),
+                ...(await UniteLegaleNameService.searchBySirenSiretName(value.toLowerCase().trim())),
                 ...(await searchEntreprisesCatch(value)),
             ];
 

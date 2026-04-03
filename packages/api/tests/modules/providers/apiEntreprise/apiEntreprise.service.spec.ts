@@ -1,4 +1,4 @@
-// import apiEntrepriseService from "../../../../src/modules/providers/api-entreprise/apiEntreprise.service";
+// import apiEntrepriseService from "../../../../src/modules/providers/api-entreprise/api-entreprise.service";
 
 // This requires access to .env API_ENTREPRISE_TOKEN but it can't be stored on GitHub.
 // For now, integration test are disabled for this reason.

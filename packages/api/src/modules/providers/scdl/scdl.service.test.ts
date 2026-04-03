@@ -18,7 +18,7 @@ import ScdlGrantParser from "./scdl.grant.parser";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import applicationFlatAdapter from "../../../adapters/outputs/db/application-flat/application-flat.adapter";
-import apiAssoService from "../api-asso/apiAsso.service";
+import apiAssoService from "../api-asso/api-asso.service";
 import Siret from "../../../identifier-objects/Siret";
 import fs from "fs";
 import { ObjectId } from "mongodb";
@@ -29,7 +29,7 @@ import { ScdlParsedInfos } from "./@types/ScdlParsedInfos";
 const mockedFs = jest.mocked(fs);
 
 jest.mock("../../../adapters/outputs/db/application-flat/application-flat.adapter");
-jest.mock("../api-asso/apiAsso.service");
+jest.mock("../api-asso/api-asso.service");
 
 describe("ScdlService", () => {
     const UNIQUE_ID = "UNIQUE_ID";

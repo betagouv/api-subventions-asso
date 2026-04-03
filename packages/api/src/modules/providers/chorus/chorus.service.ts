@@ -1,7 +1,7 @@
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import ProviderCore from "../ProviderCore";
+import ProviderCore from "../provider.core";
 import Siren from "../../../identifier-objects/Siren";
 import chorusAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.adapter";
 import ChorusEntity from "./entities/ChorusEntity";

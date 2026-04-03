@@ -1,7 +1,7 @@
 import { AggregationCursor } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
-import ProviderCore from "../ProviderCore";
+import ProviderCore from "../provider.core";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import Siret from "../../../identifier-objects/Siret";
 import Siren from "../../../identifier-objects/Siren";

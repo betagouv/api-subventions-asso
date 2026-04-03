@@ -6,7 +6,7 @@ import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.a
 import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 import notifyService from "../../../src/modules/notify/notify.service";
 import { NotificationType } from "../../../src/modules/notify/@types/NotificationType";
-import apiAssoService from "../../../src/modules/providers/api-asso/apiAsso.service";
+import apiAssoService from "../../../src/modules/providers/api-asso/api-asso.service";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 
 describe("SCDL CLI", () => {

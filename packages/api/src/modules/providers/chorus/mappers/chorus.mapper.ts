@@ -6,12 +6,12 @@ import type RefProgrammationEntity from "../../../../entities/RefProgrammationEn
 import type { ChorusPaymentFlatEntity } from "../@types/ChorusPaymentFlat";
 import type { EstablishmentIdType } from "../../../../identifier-objects/@types/IdentifierType";
 
-import dataBretagneService from "../../data-bretagne/dataBretagne.service";
+import dataBretagneService from "../../data-bretagne/data-bretagne.service";
 import Siret from "../../../../identifier-objects/Siret";
 import Ridet from "../../../../identifier-objects/Ridet";
 import Tahitiet from "../../../../identifier-objects/Tahitiet";
 import { getShortISODate } from "../../../../shared/helpers/DateHelper";
-import REGION_MAPPING from "./ChorusRegionMapping";
+import REGION_MAPPING from "./chorus-region.mapping";
 import { NOT_APPLICABLE_VALUE } from "core";
 
 export default class ChorusMapper {
