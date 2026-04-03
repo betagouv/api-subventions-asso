@@ -1,10 +1,10 @@
-import { RoleEnum } from "../../../../@enums/Roles";
+import { RoleEnum } from "../../../../@enums/RolesEnum";
 import { BadRequestError, InternalServerError } from "core";
 import userRolesService from "./user.roles.service";
-import userAdapter from "../../../../dataProviders/db/user/user.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 
 describe("user roles service", () => {

@@ -1,9 +1,9 @@
 import { MandatoryFlatEntity } from "../../../../entities/flats/FlatEntity";
 import PaymentFlatEntity from "../../../../entities/flats/PaymentFlatEntity";
-import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
-import Ridet from "../../../../identifierObjects/Ridet";
-import Siret from "../../../../identifierObjects/Siret";
-import Tahitiet from "../../../../identifierObjects/Tahitiet";
+import EstablishmentIdentifier from "../../../../identifier-objects/EstablishmentIdentifier";
+import Ridet from "../../../../identifier-objects/Ridet";
+import Siret from "../../../../identifier-objects/Siret";
+import Tahitiet from "../../../../identifier-objects/Tahitiet";
 import { BRANCHE_ACCEPTED } from "../../../../shared/ChorusBrancheAccepted";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { GenericParser } from "../../../../shared/GenericParser";

@@ -2,28 +2,28 @@ import "reflect-metadata";
 import { mkdirSync, existsSync } from "fs";
 import "./configurations/env.conf";
 
-import FonjepCli from "./interfaces/cli/Fonjep.cli";
-import ChorusCli from "./interfaces/cli/Chorus.cli";
-import OsirisCli from "./interfaces/cli/Osiris.cli";
-import UserCli from "./interfaces/cli/User.cli";
-import ConsumerCli from "./interfaces/cli/Consumer.cli";
+import FonjepCli from "./adapters/inputs/cli/fonjep.cli";
+import ChorusCli from "./adapters/inputs/cli/chorus.cli";
+import OsirisCli from "./adapters/inputs/cli/osiris.cli";
+import UserCli from "./adapters/inputs/cli/user.cli";
+import ConsumerCli from "./adapters/inputs/cli/consumer.cli";
 import { connectDB } from "./shared/MongoConnection";
 
 import { CliStaticInterface } from "./@types";
 
-import SubventiaCli from "./interfaces/cli/Subventia.cli";
-import DemarchesSimplifieesCli from "./interfaces/cli/DemarchesSimplifiees.cli";
-import GisproCli from "./interfaces/cli/Gispro.cli";
-import DauphinCli from "./interfaces/cli/Dauphin.cli";
-import AdminStructureCli from "./interfaces/cli/AdminStructure.cli";
-import DumpCli from "./interfaces/cli/Dump.cli";
-import ScdlCli from "./interfaces/cli/Scdl.cli";
+import SubventiaCli from "./adapters/inputs/cli/subventia.cli";
+import DemarchesSimplifieesCli from "./adapters/inputs/cli/demarches-simplifiees.cli";
+import GisproCli from "./adapters/inputs/cli/gispro.cli";
+import DauphinCli from "./adapters/inputs/cli/dauphin.cli";
+import AdminStructureCli from "./adapters/inputs/cli/admin-structure.cli";
+import DumpCli from "./adapters/inputs/cli/dump.cli";
+import ScdlCli from "./adapters/inputs/cli/scdl.cli";
 import { initIndexes } from "./shared/MongoInit";
-import GeoCli from "./interfaces/cli/Geo.cli";
-import DataBretagneCli from "./interfaces/cli/DataBretagne.cli";
-import SireneStockUniteLegaleCli from "./interfaces/cli/SireneStockUniteLegale.cli";
-import AmountsVsProgramRegionCli from "./interfaces/cli/AmountsVsProgramRegion.cli";
-import ScdlBatchCli from "./interfaces/cli/ScdlBatch.cli";
+import GeoCli from "./adapters/inputs/cli/geo.cli";
+import DataBretagneCli from "./adapters/inputs/cli/data-bretagne.cli";
+import SireneStockUniteLegaleCli from "./adapters/inputs/cli/sirene-stock-unite-legale.cli";
+import AmountsVsProgramRegionCli from "./adapters/inputs/cli/amounts-vs-program-region.cli";
+import ScdlBatchCli from "./adapters/inputs/cli/scdl-batch.cli";
 
 async function main() {
     await connectDB();

@@ -1,10 +1,10 @@
 import userRgpdService from "./user.rgpd.service";
-import consumerTokenAdapter from "../../../../dataProviders/db/user/consumer-token.adapter";
+import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
 import * as Sentry from "@sentry/node";
 
 jest.mock("@sentry/node");
 
-jest.mock("../../../../dataProviders/db/user/consumer-token.adapter");
+jest.mock("../../../../adapters/outputs/db/user/consumer-token.adapter");
 const mockedConsumerTokenAdapter = jest.mocked(consumerTokenAdapter);
 import statsService from "../../../stats/stats.service";
 
@@ -17,18 +17,18 @@ const mockedUserCrudService = jest.mocked(userCrudService);
 import { ANONYMIZED_USER, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { NotFoundError } from "core";
 import { ObjectId } from "mongodb";
-import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapter";
+import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user-reset.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user-reset.adapter");
 const mockedUserResetAdapter = jest.mocked(userResetAdapter);
-import userAdapter from "../../../../dataProviders/db/user/user.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 import notifyService from "../../../notify/notify.service";
 
-jest.mock("../../../../dataProviders/db/configurations/configurations.adapter");
-import configurationsAdapter from "../../../../dataProviders/db/configurations/configurations.adapter";
+jest.mock("../../../../adapters/outputs/db/configurations/configurations.adapter");
+import configurationsAdapter from "../../../../adapters/outputs/db/configurations/configurations.adapter";
 
 jest.mock("../../../configurations/configurations.service");
 import configurationsService from "../../../configurations/configurations.service";
@@ -48,9 +48,9 @@ jest.mock("../../../../shared/helpers/PortHelper", () => ({
     uniformizeId: jest.fn(token => token),
 }));
 
-import logsAdapter from "../../../../dataProviders/db/stats/logs.adapter";
+import logsAdapter from "../../../../adapters/outputs/db/stats/logs.adapter";
 import { WinstonLog } from "../../../../@types/WinstonLog";
-jest.mock("../../../../dataProviders/db/stats/logs.adapter");
+jest.mock("../../../../adapters/outputs/db/stats/logs.adapter");
 
 describe("user rgpd service", () => {
     describe("getAllData", () => {

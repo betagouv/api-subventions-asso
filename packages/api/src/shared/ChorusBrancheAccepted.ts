@@ -1,4 +1,4 @@
-import { DefaultObject } from "../@types/utils";
+import { DefaultObject } from "../@types/DefaultObjects";
 
 export const BRANCHE_ACCEPTED: DefaultObject<boolean> = {
     Z004: true,

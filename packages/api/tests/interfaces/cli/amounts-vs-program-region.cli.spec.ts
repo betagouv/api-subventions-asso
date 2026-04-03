@@ -1,0 +1,104 @@
+import { ObjectId } from "mongodb";
+import amountsVsProgramRegionAdapter from "../../../src/adapters/outputs/db/dataviz/amount-vs-program-region/amounts-vs-program-region.adapter";
+import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
+import AmountsVsProgramRegionCli from "../../../src/adapters/inputs/cli/amounts-vs-program-region.cli";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../src/modules/payment-flat/__fixtures__/payment-flat.fixture";
+import PaymentFlatEntity from "../../../src/entities/flats/PaymentFlatEntity";
+
+const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
+    // the following two should be aggregated together
+    { ...CHORUS_PAYMENT_FLAT_ENTITY, provider: "chorus", uniqueId: "1" },
+    { ...CHORUS_PAYMENT_FLAT_ENTITY, amount: 7000, provider: "chorus", uniqueId: "2" },
+
+    // the following two should be aggregated together
+    { ...CHORUS_PAYMENT_FLAT_ENTITY, amount: 100_000, programNumber: 1234, provider: "chorus", uniqueId: "3" },
+    { ...CHORUS_PAYMENT_FLAT_ENTITY, amount: 30_000, programNumber: 1234, provider: "chorus", uniqueId: "4" },
+
+    // the following two should be aggregated together
+    {
+        ...CHORUS_PAYMENT_FLAT_ENTITY,
+        amount: 34_000,
+        accountingAttachment: "HNOR",
+        accountingAttachmentRegion: "Normandie",
+        budgetaryYear: 2021,
+        provider: "chorus",
+        uniqueId: "5",
+    },
+    {
+        ...CHORUS_PAYMENT_FLAT_ENTITY,
+        amount: 34_000,
+        accountingAttachment: "BNOR",
+        accountingAttachmentRegion: "Normandie",
+        budgetaryYear: 2021,
+        provider: "chorus",
+        uniqueId: "6",
+    },
+
+    // this one should not be aggregated
+    {
+        ...CHORUS_PAYMENT_FLAT_ENTITY,
+        amount: 34_000,
+        accountingAttachment: "BNOR",
+        accountingAttachmentRegion: "Normandie",
+        budgetaryYear: 2024,
+        provider: "chorus",
+        uniqueId: "7",
+    },
+];
+
+const insertData = async () => {
+    await paymentFlatAdapter.upsertMany(MOCK_DOCUMENTS);
+};
+
+function sortResultForSnapshot(a, b) {
+    if (a.regionAttachementComptable < b.regionAttachementComptable) return -1;
+    if (a.regionAttachementComptable > b.regionAttachementComptable) return 1;
+    if (a.programme < b.programme) return -1;
+    if (a.programme > b.programme) return 1;
+
+    return a.exerciceBudgetaire - b.exerciceBudgetaire;
+}
+
+describe("AmountsVsProgramRegionCli", () => {
+    beforeEach(async () => {
+        await amountsVsProgramRegionAdapter.deleteAll();
+        await insertData();
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    const cli = new AmountsVsProgramRegionCli();
+
+    describe("init()", () => {
+        it("should persist amounts vs program region collection", async () => {
+            await cli.init();
+            //@ts-expect-error protected method
+            const amountsVsProgramRegion = (await amountsVsProgramRegionAdapter.collection.find({}).toArray())
+                .map(amountsVsProgramRegion => ({
+                    ...amountsVsProgramRegion,
+                    _id: expect.any(ObjectId),
+                }))
+                .sort(sortResultForSnapshot);
+
+            expect(amountsVsProgramRegion).toMatchSnapshot("Snapshot init");
+        });
+    });
+
+    describe("resyncExercice()", () => {
+        it("should persist amounts vs program region collection for the given exercice", async () => {
+            const exerciceStr = "2023";
+            await cli.resyncExercice(exerciceStr);
+            //@ts-expect-error protected method
+            const amountsVsProgramRegion = (await amountsVsProgramRegionAdapter.collection.find({}).toArray())
+                .map(amountsVsProgramRegion => ({
+                    ...amountsVsProgramRegion,
+                    _id: expect.any(ObjectId),
+                }))
+                .sort(sortResultForSnapshot);
+
+            expect(amountsVsProgramRegion).toMatchSnapshot("Snapshot resyncExercice");
+        });
+    });
+});

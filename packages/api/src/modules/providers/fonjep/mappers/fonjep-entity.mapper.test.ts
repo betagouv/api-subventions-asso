@@ -1,8 +1,8 @@
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
-} from "../../../paymentFlat/__fixtures__/payment-flat.fixture";
-import { DATA_BRETAGNE_RECORDS, MINISTRY_ENTITIES } from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
+} from "../../../payment-flat/__fixtures__/payment-flat.fixture";
+import { DATA_BRETAGNE_RECORDS, MINISTRY_ENTITIES } from "../../data-bretagne/__fixtures__/dataBretagne.fixture";
 import {
     DISPOSITIF_DTOS,
     POSTE_DTO_WITH_DATE,
@@ -13,19 +13,19 @@ import {
 import { DISPOSITIF_ENTITY, POSTE_ENTITY, TIERS_ENTITY, VERSEMENT_ENTITY } from "../__fixtures__/fonjepEntities";
 
 import FonjepEntityMapper from "./fonjep-entity.mapper";
-import dataBretagneService from "../../dataBretagne/dataBretagne.service";
-import Siret from "../../../../identifierObjects/Siret";
+import dataBretagneService from "../../data-bretagne/data-bretagne.service";
+import Siret from "../../../../identifier-objects/Siret";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
-jest.mock("../../dataBretagne/dataBretagne.service");
+jest.mock("../../data-bretagne/data-bretagne.service");
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
 jest.mock("../../../../shared/helpers/StringHelper");
 import * as DateHelper from "../../../../shared/helpers/DateHelper";
 import FonjepPosteEntity from "../entities/FonjepPosteEntity";
 import FonjepDispositifEntity from "../entities/FonjepDispositifEntity";
 import FonjepTiersEntity from "../entities/FonjepTiersEntity";
-import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
+import EstablishmentIdentifier from "../../../../identifier-objects/EstablishmentIdentifier";
 import { FonjepPaymentFlatEntity } from "../entities/FonjepFlatEntity";
-jest.mock("../../../../identifierObjects/EstablishmentIdentifier");
+jest.mock("../../../../identifier-objects/EstablishmentIdentifier");
 jest.mock("../../../../shared/helpers/DateHelper");
 
 describe("FonjepEntityAdapter", () => {

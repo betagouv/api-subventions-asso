@@ -1,7 +1,7 @@
 import { MainInfoBannerDto } from "dto";
 import { BadRequestError, ConflictError } from "core";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
-import configurationsAdapter from "../../dataProviders/db/configurations/configurations.adapter";
+import configurationsAdapter from "../../adapters/outputs/db/configurations/configurations.adapter";
 import { DauphinTokenDataEntity, DauphinTokenAvailableTime } from "./entities";
 import ConfigurationEntity from "./entities/ConfigurationEntity";
 

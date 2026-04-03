@@ -1,14 +1,14 @@
 import * as fs from "fs";
 import { GenericParser } from "../../../shared/GenericParser";
-import FonjepDispositifDto from "../../../dataProviders/db/providers/fonjep/dto/fonjepDispositifDto";
-import FonjepTiersDto from "../../../dataProviders/db/providers/fonjep/dto/fonjepTiersDto";
+import FonjepDispositifDto from "../../../adapters/outputs/db/providers/fonjep/dto/fonjepDispositifDto";
+import FonjepTiersDto from "../../../adapters/outputs/db/providers/fonjep/dto/fonjepTiersDto";
 import FonjepPosteDto, {
     FonjepPosteDtoWithJSDate,
-} from "../../../dataProviders/db/providers/fonjep/dto/fonjepPosteDto";
+} from "../../../adapters/outputs/db/providers/fonjep/dto/fonjepPosteDto";
 import FonjepVersementDtoWithExcelDate, {
     FonjepVersementDto,
-} from "../../../dataProviders/db/providers/fonjep/dto/fonjepVersementDto";
-import FonjepTypePosteDto from "../../../dataProviders/db/providers/fonjep/dto/fonjepTypePosteDto";
+} from "../../../adapters/outputs/db/providers/fonjep/dto/fonjepVersementDto";
+import FonjepTypePosteDto from "../../../adapters/outputs/db/providers/fonjep/dto/fonjepTypePosteDto";
 import { isNumberValid } from "../../../shared/Validators";
 
 export default class FonjepParser {

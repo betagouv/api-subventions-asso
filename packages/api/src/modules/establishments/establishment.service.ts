@@ -8,16 +8,16 @@ import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import providers from "../providers";
 import FonjepEntityMapper from "../providers/fonjep/mappers/fonjep-entity.mapper";
 import subventionsService from "../subventions/subventions.service";
-import ApiAssoDtoMapper from "../providers/apiAsso/mappers/api-asso-dto.mapper";
+import ApiAssoDtoMapper from "../providers/api-asso/mappers/api-asso-dto.mapper";
 import grantService from "../grant/grant.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
-import ApiEntrepriseMapper from "../providers/apiEntreprise/mappers/api-entreprise.mapper";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import ApiEntrepriseMapper from "../providers/api-entreprise/mappers/api-entreprise.mapper";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import { EstablishmentMapper } from "./establishment.mapper";
 import EstablishmentProvider from "./@types/EstablishmentProvider";
-import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 
 export class EstablishmentService {
     private provider_score: DefaultObject<number> = {

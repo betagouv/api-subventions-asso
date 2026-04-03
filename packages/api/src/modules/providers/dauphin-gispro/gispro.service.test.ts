@@ -1,10 +1,10 @@
 import gisproService from "./gispro.service";
 import GisproParser from "./gispro.parser";
-import gisproAdapter from "../../../dataProviders/db/providers/gispro.adapter";
+import gisproAdapter from "../../../adapters/outputs/db/providers/gispro.adapter";
 import GisproEntity from "./@types/GisproEntity";
 
 jest.mock("./gispro.parser");
-jest.mock("../../../dataProviders/db/providers/gispro.adapter");
+jest.mock("../../../adapters/outputs/db/providers/gispro.adapter");
 
 describe("gispro service", () => {
     describe("parseSaveXls", () => {

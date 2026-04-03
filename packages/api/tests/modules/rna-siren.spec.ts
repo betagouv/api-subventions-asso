@@ -1,9 +1,9 @@
 import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
-import Rna from "../../src/identifierObjects/Rna";
-import Siren from "../../src/identifierObjects/Siren";
+import Rna from "../../src/identifier-objects/Rna";
+import Siren from "../../src/identifier-objects/Siren";
 import { App } from "supertest/types";
-import rnaSirenAdapter from "../../src/dataProviders/db/rnaSiren/rnaSiren.adapter";
+import rnaSirenAdapter from "../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
 import RnaSirenEntity from "../../src/entities/RnaSirenEntity";
 
 const g = global as unknown as { app: App };

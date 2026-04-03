@@ -2,7 +2,7 @@ const { connectDB } = require("../build/src/shared/MongoConnection");
 
 const {
     default: statsUniqueVisitByDayPort,
-} = require("../build/src/dataProviders/db/stats/statsUniqueVisitByDay.adapter.js");
+} = require("../build/src/adapters/outputs/db/stats/statsUniqueVisitByDay.adapter.js");
 
 module.exports = {
     async up() {

@@ -1,20 +1,20 @@
 import ChorusMapper from "./chorus.mapper";
-import dataBretagneService from "../../dataBretagne/dataBretagne.service";
-import { DATA_BRETAGNE_RECORDS } from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
-import Tahitiet from "../../../../identifierObjects/Tahitiet";
-import Ridet from "../../../../identifierObjects/Ridet";
-import Siret from "../../../../identifierObjects/Siret";
-import Siren from "../../../../identifierObjects/Siren";
-import Tahiti from "../../../../identifierObjects/Tahiti";
-import Rid from "../../../../identifierObjects/Rid";
+import dataBretagneService from "../../data-bretagne/data-bretagne.service";
+import { DATA_BRETAGNE_RECORDS } from "../../data-bretagne/__fixtures__/dataBretagne.fixture";
+import Tahitiet from "../../../../identifier-objects/Tahitiet";
+import Ridet from "../../../../identifier-objects/Ridet";
+import Siret from "../../../../identifier-objects/Siret";
+import Siren from "../../../../identifier-objects/Siren";
+import Tahiti from "../../../../identifier-objects/Tahiti";
+import Rid from "../../../../identifier-objects/Rid";
 import { CHORUS_ENTITIES } from "../__fixtures__/ChorusFixtures";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
-import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
+import EstablishmentIdentifier from "../../../../identifier-objects/EstablishmentIdentifier";
 
 jest.mock("@sentry/node", () => ({
     captureException: jest.fn(),
 }));
-jest.mock("../../../../identifierObjects/EstablishmentIdentifier");
+jest.mock("../../../../identifier-objects/EstablishmentIdentifier");
 
 describe("ChorusMapper", () => {
     const COMPLEMENTARY_DATA = {

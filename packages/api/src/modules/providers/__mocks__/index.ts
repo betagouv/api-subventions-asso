@@ -1,7 +1,7 @@
 import { IncomingMessage } from "http";
 import { Socket } from "node:net";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { ProviderRequestService } from "../../provider-request/providerRequest.service";
+import { ProviderRequestService } from "../../provider-request/provider-request.service";
 import {
     applicationProvidersFixtures,
     grantProvidersFixtures,

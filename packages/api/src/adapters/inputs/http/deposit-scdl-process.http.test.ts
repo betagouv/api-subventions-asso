@@ -1,0 +1,217 @@
+import { DepositScdlProcessHttp } from "./deposit-scdl-process.http";
+import { IdentifiedRequest } from "../../../@types";
+import { ObjectId } from "mongodb";
+import {
+    CREATE_DEPOSIT_LOG_DTO,
+    DEPOSIT_LOG_ENTITY_STEP_1,
+    DEPOSIT_LOG_ENTITY_STEP_2,
+    DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+    DEPOSIT_LOG_RESPONSE_DTO,
+    DEPOSIT_LOG_RESPONSE_DTO_STEP_2,
+} from "../../../modules/deposit-scdl-process/__fixtures__/deposit-log.fixture";
+import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
+import { ConflictError, NotFoundError } from "core";
+import { depositScdlProcessService } from "../../../init-services";
+import DepositScdlLogDtoMapper from "../../../modules/deposit-scdl-process/deposit-scdl-log.dto.mapper";
+
+jest.mock("../../../modules/deposit-scdl-process/deposit-scdl-log.dto.mapper");
+
+const controller = new DepositScdlProcessHttp();
+
+describe("DepositScdlProcessHttp", () => {
+    const REQ = { user: { _id: new ObjectId() } } as IdentifiedRequest;
+
+    describe("getDepositLog", () => {
+        const getDepositLogSpy = jest.spyOn(depositScdlProcessService, "getDepositLog");
+        it("should call service with args", async () => {
+            const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
+            getDepositLogSpy.mockReturnValueOnce(depositScdlLog);
+            await controller.getDepositLog(REQ);
+            expect(getDepositLogSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+        });
+
+        it("should return depositLogDto", async () => {
+            getDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            jest.spyOn(DepositScdlLogDtoMapper, "entityToDepositScdlLogResponseDto").mockReturnValue(
+                DEPOSIT_LOG_RESPONSE_DTO_STEP_2,
+            );
+            const result = await controller.getDepositLog(REQ);
+            expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO_STEP_2);
+        });
+    });
+
+    describe("generateExistingGrantsCsv", () => {
+        const generateExistingGrantsCsvSpy = jest.spyOn(depositScdlProcessService, "generateExistingGrantsCsv");
+
+        it("should call service with args", async () => {
+            generateExistingGrantsCsvSpy.mockResolvedValueOnce({ csv: "csv", fileName: "fileName.csv" });
+            await controller.generateExistingGrantsCsv(REQ);
+            expect(generateExistingGrantsCsvSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+        });
+
+        it("should return a csv", async () => {
+            generateExistingGrantsCsvSpy.mockResolvedValueOnce({ csv: "csv", fileName: "fileName.csv" });
+            const result = await controller.generateExistingGrantsCsv(REQ);
+            expect(result).toEqual("csv");
+        });
+    });
+
+    describe("getFileDownloadUrl", () => {
+        const getFileDownloadUrlSpy = jest.spyOn(depositScdlProcessService, "getFileDownloadUrl");
+        const DOWNLOAD_URL = "https://presigned-url/file.csv";
+
+        it("should call service with args", async () => {
+            getFileDownloadUrlSpy.mockResolvedValueOnce(DOWNLOAD_URL);
+            await controller.getFileDownloadUrl(REQ);
+            expect(getFileDownloadUrlSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+        });
+
+        it("should return FileDownloadUrlDto", async () => {
+            getFileDownloadUrlSpy.mockResolvedValueOnce(DOWNLOAD_URL);
+            const result = await controller.getFileDownloadUrl(REQ);
+            expect(result).toEqual({ url: DOWNLOAD_URL });
+        });
+    });
+
+    describe("deleteDepositLog", () => {
+        const deleteDepositLogSpy = jest.spyOn(depositScdlProcessService, "deleteDepositLog");
+        it("should call service with args", async () => {
+            deleteDepositLogSpy.mockReturnValueOnce(Promise.resolve());
+            await controller.deleteDepositLog(REQ);
+            expect(deleteDepositLogSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+        });
+
+        it("should return null after deleting the deposit log", async () => {
+            deleteDepositLogSpy.mockResolvedValueOnce(Promise.resolve());
+            const result = await controller.deleteDepositLog(REQ);
+            expect(result).toBeUndefined();
+        });
+    });
+
+    describe("createDepositLog", () => {
+        const createDepositLogSpy = jest.spyOn(depositScdlProcessService, "createDepositLog");
+
+        beforeAll(() => {
+            jest.spyOn(DepositScdlLogDtoMapper, "entityToDepositScdlLogResponseDto").mockReturnValue(
+                DEPOSIT_LOG_RESPONSE_DTO,
+            );
+        });
+
+        it("should call service with args", async () => {
+            const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
+            createDepositLogSpy.mockReturnValueOnce(depositScdlLog);
+            await controller.createDepositLog(CREATE_DEPOSIT_LOG_DTO, REQ);
+            expect(createDepositLogSpy).toHaveBeenCalledWith(CREATE_DEPOSIT_LOG_DTO, REQ.user._id.toString());
+        });
+
+        it("should return CreateDepositLogDto", async () => {
+            createDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_1);
+            const result = await controller.createDepositLog(CREATE_DEPOSIT_LOG_DTO, REQ);
+            expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO);
+        });
+
+        it("should reject and throw ConcliftError when user has already a deposit in progress", async () => {
+            createDepositLogSpy.mockRejectedValueOnce(new ConflictError("Deposit already exists"));
+            await expect(controller.createDepositLog(CREATE_DEPOSIT_LOG_DTO, REQ)).rejects.toThrow(ConflictError);
+        });
+    });
+
+    describe("updateDepositLog", () => {
+        const STEP = 2;
+        const updateDepositLogSpy = jest.spyOn(depositScdlProcessService, "updateDepositLog");
+
+        beforeAll(() => {
+            jest.spyOn(DepositScdlLogDtoMapper, "entityToDepositScdlLogResponseDto").mockReturnValue(
+                DEPOSIT_LOG_RESPONSE_DTO_STEP_2,
+            );
+        });
+
+        it("should call service with args", async () => {
+            const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
+            updateDepositLogSpy.mockReturnValueOnce(depositScdlLog);
+            await controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ);
+            expect(updateDepositLogSpy).toHaveBeenCalledWith(
+                STEP,
+                DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+                REQ.user._id.toString(),
+            );
+        });
+
+        it("maps entity to dto", async () => {
+            updateDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            await controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ);
+            expect(DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto).toHaveBeenCalledWith(
+                DEPOSIT_LOG_ENTITY_STEP_2,
+            );
+        });
+
+        it("returns dto", async () => {
+            updateDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            const result = await controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ);
+            expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO_STEP_2);
+        });
+
+        it("should reject and throw Error when error throw by service", async () => {
+            updateDepositLogSpy.mockRejectedValueOnce(new NotFoundError("an error"));
+            await expect(controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ)).rejects.toThrow(
+                NotFoundError,
+            );
+        });
+    });
+
+    describe("validateScdlFile", () => {
+        const depositLogFormFiled = JSON.stringify(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2);
+        const validateScdlFileSpy = jest.spyOn(depositScdlProcessService, "validateScdlFile");
+
+        const file: Express.Multer.File = {
+            fieldname: "file",
+            originalname: "test.csv",
+            encoding: "7bit",
+            mimetype: "text/csv",
+            size: 56,
+            buffer: Buffer.from("name,email\nJohn,john@example.com\nJane,jane@example.com", "utf-8"),
+            destination: "",
+            filename: "",
+            path: "",
+        } as unknown as Express.Multer.File;
+
+        it("should call service with args", async () => {
+            const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
+            validateScdlFileSpy.mockReturnValueOnce(depositScdlLog);
+
+            await controller.validateScdlFile(file, depositLogFormFiled, REQ);
+            expect(validateScdlFileSpy).toHaveBeenCalledWith(
+                file,
+                DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+                REQ.user._id.toString(),
+                undefined,
+            );
+        });
+
+        it("should return DepositScdlLogResponseDto", async () => {
+            validateScdlFileSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            const result = await controller.validateScdlFile(file, depositLogFormFiled, REQ);
+            expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO_STEP_2);
+        });
+
+        it("should reject and throw Error when error throw by service", async () => {
+            validateScdlFileSpy.mockRejectedValueOnce(new NotFoundError("an error"));
+            await expect(controller.validateScdlFile(file, depositLogFormFiled, REQ)).rejects.toThrow(NotFoundError);
+        });
+    });
+
+    describe("parseAndPersistScdlFile", () => {
+        const parseAndPersistScdlFileSpy = jest.spyOn(depositScdlProcessService, "parseAndPersistScdlFile");
+        it("should call service with args", async () => {
+            parseAndPersistScdlFileSpy.mockResolvedValueOnce(true);
+            await controller.parseAndPersistScdlFile(REQ);
+            expect(parseAndPersistScdlFileSpy).toHaveBeenCalledWith(REQ.user);
+        });
+
+        it("should return void after processing", async () => {
+            parseAndPersistScdlFileSpy.mockResolvedValueOnce(true);
+            const result = await controller.parseAndPersistScdlFile(REQ);
+            expect(result).toBeUndefined();
+        });
+    });
+});

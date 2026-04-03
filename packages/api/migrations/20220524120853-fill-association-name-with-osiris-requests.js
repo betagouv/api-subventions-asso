@@ -1,4 +1,4 @@
-const { default: osirisAdapter } = require("../build/src/dataProviders/db/providers/osiris/osiris.request.adapter");
+const { default: osirisAdapter } = require("../build/src/adapters/outputs/db/providers/osiris/osiris.request.adapter");
 const {
     default: associationNameRepository,
 } = require("../build/src/modules/association-name/repositories/associationName.repository");

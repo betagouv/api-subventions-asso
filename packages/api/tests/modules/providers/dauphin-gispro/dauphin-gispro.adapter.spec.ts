@@ -1,5 +1,5 @@
-import dauphinAdapter from "../../../../src/dataProviders/db/providers/dauphin/dauphin.adapter";
-import DauphinGisproDbo from "../../../../src/dataProviders/db/providers/dauphin/DauphinGisproDbo";
+import dauphinAdapter from "../../../../src/adapters/outputs/db/providers/dauphin/dauphin.adapter";
+import DauphinGisproDbo from "../../../../src/adapters/outputs/db/providers/dauphin/DauphinGisproDbo";
 
 const DATE = new Date();
 

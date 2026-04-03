@@ -1,0 +1,123 @@
+import path from "path";
+import db from "../../../src/shared/MongoConnection";
+import FonjepCli from "../../../src/adapters/inputs/cli/fonjep.cli";
+import fonjepVersementAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
+import { ObjectId } from "mongodb";
+import fonjepTiersAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.tiers.adapter";
+import fonjepPostesAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.postes.adapter";
+import fonjepTypePosteAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.typePoste.adapter";
+import fonjepDispositifAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.dispositif.adapter";
+import dataBretagneAdapter from "../../../src/adapters/outputs/api/data-bretagne/data-bretagne.adapter";
+import { DATA_BRETAGNE_DTOS, PROGRAMS } from "../../__fixtures__/paymentsFlat.fixture";
+import stateBudgetProgramAdapter from "../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
+import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
+import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
+
+const FILEPATH = path.resolve(__dirname, "./__fixtures__/fonjep-new.xlsx");
+const EXPORT_DATE = new Date("2022-03-03").toISOString();
+
+describe("FonjepCli", () => {
+    let cli: FonjepCli;
+
+    beforeEach(async () => {
+        // mock API call to DataBretagne
+        jest.spyOn(dataBretagneAdapter, "login").mockImplementation(jest.fn());
+        jest.spyOn(dataBretagneAdapter, "getCollection").mockImplementation(
+            collection => DATA_BRETAGNE_DTOS[collection],
+        );
+        await stateBudgetProgramAdapter.replace(PROGRAMS);
+    });
+
+    describe("parse()", () => {
+        beforeAll(async () => {
+            cli = new FonjepCli();
+        });
+
+        describe("test with all information arround one code poste", () => {
+            it("adds applications flat", async () => {
+                await cli.parse(path.resolve(__dirname, "./__fixtures__/fonjep-one-code-full.xlsx"), "2025-09-30");
+                const actual = await applicationFlatAdapter.findAll();
+                expect(actual).toMatchSnapshot();
+            });
+            it("adds payments flat", async () => {
+                await cli.parse(path.resolve(__dirname, "./__fixtures__/fonjep-one-code-full.xlsx"), "2025-09-30");
+                const actual = await paymentFlatAdapter.findAll();
+                expect(actual).toMatchSnapshot();
+            });
+        });
+
+        it("should remove temporary collections", async () => {
+            await cli.parse(FILEPATH, EXPORT_DATE);
+            const collections = await db.listCollections().toArray();
+            const actual = collections.find(col =>
+                [
+                    "fonjepDispositif-tmp-collection",
+                    "fonjepPoste-tmp-collection",
+                    "FonjepTiers-tmp-collection",
+                    "FonjepTypePoste-tmp-collection",
+                    "FonjepVersement-tmp-collection",
+                ].includes(col.name),
+            );
+            expect(actual).toBeUndefined();
+        });
+
+        it("should create or replace Versement collection", async () => {
+            await cli.parse(FILEPATH, EXPORT_DATE);
+            const actualVersement = await fonjepVersementAdapter.findAll();
+            const expected = actualVersement.map(() => ({
+                _id: expect.any(ObjectId),
+            }));
+            expect(actualVersement).toMatchSnapshot(expected);
+        });
+
+        it("should create or replace Tiers collection", async () => {
+            await cli.parse(FILEPATH, EXPORT_DATE);
+            const actualTiers = await fonjepTiersAdapter.findAll();
+            const expected = actualTiers.map(() => ({
+                _id: expect.any(ObjectId),
+            }));
+            expect(actualTiers).toMatchSnapshot(expected);
+        });
+
+        it("should create or replace Poste collection", async () => {
+            await cli.parse(FILEPATH, EXPORT_DATE);
+            const actualPoste = await fonjepPostesAdapter.findAll();
+            const expected = actualPoste.map(() => ({
+                _id: expect.any(ObjectId),
+            }));
+            expect(actualPoste).toMatchSnapshot(expected);
+        });
+
+        it("should create or remplace TypePoste collection", async () => {
+            await cli.parse(FILEPATH, EXPORT_DATE);
+            const actualTypePoste = await fonjepTypePosteAdapter.findAll();
+            const expected = actualTypePoste.map(() => ({
+                _id: expect.any(ObjectId),
+            }));
+            expect(actualTypePoste).toMatchSnapshot(expected);
+        });
+
+        it("should create or replace Dispositif collection", async () => {
+            await cli.parse(FILEPATH, EXPORT_DATE);
+            const actualDispositif = await fonjepDispositifAdapter.findAll();
+            const expected = actualDispositif.map(() => ({
+                _id: expect.any(ObjectId),
+            }));
+            expect(actualDispositif).toMatchSnapshot(expected);
+        });
+
+        it("should add FonjepPaymentFlat", async () => {
+            await cli.parse(FILEPATH, EXPORT_DATE);
+            const paymentsFlat = await paymentFlatAdapter.findAll();
+            expect(paymentsFlat.map(flat => ({ ...flat, _id: expect.any(String) }))).toMatchSnapshot();
+        });
+
+        it("should add FonjepApplicationFlat", async () => {
+            await cli.parse(FILEPATH, EXPORT_DATE);
+            const applications = await applicationFlatAdapter.findAll();
+            expect(
+                applications.map(flat => ({ ...flat, _id: expect.any(String), updateDate: expect.any(Date) })),
+            ).toMatchSnapshot();
+        });
+    });
+});

@@ -1,21 +1,21 @@
 import { UserDataDto, UserDto } from "dto";
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "core";
-import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapter";
-import consumerTokenAdapter from "../../../../dataProviders/db/user/consumer-token.adapter";
+import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
+import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
 import { uniformizeId } from "../../../../shared/helpers/PortHelper";
 import statsService from "../../../stats/stats.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import userAdapter from "../../../../dataProviders/db/user/user.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import userCrudService from "../crud/user.crud.service";
 import { DefaultObject } from "../../../../@types";
 import userActivationService from "../activation/user.activation.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
-import configurationsAdapter from "../../../../dataProviders/db/configurations/configurations.adapter";
+import configurationsAdapter from "../../../../adapters/outputs/db/configurations/configurations.adapter";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../configurations/configurations.service";
 import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
-import logsAdapter from "../../../../dataProviders/db/stats/logs.adapter";
+import logsAdapter from "../../../../adapters/outputs/db/stats/logs.adapter";
 
 export class UserRgpdService {
     public async getAllData(userId: string): Promise<UserDataDto> {

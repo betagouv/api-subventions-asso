@@ -1,7 +1,7 @@
 import { ProviderDataEntity } from "../../../../@types/ProviderData";
-import Ridet from "../../../../identifierObjects/Ridet";
-import Siret from "../../../../identifierObjects/Siret";
-import Tahitiet from "../../../../identifierObjects/Tahitiet";
+import Ridet from "../../../../identifier-objects/Ridet";
+import Siret from "../../../../identifier-objects/Siret";
+import Tahitiet from "../../../../identifier-objects/Tahitiet";
 
 export default interface ChorusFseEntity extends ProviderDataEntity {
     ej: string;

@@ -3,21 +3,21 @@ import { Client, generators, Issuer, TokenSet } from "openid-client";
 import { ObjectId } from "mongodb";
 import { BadRequestError, InternalServerError } from "core";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
-import userAdapter from "../../../../dataProviders/db/user/user.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
-import UserDbo from "../../../../dataProviders/db/user/UserDbo";
+import UserDbo from "../../../../adapters/outputs/db/user/@types/UserDbo";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import { AgentConnectUser } from "../../@types/AgentConnectUser";
 import userCrudService from "../crud/user.crud.service";
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { applyValidations, ValidationResult } from "../../../../shared/helpers/validation.helper";
-import agentConnectTokenAdapter from "../../../../dataProviders/db/user/acToken.adapter";
+import agentConnectTokenAdapter from "../../../../adapters/outputs/db/user/pro-connect.adapter";
 import {
     AGENT_CONNECT_CLIENT_ID,
     AGENT_CONNECT_CLIENT_SECRET,
     AGENT_CONNECT_URL,
-} from "../../../../configurations/agentConnect.conf";
+} from "../../../../configurations/pro-connect.conf";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 
 export class UserAgentConnectService {

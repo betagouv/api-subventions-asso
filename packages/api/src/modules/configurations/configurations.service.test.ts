@@ -1,6 +1,6 @@
 import { BadRequestError, ConflictError } from "core";
 import configurationsService, { ConfigurationsService, CONFIGURATION_NAMES } from "./configurations.service";
-import configurationsAdapter from "../../dataProviders/db/configurations/configurations.adapter";
+import configurationsAdapter from "../../adapters/outputs/db/configurations/configurations.adapter";
 
 describe("ConfigurationService", () => {
     jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));

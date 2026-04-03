@@ -5,7 +5,7 @@
     },
     "entryFile": "src/index.ts",
     "noImplicitAdditionalProperties": "throw-on-extras",
-    "controllerPathGlobs": ["src/interfaces/http/**/*.http.ts"],
+    "controllerPathGlobs": ["src/adapters/inputs/http/**/*.http.ts"],
     "spec": {
         "outputDirectory": "tsoa",
         "specVersion": 3

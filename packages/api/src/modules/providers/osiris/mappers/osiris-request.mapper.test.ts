@@ -3,9 +3,9 @@ const mockToStatus = jest.fn(() => mockLabel);
 
 import OsirisRequestMapper from "./osiris-request.mapper";
 import OsirisEntity from "../../../../../tests/modules/providers/osiris/__fixtures__/OsirisEntities";
-import Ridet from "../../../../identifierObjects/Ridet";
+import Ridet from "../../../../identifier-objects/Ridet";
 import DEFAULT_ASSOCIATION, { RIDET_STR } from "../../../../../tests/__fixtures__/association.fixture";
-import Siret from "../../../../identifierObjects/Siret";
+import Siret from "../../../../identifier-objects/Siret";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import { GenericParser } from "../../../../shared/GenericParser";

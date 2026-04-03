@@ -7,13 +7,13 @@ jest.mock("../providers");
 import { DocumentRequestDto } from "dto";
 import providers from "../providers";
 import Provider from "../providers/@types/IProvider";
-import { ProviderRequestService } from "../provider-request/providerRequest.service";
+import { ProviderRequestService } from "../provider-request/provider-request.service";
 import { documentToDocumentRequest } from "./document.mapper";
 import { ReadStream } from "node:fs";
-import Siren from "../../identifierObjects/Siren";
-import Rna from "../../identifierObjects/Rna";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import Siren from "../../identifier-objects/Siren";
+import Rna from "../../identifier-objects/Rna";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 
 jest.mock("./document.mapper");
 jest.mock("fs");

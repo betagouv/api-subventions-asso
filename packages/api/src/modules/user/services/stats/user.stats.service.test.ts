@@ -1,6 +1,6 @@
 import userStatsService from "./user.stats.service";
-import userAdapter from "../../../../dataProviders/db/user/user.adapter";
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 import userCrudService from "../crud/user.crud.service";
 jest.mock("../crud/user.crud.service");
@@ -8,8 +8,8 @@ import { UserDto } from "dto";
 import notifyService from "../../../notify/notify.service";
 jest.mock("../../../notify/notify.service", () => ({ notify: jest.fn() }));
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import statsAssociationsVisitAdapter from "../../../../dataProviders/db/stats/statsAssociationsVisit.adapter";
-jest.mock("../../../../dataProviders/db/stats/statsAssociationsVisit.adapter");
+import statsAssociationsVisitAdapter from "../../../../adapters/outputs/db/stats/association-visit.adapter";
+jest.mock("../../../../adapters/outputs/db/stats/association-visit.adapter");
 import configurationsService from "../../../configurations/configurations.service";
 jest.mock("../../../configurations/configurations.service");
 

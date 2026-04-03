@@ -2,7 +2,7 @@ import { ChorusPayment } from "dto";
 import ChorusEntity from "../entities/ChorusEntity";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 import { ChorusDto } from "../@types/ChorusDto";
-import Siret from "../../../../identifierObjects/Siret";
+import Siret from "../../../../identifier-objects/Siret";
 import ChorusFseEntity from "../entities/ChorusFseEntity";
 
 export const HEADERS = [

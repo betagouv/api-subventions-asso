@@ -1,0 +1,19 @@
+import GisproCli from "../../../src/adapters/inputs/cli/gispro.cli";
+import gisproAdapter from "../../../src/adapters/outputs/db/providers/gispro.adapter";
+import path from "path";
+
+describe("Gispro Cli", () => {
+    const cli = new GisproCli();
+    const FILE_PATH = path.resolve(__dirname, "./__fixtures__/2023 subventions GISPO et TDB_test.xlsx");
+
+    const EXPORT_DATE_STR = "2023-06-06";
+
+    describe.skip("parse", () => {
+        // // too long to run on CI
+        it("saves uniformized data from 2023", async () => {
+            await cli.parse(FILE_PATH, EXPORT_DATE_STR);
+            const savedData = await gisproAdapter.findAll();
+            expect(savedData).toMatchSnapshot();
+        }, 50000); // reading xls is very long I don't know why as much
+    });
+});

@@ -1,0 +1,15 @@
+import dataBretagneService from "../../../modules/providers/data-bretagne/data-bretagne.service";
+import { DataBretagneCron } from "./data-bretagne.cron";
+
+jest.mock("../../../modules/providers/data-bretagne/data-bretagne.service");
+
+describe("DataBretagne Cron", () => {
+    // TODO test that it saves import log
+    describe("resync", () => {
+        it("should call dataBretagneService.resyncPrograms()", async () => {
+            const cron = new DataBretagneCron();
+            await cron.resync();
+            expect(dataBretagneService.resyncPrograms).toHaveBeenCalledTimes(1);
+        });
+    });
+});

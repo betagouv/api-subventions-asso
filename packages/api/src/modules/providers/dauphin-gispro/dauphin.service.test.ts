@@ -1,11 +1,11 @@
 import configurationsService from "../../configurations/configurations.service";
 import DauphinDtoMapper from "./mappers/dauphin-dto.mapper";
 import dauphinService from "./dauphin.service";
-import dauphinAdapter from "../../../dataProviders/db/providers/dauphin/dauphin.adapter";
+import dauphinAdapter from "../../../adapters/outputs/db/providers/dauphin/dauphin.adapter";
 import SpyInstance = jest.SpyInstance;
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
-import Siren from "../../../identifierObjects/Siren";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import Siren from "../../../identifier-objects/Siren";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 import dauphinFlatService from "./dauphin.flat.service";
 
 jest.mock("../../notify/notify.service", () => ({ notify: jest.fn() }));
@@ -15,7 +15,7 @@ jest.mock("axios", () => ({
     get: jest.fn(),
 }));
 
-jest.mock("../../../dataProviders/db/providers/dauphin/dauphin.adapter", () => ({
+jest.mock("../../../adapters/outputs/db/providers/dauphin/dauphin.adapter", () => ({
     getLastImportDate: jest.fn(() => new Date()),
     upsert: jest.fn(),
     findBySiret: jest.fn(),

@@ -1,12 +1,12 @@
 import scdlService from "./scdl.service";
-import miscScdlGrantAdapter from "../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlGrantAdapter from "../../../adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
 
 jest.mock("fs");
 
-jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter");
-import miscScdlProducersAdapter from "../../../dataProviders/db/providers/scdl/miscScdlProducers.adapter";
+jest.mock("../../../adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter");
+import miscScdlProducersAdapter from "../../../adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter";
 
-jest.mock("../../../dataProviders/db/providers/scdl/miscScdlProducers.adapter");
+jest.mock("../../../adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter");
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 
 jest.mock("../../../shared/helpers/StringHelper");
@@ -17,9 +17,9 @@ import PRODUCER_FIXTURE from "./__fixtures__/MiscScdlProducer";
 import ScdlGrantParser from "./scdl.grant.parser";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
-import applicationFlatAdapter from "../../../dataProviders/db/applicationFlat/application-flat.adapter";
-import apiAssoService from "../apiAsso/apiAsso.service";
-import Siret from "../../../identifierObjects/Siret";
+import applicationFlatAdapter from "../../../adapters/outputs/db/application-flat/application-flat.adapter";
+import apiAssoService from "../api-asso/api-asso.service";
+import Siret from "../../../identifier-objects/Siret";
 import fs from "fs";
 import { ObjectId } from "mongodb";
 import scdlGrantService from "./scdl.grant.service";
@@ -28,8 +28,8 @@ import { ScdlParsedInfos } from "./@types/ScdlParsedInfos";
 
 const mockedFs = jest.mocked(fs);
 
-jest.mock("../../../dataProviders/db/applicationFlat/application-flat.adapter");
-jest.mock("../apiAsso/apiAsso.service");
+jest.mock("../../../adapters/outputs/db/application-flat/application-flat.adapter");
+jest.mock("../api-asso/api-asso.service");
 
 describe("ScdlService", () => {
     const UNIQUE_ID = "UNIQUE_ID";

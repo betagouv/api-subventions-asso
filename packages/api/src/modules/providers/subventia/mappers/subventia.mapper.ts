@@ -6,7 +6,7 @@ import { DefaultObject, ParserInfo } from "../../../../@types";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
-import Siret from "../../../../identifierObjects/Siret";
+import Siret from "../../../../identifier-objects/Siret";
 
 export default class SubventiaMapper {
     static PROVIDER_NAME = "subventia";

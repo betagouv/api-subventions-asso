@@ -1,25 +1,25 @@
-import Rna from "../../../identifierObjects/Rna";
-import Siren from "../../../identifierObjects/Siren";
+import Rna from "../../../identifier-objects/Rna";
+import Siren from "../../../identifier-objects/Siren";
 import osirisService, { InvalidOsirisRequestError, VALID_REQUEST_ERROR_CODE } from "./osiris.service";
-import { osirisActionAdapter, osirisRequestAdapter } from "../../../dataProviders/db/providers/osiris";
+import { osirisActionAdapter, osirisRequestAdapter } from "../../../adapters/outputs/db/providers/osiris";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import { ReadableStream } from "stream/web";
-import { APPLICATION_LINK_TO_CHORUS } from "../../applicationFlat/__fixtures__/application-flat.fixture";
-import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import { APPLICATION_LINK_TO_CHORUS } from "../../application-flat/__fixtures__/application-flat.fixture";
+import applicationFlatService from "../../application-flat/application-flat.service";
 import { REQUEST_DBO } from "./__fixtures__/osiris.request.fixtures";
 import { ACTION_ENTITY } from "./__fixtures__/osiris.action.fixtures";
-import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
-import osirisJoiner from "../../../dataProviders/db/providers/osiris/osiris.joiner";
+import { cursorToStream } from "../../application-flat/application-flat.helper";
+import osirisJoiner from "../../../adapters/outputs/db/providers/osiris/osiris.joiner";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 
-jest.mock("../../applicationFlat/applicationFlat.helper");
+jest.mock("../../application-flat/application-flat.helper");
 jest.mock("./mappers/osiris-request.mapper");
-jest.mock("../../../dataProviders/db/providers/osiris");
+jest.mock("../../../adapters/outputs/db/providers/osiris");
 jest.mock("../../rna-siren/rna-siren.service");
-jest.mock("../../applicationFlat/applicationFlat.service");
+jest.mock("../../application-flat/application-flat.service");
 
 const SIREN = new Siren("123456789");
 const SIRET = SIREN.toSiret("00000");

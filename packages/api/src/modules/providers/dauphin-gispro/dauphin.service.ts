@@ -8,14 +8,14 @@ import configurationsService from "../../configurations/configurations.service";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
-import ProviderCore from "../ProviderCore";
-import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import Siren from "../../../identifierObjects/Siren";
-import dauphinAdapter from "../../../dataProviders/db/providers/dauphin/dauphin.adapter";
+import ProviderCore from "../provider.core";
+import EstablishmentIdentifier from "../../../identifier-objects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
+import Siren from "../../../identifier-objects/Siren";
+import dauphinAdapter from "../../../adapters/outputs/db/providers/dauphin/dauphin.adapter";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoMapper from "./mappers/dauphin-dto.mapper";
-import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../../identifier-objects/@types/StructureIdentifier";
 import dauphinFlatService from "./dauphin.flat.service";
 
 export class DauphinService extends ProviderCore implements DocumentProvider {

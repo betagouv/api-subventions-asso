@@ -1,9 +1,9 @@
 import request from "supertest";
 import { createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { createAndActiveUser, DEFAULT_PASSWORD, getDefaultUser } from "../../__helpers__/userHelper";
-import userAdapter from "../../../src/dataProviders/db/user/user.adapter";
-import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/statsAssociationsVisit.adapter";
-import UserDbo from "../../../src/dataProviders/db/user/UserDbo";
+import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
+import statsAssociationsVisitAdapter from "../../../src/adapters/outputs/db/stats/association-visit.adapter";
+import UserDbo from "../../../src/adapters/outputs/db/user/@types/UserDbo";
 import { ObjectId } from "mongodb";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userActivationService from "../../../src/modules/user/services/activation/user.activation.service";
@@ -11,7 +11,7 @@ import userCrudService from "../../../src/modules/user/services/crud/user.crud.s
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
 import configurationsService from "../../../src/modules/configurations/configurations.service";
 import { App } from "supertest/types";
-import UserCli from "../../../src/interfaces/cli/User.cli";
+import UserCli from "../../../src/adapters/inputs/cli/user.cli";
 import userAuthService from "../../../src/modules/user/services/auth/user.auth.service";
 
 const g = global as unknown as { app: App };

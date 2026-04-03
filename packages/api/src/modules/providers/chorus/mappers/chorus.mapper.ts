@@ -4,14 +4,14 @@ import type MinistryEntity from "../../../../entities/MinistryEntity";
 import type DomaineFonctionnelEntity from "../../../../entities/DomaineFonctionnelEntity";
 import type RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
 import type { ChorusPaymentFlatEntity } from "../@types/ChorusPaymentFlat";
-import type { EstablishmentIdType } from "../../../../identifierObjects/@types/IdentifierType";
+import type { EstablishmentIdType } from "../../../../identifier-objects/@types/IdentifierType";
 
-import dataBretagneService from "../../dataBretagne/dataBretagne.service";
-import Siret from "../../../../identifierObjects/Siret";
-import Ridet from "../../../../identifierObjects/Ridet";
-import Tahitiet from "../../../../identifierObjects/Tahitiet";
+import dataBretagneService from "../../data-bretagne/data-bretagne.service";
+import Siret from "../../../../identifier-objects/Siret";
+import Ridet from "../../../../identifier-objects/Ridet";
+import Tahitiet from "../../../../identifier-objects/Tahitiet";
 import { getShortISODate } from "../../../../shared/helpers/DateHelper";
-import REGION_MAPPING from "./ChorusRegionMapping";
+import REGION_MAPPING from "./chorus-region.mapping";
 import { NOT_APPLICABLE_VALUE } from "core";
 
 export default class ChorusMapper {

@@ -1,4 +1,4 @@
-const { default: dauphinPort } = require("../build/src/dataProviders/db/providers/dauphin/dauphin.adapter");
+const { default: dauphinPort } = require("../build/src/adapters/outputs/db/providers/dauphin/dauphin.adapter");
 
 module.exports = {
     async up(db) {

@@ -1,10 +1,10 @@
 import { ApplicationStatus } from "dto";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 import SubventiaEntity from "../@types/subventia.entity";
-import { RawApplication } from "../../../grant/@types/rawGrant";
+import { RawApplication } from "../../../grant/@types/RawGrant";
 import { ObjectId } from "mongodb";
 import SubventiaDto from "../@types/subventia.dto";
-import { APPLICATION_LINK_TO_CHORUS } from "../../../applicationFlat/__fixtures__/application-flat.fixture";
+import { APPLICATION_LINK_TO_CHORUS } from "../../../application-flat/__fixtures__/application-flat.fixture";
 
 export const SUBVENTIA_ENTITY: SubventiaEntity = {
     service_instructeur: "SERVICE INSTRUCTEUR",

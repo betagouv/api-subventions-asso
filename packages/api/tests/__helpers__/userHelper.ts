@@ -1,4 +1,4 @@
-import { RoleEnum } from "../../src/@enums/Roles";
+import { RoleEnum } from "../../src/@enums/RolesEnum";
 import userActivationService from "../../src/modules/user/services/activation/user.activation.service";
 import userCrudService from "../../src/modules/user/services/crud/user.crud.service";
 import userAuthService from "../../src/modules/user/services/auth/user.auth.service";

@@ -1,14 +1,14 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import subventiaAdapter from "../../../dataProviders/db/providers/subventia/subventia.adapter";
+import subventiaAdapter from "../../../adapters/outputs/db/providers/subventia/subventia.adapter";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaMapper from "./mappers/subventia.mapper";
 import { SubventiaDbo } from "./@types/subventia.entity";
 import SubventiaDto from "./@types/subventia.dto";
-import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import ApplicationFlatProvider from "../../application-flat/@types/applicationFlatProvider";
 import { ReadableStream } from "node:stream/web";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
-import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import applicationFlatService from "../../application-flat/application-flat.service";
 
 export class SubventiaService implements ApplicationFlatProvider {
     meta = {

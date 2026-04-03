@@ -156,7 +156,7 @@ Les tâches récurrentes se basent sur le module [toad-scheduler](https://github
 
 Pour ajouter une tâche récurrente, il faut :
 
-1. Créer un contrôleur `src/modules/[nom-module]/interfaces/cron/[controller-namer].cron.controller.ts` sur le modèle du fichier `example.cron.controller.ts`. Le contrôleur doit exporter une classe avec
+1. Créer un contrôleur `src/modules/[nom-module]/adapters/inputs/cron/[controller-namer].cron.controller.ts` sur le modèle du fichier `example.cron.controller.ts`. Le contrôleur doit exporter une classe avec
     - un attribut `name` qui l'identifie
     - autant de méthodes que de tâches. Ces méthodes devront être munies d'un décorateur parmi
         - `Cron`

@@ -1,22 +1,22 @@
 import { AggregationCursor } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
-import ProviderCore from "../ProviderCore";
+import ProviderCore from "../provider.core";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
-import Siret from "../../../identifierObjects/Siret";
-import Siren from "../../../identifierObjects/Siren";
-import Rna from "../../../identifierObjects/Rna";
-import { osirisRequestAdapter, osirisActionAdapter } from "../../../dataProviders/db/providers/osiris";
+import Siret from "../../../identifier-objects/Siret";
+import Siren from "../../../identifier-objects/Siren";
+import Rna from "../../../identifier-objects/Rna";
+import { osirisRequestAdapter, osirisActionAdapter } from "../../../adapters/outputs/db/providers/osiris";
 import OsirisRequestMapper from "./mappers/osiris-request.mapper";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
-import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import ApplicationFlatProvider from "../../application-flat/@types/applicationFlatProvider";
 import { ReadableStream } from "stream/web";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
-import applicationFlatService from "../../applicationFlat/applicationFlat.service";
-import osirisJoiner, { OsirisRequestWithActions } from "../../../dataProviders/db/providers/osiris/osiris.joiner";
-import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
-import { BulkUpsertResult } from "../../../dataProviders/db/@types/bulk-upsert-result";
+import applicationFlatService from "../../application-flat/application-flat.service";
+import osirisJoiner, { OsirisRequestWithActions } from "../../../adapters/outputs/db/providers/osiris/osiris.joiner";
+import { cursorToStream } from "../../application-flat/application-flat.helper";
+import { BulkUpsertResult } from "../../../adapters/outputs/db/@types/bulk-upsert-result";
 
 export enum VALID_REQUEST_ERROR_CODE {
     INVALID_SIRET = 1,

@@ -2,17 +2,17 @@ import subventiaService from "./subventia.service";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaMapper from "./mappers/subventia.mapper";
-import SubventiaAdapter from "../../../dataProviders/db/providers/subventia/subventia.adapter";
+import SubventiaAdapter from "../../../adapters/outputs/db/providers/subventia/subventia.adapter";
 import { SubventiaDbo } from "./@types/subventia.entity";
 import { ApplicationStatus } from "dto";
 import SubventiaDto from "./@types/subventia.dto";
 import { SUBVENTIA_DBO } from "./__fixtures__/subventia.fixture";
-import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import applicationFlatService from "../../application-flat/application-flat.service";
 import { ReadableStream } from "node:stream/web";
-import { APPLICATION_LINK_TO_CHORUS } from "../../applicationFlat/__fixtures__/application-flat.fixture";
-jest.mock("../../applicationFlat/applicationFlat.service");
+import { APPLICATION_LINK_TO_CHORUS } from "../../application-flat/__fixtures__/application-flat.fixture";
+jest.mock("../../application-flat/application-flat.service");
 jest.mock("./mappers/subventia.mapper");
-jest.mock("../../../dataProviders/db/providers/subventia/subventia.adapter");
+jest.mock("../../../adapters/outputs/db/providers/subventia/subventia.adapter");
 
 describe("Subventia Service", () => {
     const filePath = "path/to/file";

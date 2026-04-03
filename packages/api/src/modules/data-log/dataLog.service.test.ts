@@ -1,11 +1,11 @@
 import dataLogService from "./dataLog.service";
-import dataLogAdapter from "../../dataProviders/db/data-log/data-log.adapter";
+import dataLogAdapter from "../../adapters/outputs/db/data-log/data-log.adapter";
 import { DataLogMapper } from "./data-log.mapper";
 import { RAW_PROVIDER } from "../providers/__fixtures__/providers.fixture";
 import { ApiDataLogEntity, DataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
 import { FindCursor, WithId } from "mongodb";
 
-jest.mock("../../dataProviders/db/data-log/data-log.adapter");
+jest.mock("../../adapters/outputs/db/data-log/data-log.adapter");
 jest.mock("./data-log.mapper");
 
 describe("dataLogService", () => {

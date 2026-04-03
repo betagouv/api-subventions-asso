@@ -2,7 +2,7 @@ import { addDaysToDate, lastDayInMonth, sameDateLastYear } from "../../shared/he
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
 import userCrudService from "../user/services/crud/user.crud.service";
-import { DepositLogPort } from "../../dataProviders/db/deposit-log/deposit-log.port";
+import { DepositLogPort } from "../../adapters/outputs/db/deposit-log/deposit-log.port";
 
 export class ScdlDepositCronService {
     constructor(private readonly depositLogPort: DepositLogPort) {}

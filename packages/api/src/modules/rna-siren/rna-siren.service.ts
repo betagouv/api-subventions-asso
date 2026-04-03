@@ -1,13 +1,13 @@
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
-import rnaSirenAdapter from "../../dataProviders/db/rnaSiren/rnaSiren.adapter";
-import apiAssoService from "../providers/apiAsso/apiAsso.service";
+import rnaSirenAdapter from "../../adapters/outputs/db/rna-siren/rna-siren.adapter";
+import apiAssoService from "../providers/api-asso/api-asso.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
-import Rna from "../../identifierObjects/Rna";
-import Siren from "../../identifierObjects/Siren";
+import Rna from "../../identifier-objects/Rna";
+import Siren from "../../identifier-objects/Siren";
 import associationIdentifierService from "../association-identifier/association-identifier.service";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import Siret from "../../identifierObjects/Siret";
-import { FullAssociationIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import Siret from "../../identifier-objects/Siret";
+import { FullAssociationIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 
 export class RnaSirenService {
     async findFromUnknownIdentifier(str: string) {

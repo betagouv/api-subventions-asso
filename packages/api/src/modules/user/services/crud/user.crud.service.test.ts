@@ -1,11 +1,11 @@
 import userCrudService from "./user.crud.service";
-import userAdapter from "../../../../dataProviders/db/user/user.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { SIGNED_TOKEN, USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import bcrypt from "bcrypt";
 
 jest.mock("bcrypt");
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 import userCheckService from "../check/user.check.service";
 
@@ -16,14 +16,14 @@ import userActivationService from "../activation/user.activation.service";
 jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
 
-import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapter";
+import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user-reset.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user-reset.adapter");
 const mockedUserResetAdapter = jest.mocked(userResetAdapter);
 
-import consumerTokenAdapter from "../../../../dataProviders/db/user/consumer-token.adapter";
+import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
 
-jest.mock("../../../../dataProviders/db/user/consumer-token.adapter");
+jest.mock("../../../../adapters/outputs/db/user/consumer-token.adapter");
 const mockedConsumerTokenAdapter = jest.mocked(consumerTokenAdapter);
 
 import { NotificationType } from "../../../notify/@types/NotificationType";
@@ -36,7 +36,7 @@ import userConsumerService from "../consumer/user.consumer.service";
 jest.mock("../consumer/user.consumer.service");
 const mockedUserConsumerService = jest.mocked(userConsumerService);
 import notifyService from "../../../notify/notify.service";
-import { RoleEnum } from "../../../../@enums/Roles";
+import { RoleEnum } from "../../../../@enums/RolesEnum";
 import { UserDto } from "dto";
 import UserReset from "../../entities/UserReset";
 

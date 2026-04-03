@@ -1,4 +1,4 @@
-const { default: dataLogPort } = require("../build/src/dataProviders/db/data-log/data-log.adapter.js");
+const { default: dataLogPort } = require("../build/src/adapters/outputs/db/data-log/data-log.adapter.js");
 
 module.exports = {
     async up(db) {

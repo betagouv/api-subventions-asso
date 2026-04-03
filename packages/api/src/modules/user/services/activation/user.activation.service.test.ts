@@ -1,5 +1,5 @@
 import userActivationService from "./user.activation.service";
-import userAdapter from "../../../../dataProviders/db/user/user.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import { USER_DBO, USER_SECRETS, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
@@ -7,11 +7,11 @@ import { ObjectId, WithId } from "mongodb";
 import { BadRequestError, InternalServerError, NotFoundError, ResetTokenNotFoundError } from "core";
 import { ResetPasswordErrorCodes, TokenValidationDtoPositiveResponse, TokenValidationType, UserDto } from "dto";
 
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
-import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapter";
+import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user-reset.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user-reset.adapter");
 const mockedUserResetAdapter = jest.mocked(userResetAdapter);
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 

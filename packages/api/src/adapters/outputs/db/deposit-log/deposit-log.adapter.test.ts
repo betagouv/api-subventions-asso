@@ -1,0 +1,127 @@
+import {
+    DEPOSIT_LOG_DBO,
+    DEPOSIT_LOG_ENTITY,
+} from "../../../../modules/deposit-scdl-process/__fixtures__/deposit-log.fixture";
+import DepositLogMapper from "./deposit-log.mapper";
+import { NotFoundError } from "core";
+import depositLogAdapter from "./deposit-log.adapter";
+
+const mockInsertOne = jest.fn().mockResolvedValue({ acknowledged: true, insertedId: "test_id" });
+const mockFindOne = jest.fn();
+const mockFind = jest.fn();
+const mockDeleteOne = jest.fn().mockResolvedValue({ acknowledged: true, deletedCount: 1 });
+const mockFindOneAndUpdate = jest.fn();
+
+jest.mock("./deposit-log.mapper");
+jest.mock("../../../../shared/MongoConnection", () => ({
+    collection: () => ({
+        insertOne: mockInsertOne,
+        find: mockFind.mockImplementation(() => ({ toArray: async () => [DEPOSIT_LOG_DBO] })),
+        findOne: mockFindOne,
+        deleteOne: mockDeleteOne,
+        findOneAndUpdate: mockFindOneAndUpdate,
+    }),
+}));
+
+describe("Deposit Log Port", () => {
+    let mockToDbo: jest.SpyInstance;
+    let mockDboToEntity: jest.SpyInstance;
+    beforeEach(() => {
+        mockToDbo = jest.spyOn(DepositLogMapper, "toDbo").mockReturnValue(DEPOSIT_LOG_DBO);
+        mockDboToEntity = jest.spyOn(DepositLogMapper, "dboToEntity").mockReturnValue(DEPOSIT_LOG_ENTITY);
+    });
+
+    describe("insertOne()", () => {
+        it("should call insertOne with the correct argument", async () => {
+            await depositLogAdapter.insertOne(DEPOSIT_LOG_ENTITY);
+            expect(mockInsertOne).toHaveBeenCalledWith(DEPOSIT_LOG_DBO);
+        });
+
+        it("adapts to dbo before inserting", async () => {
+            await depositLogAdapter.insertOne(DEPOSIT_LOG_ENTITY);
+            expect(mockToDbo).toHaveBeenCalledWith(DEPOSIT_LOG_ENTITY);
+        });
+    });
+
+    describe("findOneByUserId()", () => {
+        it("should call findOneByUserId with the correct query", async () => {
+            const query = "user123";
+            await depositLogAdapter.findOneByUserId(query);
+            expect(mockFindOne).toHaveBeenCalledWith({ userId: query });
+        });
+
+        it("should return null when no deposit is found", async () => {
+            mockFindOne.mockResolvedValueOnce(null);
+            const query = "user123";
+            const result = await depositLogAdapter.findOneByUserId(query);
+            expect(result).toBeNull();
+        });
+    });
+
+    describe("findAllFromFullDay", () => {
+        const date = new Date("2025-10-15");
+
+        it("calls find with the correct search query", async () => {
+            await depositLogAdapter.findAllFromFullDay(date);
+            expect(mockFind).toHaveBeenCalledWith({ updateDate: { $gte: date, $lt: new Date("2025-10-16") } });
+        });
+
+        it("adapts dbos to entities", async () => {
+            await depositLogAdapter.findAllFromFullDay(date);
+            expect(mockDboToEntity).toHaveBeenCalledWith(DEPOSIT_LOG_DBO);
+        });
+
+        it("returns entities", async () => {
+            const actual = await depositLogAdapter.findAllFromFullDay(date);
+            const expected = [DEPOSIT_LOG_ENTITY];
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("findFromPeriod", () => {
+        const START = new Date("2026-03-01");
+        const END = new Date("2026-03-10");
+
+        it("calls find with period", async () => {
+            await depositLogAdapter.findFromPeriod(START, END);
+            expect(mockFind).toHaveBeenCalledWith({ updateDate: { $gte: START, $lte: END } });
+        });
+
+        it("transforms dbo to entity", async () => {
+            await depositLogAdapter.findFromPeriod(START, END);
+            expect(mockDboToEntity).toHaveBeenNthCalledWith(1, DEPOSIT_LOG_DBO);
+        });
+    });
+
+    describe("deleteOneByUserId()", () => {
+        it("should call deleteOneByUserId with the correct arguments", async () => {
+            const query = "user123";
+            await depositLogAdapter.deleteByUserId(query);
+            expect(mockDeleteOne).toHaveBeenCalledWith({ userId: query });
+        });
+    });
+
+    describe("updatePartial()", () => {
+        it("should call updatePartial with the correct arguments", async () => {
+            mockFindOneAndUpdate.mockResolvedValueOnce(DEPOSIT_LOG_DBO);
+            await depositLogAdapter.updatePartial(DEPOSIT_LOG_ENTITY);
+            const { step, userId, ...toUpdate } = DEPOSIT_LOG_ENTITY;
+            expect(mockFindOneAndUpdate).toHaveBeenCalledWith(
+                { userId },
+                {
+                    $set: expect.objectContaining({
+                        ...toUpdate,
+                        updateDate: expect.any(Date),
+                    }),
+                    $max: { step },
+                },
+                { returnDocument: "after" },
+            );
+        });
+
+        it("should throw NotFoundError", async () => {
+            mockFindOneAndUpdate.mockResolvedValueOnce(null);
+            await expect(depositLogAdapter.updatePartial(DEPOSIT_LOG_ENTITY)).rejects.toThrow(NotFoundError);
+        });
+    });
+});

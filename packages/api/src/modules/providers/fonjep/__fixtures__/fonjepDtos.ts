@@ -1,8 +1,8 @@
-import FonjepDispositifDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepDispositifDto";
-import FonjepPosteDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepPosteDto";
-import FonjepTiersDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepTiersDto";
-import FonjepTypePosteDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepTypePosteDto";
-import FonjepVersementDtoWithExcelDate from "../../../../dataProviders/db/providers/fonjep/dto/fonjepVersementDto";
+import FonjepDispositifDto from "../../../../adapters/outputs/db/providers/fonjep/dto/fonjepDispositifDto";
+import FonjepPosteDto from "../../../../adapters/outputs/db/providers/fonjep/dto/fonjepPosteDto";
+import FonjepTiersDto from "../../../../adapters/outputs/db/providers/fonjep/dto/fonjepTiersDto";
+import FonjepTypePosteDto from "../../../../adapters/outputs/db/providers/fonjep/dto/fonjepTypePosteDto";
+import FonjepVersementDtoWithExcelDate from "../../../../adapters/outputs/db/providers/fonjep/dto/fonjepVersementDto";
 
 export const TIER_DTO: FonjepTiersDto = {
     Code: "Code",

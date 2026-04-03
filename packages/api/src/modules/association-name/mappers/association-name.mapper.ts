@@ -1,9 +1,9 @@
-import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
-import Rna from "../../../identifierObjects/Rna";
+import UniteLegaleNameEntity from "../../../entities/UniteLegaleNameEntity";
+import Rna from "../../../identifier-objects/Rna";
 import AssociationNameEntity from "../entities/AssociationNameEntity";
 
 export default class AssociationNameMapper {
-    static fromUniteLegalNameEntity(uniteLegalNameEntity: UniteLegalNameEntity, rna?: Rna): AssociationNameEntity {
-        return new AssociationNameEntity(uniteLegalNameEntity.name, uniteLegalNameEntity.siren, rna);
+    static fromUniteLegaleNameEntity(UniteLegaleNameEntity: UniteLegaleNameEntity, rna?: Rna): AssociationNameEntity {
+        return new AssociationNameEntity(UniteLegaleNameEntity.name, UniteLegaleNameEntity.siren, rna);
     }
 }

@@ -1,6 +1,6 @@
 import { DemandeSubvention } from "dto";
 import { applicationProviders } from "../providers";
-import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 
 export class SubventionsService {
     getDemandes(id: StructureIdentifier) {

@@ -1,12 +1,12 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import MiscScdlMapper from "./mappers/misc-scdl.mapper";
-import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import ApplicationFlatProvider from "../../application-flat/@types/applicationFlatProvider";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
-import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import applicationFlatService from "../../application-flat/application-flat.service";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import { ReadableStream, TransformStream } from "node:stream/web";
-import miscScdlGrantAdapter from "../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter";
-import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
+import miscScdlGrantAdapter from "../../../adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
+import { cursorToStream } from "../../application-flat/application-flat.helper";
 
 export class ScdlGrantService implements ApplicationFlatProvider {
     meta = {

@@ -20,9 +20,9 @@ import jwt from "jsonwebtoken";
 jest.mock("bcrypt");
 const mockedBcrypt = jest.mocked(bcrypt);
 
-import userAdapter from "../../../../dataProviders/db/user/user.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 import {
     CONSUMER_USER,
@@ -33,7 +33,7 @@ import {
 } from "../../__fixtures__/user.fixture";
 import { BadRequestError, UnauthorizedError, LoginError } from "core";
 
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 import * as portHelper from "../../../../shared/helpers/PortHelper";
 
 jest.mock("../../../../shared/helpers/PortHelper", () => ({
@@ -51,7 +51,7 @@ jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
-import UserDbo from "../../../../dataProviders/db/user/UserDbo";
+import UserDbo from "../../../../adapters/outputs/db/user/@types/UserDbo";
 
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),

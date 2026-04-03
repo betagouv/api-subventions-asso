@@ -1,5 +1,5 @@
 import { ParserPath } from "./ParserPath";
-import { NestedDefaultObject } from "./utils";
+import { NestedDefaultObject } from "./DefaultObjects";
 
 export type BeforeAdaptation = string | number; // only string for csv, string or number for Excel
 

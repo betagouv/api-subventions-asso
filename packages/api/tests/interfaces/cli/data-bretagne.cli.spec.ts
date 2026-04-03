@@ -1,0 +1,41 @@
+import axios from "axios";
+import DataBretagneCli from "../../../src/adapters/inputs/cli/data-bretagne.cli";
+import DataBretagneFixture from "../../__fixtures__/data-bretagne.fixture.json";
+import bopAdapter from "../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
+import { ObjectId } from "mongodb";
+import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
+
+describe("DataBretagneCli", () => {
+    beforeEach(() => {
+        jest.mocked(axios.request).mockResolvedValueOnce({ data: "TOKEN" });
+        jest.mocked(axios.request).mockResolvedValue({ data: DataBretagneFixture });
+    });
+
+    afterEach(() => {
+        jest.mocked(axios.request).mockReset();
+    });
+
+    const cli = new DataBretagneCli();
+
+    describe("resync()", () => {
+        it("should persist state budget programs", async () => {
+            await cli.resync();
+            // @ts-expect-error: access protected for test
+            const programs = (await bopAdapter.collection.find({}).toArray()).map(program => ({
+                ...program,
+                _id: expect.any(ObjectId),
+            }));
+            expect(programs).toMatchSnapshot();
+        });
+
+        it("should register new import", async () => {
+            await cli.resync();
+            const actual = await dataLogAdapter.findAll();
+            expect(actual?.[0]).toMatchObject({
+                editionDate: expect.any(Date),
+                integrationDate: expect.any(Date),
+                providerId: "data-bretagne",
+            });
+        });
+    });
+});

@@ -4,12 +4,12 @@ import { expressAuthentication } from "./authentication";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import { LoginRequest } from "../@types";
-import { RoleEnum } from "../@enums/Roles";
+import { RoleEnum } from "../@enums/RolesEnum";
 import { AgentTypeEnum } from "dto";
 import userAuthService from "../modules/user/services/auth/user.auth.service";
 import userActivationService from "../modules/user/services/activation/user.activation.service";
 import userCrudService from "../modules/user/services/crud/user.crud.service";
-import userAdapter from "../dataProviders/db/user/user.adapter";
+import userAdapter from "../adapters/outputs/db/user/user.adapter";
 jest.mock("../modules/user/services/auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService, { shallow: true });
 

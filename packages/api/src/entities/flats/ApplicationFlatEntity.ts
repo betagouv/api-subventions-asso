@@ -1,5 +1,5 @@
 import { ApplicationNature, ApplicationStatus, NOT_APPLICABLE, OrDefault, PaymentCondition } from "dto";
-import { IdentifierIdName } from "../../identifierObjects/@types/IdentifierName";
+import { IdentifierIdName } from "../../identifier-objects/@types/IdentifierName";
 import { MandatoryFlatEntity } from "./FlatEntity";
 
 // TODO where to accept null ?

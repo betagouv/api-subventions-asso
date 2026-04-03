@@ -14,14 +14,14 @@ import userCheckService from "../check/user.check.service";
 import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import userAdapter from "../../../../dataProviders/db/user/user.adapter";
-import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapter";
+import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
+import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
 import notifyService from "../../../notify/notify.service";
 import { ObjectId } from "mongodb";
-import geoService from "../../../providers/geoApi/geo.service";
+import geoService from "../../../providers/geo-api/geo.service";
 import userAgentConnectService from "../agentConnect/user.agentConnect.service";
 
-jest.mock("../../../providers/geoApi/geo.service");
+jest.mock("../../../providers/geo-api/geo.service");
 jest.mock("../agentConnect/user.agentConnect.service");
 
 jest.mock("../../../../shared/helpers/StringHelper");
@@ -34,9 +34,9 @@ jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
 jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
-jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
-jest.mock("../../../../dataProviders/db/user/user-reset.adapter");
+jest.mock("../../../../adapters/outputs/db/user/user-reset.adapter");
 const mockedUserResetAdapter = jest.mocked(userResetAdapter);
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),

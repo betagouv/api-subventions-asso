@@ -1,17 +1,17 @@
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import ProviderCore from "../ProviderCore";
-import Siren from "../../../identifierObjects/Siren";
-import chorusAdapter from "../../../dataProviders/db/providers/chorus/chorus.adapter";
+import ProviderCore from "../provider.core";
+import Siren from "../../../identifier-objects/Siren";
+import chorusAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.adapter";
 import ChorusEntity from "./entities/ChorusEntity";
 import associationHelper from "../../associations/associations.helper";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import Siret from "../../../identifierObjects/Siret";
+import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
+import Siret from "../../../identifier-objects/Siret";
 import ChorusFseEntity from "./entities/ChorusFseEntity";
-import chorusFseAdapter from "../../../dataProviders/db/providers/chorus/chorus.fse.adapter";
-import PaymentFlatProvider from "../../paymentFlat/@types/paymentFlatProvider";
-import paymentFlatService from "../../paymentFlat/paymentFlat.service";
+import chorusFseAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.fse.adapter";
+import PaymentFlatProvider from "../../payment-flat/@types/paymentFlatProvider";
+import paymentFlatService from "../../payment-flat/payment-flat.service";
 import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
 
@@ -113,7 +113,7 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
         return paymentFlatService.saveFromStream(stream);
     }
 
-    // @TODO: sync this with paymentFlat.chorus.service
+    // @TODO: sync this with payment-flat.chorus.service
     public syncFlat(entities: ChorusFseEntity[]) {
         const stream = ReadableStream.from(entities.map(entity => ChorusFseMapper.toPaymentFlat(entity)));
         return this.savePaymentsFromStream(stream);

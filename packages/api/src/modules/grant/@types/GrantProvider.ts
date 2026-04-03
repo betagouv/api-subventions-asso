@@ -1,6 +1,6 @@
-import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../../identifier-objects/@types/StructureIdentifier";
 import Provider from "../../providers/@types/IProvider";
-import { AnyRawGrant } from "./rawGrant";
+import { AnyRawGrant } from "./RawGrant";
 
 export default interface GrantProvider extends Provider {
     isGrantProvider: boolean;

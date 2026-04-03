@@ -1,12 +1,12 @@
 import { ToadScheduler } from "toad-scheduler";
-import { CronController } from "./@types/cron";
-import { DemarchesSimplifieesCron } from "./interfaces/cron/DemarchesSimplifiees.cron";
-import { DumpCron } from "./interfaces/cron/Dump.cron";
+import { CronController } from "./@types/CronController";
+import { DemarchesSimplifieesCron } from "./adapters/inputs/cron/demarches-simplifiees.cron";
+import { DumpCron } from "./adapters/inputs/cron/dump.cron";
 import { DEV } from "./configurations/env.conf";
-import { RgpdCron } from "./interfaces/cron/Rgpd.cron";
-import { StatsCron } from "./interfaces/cron/Stats.cron";
-import { SearchCacheCron } from "./interfaces/cron/SearchCache.cron";
-import { SireneStockUniteLegaleCron } from "./interfaces/cron/SireneStockUniteLegale.cron";
+import { RgpdCron } from "./adapters/inputs/cron/rgpd.cron";
+import { StatsCron } from "./adapters/inputs/cron/stats.cron";
+import { SearchCacheCron } from "./adapters/inputs/cron/search-cache.cron";
+import { SireneStockUniteLegaleCron } from "./adapters/inputs/cron/sirene-stock-unite-legale.cron";
 
 const controllers: CronController[] = [
     // ExampleCron,
