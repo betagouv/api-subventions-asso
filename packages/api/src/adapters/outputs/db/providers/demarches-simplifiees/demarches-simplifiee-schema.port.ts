@@ -1,4 +1,4 @@
-import DemarchesSimplifieesSchema from "../../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchema";
+import DemarchesSimplifieesSchema from "../../../../../modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesSchema";
 
 export interface DemarchesSimplifieeSchemaPort {
     createIndexes(): Promise<void>;

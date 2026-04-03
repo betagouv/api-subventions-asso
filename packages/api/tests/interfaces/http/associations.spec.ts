@@ -9,14 +9,14 @@ import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenAdapter from "../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
 import { AnyRawGrant, JoinedRawGrant } from "../../../src/modules/grant/@types/RawGrant";
-import demarchesSimplifieesDataAdapter from "../../../src/adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
+import demarchesSimplifieesDataAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter";
 import {
     DATA_ENTITIES as DS_DATA_ENTITIES,
     SCHEMAS as DS_SCHEMAS,
 } from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
-import demarchesSimplifieesSchemaAdapter from "../../../src/adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
+import demarchesSimplifieesSchemaAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-schema.adapter";
 
-import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
 import DEFAULT_ASSOCIATION, {
     API_ASSO_ASSOCIATION_FROM_SIREN,
     API_ASSO_ESTABLISHMENTS_FROM_SIREN,
@@ -27,12 +27,12 @@ import DEFAULT_ASSOCIATION, {
 } from "../../__fixtures__/association.fixture";
 import dauphinAdapter from "../../../src/adapters/outputs/db/providers/dauphin/dauphin.adapter";
 import Rna from "../../../src/identifier-objects/Rna";
-import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlProducers.adapter";
+import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter";
 import Siren from "../../../src/identifier-objects/Siren";
 import statsAssociationsVisitAdapter from "../../../src/adapters/outputs/db/stats/association-visit.adapter";
 import { App } from "supertest/types";
 import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
-import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
+import apiAssoService from "../../../src/modules/providers/api-asso/apiAsso.service";
 import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 import {
     APPLICATION_LINK_TO_CHORUS,

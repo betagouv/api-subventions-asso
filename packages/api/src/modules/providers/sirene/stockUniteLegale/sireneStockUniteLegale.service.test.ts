@@ -4,17 +4,17 @@ import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
 import UniteLegaleNameEntity from "../../../../entities/UniteLegaleNameEntity";
 import SireneStockUniteLegaleMapper from "./mappers/sirene-stock-unite-legale.mapper";
-import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
+import uniteLegalNameService from "../../unite-legale-name/uniteLegal.name.service";
 import { UniteLegaleEntrepriseEntity } from "../../../../entities/UniteLegaleEntrepriseEntity";
-import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
+import uniteLegalEntreprisesService from "../../unite-legale-entreprise/uniteLegal.entreprises.service";
 import { BulkWriteResult } from "mongodb";
 import Siren from "../../../../identifier-objects/Siren";
 
 const mockUniteLegalEntrepriseConstructor = jest.fn();
 
 jest.mock("./mappers/sirene-stock-unite-legale.mapper");
-jest.mock("../../uniteLegalEntreprises/uniteLegal.entreprises.service");
-jest.mock("../../uniteLegalName/uniteLegal.name.service");
+jest.mock("../../unite-legale-entreprise/uniteLegal.entreprises.service");
+jest.mock("../../unite-legale-name/uniteLegal.name.service");
 jest.mock("../../../../entities/UniteLegaleEntrepriseEntity", () => ({
     UniteLegaleEntrepriseEntity: class Mock {
         constructor(public i) {

@@ -12,7 +12,7 @@ import {
 } from "../../../src/modules/deposit-scdl-process/__fixtures__/deposit-log.fixture";
 import { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 import path from "path";
-import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
 import UploadedFileInfosEntity from "../../../src/modules/deposit-scdl-process/entities/uploadedFileInfos.entity";
 import MiscScdlProducerEntity from "../../../src/modules/providers/scdl/entities/MiscScdlProducerEntity";
 import scdlService from "../../../src/modules/providers/scdl/scdl.service";

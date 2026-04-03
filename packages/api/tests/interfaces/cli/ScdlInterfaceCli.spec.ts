@@ -1,12 +1,12 @@
 import path from "path";
 import ScdlCli from "../../../src/adapters/inputs/cli/Scdl.cli";
-import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlProducers.adapter";
-import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter";
+import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
 import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
 import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 import notifyService from "../../../src/modules/notify/notify.service";
 import { NotificationType } from "../../../src/modules/notify/@types/NotificationType";
-import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
+import apiAssoService from "../../../src/modules/providers/api-asso/apiAsso.service";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 
 describe("SCDL CLI", () => {

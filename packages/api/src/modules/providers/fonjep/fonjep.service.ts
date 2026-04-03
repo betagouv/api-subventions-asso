@@ -14,7 +14,7 @@ import ApplicationFlatProvider from "../../application-flat/@types/applicationFl
 import applicationFlatService from "../../application-flat/application-flat.service";
 import PaymentFlatProvider from "../../payment-flat/@types/paymentFlatProvider";
 import paymentFlatService from "../../payment-flat/payment-flat.service";
-import dataBretagneService from "../dataBretagne/dataBretagne.service";
+import dataBretagneService from "../data-bretagne/dataBretagne.service";
 import ProviderCore from "../ProviderCore";
 import FonjepEntityMapper from "./mappers/fonjep-entity.mapper";
 import FonjepDispositifEntity from "./entities/FonjepDispositifEntity";

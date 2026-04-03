@@ -1,4 +1,4 @@
-import { GeoDbo } from "../../../../../modules/providers/geoApi/@types/geo.types";
+import { GeoDbo } from "../../../../../modules/providers/geo-api/@types/geo.types";
 
 export interface GeoApiPort {
     createIndexes(): Promise<void>;

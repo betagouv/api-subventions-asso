@@ -3,8 +3,8 @@ import Rna from "../../../../../identifier-objects/Rna";
 import Siren from "../../../../../identifier-objects/Siren";
 import Siret from "../../../../../identifier-objects/Siret";
 import MiscScdlGrantProducerEntity from "../../../../../modules/providers/scdl/entities/MiscScdlGrantProducerEntity";
-import miscScdlProducersAdapter from "./miscScdlProducers.adapter";
-import miscScdlGrantAdapter from "./miscScdlGrant.adapter";
+import miscScdlProducersAdapter from "./misc-scdl-producers.adapter";
+import miscScdlGrantAdapter from "./misc-scdl-grant.adapter";
 
 export class MiscScdlJoiner {
     applicationCollection = db.collection(miscScdlGrantAdapter.collectionName);

@@ -1,6 +1,6 @@
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
-import apiAssoService from "../providers/apiAsso/apiAsso.service";
-import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entreprises.service";
+import apiAssoService from "../providers/api-asso/apiAsso.service";
+import uniteLegalEntreprisesService from "../providers/unite-legale-entreprise/uniteLegal.entreprises.service";
 import sireneStockUniteLegaleService from "../providers/sirene/stockUniteLegale/sireneStockUniteLegale.service";
 import Siren from "../../identifier-objects/Siren";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";

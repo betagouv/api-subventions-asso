@@ -1,10 +1,10 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
     default: demarchesSimplifieesDataPort,
-} = require("../build/src/adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter");
+} = require("../build/src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter");
 const {
     default: demarchesSimplifieesMapperPort,
-} = require("../build/src/adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port");
+} = require("../build/src/adapters/outputs/db/providers/demarches-simplifiees/demarchesSimplifieesMapper.port");
 
 module.exports = {
     async up() {

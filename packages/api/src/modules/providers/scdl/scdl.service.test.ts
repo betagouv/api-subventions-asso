@@ -1,12 +1,12 @@
 import scdlService from "./scdl.service";
-import miscScdlGrantAdapter from "../../../adapters/outputs/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlGrantAdapter from "../../../adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
 
 jest.mock("fs");
 
-jest.mock("../../../adapters/outputs/db/providers/scdl/miscScdlGrant.adapter");
-import miscScdlProducersAdapter from "../../../adapters/outputs/db/providers/scdl/miscScdlProducers.adapter";
+jest.mock("../../../adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter");
+import miscScdlProducersAdapter from "../../../adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter";
 
-jest.mock("../../../adapters/outputs/db/providers/scdl/miscScdlProducers.adapter");
+jest.mock("../../../adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter");
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 
 jest.mock("../../../shared/helpers/StringHelper");
@@ -18,7 +18,7 @@ import ScdlGrantParser from "./scdl.grant.parser";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import applicationFlatAdapter from "../../../adapters/outputs/db/application-flat/application-flat.adapter";
-import apiAssoService from "../apiAsso/apiAsso.service";
+import apiAssoService from "../api-asso/apiAsso.service";
 import Siret from "../../../identifier-objects/Siret";
 import fs from "fs";
 import { ObjectId } from "mongodb";
@@ -29,7 +29,7 @@ import { ScdlParsedInfos } from "./@types/ScdlParsedInfos";
 const mockedFs = jest.mocked(fs);
 
 jest.mock("../../../adapters/outputs/db/application-flat/application-flat.adapter");
-jest.mock("../apiAsso/apiAsso.service");
+jest.mock("../api-asso/apiAsso.service");
 
 describe("ScdlService", () => {
     const UNIQUE_ID = "UNIQUE_ID";

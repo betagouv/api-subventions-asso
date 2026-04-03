@@ -1,6 +1,6 @@
 import { CronController } from "../../../@types/CronController";
 import { AsyncCron } from "../../../decorators/cron.decorator";
-import dataBretagneService from "../../../modules/providers/dataBretagne/dataBretagne.service";
+import dataBretagneService from "../../../modules/providers/data-bretagne/dataBretagne.service";
 
 export class DataBretagneCron implements CronController {
     name = "DataBretagneCron";

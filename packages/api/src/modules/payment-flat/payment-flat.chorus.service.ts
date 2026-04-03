@@ -5,7 +5,7 @@ import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymen
 import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
 import chorusService from "../providers/chorus/chorus.service";
 import ChorusEntity from "../providers/chorus/entities/ChorusEntity";
-import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
+import dataBretagneService from "../providers/data-bretagne/dataBretagne.service";
 import PaymentFlatProvider from "./@types/paymentFlatProvider";
 import paymentFlatService from "./payment-flat.service";
 

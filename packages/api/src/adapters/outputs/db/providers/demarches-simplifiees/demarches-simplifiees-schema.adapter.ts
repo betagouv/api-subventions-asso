@@ -1,5 +1,5 @@
 import MongoAdapter from "../../MongoAdapter";
-import DemarchesSimplifieesSchema from "../../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchema";
+import DemarchesSimplifieesSchema from "../../../../../modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesSchema";
 import { DemarchesSimplifieeSchemaPort } from "./demarches-simplifiee-schema.port";
 
 export class DemarchesSimplifieesSchemaAdapter

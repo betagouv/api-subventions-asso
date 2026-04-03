@@ -1,5 +1,5 @@
 import UniteLegaleNameEntity from "../../entities/UniteLegaleNameEntity";
-import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
+import uniteLegalNameService from "../providers/unite-legale-name/uniteLegal.name.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import associationNameService from "./associationName.service";
 import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
@@ -8,7 +8,7 @@ import Siren from "../../identifier-objects/Siren";
 import Rna from "../../identifier-objects/Rna";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 
-jest.mock("../providers/uniteLegalName/uniteLegal.name.service");
+jest.mock("../providers/unite-legale-name/uniteLegal.name.service");
 jest.mock("../rna-siren/rna-siren.service");
 jest.mock("../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service");
 

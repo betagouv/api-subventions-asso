@@ -6,7 +6,7 @@ import type RefProgrammationEntity from "../../../../entities/RefProgrammationEn
 import type { ChorusPaymentFlatEntity } from "../@types/ChorusPaymentFlat";
 import type { EstablishmentIdType } from "../../../../identifier-objects/@types/IdentifierType";
 
-import dataBretagneService from "../../dataBretagne/dataBretagne.service";
+import dataBretagneService from "../../data-bretagne/dataBretagne.service";
 import Siret from "../../../../identifier-objects/Siret";
 import Ridet from "../../../../identifier-objects/Ridet";
 import Tahitiet from "../../../../identifier-objects/Tahitiet";

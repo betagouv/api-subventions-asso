@@ -4,11 +4,11 @@ import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEn
 import { ReadableStream } from "node:stream/web";
 import applicationFlatService from "../../application-flat/application-flat.service";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
-import miscScdlGrantAdapter from "../../../adapters/outputs/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlGrantAdapter from "../../../adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
 import { cursorToStream } from "../../application-flat/application-flat.helper";
 import { FindCursor } from "mongodb";
 
-jest.mock("../../../adapters/outputs/db/providers/scdl/miscScdl.joiner", () => ({
+jest.mock("../../../adapters/outputs/db/providers/scdl/misc-scdl.joiner", () => ({
     findByRna: jest.fn(),
     findBySiren: jest.fn(),
     findBySiret: jest.fn(),
@@ -17,7 +17,7 @@ jest.mock("./mappers/misc-scdl.mapper");
 jest.mock("@sentry/node");
 jest.mock("../../application-flat/application-flat.service");
 jest.mock("../../application-flat/application-flat.helper");
-jest.mock("../../../adapters/outputs/db/providers/scdl/miscScdlGrant.adapter");
+jest.mock("../../../adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter");
 
 describe("ScdlGrantService", () => {
     describe("saveDbosToApplicationFlat", () => {

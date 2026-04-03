@@ -25,7 +25,7 @@ import userAuthService from "../auth/user.auth.service";
 import UserDbo from "../../../../adapters/outputs/db/user/@types/UserDbo";
 import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
-import geoService from "../../../providers/geoApi/geo.service";
+import geoService from "../../../providers/geo-api/geo.service";
 import { applyValidations, ValidationCriterias, ValidationResult } from "../../../../shared/helpers/validation.helper";
 import userAgentConnectService from "../agentConnect/user.agentConnect.service";
 

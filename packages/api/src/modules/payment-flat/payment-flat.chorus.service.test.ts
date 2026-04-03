@@ -3,15 +3,15 @@ import paymentFlatAdapter from "../../adapters/outputs/db/payment-flat/payment-f
 import { CHORUS_ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
 import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
 import chorusService from "../providers/chorus/chorus.service";
-import { DATA_BRETAGNE_RECORDS } from "../providers/dataBretagne/__fixtures__/dataBretagne.fixture";
-import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
+import { DATA_BRETAGNE_RECORDS } from "../providers/data-bretagne/__fixtures__/dataBretagne.fixture";
+import dataBretagneService from "../providers/data-bretagne/dataBretagne.service";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "./__fixtures__/payment-flat.fixture";
 import paymentFlatChorusService from "./payment-flat.chorus.service";
 import PaymentFlatMapper from "./payment-flat.mapper";
 import paymentFlatService from "./payment-flat.service";
 
 jest.mock("../../adapters/outputs/db/payment-flat/payment-flat.adapter");
-jest.mock("../providers/dataBretagne/dataBretagne.service");
+jest.mock("../providers/data-bretagne/dataBretagne.service");
 jest.mock("./payment-flat.mapper");
 jest.mock("./payment-flat.service");
 jest.mock("../providers/chorus/chorus.service");

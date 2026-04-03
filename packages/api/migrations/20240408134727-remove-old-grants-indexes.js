@@ -1,4 +1,6 @@
-const { default: miscScdlGrantPort } = require("../build/src/adapters/outputs/db/providers/scdl/miscScdlGrant.adapter");
+const {
+    default: miscScdlGrantPort,
+} = require("../build/src/adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter");
 
 module.exports = {
     async up(db) {

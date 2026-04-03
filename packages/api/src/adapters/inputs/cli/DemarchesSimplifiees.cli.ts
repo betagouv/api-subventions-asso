@@ -2,9 +2,9 @@ import fs from "fs";
 
 import { StaticImplements } from "../../../decorators/static-implements.decorator";
 import { ApplicationFlatCli, CliStaticInterface } from "../../../@types";
-import demarchesSimplifieesService from "../../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
-import DemarchesSimplifieesSchema from "../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchema";
-import { DemarchesSimplifieesSchemaSeed } from "../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchemaSeed";
+import demarchesSimplifieesService from "../../../modules/providers/demarches-simplifiees/demarchesSimplifiees.service";
+import DemarchesSimplifieesSchema from "../../../modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesSchema";
+import { DemarchesSimplifieesSchemaSeed } from "../../../modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesSchemaSeed";
 
 @StaticImplements<CliStaticInterface>()
 export default class DemarchesSimplifieesCli implements ApplicationFlatCli {

@@ -1,6 +1,6 @@
 import { getMD5 } from "../../../shared/helpers/StringHelper";
-import miscScdlGrantAdapter from "../../../adapters/outputs/db/providers/scdl/miscScdlGrant.adapter";
-import miscScdlProducersAdapter from "../../../adapters/outputs/db/providers/scdl/miscScdlProducers.adapter";
+import miscScdlGrantAdapter from "../../../adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
+import miscScdlProducersAdapter from "../../../adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import ScdlGrantParser from "./scdl.grant.parser";
@@ -9,7 +9,7 @@ import { MixedParsedError, ParsedErrorDuplicate, ParsedErrorFormat } from "./@ty
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import applicationFlatAdapter from "../../../adapters/outputs/db/application-flat/application-flat.adapter";
 import Siret from "../../../identifier-objects/Siret";
-import apiAssoService from "../apiAsso/apiAsso.service";
+import apiAssoService from "../api-asso/apiAsso.service";
 import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
 import scdlGrantService from "./scdl.grant.service";
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";

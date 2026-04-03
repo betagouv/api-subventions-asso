@@ -18,10 +18,10 @@ import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
 import notifyService from "../../../notify/notify.service";
 import { ObjectId } from "mongodb";
-import geoService from "../../../providers/geoApi/geo.service";
+import geoService from "../../../providers/geo-api/geo.service";
 import userAgentConnectService from "../agentConnect/user.agentConnect.service";
 
-jest.mock("../../../providers/geoApi/geo.service");
+jest.mock("../../../providers/geo-api/geo.service");
 jest.mock("../agentConnect/user.agentConnect.service");
 
 jest.mock("../../../../shared/helpers/StringHelper");

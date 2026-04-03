@@ -1,4 +1,4 @@
-import DemarchesSimplifieesDataEntity from "../../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
+import DemarchesSimplifieesDataEntity from "../../../../../modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesDataEntity";
 import Siret from "../../../../../identifier-objects/Siret";
 import Siren from "../../../../../identifier-objects/Siren";
 

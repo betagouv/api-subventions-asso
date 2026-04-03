@@ -17,7 +17,7 @@ jest.mock("fs", () => {
 jest.mock("csv-parse");
 jest.mock("../mappers/sirene-stock-unite-legale.mapper");
 jest.mock("../sireneStockUniteLegale.service");
-jest.mock("../../../uniteLegalEntreprises/uniteLegal.entreprises.service");
+jest.mock("../../../unite-legale-entreprise/uniteLegal.entreprises.service");
 jest.mock("../../../../../entities/UniteLegaleEntrepriseEntity");
 
 const NUMBER_DTOS_TO_SAVE = 3;

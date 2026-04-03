@@ -38,8 +38,8 @@ import {
     VERSEMENT_DTO_WITH_DATE,
 } from "./__fixtures__/fonjepDtos";
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
-import dataBretagneService from "../dataBretagne/dataBretagne.service";
-import { DATA_BRETAGNE_RECORDS } from "../dataBretagne/__fixtures__/dataBretagne.fixture";
+import dataBretagneService from "../data-bretagne/dataBretagne.service";
+import { DATA_BRETAGNE_RECORDS } from "../data-bretagne/__fixtures__/dataBretagne.fixture";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../payment-flat/__fixtures__/payment-flat.fixture";
 import { APPLICATION_LINK_TO_FONJEP } from "../../application-flat/__fixtures__/application-flat.fixture";
 import { ReadableStream } from "node:stream/web";

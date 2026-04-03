@@ -1,5 +1,5 @@
 import MongoAdapter from "../../MongoAdapter";
-import { GeoDbo } from "../../../../../modules/providers/geoApi/@types/geo.types";
+import { GeoDbo } from "../../../../../modules/providers/geo-api/@types/geo.types";
 import { GeoApiPort } from "./geo.port";
 
 export class GeoAdapter extends MongoAdapter<GeoDbo> implements GeoApiPort {

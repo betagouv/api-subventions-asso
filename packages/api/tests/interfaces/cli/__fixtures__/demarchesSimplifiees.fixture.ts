@@ -1,7 +1,7 @@
-import DemarchesSimplifieesSchema from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchema";
-import { DemarchesSimplifieesSuccessDto } from "../../../../src/modules/providers/demarchesSimplifiees/dto/DemarchesSimplifieesDto";
+import DemarchesSimplifieesSchema from "../../../../src/modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesSchema";
+import { DemarchesSimplifieesSuccessDto } from "../../../../src/modules/providers/demarches-simplifiees/dto/DemarchesSimplifieesDto";
 import { SIRET_STR } from "../../../__fixtures__/association.fixture";
-import DemarchesSimplifieesDataEntity from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
+import DemarchesSimplifieesDataEntity from "../../../../src/modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesDataEntity";
 import { ApplicationFlatEntity } from "../../../../src/entities/flats/ApplicationFlatEntity";
 import { ApplicationStatus } from "dto";
 import Siret from "../../../../src/identifier-objects/Siret";

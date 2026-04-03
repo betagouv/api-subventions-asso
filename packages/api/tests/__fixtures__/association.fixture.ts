@@ -1,5 +1,5 @@
 import { Association, Establishment } from "dto";
-import apiAssoService from "../../src/modules/providers/apiAsso/apiAsso.service";
+import apiAssoService from "../../src/modules/providers/api-asso/apiAsso.service";
 import ProviderValueFactory from "../../src/shared/ProviderValueFactory";
 
 export const SIREN_STR = "100000000";

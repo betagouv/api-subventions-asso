@@ -3,8 +3,8 @@ import {
     DemarchesSimplifieesSchemaSeedLine,
 } from "./entities/DemarchesSimplifieesSchemaSeed";
 
-jest.mock("../../../adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter");
-jest.mock("../../../adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter");
+jest.mock("../../../adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-schema.adapter");
+jest.mock("../../../adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter");
 jest.mock("./mappers/demarches-simplifiees-entity.mapper");
 jest.mock("./mappers/demarches-simplifiees-dto.mapper");
 jest.mock("@inquirer/prompts");
@@ -19,8 +19,8 @@ import { DemarchesSimplifieesEntityMapper } from "./mappers/demarches-simplifiee
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
 import DemarchesSimplifieesSchema, { DemarchesSimplifieesSchemaLine } from "./entities/DemarchesSimplifieesSchema";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
-import demarchesSimplifieesDataAdapter from "../../../adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
-import demarchesSimplifieesSchemaAdapter from "../../../adapters/outputs/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
+import demarchesSimplifieesDataAdapter from "../../../adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter";
+import demarchesSimplifieesSchemaAdapter from "../../../adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-schema.adapter";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import { DATA_ENTITIES } from "./__fixtures__/DemarchesSimplifieesFixture";
 import { DemarchesSimplifieesSuccessDto } from "./dto/DemarchesSimplifieesDto";

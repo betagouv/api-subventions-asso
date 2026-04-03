@@ -1,8 +1,8 @@
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import associationHelper from "./associations.helper";
 import providers from "../providers";
-import apiAssoService from "../providers/apiAsso/apiAsso.service";
-import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entreprises.service";
+import apiAssoService from "../providers/api-asso/apiAsso.service";
+import uniteLegalEntreprisesService from "../providers/unite-legale-entreprise/uniteLegal.entreprises.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
 import sireneStockUniteLegaleService from "../providers/sirene/stockUniteLegale/sireneStockUniteLegale.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
@@ -12,8 +12,8 @@ import AssociationIdentifier from "../../identifier-objects/AssociationIdentifie
 
 jest.mock("../providers/index");
 
-jest.mock("../providers/apiAsso/apiAsso.service");
-jest.mock("../providers/uniteLegalEntreprises/uniteLegal.entreprises.service");
+jest.mock("../providers/api-asso/apiAsso.service");
+jest.mock("../providers/unite-legale-entreprise/uniteLegal.entreprises.service");
 jest.mock("../../shared/LegalCategoriesAccepted", () => ({ LEGAL_CATEGORIES_ACCEPTED: "asso" }));
 jest.mock("../providers/sirene/stockUniteLegale/sireneStockUniteLegale.service");
 

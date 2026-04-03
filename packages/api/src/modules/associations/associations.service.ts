@@ -5,7 +5,7 @@ import { NotFoundError } from "core";
 import { DefaultObject } from "../../@types";
 
 import providers from "../providers";
-import ApiAssoDtoMapper from "../providers/apiAsso/mappers/api-asso-dto.mapper";
+import ApiAssoDtoMapper from "../providers/api-asso/mappers/api-asso-dto.mapper";
 
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 

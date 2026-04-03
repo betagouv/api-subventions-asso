@@ -1,6 +1,6 @@
 import ChorusMapper from "./chorus.mapper";
-import dataBretagneService from "../../dataBretagne/dataBretagne.service";
-import { DATA_BRETAGNE_RECORDS } from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
+import dataBretagneService from "../../data-bretagne/dataBretagne.service";
+import { DATA_BRETAGNE_RECORDS } from "../../data-bretagne/__fixtures__/dataBretagne.fixture";
 import Tahitiet from "../../../../identifier-objects/Tahitiet";
 import Ridet from "../../../../identifier-objects/Ridet";
 import Siret from "../../../../identifier-objects/Siret";

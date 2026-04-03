@@ -1,6 +1,6 @@
 import { AsyncCron } from "../../../decorators/cron.decorator";
 import { CronController } from "../../../@types/CronController";
-import demarchesSimplifieesService from "../../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
+import demarchesSimplifieesService from "../../../modules/providers/demarches-simplifiees/demarchesSimplifiees.service";
 import dataLogService from "../../../modules/data-log/dataLog.service";
 
 export class DemarchesSimplifieesCron implements CronController {

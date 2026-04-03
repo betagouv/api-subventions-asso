@@ -1,5 +1,5 @@
 import { NotAssociationError } from "core";
-import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
+import uniteLegalNameService from "../providers/unite-legale-name/uniteLegal.name.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import Rna from "../../identifier-objects/Rna";

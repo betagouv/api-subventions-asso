@@ -1,7 +1,7 @@
 import sireneUniteLegaleDbAdapter from "../../../../adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
-import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
+import uniteLegalEntreprisesService from "../../unite-legale-entreprise/uniteLegal.entreprises.service";
 import { UniteLegaleEntrepriseEntity } from "../../../../entities/UniteLegaleEntrepriseEntity";
-import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
+import uniteLegalNameService from "../../unite-legale-name/uniteLegal.name.service";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
 import SireneStockUniteLegaleParser from "./parser/sireneStockUniteLegale.parser";
 import SireneStockUniteLegaleMapper from "./mappers/sirene-stock-unite-legale.mapper";
