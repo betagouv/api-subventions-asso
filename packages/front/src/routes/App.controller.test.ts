@@ -44,12 +44,13 @@ describe("AppController", () => {
     });
 
     describe("constructor", () => {
+        const MATOMO_CONFIG = { url: "url/to/matomo", id: "appId" };
         let mockHandleBannerDisplay: MockInstance;
         beforeEach(() => {
             mockHandleBannerDisplay = vi
                 .spyOn(AppController.prototype, "handleBannerDisplay")
                 .mockImplementation(vi.fn());
-            controller = new AppController();
+            controller = new AppController({ matomo: MATOMO_CONFIG });
         });
         afterEach(() => mockHandleBannerDisplay.mockRestore());
         it("should call initContext()", () => {
@@ -57,7 +58,7 @@ describe("AppController", () => {
         });
 
         it("should call trackerService.init()", () => {
-            expect(vi.mocked(trackerService).init).toHaveBeenCalledWith(ENV);
+            expect(vi.mocked(trackerService).init).toHaveBeenCalledWith(ENV, MATOMO_CONFIG);
         });
 
         it("should subscribe to stores", () => {
@@ -67,7 +68,7 @@ describe("AppController", () => {
 
     describe("handleBannerDisplay", () => {
         beforeEach(() => {
-            controller = new AppController();
+            controller = new AppController({});
         });
 
         // eslint-disable-next-line vitest/no-commented-out-tests -- TODO clean in #2544
@@ -98,7 +99,7 @@ describe("AppController", () => {
 
     describe("initContext", () => {
         beforeEach(() => {
-            controller = new AppController();
+            controller = new AppController({});
         });
 
         it("should call svelte setContext", () => {
