@@ -39,11 +39,6 @@ class DepositLogAdapter extends MongoAdapter<DepositScdlLogDbo> implements Depos
         return dbos.map(dbo => DepositLogMapper.dboToEntity(dbo));
     }
 
-    async findFromPeriod(start: Date, end: Date) {
-        const dbos = await this.collection.find({ updateDate: { $gte: start, $lte: end } }).toArray();
-        return dbos.map(dbo => DepositLogMapper.dboToEntity(dbo));
-    }
-
     async deleteByUserId(userId: string): Promise<boolean> {
         const result = await this.collection.deleteOne({ userId });
         return result.deletedCount > 0;

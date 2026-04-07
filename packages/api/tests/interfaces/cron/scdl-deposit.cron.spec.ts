@@ -6,6 +6,8 @@ import { addDaysToDate, sameDateLastYear } from "../../../src/shared/helpers/Dat
 import depositLogAdapter from "../../../src/adapters/outputs/db/deposit-log/deposit-log.adapter";
 import { ENV as _ENV, EnvironmentEnum } from "../../../src/configurations/env.conf";
 import brevoMailNotifyPipe from "../../../src/modules/notify/out-pipes/brevo-mail.pipe";
+import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
+import { USER_FILE_DATA_LOG_DBOS } from "../../../src/modules/data-log/__fixtures__/data-log.fixtures";
 
 describe("ScdlDeposit CRON", () => {
     let cron: ScdlDepositCron;
@@ -47,9 +49,9 @@ describe("ScdlDeposit CRON", () => {
 
         it("notify user", async () => {
             const user = await userAdapter.create({ ...USER_DBO, signupAt: oneYearAgo });
-            await depositLogAdapter.insertOne({
-                ...DEPOSIT_LOG_DBO,
-                updateDate: addDaysToDate(oneYearAgo, 1),
+            await dataLogAdapter.insert({
+                ...USER_FILE_DATA_LOG_DBOS[0],
+                integrationDate: sameDateLastYear(new Date()),
                 userId: user._id.toString(),
             });
             await cron.notifyDepositRenewal();

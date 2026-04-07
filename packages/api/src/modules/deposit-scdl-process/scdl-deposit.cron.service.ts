@@ -1,11 +1,18 @@
-import { addDaysToDate, lastDayInMonth, sameDateLastYear } from "../../shared/helpers/DateHelper";
+import { addDaysToDate } from "../../shared/helpers/DateHelper";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
 import userCrudService from "../user/services/crud/user.crud.service";
 import { DepositLogPort } from "../../adapters/outputs/db/deposit-log/deposit-log.port";
+import SendDepositRenewalNotificationUseCase from "./send-deposit-renewal-notification.use-case";
+import { UserPort } from "../../adapters/outputs/db/user/user.port";
+import { DataLogPort } from "../../adapters/outputs/db/data-log/data-log.port";
 
 export class ScdlDepositCronService {
-    constructor(private readonly depositLogPort: DepositLogPort) {}
+    constructor(
+        private readonly depositLogPort: DepositLogPort,
+        private readonly dataLogPort: DataLogPort,
+        private readonly userPort: UserPort,
+    ) {}
 
     // user that started a desposit 2 days ago
     async getUsersEmailToNotify() {
@@ -50,19 +57,9 @@ export class ScdlDepositCronService {
         return notifyService.notify(NotificationType.BATCH_DEPOSIT_RESUME, { emails });
     }
 
-    async getDepositsSameMonthLastYear() {
-        const lastYear = sameDateLastYear(new Date());
-        const start = new Date(lastYear);
-        start.setDate(1);
-        const end = new Date(lastYear);
-        end.setDate(lastDayInMonth(start));
-        return this.depositLogPort.findFromPeriod(start, end);
-    }
-
     async notifyDepositRenewal() {
-        const deposits = await this.getDepositsSameMonthLastYear();
-        if (!deposits) return;
-        const users = await userCrudService.findUsersByIdList(deposits.map(deposit => deposit.userId));
-        return notifyService.notify(NotificationType.BATCH_DEPOSIT_RENEWAL, { emails: users.map(user => user.email) });
+        // @TODO: this is an attempt to better grasp the hexagonal architecture using UseCase
+        // To fully extend this we should inject the use case inside the SCDL CRON
+        return new SendDepositRenewalNotificationUseCase(this.dataLogPort, this.userPort).execute();
     }
 }

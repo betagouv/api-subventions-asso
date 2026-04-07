@@ -2,9 +2,18 @@ import path from "path";
 import { DataLogDto } from "dto";
 import dataLogAdapter from "../../adapters/outputs/db/data-log/data-log.adapter";
 import { DataLogMapper } from "./data-log.mapper";
-import { ApiDataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
+import { ApiDataLogEntity, DataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
 
-class DataLogService {
+export interface DataLogService {
+    throwMissingProp(propName: string): void;
+    addFromFile(log: Omit<FileDataLogEntity, "source" | "integrationDate">): Promise<void>;
+    addFromApi(log: Omit<ApiDataLogEntity, "source" | "integrationDate">): Promise<void>;
+    add(log: Omit<FileDataLogEntity, "integrationDate"> | Omit<ApiDataLogEntity, "integrationDate">): Promise<void>;
+    getProvidersLogOverview(): Promise<DataLogDto[]>;
+    findAllCursor(): AsyncIterable<DataLogEntity>;
+}
+
+class DataLogServiceImpl implements DataLogService {
     throwMissingProp(propName: string) {
         throw new Error(`DataLogEntity must have a ${propName}.`);
     }
@@ -37,5 +46,5 @@ class DataLogService {
     }
 }
 
-const dataLogService = new DataLogService();
+const dataLogService = new DataLogServiceImpl();
 export default dataLogService;
