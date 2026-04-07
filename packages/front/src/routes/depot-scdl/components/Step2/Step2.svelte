@@ -7,6 +7,7 @@
     import SheetSelector from "./SheetSelector.svelte";
     import Step2Controller from "./Step2.controller";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
+    import OverwriteExercices from "./OverwriteExercices.svelte";
 
     const dispatch = createEventDispatcher<{
         prevStep: void;
@@ -44,6 +45,10 @@
             excelSheets={$excelSheets}
             on:sheetSelected={e => ctrl.handleSheetSelected(e)}
             on:restartUpload={() => ctrl.handleRestartUpload()} />
+    {:else if $view === "overwriteExercices"}
+        <OverwriteExercices
+            on:validate={e => ctrl.uploadFile(undefined, e.detail.checkedExercises)}
+            on:toFileSelect={() => ctrl.toFileSelect()} />
     {:else}
         <div>
             <div class="fr-mb-6v">

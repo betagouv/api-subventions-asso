@@ -49,8 +49,13 @@ class DepositLogService {
         return null;
     }
 
-    async postScdlFile(file: File, depositLog: DepositScdlLogDto, sheetName?: string) {
-        const response = await depositLogPort.validateScdlFile(file, depositLog, sheetName);
+    async validateScdlFile(
+        file?: File,
+        depositLog?: DepositScdlLogDto,
+        sheetName?: string,
+        processedExercices?: number[],
+    ) {
+        const response = await depositLogPort.validateScdlFile(file, depositLog, sheetName, processedExercices);
         return response.data as DepositScdlLogResponseDto;
     }
 

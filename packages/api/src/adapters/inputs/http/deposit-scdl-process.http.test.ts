@@ -179,11 +179,11 @@ describe("DepositScdlProcessHttp", () => {
             const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
             validateScdlFileSpy.mockReturnValueOnce(depositScdlLog);
 
-            await controller.validateScdlFile(file, depositLogFormFiled, REQ);
+            await controller.validateScdlFile(REQ, file, depositLogFormFiled);
             expect(validateScdlFileSpy).toHaveBeenCalledWith(
+                REQ.user._id.toString(),
                 file,
                 DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
-                REQ.user._id.toString(),
                 undefined,
                 undefined,
             );
@@ -191,13 +191,13 @@ describe("DepositScdlProcessHttp", () => {
 
         it("should return DepositScdlLogResponseDto", async () => {
             validateScdlFileSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
-            const result = await controller.validateScdlFile(file, depositLogFormFiled, REQ);
+            const result = await controller.validateScdlFile(REQ, file, depositLogFormFiled);
             expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO_STEP_2);
         });
 
         it("should reject and throw Error when error throw by service", async () => {
             validateScdlFileSpy.mockRejectedValueOnce(new NotFoundError("an error"));
-            await expect(controller.validateScdlFile(file, depositLogFormFiled, REQ)).rejects.toThrow(NotFoundError);
+            await expect(controller.validateScdlFile(REQ, file, depositLogFormFiled)).rejects.toThrow(NotFoundError);
         });
     });
 

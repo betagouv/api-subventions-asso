@@ -407,7 +407,7 @@ describe("/parcours-depot", () => {
                 .post(`/parcours-depot/validation-fichier-scdl`)
                 .attach("file", csvPath)
                 .field("depositScdlLogDto", JSON.stringify(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2))
-                .field("processedExercises", JSON.stringify([2017, 2019]))
+                .field("processedExercices", JSON.stringify([2017, 2019]))
                 .set("x-access-token", token);
 
             expect(response.statusCode).toBe(200);
@@ -415,7 +415,7 @@ describe("/parcours-depot", () => {
                 expect.objectContaining({
                     uploadedFileInfos: expect.objectContaining({
                         grantCoverageYears: [2017, 2019],
-                        processedExercises: [2017, 2019],
+                        processedExercices: [2017, 2019],
                     }),
                 }),
             );

@@ -12,7 +12,7 @@ import FileFormatError from "$lib/errors/file-errors/FileFormatError";
 import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
 import { depositLogStore } from "$lib/store/depositLog.store";
 import type { EventDispatcher } from "svelte";
-import type { DepositScdlLogDto } from "dto";
+import type { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 
 type EventMap = {
     prevStep: void;
@@ -42,7 +42,7 @@ export default class Step2Controller {
 
     public noFileOrInvalid: Store<boolean> = new Store(true);
     public excelSheets: Store<string[]> = new Store([]);
-    public view: Store<"upload" | "sheetSelector"> = new Store("upload");
+    public view: Store<"upload" | "sheetSelector" | "overwriteExercices"> = new Store("upload");
     public uploadErrorMessage: Store<string | undefined> = new Store(undefined);
     public uploadError: Store<boolean> = new Store(false);
     public errorAlertVisible: Store<boolean> = new Store(false);
@@ -117,37 +117,59 @@ export default class Step2Controller {
         await this.uploadFile(selectedSheet);
     }
 
-    private async uploadFile(selectedSheet?: string) {
+    async uploadFile(selectedSheet?: string, processedExercices?: number[]) {
         const startTime = Date.now();
         this.dispatch("loading", "Veuillez patientez, nous analysons vos données");
 
-        const depositLog: DepositScdlLogDto = {
-            permissionAlert: true,
-        };
-
         try {
-            const updatedDepositLog = await depositLogService.postScdlFile(
-                this.selectedFile!,
-                depositLog,
-                selectedSheet,
-            );
+            const updatedDepositLog = await this.validateFile(processedExercices, selectedSheet);
+
             depositLogStore.set(updatedDepositLog);
+            await this.waitForMinimumLoadingTime(startTime);
 
-            const elapsed = Date.now() - startTime;
-            const remainingTime = this.MIN_LOADING_TIME - elapsed;
+            const hasExistingLines =
+                processedExercices === undefined &&
+                updatedDepositLog.uploadedFileInfos!.existingLinesInDbOnSamePeriod > 0;
 
-            if (remainingTime > 0) {
-                await new Promise(resolve => setTimeout(resolve, remainingTime));
+            if (hasExistingLines) {
+                this.view.set("overwriteExercices");
+            } else {
+                this.dispatch("nextStep");
             }
-
-            this.dispatch("nextStep");
         } catch (e) {
             console.error("Erreur lors de l'upload du fichier", e);
             this.errorAlertVisible.set(true);
         } finally {
             this.dispatch("endLoading");
-            this.errorAlertVisible.set(true);
+            this.errorAlertVisible.set(false);
         }
+    }
+
+    private async validateFile(
+        processedExercices?: number[],
+        selectedSheet?: string,
+    ): Promise<DepositScdlLogResponseDto> {
+        if (processedExercices) {
+            return depositLogService.validateScdlFile(undefined, undefined, undefined, processedExercices);
+        }
+
+        const depositLog: DepositScdlLogDto = { permissionAlert: true };
+        return depositLogService.validateScdlFile(this.selectedFile!, depositLog, selectedSheet);
+    }
+
+    private async waitForMinimumLoadingTime(startTime: number) {
+        const elapsed = Date.now() - startTime;
+        const remainingTime = this.MIN_LOADING_TIME - elapsed;
+
+        if (remainingTime > 0) {
+            await new Promise(resolve => setTimeout(resolve, remainingTime));
+        }
+    }
+
+    toFileSelect() {
+        this.selectedFile = null;
+        this.noFileOrInvalid.set(true);
+        this.view.set("upload");
     }
 
     handleRestartUpload() {

@@ -359,9 +359,9 @@ describe("DepositScdlProcessService", () => {
             const mockUpdatePartial = mockDepositLogPort.updatePartial.mockResolvedValue(expected);
 
             const actual = await depositScdlProcessService.validateScdlFile(
+                USER_ID_STR,
                 file,
                 DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
-                USER_ID_STR,
             );
 
             expect(mockUpdatePartial).toHaveBeenCalledWith(
@@ -382,6 +382,50 @@ describe("DepositScdlProcessService", () => {
             });
 
             expect(actual).toMatchObject(expected);
+        });
+
+        it("if no file send, get existing file ", async () => {
+            const mockDate = new Date("2025-11-04T10:30:00Z");
+            jest.spyOn(global, "Date").mockImplementation(() => mockDate as never);
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            mockGetGrantsOnPeriodByAllocator.mockResolvedValueOnce([
+                {} as MiscScdlGrantEntity,
+                {} as MiscScdlGrantEntity,
+            ]);
+            mockS3uploadAndReplaceUserFile.mockResolvedValue("userFileId");
+
+            mockGetUserFile.mockResolvedValue(createMockFile("test.csv"));
+            const step = 2;
+
+            const expected: DepositScdlLogEntity = {
+                userId: USER_ID_STR,
+                step: step,
+                updateDate: new Date(),
+                allocatorSiret: "12345678901234",
+            };
+
+            const parsedResult = {
+                entities: [],
+                errors: [],
+                parsedInfos: {
+                    allocatorsSiret: ["12345678901234"],
+                    grantCoverageYears: [2025],
+                    parseableLines: 0,
+                    totalLines: 0,
+                    lineCountsByExercice: [],
+                    missingHeaders: { optional: [], mandatory: [] },
+                } as ScdlParsedInfos,
+            };
+
+            mockParseCsv.mockReturnValueOnce(parsedResult);
+            mockDepositLogPort.updatePartial.mockResolvedValue(expected);
+
+            await depositScdlProcessService.validateScdlFile(USER_ID_STR, undefined, undefined, undefined, [2023]);
+
+            expect(mockGetUserFile).toHaveBeenCalledWith(
+                USER_ID_STR,
+                DEPOSIT_LOG_ENTITY_STEP_2.uploadedFileInfos!.fileName,
+            );
         });
     });
 

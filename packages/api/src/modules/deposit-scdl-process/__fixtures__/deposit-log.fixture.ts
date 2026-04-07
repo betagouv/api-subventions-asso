@@ -65,7 +65,7 @@ export const UPLOADED_FILE_INFOS_ENTITY: UploadedFileInfosEntity = {
     existingLinesInDbOnSamePeriod: 0,
     errorStats: { count: 0, errorSample: [] },
     sheetName: "SHEET NAME",
-    processedExercises: undefined,
+    processedExercices: undefined,
 };
 
 export const DEPOSIT_LOG_DBO: DepositScdlLogDbo = {

@@ -35,9 +35,9 @@ export default class ScdlCli {
         exportDate: string | undefined = undefined,
         pageName: string | undefined = undefined,
         rowOffset: number | string = 0,
-        processedExercises: string | undefined = undefined,
+        processedExercices: string | undefined = undefined,
     ) {
-        const exercices = processedExercises ? (JSON.parse(processedExercises) as number[]) : undefined;
+        const exercices = processedExercices ? (JSON.parse(processedExercices) as number[]) : undefined;
         const siret = new Siret(allocatorSiret);
         const producer = await scdlService.getProducer(siret);
         await this.validateGenericInput(producer, exportDate);

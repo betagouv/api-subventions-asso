@@ -91,6 +91,7 @@ export class DepositScdlController {
     loading(message: string) {
         this.currentLoadingMessage.set(message);
         this.isLoading.set(true);
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     endLoading() {

@@ -55,22 +55,22 @@ export class ScdlService {
         await miscScdlGrantAdapter.createMany(dbos);
     }
 
-    parseXls(fileContent: Buffer, pageName?: string, rowOffset = 0, processedExercises?: number[]) {
+    parseXls(fileContent: Buffer, pageName?: string, rowOffset = 0, processedExercices?: number[]) {
         const { entities, errors, parsedInfos } = ScdlGrantParser.parseExcel(
             fileContent,
             pageName,
             rowOffset,
-            processedExercises,
+            processedExercices,
         );
         return { entities, errors: this.normalizeErrors(errors), parsedInfos };
     }
 
-    parseCsv(fileContent: Buffer, delimiter = ";", quote: string | boolean = '"', processedExercises?: number[]) {
+    parseCsv(fileContent: Buffer, delimiter = ";", quote: string | boolean = '"', processedExercices?: number[]) {
         const { entities, errors, parsedInfos } = ScdlGrantParser.parseCsv(
             fileContent,
             delimiter,
             quote,
-            processedExercises,
+            processedExercices,
         );
         return { entities, errors: this.normalizeErrors(errors), parsedInfos };
     }

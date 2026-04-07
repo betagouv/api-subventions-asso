@@ -112,23 +112,36 @@ export class DepositScdlProcessService {
     }
 
     async validateScdlFile(
-        file: Express.Multer.File,
-        depositScdlLogDto: DepositScdlLogDto,
         userId: string,
+        file?: Express.Multer.File,
+        depositScdlLogDto?: DepositScdlLogDto,
         pageName?: string | undefined,
-        processedExercises?: number[],
+        processedExercices?: number[],
     ): Promise<DepositScdlLogEntity> {
         const existingDepositLog = await this.getDepositLog(userId);
         if (!existingDepositLog) {
             throw new NotFoundError("No deposit log found for this user");
         }
-        depositScdlLogDto.allocatorSiret = existingDepositLog.allocatorSiret;
 
-        depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, this.SECOND_STEP);
+        const fileToParse =
+            file ?? (await s3StorageService.getUserFile(userId, existingDepositLog.uploadedFileInfos!.fileName));
 
-        const { parsedInfos, errors } = this.parseFile(file, pageName, processedExercises);
+        if (file) {
+            if (!depositScdlLogDto) {
+                throw new BadRequestError("depositScdlLogDto is required when a file is provided");
+            }
 
-        await s3StorageService.uploadAndReplaceUserFile(file, userId);
+            depositScdlLogDto.allocatorSiret = existingDepositLog.allocatorSiret;
+            depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, this.SECOND_STEP);
+        }
+
+        const parsedSheetName = file ? pageName : existingDepositLog.uploadedFileInfos?.sheetName;
+
+        const { parsedInfos, errors } = this.parseFile(fileToParse, parsedSheetName, processedExercices);
+
+        if (file) {
+            await s3StorageService.uploadAndReplaceUserFile(file, userId);
+        }
 
         const hasSameAllocatorSiret =
             !!existingDepositLog.allocatorSiret &&
@@ -157,7 +170,7 @@ export class DepositScdlProcessService {
         }
 
         const uploadedFileInfos = new UploadedFileInfosEntity(
-            file.originalname,
+            fileToParse.originalname,
             new Date(),
             parsedInfos.allocatorsSiret,
             parsedInfos.grantCoverageYears,
@@ -168,7 +181,7 @@ export class DepositScdlProcessService {
             existingLinesInDbOnSamePeriod,
             new ScdlErrorStats(errors),
             pageName,
-            processedExercises,
+            processedExercices,
         );
 
         return this.depositLogPort.updatePartial(
@@ -178,7 +191,7 @@ export class DepositScdlProcessService {
                 undefined,
                 undefined,
                 undefined,
-                depositScdlLogDto.permissionAlert,
+                true,
                 uploadedFileInfos,
             ),
         );
@@ -187,7 +200,7 @@ export class DepositScdlProcessService {
     private parseFile(
         file: Express.Multer.File,
         pageName: string | undefined,
-        processedExercises?: number[],
+        processedExercices?: number[],
     ): {
         entities: ScdlStorableGrant[];
         errors: MixedParsedError[];
@@ -198,9 +211,9 @@ export class DepositScdlProcessService {
 
         if (isCsv) {
             const delimiter = detectCsvDelimiter(fileContent);
-            return scdlService.parseCsv(fileContent, delimiter, undefined, processedExercises);
+            return scdlService.parseCsv(fileContent, delimiter, undefined, processedExercices);
         } else {
-            return scdlService.parseXls(fileContent, pageName, undefined, processedExercises);
+            return scdlService.parseXls(fileContent, pageName, undefined, processedExercices);
         }
     }
 
@@ -290,7 +303,7 @@ export class DepositScdlProcessService {
         const { entities, errors, parsedInfos } = this.parseFile(
             file,
             existingDepositLog.uploadedFileInfos?.sheetName,
-            existingDepositLog.uploadedFileInfos?.processedExercises,
+            existingDepositLog.uploadedFileInfos?.processedExercices,
         );
 
         const hasBlockingErrors = errors.some(error => error.bloquant === "oui");

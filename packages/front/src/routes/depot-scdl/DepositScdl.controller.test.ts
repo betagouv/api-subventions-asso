@@ -12,6 +12,7 @@ describe("DepositScdlController", () => {
         allocatorSiret: "12345678901234",
     };
     beforeEach(() => {
+        window.scrollTo = vi.fn();
         // @ts-expect-error: mock using string instead of svelte component
         controller = new DepositScdlController(COMPONENTS_LIST);
         controller.depositLog.set(DEPOSIT_LOG);

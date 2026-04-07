@@ -15,6 +15,6 @@ export default class UploadedFileInfosEntity {
         public existingLinesInDbOnSamePeriod: number,
         public errorStats: ScdlErrorStats,
         public sheetName?: string,
-        public processedExercises?: number[],
+        public processedExercices?: number[],
     ) {}
 }

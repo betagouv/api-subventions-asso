@@ -91,7 +91,7 @@ describe("DepositLogPort", () => {
                 const file = new File(["content"], "test.csv", { type: "text/csv" });
                 const dto = { permissionAlert: true } as DepositScdlLogDto;
                 const sheetName = "sheetname";
-                depositLogPort.validateScdlFile(file, dto, sheetName);
+                depositLogPort.validateScdlFile(file, dto, sheetName, [2024]);
                 expect(mockPostResource).toHaveBeenCalledWith(
                     depositLogPort.BASE_PATH + "/validation-fichier-scdl",
                     expect.any(FormData),
@@ -102,6 +102,8 @@ describe("DepositLogPort", () => {
 
                 expect(formData.get("file")).toBe(file);
                 expect(formData.get("depositScdlLogDto")).toBe(JSON.stringify(dto));
+                expect(formData.get("sheetName")).toBe("sheetname");
+                expect(formData.get("processedExercices")).toBe(JSON.stringify([2024]));
             });
         });
 
