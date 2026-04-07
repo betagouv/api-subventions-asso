@@ -7,6 +7,7 @@ import { RgpdCron } from "./adapters/inputs/cron/rgpd.cron";
 import { StatsCron } from "./adapters/inputs/cron/stats.cron";
 import { SearchCacheCron } from "./adapters/inputs/cron/search-cache.cron";
 import { SireneStockUniteLegaleCron } from "./adapters/inputs/cron/sirene-stock-unite-legale.cron";
+import { ScdlDepositCron } from "./adapters/inputs/cron/scdl-deposit.cron";
 
 const controllers: CronController[] = [
     // ExampleCron,
@@ -17,6 +18,7 @@ const controllers: CronController[] = [
     RgpdCron,
     SearchCacheCron,
     StatsCron,
+    ScdlDepositCron,
 ];
 
 export const scheduler = new ToadScheduler();
