@@ -22,7 +22,7 @@
 
     export let data;
 
-    const ctrl = new AppController();
+    const ctrl = new AppController({ matomo: data.matomo });
     const { displayBanner } = ctrl;
     // Options disponibles à l'initialisation du DSFR
     // @ts-expect-error: DSFR

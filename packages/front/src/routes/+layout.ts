@@ -5,11 +5,12 @@ import { getQueryParams } from "$lib/helpers/urlHelper";
 
 export const ssr = false;
 
-export const load = (({ url, params }) => {
+export const load = (({ url, params, data }) => {
     return {
         query: getQueryParams(url.searchParams),
         params,
         crumbs: buildBreadcrumbs(url.pathname),
         authLevel: AuthLevels.USER,
+        matomo: data.matomo ?? undefined,
     };
 }) satisfies LayoutLoad;

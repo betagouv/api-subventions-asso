@@ -12,8 +12,8 @@ import { errorStore } from "$lib/store/genericError.store";
 export class AppController {
     element: HTMLElement | undefined = undefined;
     displayBanner = new Store(false);
-    constructor() {
-        trackerService.init(PUBLIC_ENV);
+    constructor(config) {
+        trackerService.init(PUBLIC_ENV, config.matomo);
         this.initContext();
 
         // trick to subscribe two stores because we need page AND connectedUser to be defined before running script
