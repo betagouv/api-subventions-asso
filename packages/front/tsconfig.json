@@ -1,6 +1,7 @@
 {
     "extends": "./.svelte-kit/tsconfig.json",
     "compilerOptions": {
+        "rootDir": "./",
         "target": "ES2021",
         "allowJs": true,
         "checkJs": false,
@@ -14,7 +15,7 @@
         "types": ["vitest/globals"],
         "noImplicitAny": false
     },
-    "include": ["./src"]
+    "include": ["./src", "./.svelte-kit/ambient.d.ts", "./.svelte-kit/types/**/*.d.ts"]
     // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
     //
     // If you want to overwrite includes/excludes, make sure to copy over the relevant includes/excludes

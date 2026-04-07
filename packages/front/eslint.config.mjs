@@ -6,7 +6,6 @@ import prettier from "eslint-config-prettier";
 import vitest from "eslint-plugin-vitest";
 import svelte from "eslint-plugin-svelte";
 import svelteConfig from "./svelte.config.js";
-import path from "path";
 
 const ignores = [
     "eslint.config.mjs",
@@ -21,11 +20,7 @@ const ignores = [
     "build/**/*",
     "package/**/*",
     "**/static",
-
-    // all .md files
     "**/*.md",
-
-    // Ignore files for PNPM, NPM and YARN
     "pnpm-lock.yaml",
     "package-lock.json",
     "yarn.lock",
@@ -33,6 +28,61 @@ const ignores = [
 
 export default [
     { ignores },
+
+    // Base JS + TS
+    eslint.configs.recommended,
+    ...tseslint.configs.recommended,
+    // JS files — no type-aware linting needed
+    {
+        files: ["**/*.js"],
+        ...tseslint.configs.disableTypeChecked,
+    },
+
+    // Svelte (flat config variants only)
+    ...svelte.configs["flat/recommended"],
+    ...svelte.configs["flat/prettier"],
+
+    // Prettier (must come after other style rules)
+    prettier,
+
+    // Vitest
+    vitest.configs.recommended,
+
+    // Global language options
+    {
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+                ...vitest.environments.env.globals,
+            },
+        },
+        plugins: {
+            "@typescript-eslint": tseslint.plugin,
+            import: importPlugin,
+        },
+        settings: {
+            svelte: {
+                ignoreWarnings: ["svelte/no-at-html-tags"],
+            },
+        },
+    },
+
+    // Svelte files — parser + project service
+    {
+        files: ["**/*.svelte"],
+        languageOptions: {
+            parserOptions: {
+                parser: tseslint.parser,
+                projectService: true,
+                tsconfigRootDir: import.meta.dirname,
+                extraFileExtensions: [".svelte"],
+                svelteConfig,
+            },
+        },
+    },
+
+    // Shared rule overrides
     {
         rules: {
             "@typescript-eslint/no-unused-vars": [
@@ -43,71 +93,15 @@ export default [
                     varsIgnorePattern: "^_",
                 },
             ],
+            "svelte/require-each-key": "warn",
         },
     },
+
+    // Rules that need to be off for specific file types
     {
         files: ["**/*.svelte", "**/*.test.ts"],
         rules: {
             "no-unused-expressions": "off",
-        },
-    },
-    eslint.configs.recommended,
-    ...tseslint.configs.recommended,
-    ...svelte.configs.recommended,
-    ...svelte.configs["flat/recommended"],
-    prettier,
-    ...svelte.configs["flat/prettier"],
-    {
-        // sometimes we can't provide efficient ID or we only load list once
-        rules: { "svelte/require-each-key": "warn" },
-    },
-    vitest.configs.recommended,
-    {
-        languageOptions: {
-            globals: {
-                ...globals.browser,
-                ...globals.node, // Add this if you are using SvelteKit in non-SPA mode
-                ...vitest.environments.env.globals,
-            },
-        },
-        settings: {
-            svelte: {
-                // Specifies an array of rules to ignore reports within the template.
-                // For example, use this to disable rules in the template that may produce unavoidable false positives.
-                ignoreWarnings: ["svelte/no-at-html-tags"],
-            },
-        },
-    },
-    {
-        files: ["**/*.svelte"],
-        languageOptions: {
-            parserOptions: {
-                parser: tseslint.parser,
-                projectService: true,
-                extraFileExtensions: [".svelte"], // Add support for additional file extensions, such as .svelte
-
-                // We recommend importing and specifying svelte.config.js.
-                // By doing so, some rules in eslint-plugin-svelte will automatically read the configuration and adjust their behavior accordingly.
-                // While certain Svelte settings may be statically loaded from svelte.config.js even if you don’t specify it,
-                // explicitly specifying it ensures better compatibility and functionality.
-                svelteConfig,
-            },
-        },
-    },
-    {
-        files: ["**/*.ts"],
-        languageOptions: {
-            parser: tseslint.parser,
-            parserOptions: {
-                project: "./eslint.tsconfig.json",
-                tsconfigRootDir: path.resolve(),
-            },
-        },
-    },
-    {
-        plugins: {
-            "@typescript-eslint": tseslint.plugin,
-            import: importPlugin,
         },
     },
 ];
