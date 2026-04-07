@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.83.1](https://github.com/betagouv/api-subventions-asso/compare/v0.83.0...v0.83.1) (2026-04-07)
+
+### Bug Fixes
+
+- **api:** init scdl cron ([bb118ad](https://github.com/betagouv/api-subventions-asso/commit/bb118adaadc0c51033d5cfdd65f8933bdd354b8b))
+
 # [0.83.0](https://github.com/betagouv/api-subventions-asso/compare/v0.82.0...v0.83.0) (2026-04-01)
 
 ### Bug Fixes

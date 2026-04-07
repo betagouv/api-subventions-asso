@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.83.1](https://github.com/betagouv/api-subventions-asso/compare/v0.83.0...v0.83.1) (2026-04-07)
+
+### Bug Fixes
+
+- **api:** init scdl cron ([bb118ad](https://github.com/betagouv/api-subventions-asso/commit/bb118adaadc0c51033d5cfdd65f8933bdd354b8b))
+- **front:** eslint + tsconfig errors ([92f551e](https://github.com/betagouv/api-subventions-asso/commit/92f551ee7a1d28095fe1c84627f1396da83f121d))
+
+### Features
+
+- **front:** [#3825](https://github.com/betagouv/api-subventions-asso/issues/3825) switch matomo instance ([#3881](https://github.com/betagouv/api-subventions-asso/issues/3881)) ([5b8b566](https://github.com/betagouv/api-subventions-asso/commit/5b8b566cb36c2ad36149f40222ce1538c6f42faf))
+
 # [0.83.0](https://github.com/betagouv/api-subventions-asso/compare/v0.82.0...v0.83.0) (2026-04-01)
 
 ### Bug Fixes
