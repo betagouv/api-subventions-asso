@@ -1,5 +1,5 @@
 import MongoAdapter from "../MongoAdapter";
-import { DataLogEntity } from "../../../../modules/data-log/entities/dataLogEntity";
+import { DataLogEntity, UserFileDataLogEntity } from "../../../../modules/data-log/entities/dataLogEntity";
 import { ProducerLogEntity } from "../../../../modules/data-log/entities/producerLogEntity";
 import { removeMongoId, removeMongoIds } from "../mongo-document.mapper";
 import { DataLogPort } from "./data-log.port";
@@ -70,6 +70,12 @@ class DataLogAdapter extends MongoAdapter<DataLogEntity> implements DataLogPort 
                 },
             ])
             .toArray() as unknown as Promise<ProducerLogEntity[]>;
+    }
+
+    findUserFileLogsFromPeriod(start: Date, end: Date): Promise<UserFileDataLogEntity[]> {
+        return this.collection
+            .find({ integrationDate: { $gte: start, $lt: end }, userId: { $exists: true } }, { projection: { _id: 0 } })
+            .toArray() as Promise<UserFileDataLogEntity[]>;
     }
 }
 

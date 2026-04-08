@@ -1,4 +1,4 @@
-import { DataLogEntity } from "../../../../modules/data-log/entities/dataLogEntity";
+import { DataLogEntity, UserFileDataLogEntity } from "../../../../modules/data-log/entities/dataLogEntity";
 import { ProducerLogEntity } from "../../../../modules/data-log/entities/producerLogEntity";
 
 export interface DataLogPort {
@@ -10,4 +10,5 @@ export interface DataLogPort {
     findAllCursor(): AsyncIterable<DataLogEntity>;
     getLastImportByProvider(providerId: string): Promise<Date>;
     getProvidersLogOverview(): Promise<ProducerLogEntity[]>;
+    findUserFileLogsFromPeriod(start: Date, end: Date): Promise<UserFileDataLogEntity[] | null>;
 }
