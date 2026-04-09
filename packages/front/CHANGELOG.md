@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.83.2](https://github.com/betagouv/datasubvention/compare/v0.83.1...v0.83.2) (2026-04-09)
+
+### Features
+
+- **api:** [#3873](https://github.com/betagouv/datasubvention/issues/3873) optionally restrict parsing to specific exercises ([#3884](https://github.com/betagouv/datasubvention/issues/3884)) ([5917172](https://github.com/betagouv/datasubvention/commit/5917172ac1a426843ddf3a200df1b0b0887e901b))
+
 ## [0.83.1](https://github.com/betagouv/datasubvention/compare/v0.83.0...v0.83.1) (2026-04-07)
 
 ### Bug Fixes

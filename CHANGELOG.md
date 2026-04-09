@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.83.2](https://github.com/betagouv/api-subventions-asso/compare/v0.83.1...v0.83.2) (2026-04-09)
+
+### Bug Fixes
+
+- **api:** [#3822](https://github.com/betagouv/api-subventions-asso/issues/3822) fix renewal deposit notification ([#3885](https://github.com/betagouv/api-subventions-asso/issues/3885)) ([10a0037](https://github.com/betagouv/api-subventions-asso/commit/10a00371b5eef815f647230609e9e739d8a0a37e))
+
+### Features
+
+- **api:** [#3873](https://github.com/betagouv/api-subventions-asso/issues/3873) optionally restrict parsing to specific exercises ([#3884](https://github.com/betagouv/api-subventions-asso/issues/3884)) ([4ed33cf](https://github.com/betagouv/api-subventions-asso/commit/4ed33cf63cc925dc12af59d468a74e6b47f1487c))
+- **api:** [#3873](https://github.com/betagouv/api-subventions-asso/issues/3873) optionally restrict parsing to specific exercises ([#3884](https://github.com/betagouv/api-subventions-asso/issues/3884)) ([5917172](https://github.com/betagouv/api-subventions-asso/commit/5917172ac1a426843ddf3a200df1b0b0887e901b))
+
 ## [0.83.1](https://github.com/betagouv/api-subventions-asso/compare/v0.83.0...v0.83.1) (2026-04-07)
 
 ### Bug Fixes

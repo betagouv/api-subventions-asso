@@ -141,7 +141,7 @@ importers:
                 specifier: ^1.4.6
                 version: 1.4.7
             core:
-                specifier: workspace:0.83.1
+                specifier: workspace:0.83.2
                 version: link:../core
             cors:
                 specifier: ^2.8.5
@@ -168,7 +168,7 @@ importers:
                 specifier: ^14.3.2
                 version: 14.3.2
             dto:
-                specifier: workspace:0.83.1
+                specifier: workspace:0.83.2
                 version: link:../dto
             express:
                 specifier: ^4.18.2
@@ -316,7 +316,7 @@ importers:
                 specifier: 24.10.1
                 version: 24.10.1
             dto:
-                specifier: workspace:0.83.1
+                specifier: workspace:0.83.2
                 version: link:../dto
 
     packages/dto:
@@ -364,7 +364,7 @@ importers:
                 specifier: ^14.3.2
                 version: 14.3.2
             dto:
-                specifier: workspace:0.83.1
+                specifier: workspace:0.83.2
                 version: link:../dto
             jitbit-html-sanitizer:
                 specifier: ^0.2.1
@@ -2088,6 +2088,7 @@ packages:
                 integrity: sha512-hUTEWrR8zH+/Z3bp/R1aLm6DW8vB/BB7KH7Yeg4fMfrvSwxegiLVW9uJFAzWkK4mzEagmj/Dti85Yg9MN13t0g==
             }
         engines: { node: ^20.19.0 || ^22.12.0 || >=24.0.0 }
+        deprecated: This package is an implementation detail of Lerna and is no longer published separately.
 
     "@mapbox/node-pre-gyp@1.0.11":
         resolution:
