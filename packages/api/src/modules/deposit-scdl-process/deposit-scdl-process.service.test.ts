@@ -60,7 +60,7 @@ describe("DepositScdlProcessService", () => {
             fileContent: Buffer<ArrayBufferLike>,
             delimiter?: string | undefined,
             quote?: string | boolean | undefined,
-            yearsConcerned?: number[],
+            exercisesConcerned?: number[],
         ]
     >;
     let mockGetGrantsOnPeriodByAllocator: jest.SpyInstance<
@@ -73,7 +73,7 @@ describe("DepositScdlProcessService", () => {
             fileContent: Buffer<ArrayBufferLike>,
             pageName?: string | undefined,
             rowOffset?: number | undefined,
-            yearsConcerned?: number[],
+            exercisesConcerned?: number[],
         ]
     >;
     let mockDetectCsvDelimiter: jest.SpyInstance<string, [fileContent: Buffer<ArrayBufferLike>]>;

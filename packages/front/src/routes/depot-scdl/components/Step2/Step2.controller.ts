@@ -166,7 +166,7 @@ export default class Step2Controller {
         }
     }
 
-    toFileSelect() {
+    goToFileSelection() {
         this.selectedFile = null;
         this.noFileOrInvalid.set(true);
         this.view.set("upload");

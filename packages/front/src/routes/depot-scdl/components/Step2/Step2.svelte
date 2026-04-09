@@ -48,7 +48,7 @@
     {:else if $view === "overwriteExercices"}
         <OverwriteExercices
             on:validate={e => ctrl.uploadFile(undefined, e.detail.checkedExercises)}
-            on:toFileSelect={() => ctrl.toFileSelect()} />
+            on:toFileSelect={() => ctrl.goToFileSelection()} />
     {:else}
         <div>
             <div class="fr-mb-6v">

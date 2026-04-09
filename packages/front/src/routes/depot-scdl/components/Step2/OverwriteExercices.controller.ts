@@ -30,9 +30,9 @@ export default class OverwriteExercicesController {
 
     toggleOne(exercice: number) {
         const current = this.checkedExercices.value;
-
-        this.checkedExercices.value = current.includes(exercice)
+        const updatedExercice = current.includes(exercice)
             ? current.filter(item => item !== exercice)
             : [...current, exercice];
+        this.checkedExercices.set(updatedExercice);
     }
 }
