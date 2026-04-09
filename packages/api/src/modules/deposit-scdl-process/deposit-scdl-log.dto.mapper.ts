@@ -51,6 +51,7 @@ export default class DepositScdlLogDtoMapper {
             existingLinesInDbOnSamePeriod: entity.existingLinesInDbOnSamePeriod,
             errorStats: entity.errorStats,
             sheetName: entity.sheetName,
+            processedExercices: entity.processedExercices,
         };
     }
 
@@ -87,6 +88,7 @@ export default class DepositScdlLogDtoMapper {
             existingLinesInDbOnSamePeriod: dto.existingLinesInDbOnSamePeriod,
             errorStats: this.scdlErrorStatsDtoToEntity(dto.errorStats),
             sheetName: dto.sheetName,
+            processedExercices: dto.processedExercices,
         };
     }
 

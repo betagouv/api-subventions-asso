@@ -176,10 +176,14 @@ export class DepositScdlProcessHttp extends Controller {
     /**
      * @summary Valide et analyse le fichier SCDL, met à jour le journal de dépôt
      *
-     * @param file - The uploaded SCDL file to validate (CSV or Excel format)
-     * @param depositScdlLogDto - dto containing uploaded file infos
+     * Si un fichier est fourni, il est utilisé directement.
+     * Sinon, le fichier précédement déposé sur le s3 est recupéré automatiquement.
+     *
+     * @param file - Optional uploaded SCDL file to validate (CSV or Excel format)
+     * @param depositScdlLogDto - Optional dto containing uploaded file infos
      * @param req
      * @param pageName - Optional page name for excel file with multiple sheets
+     * @param processedExercices - Optional list of exercices to filter the file by
      *
      * @returns {DepositScdlLogResponseDto} 200 - Deposit log updated successfully with file parsing infos
      */
@@ -201,6 +205,7 @@ export class DepositScdlProcessHttp extends Controller {
                 count: 0,
                 errorSample: [],
             },
+            processedExercices: [2023],
         },
     })
     @Post("/validation-fichier-scdl")
@@ -209,18 +214,21 @@ export class DepositScdlProcessHttp extends Controller {
     @Response("401", "Unauthorized")
     @Response("404", "No deposit log found for this user")
     public async validateScdlFile(
-        @UploadedFile() file: Express.Multer.File,
-        @FormField() depositScdlLogDto: string,
         @Request() req: IdentifiedRequest,
+        @UploadedFile() file?: Express.Multer.File,
+        @FormField() depositScdlLogDto?: string,
         @FormField() pageName?: string,
+        @FormField() processedExercices?: string,
     ): Promise<DepositScdlLogResponseDto> {
-        const parsedDto = JSON.parse(depositScdlLogDto);
-        file.originalname = fixFilenameEncoding(file.originalname); // accented char pb: see if other way to fix this
+        const parsedDto = depositScdlLogDto ? JSON.parse(depositScdlLogDto) : undefined;
+        const parsedProcessedExercices = processedExercices ? (JSON.parse(processedExercices) as number[]) : undefined;
+        if (file) file.originalname = fixFilenameEncoding(file.originalname); // accented char pb: see if other way to fix this
         const updatedDepositLog = await depositScdlProcessService.validateScdlFile(
+            req.user._id.toString(),
             file,
             parsedDto,
-            req.user._id.toString(),
             pageName,
+            parsedProcessedExercices,
         );
         return DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(updatedDepositLog);
     }

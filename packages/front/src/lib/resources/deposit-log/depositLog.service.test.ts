@@ -165,7 +165,7 @@ describe("DepositLogService", () => {
 
             vi.mocked(depositLogPort.validateScdlFile).mockResolvedValue(response);
 
-            const result = await depositLogService.postScdlFile({} as File, {} as DepositScdlLogDto);
+            const result = await depositLogService.validateScdlFile({} as File, {} as DepositScdlLogDto);
 
             expect(depositLogPort.validateScdlFile).toHaveBeenCalledTimes(1);
             expect(result).toEqual(response.data as DepositScdlLogResponseDto);
@@ -175,7 +175,7 @@ describe("DepositLogService", () => {
             const mockError = new Error("error");
             vi.mocked(depositLogPort.validateScdlFile).mockRejectedValue(mockError);
 
-            await expect(depositLogService.postScdlFile({} as File, {} as DepositScdlLogDto)).rejects.toThrow(
+            await expect(depositLogService.validateScdlFile({} as File, {} as DepositScdlLogDto)).rejects.toThrow(
                 mockError,
             );
             expect(depositLogPort.validateScdlFile).toHaveBeenCalledTimes(1);

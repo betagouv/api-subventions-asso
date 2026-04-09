@@ -136,7 +136,7 @@ describe("ScdlGrantParser", () => {
         it("filters valid grants", () => {
             jest.mocked(GenericParser.linkHeaderToData).mockReturnValue("TOTO" as unknown as Record<string, unknown>);
             ScdlGrantParser.parseExcel(BUFFER);
-            expect(validateSpy).toHaveBeenCalledWith(["TOTO", "TOTO"]);
+            expect(validateSpy).toHaveBeenCalledWith(["TOTO", "TOTO"], undefined);
             jest.mocked(GenericParser.linkHeaderToData).mockReset();
         });
     });
@@ -217,7 +217,7 @@ describe("ScdlGrantParser", () => {
 
         it("calls validation with parsed data", () => {
             ScdlGrantParser.parseCsv(BUFFER);
-            expect(validateSpy).toHaveBeenCalledWith(SCDL_STORABLE);
+            expect(validateSpy).toHaveBeenCalledWith(SCDL_STORABLE, undefined);
         });
     });
 

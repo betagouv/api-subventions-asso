@@ -32,13 +32,12 @@ class DepositLogPort {
         return requestsService.delete(this.BASE_PATH);
     }
 
-    validateScdlFile(file: File, depositLog: DepositScdlLogDto, sheetName?: string) {
+    validateScdlFile(file?: File, depositLog?: DepositScdlLogDto, sheetName?: string, processedExercices?: number[]) {
         const formdata = new FormData();
-        formdata.append("file", file);
-        formdata.append("depositScdlLogDto", JSON.stringify(depositLog));
-        if (sheetName) {
-            formdata.append("sheetName", sheetName);
-        }
+        if (file) formdata.append("file", file);
+        if (depositLog) formdata.append("depositScdlLogDto", JSON.stringify(depositLog));
+        if (sheetName) formdata.append("sheetName", sheetName);
+        if (processedExercices) formdata.append("processedExercices", JSON.stringify(processedExercices));
 
         return requestsService.post(this.BASE_PATH + "/validation-fichier-scdl", formdata);
     }

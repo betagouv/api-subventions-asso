@@ -47,6 +47,8 @@ describe("ScdlCli", () => {
     const PAGE_NAME = "nom de feuille";
     const ROW_OFFSET = 4;
     const QUOTE = '"';
+    const STR_PROCESSED_EX = "[2018,2019]";
+    const ARR_PROCESSED_EX = [2018, 2019];
 
     let cli: ScdlCli;
 
@@ -91,17 +93,17 @@ describe("ScdlCli", () => {
     });
 
     function testParseCsv() {
-        return cli.parse(FILE_PATH, PRODUCER_ENTITY.siret, EXPORT_DATE_STR, DELIMETER);
+        return cli.parse(FILE_PATH, PRODUCER_ENTITY.siret, EXPORT_DATE_STR, DELIMETER, QUOTE, STR_PROCESSED_EX);
     }
 
     function testParseXls() {
-        return cli.parseXls(FILE_PATH, PRODUCER_ENTITY.siret, EXPORT_DATE_STR, PAGE_NAME, ROW_OFFSET);
+        return cli.parseXls(FILE_PATH, PRODUCER_ENTITY.siret, EXPORT_DATE_STR, PAGE_NAME, ROW_OFFSET, STR_PROCESSED_EX);
     }
 
     describe.each`
         methodName    | test            | parserMethod  | parserArgs
-        ${"parse"}    | ${testParseCsv} | ${"parseCsv"} | ${[FILE_CONTENT, DELIMETER, QUOTE]}
-        ${"parseXls"} | ${testParseXls} | ${"parseXls"} | ${[FILE_CONTENT, PAGE_NAME, ROW_OFFSET]}
+        ${"parse"}    | ${testParseCsv} | ${"parseCsv"} | ${[FILE_CONTENT, DELIMETER, QUOTE, ARR_PROCESSED_EX]}
+        ${"parseXls"} | ${testParseXls} | ${"parseXls"} | ${[FILE_CONTENT, PAGE_NAME, ROW_OFFSET, ARR_PROCESSED_EX]}
     `("$methodName", ({ test, parserMethod, parserArgs }) => {
         const ERRORS = ["ERRORS"];
 
