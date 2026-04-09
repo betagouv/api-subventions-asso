@@ -9,8 +9,20 @@ import * as DateHelper from "../../shared/helpers/DateHelper";
 import { ScdlDepositCronService } from "./scdl-deposit.cron.service";
 import { DepositLogPort } from "../../adapters/outputs/db/deposit-log/deposit-log.port";
 import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.adapter.mock";
-import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
+import dataLogAdapter from "../../adapters/outputs/db/data-log/data-log.adapter";
+import userAdapter from "../../adapters/outputs/db/user/user.adapter";
+import SendDepositRenewalNotificationUseCase from "./send-deposit-renewal-notification.use-case";
 
+jest.mock("./send-deposit-renewal-notification.use-case", () => {
+    return {
+        __esModule: true,
+        default: jest.fn().mockImplementation(() => ({
+            execute: jest.fn(),
+        })),
+    };
+});
+jest.mock("../../adapters/outputs/db/data-log/data-log.adapter");
+jest.mock("../../adapters/outputs/db/user/user.adapter");
 jest.mock("../../shared/helpers/DateHelper");
 jest.mock("../user/services/crud/user.crud.service");
 jest.mock("../../adapters/outputs/db/deposit-log/deposit-log.port");
@@ -19,27 +31,18 @@ jest.mock("../notify/notify.service", () => ({
 }));
 
 describe("ScdlDepositCronService", () => {
-    const LAST_YEAR = new Date("2025-02-01");
     const USERS: UserDto[] = [
         USER_WITHOUT_SECRET,
         { ...USER_WITHOUT_SECRET, _id: new ObjectId("68ef9ce359f22baf00b81f71"), email: "another@email" },
     ];
     const DEPOSIT_LOGS = [DEPOSIT_LOG_ENTITY, { ...DEPOSIT_LOG_ENTITY, userId: USERS[1]._id.toString() }];
-    const SAME_MONTH_LAST_YEAR_DEPOSITS: DepositScdlLogEntity[] = DEPOSIT_LOGS.map(deposit => ({
-        ...deposit,
-        updateDate: LAST_YEAR,
-    }));
+
     let mockDepositLogPort: jest.Mocked<DepositLogPort>;
     let scdlDepositCronService: ScdlDepositCronService;
 
     beforeEach(() => {
         mockDepositLogPort = createMockDepositLogPort();
-        scdlDepositCronService = new ScdlDepositCronService(mockDepositLogPort);
-    });
-
-    beforeEach(() => {
-        mockDepositLogPort = createMockDepositLogPort();
-        scdlDepositCronService = new ScdlDepositCronService(mockDepositLogPort);
+        scdlDepositCronService = new ScdlDepositCronService(mockDepositLogPort, dataLogAdapter, userAdapter);
     });
 
     describe("getUsersEmailToNotify", () => {
@@ -67,6 +70,13 @@ describe("ScdlDepositCronService", () => {
             const actual = await scdlDepositCronService.getUsersEmailToNotify();
             const expected = USERS.map(user => user.email); // cf mock
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("notifyDepositRenewal", () => {
+        it("execute use case", () => {
+            scdlDepositCronService.notifyDepositRenewal();
+            expect(SendDepositRenewalNotificationUseCase).toHaveBeenCalledWith(dataLogAdapter, userAdapter);
         });
     });
 
@@ -143,40 +153,6 @@ describe("ScdlDepositCronService", () => {
         });
     });
 
-    describe("getDepositsSameMonthLastYear", () => {
-        const LAST_DAY_IN_MONTH = 28;
-        const START = new Date(LAST_YEAR);
-        const END = new Date(LAST_YEAR);
-        END.setDate(LAST_DAY_IN_MONTH);
-
-        beforeEach(() => {
-            jest.spyOn(DateHelper, "sameDateLastYear").mockReturnValue(LAST_YEAR);
-            jest.spyOn(DateHelper, "lastDayInMonth").mockReturnValue(LAST_DAY_IN_MONTH);
-            mockDepositLogPort.findFromPeriod.mockResolvedValue(SAME_MONTH_LAST_YEAR_DEPOSITS);
-        });
-
-        it("defines same month last year date", async () => {
-            await scdlDepositCronService.getDepositsSameMonthLastYear();
-            expect(DateHelper.sameDateLastYear).toHaveBeenCalledWith(expect.any(Date));
-        });
-
-        it("defines last day from same month last year", async () => {
-            await scdlDepositCronService.getDepositsSameMonthLastYear();
-            expect(DateHelper.lastDayInMonth).toHaveBeenCalledWith(LAST_YEAR);
-        });
-
-        it("calls deposit log ports to find needed deposits", async () => {
-            await scdlDepositCronService.getDepositsSameMonthLastYear();
-            expect(mockDepositLogPort.findFromPeriod).toHaveBeenCalledWith(START, END);
-        });
-
-        it("returns deposits from same month last year", async () => {
-            const expected = SAME_MONTH_LAST_YEAR_DEPOSITS;
-            const actual = await scdlDepositCronService.getDepositsSameMonthLastYear();
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("getDepositsUserIdFromDate", () => {
         const DATE = new Date();
         beforeEach(() => {
@@ -223,44 +199,6 @@ describe("ScdlDepositCronService", () => {
             await scdlDepositCronService.notifyUsers();
             expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.BATCH_DEPOSIT_RESUME, {
                 emails: [USERS[0].email, USERS[1].email],
-            });
-        });
-    });
-
-    describe("notifyDepositRenewal", () => {
-        const DEPOSITS: DepositScdlLogEntity[] = DEPOSIT_LOGS.map(deposit => ({ ...deposit, updateDate: LAST_YEAR }));
-        const USERS = [{ email: "foo.bar@gouv.fr" }, { email: "fez.boo@gouv.fr" }] as UserDto[];
-        let mockGetDepositsSameMontLastYear: jest.SpyInstance;
-
-        beforeEach(() => {
-            mockGetDepositsSameMontLastYear = jest
-                .spyOn(scdlDepositCronService, "getDepositsSameMonthLastYear")
-                .mockResolvedValue(DEPOSITS);
-            jest.mocked(userCrudService.findUsersByIdList).mockResolvedValue(USERS);
-        });
-
-        afterAll(() => mockGetDepositsSameMontLastYear.mockRestore());
-
-        it("gets deposits made last year for current month", async () => {
-            await scdlDepositCronService.notifyDepositRenewal();
-            expect(mockGetDepositsSameMontLastYear).toHaveBeenCalled();
-        });
-
-        it("gets deposits' users", async () => {
-            await scdlDepositCronService.notifyDepositRenewal();
-            expect(userCrudService.findUsersByIdList).toHaveBeenCalledWith(DEPOSITS.map(deposit => deposit.userId));
-        });
-
-        it("do not notify service if no deposits found for period", async () => {
-            mockGetDepositsSameMontLastYear.mockResolvedValueOnce(null);
-            await scdlDepositCronService.notifyDepositRenewal();
-            expect(notifyService.notify).not.toHaveBeenCalled();
-        });
-
-        it("notify users to renew their deposit", async () => {
-            await scdlDepositCronService.notifyDepositRenewal();
-            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.BATCH_DEPOSIT_RENEWAL, {
-                emails: USERS.map(user => user.email),
             });
         });
     });

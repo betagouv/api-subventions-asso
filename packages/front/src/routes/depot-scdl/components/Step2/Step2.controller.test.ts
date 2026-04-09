@@ -26,7 +26,7 @@ describe("Step2Controller", () => {
     let controller: Step2Controller;
     let mockDispatch: ReturnType<typeof vi.fn>;
     let clearUploadErrorSpy: ReturnType<typeof vi.spyOn>;
-    const postScdlFileMock = vi.spyOn(depositLogService, "postScdlFile");
+    const postScdlFileMock = vi.spyOn(depositLogService, "validateScdlFile");
     const validateFileMock = vi.mocked(validateFile);
     const getExcelSheetNamesMock = vi.mocked(getExcelSheetNames);
     const getFileExtensionMock = vi.mocked(getFileExtension);
@@ -135,7 +135,9 @@ describe("Step2Controller", () => {
 
     describe("handleValidate", () => {
         beforeEach(() => {
-            postScdlFileMock.mockResolvedValue({} as DepositScdlLogResponseDto);
+            postScdlFileMock.mockResolvedValue({
+                uploadedFileInfos: { existingLinesInDbOnSamePeriod: 0 },
+            } as DepositScdlLogResponseDto);
         });
 
         it("should return when no file selected", async () => {
@@ -216,7 +218,10 @@ describe("Step2Controller", () => {
 
     describe("handleSheetSelected", () => {
         beforeEach(() => {
-            postScdlFileMock.mockResolvedValue({ permissionAlert: true } as DepositScdlLogResponseDto);
+            postScdlFileMock.mockResolvedValue({
+                permissionAlert: true,
+                uploadedFileInfos: { existingLinesInDbOnSamePeriod: 0 },
+            } as DepositScdlLogResponseDto);
         });
 
         it("should upload file with selected sheet", async () => {

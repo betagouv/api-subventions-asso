@@ -57,8 +57,7 @@ describe("depositScdlLogDtoAdapter", () => {
 
     describe("entityUploadedFileInfosToDto", () => {
         it("should convert UploadedFileInfosEntity to UploadedFileInfosDto", () => {
-            const entity = UPLOADED_FILE_INFOS_ENTITY;
-            const result = DepositScdlLogDtoMapper.entityUploadedFileInfosToDto(entity);
+            const result = DepositScdlLogDtoMapper.entityUploadedFileInfosToDto(UPLOADED_FILE_INFOS_ENTITY);
             expect(result).toMatchSnapshot();
         });
     });
