@@ -1,6 +1,6 @@
 export interface CliStaticInterface {
     cmdName: string;
-    new (): unknown;
+    new (...args): unknown;
 }
 
 export interface ApplicationFlatCli {
