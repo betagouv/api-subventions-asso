@@ -1,6 +1,8 @@
 import { FullAssociationIdentifier } from "./@types/StructureIdentifier";
+import Rid from "./Rid";
 import Rna from "./Rna";
 import Siren from "./Siren";
+import Tahiti from "./Tahiti";
 
 export default class AssociationIdentifier {
     public rna?: Rna;
@@ -32,6 +34,13 @@ export default class AssociationIdentifier {
         } else {
             throw new Error("Invalid type");
         }
+    }
+
+    static buildIdentifierFromString(identifier: string) {
+        if (Siren.isSiren(identifier)) return new Siren(identifier);
+        if (Rid.isRid(identifier)) return new Rid(identifier);
+        if (Tahiti.isTahiti(identifier)) return new Tahiti(identifier);
+        return null;
     }
 
     toString(): string {

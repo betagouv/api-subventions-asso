@@ -40,6 +40,20 @@ describe("Siret", () => {
         });
     });
 
+    describe("isNic", () => {
+        it("returns true", () => {
+            const NIC = "00018";
+            const actual = Siret.isNic(NIC);
+            expect(actual).toEqual(true);
+        });
+
+        it.each(["0018", "Z0018", 12345, null, undefined])("returns true", nic => {
+            // @ts-expect-error: test guard
+            const actual = Siret.isNic(nic);
+            expect(actual).toEqual(false);
+        });
+    });
+
     describe("value", () => {
         it.each(VALID_SIRET_LIST)("should return the siret value", siret => {
             const siretInstance = new Siret(siret);

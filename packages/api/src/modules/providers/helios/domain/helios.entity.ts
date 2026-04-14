@@ -1,10 +1,12 @@
-export default interface HeliosEntity {
+import { ProviderDataEntity } from "../../../../@types/ProviderData";
+
+export default interface HeliosEntity extends ProviderDataEntity {
     codeDep: string;
     codeInseeBc: string;
     collec: string;
     compteNature: number;
-    dateEmission: string;
-    datePaiement: string;
+    dateEmission: Date;
+    datePaiement: Date;
     id: string;
     immatriculation: string;
     montantPaiment: number;
