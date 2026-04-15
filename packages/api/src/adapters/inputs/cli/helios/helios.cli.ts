@@ -1,6 +1,6 @@
 import { CliStaticInterface } from "../../../../@types";
 import { StaticImplements } from "../../../../decorators/static-implements.decorator";
-import { SaveHeliosDataUseCase } from "../../../../modules/providers/helios/use-cases/save-helios-data.use-case";
+import SaveHeliosDataUseCase from "../../../../modules/providers/helios/use-cases/save-helios-data.use-case";
 import CliController from "../../../../shared/CliController";
 import HeliosParser from "./helios.parser";
 

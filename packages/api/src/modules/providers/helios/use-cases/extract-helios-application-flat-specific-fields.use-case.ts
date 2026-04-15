@@ -6,7 +6,7 @@ import HeliosEntity from "../domain/helios.entity";
 export default class ExtractHeliosApplicationFlatSpecificFields {
     constructor() {}
 
-    async execute(entity: HeliosEntity) {
+    execute(entity: HeliosEntity) {
         const applicationProviderId = `${entity.codeInseeBc}-${entity.numMandat}`;
         const applicationId = `helios-${applicationProviderId}`;
 

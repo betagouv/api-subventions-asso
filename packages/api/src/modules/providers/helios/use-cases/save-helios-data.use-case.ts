@@ -3,7 +3,7 @@ import HeliosPort from "../../../../adapters/outputs/db/providers/helios/helios.
 import SaveHeliosEntitiesToFlatUseCase from "./save-helios-entities-to-flat.use-case";
 import TransformHeliosDtoToEntityUseCase from "./transform-helios-dto-to-entity.use-case";
 
-export class SaveHeliosDataUseCase {
+export default class SaveHeliosDataUseCase {
     constructor(
         private transformUseCase: TransformHeliosDtoToEntityUseCase,
         private saveToFlatUseCase: SaveHeliosEntitiesToFlatUseCase,

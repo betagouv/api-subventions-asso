@@ -1,7 +1,8 @@
 import { ApplicationFlatService } from "../../../application-flat/application-flat.service";
 import { PaymentFlatService } from "../../../payment-flat/payment-flat.service";
 import HeliosEntity from "../domain/helios.entity";
-import { TransformHeliosEntitiesToFlat } from "./transform-helios-entities-to-flat.use-case";
+import TransformHeliosEntitiesToFlat from "./transform-helios-entities-to-flat.use-case";
+import { ReadableStream } from "node:stream/web";
 
 export default class SaveHeliosEntitiesToFlatUseCase {
     constructor(

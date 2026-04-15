@@ -3,10 +3,10 @@ import heliosAdapter from "../../../../adapters/outputs/db/providers/helios/heli
 import applicationFlatService from "../../../application-flat/application-flat.service";
 import paymentFlatService from "../../../payment-flat/payment-flat.service";
 import ExtractHeliosBeneficaryInfosUseCase from "./extract-helios-beneficary-info.use-case";
-import { SaveHeliosDataUseCase } from "./save-helios-data.use-case";
+import SaveHeliosDataUseCase from "./save-helios-data.use-case";
 import SaveHeliosEntitiesToFlatUseCase from "./save-helios-entities-to-flat.use-case";
 import TransformHeliosDtoToEntityUseCase from "./transform-helios-dto-to-entity.use-case";
-import { TransformHeliosEntitiesToFlat } from "./transform-helios-entities-to-flat.use-case";
+import TransformHeliosEntitiesToFlat from "./transform-helios-entities-to-flat.use-case";
 import ExtractHeliosApplicationFlatSpecificFields from "./extract-helios-application-flat-specific-fields.use-case";
 import ExtractHeliosPaymentFlatSpecificFieldsUseCase from "./extract-helios-payment-flat-specific-fields.use-case";
 

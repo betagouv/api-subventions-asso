@@ -14,6 +14,7 @@ const DEFAULT_ASSOCIATION = {
     siren: SIREN_STR,
     siret: SIRET_STR,
     rna: RNA_STR,
+    nic: NIC_STR,
     name: "DEFAULT_ASSOCIATION",
 };
 
