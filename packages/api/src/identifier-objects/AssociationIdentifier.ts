@@ -37,6 +37,7 @@ export default class AssociationIdentifier {
     }
 
     static buildIdentifierFromString(identifier: string) {
+        if (Rna.isRna(identifier)) return new Rna(identifier);
         if (Siren.isSiren(identifier)) return new Siren(identifier);
         if (Rid.isRid(identifier)) return new Rid(identifier);
         if (Tahiti.isTahiti(identifier)) return new Tahiti(identifier);

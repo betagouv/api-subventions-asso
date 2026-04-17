@@ -11,7 +11,9 @@ export default class SaveHeliosDataUseCase {
     ) {}
 
     async execute(dtos: HeliosDto[]) {
-        const entities = dtos.map(dto => this.transformUseCase.execute(dto));
+        const entities = dtos
+            .filter(dto => dto["IMMATRICULATION"]) // quick filter to omit the empty line that only contain sum of payment
+            .map(dto => this.transformUseCase.execute(dto));
 
         // process in order to avoid populate flats if raw persistence fails
         await this.heliosPort.insertMany(entities);

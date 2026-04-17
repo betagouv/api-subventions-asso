@@ -4,6 +4,7 @@ import { SireneStockUniteLegaleEntity } from "../../../../../entities//SireneSto
 import SireneStockUniteLegaleMapper from "../../../../../modules/providers/sirene/stock-unite-legale/mappers/sirene-stock-unite-legale.mapper";
 import Siren from "../../../../../identifier-objects/Siren";
 import { SireneStockUniteLegalePort } from "./sirene-stock-unite-legale.port";
+import Rna from "../../../../../identifier-objects/Rna";
 
 export class SireneUniteLegaleDbAdapter
     extends MongoAdapter<SireneUniteLegaleDbo>
@@ -45,6 +46,11 @@ export class SireneUniteLegaleDbAdapter
 
     public async findOneBySiren(siren: Siren): Promise<SireneStockUniteLegaleEntity | null> {
         const dbo = await this.collection.findOne({ siren: siren.value });
+        return dbo ? SireneStockUniteLegaleMapper.dboToEntity(dbo) : null;
+    }
+
+    public async findOneByRna(rna: Rna): Promise<SireneStockUniteLegaleEntity | null> {
+        const dbo = await this.collection.findOne({ identifiantAssociationUniteLegale: rna });
         return dbo ? SireneStockUniteLegaleMapper.dboToEntity(dbo) : null;
     }
 

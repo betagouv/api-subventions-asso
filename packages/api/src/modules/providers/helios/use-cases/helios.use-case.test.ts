@@ -1,12 +1,10 @@
 import { mock } from "jest-mock-extended";
-import { SireneStockUniteLegalePort } from "../../../../adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.port";
 import ExtractHeliosApplicationFlatSpecificFields from "./extract-helios-application-flat-specific-fields.use-case";
 import ExtractHeliosBeneficaryInfosUseCase from "./extract-helios-beneficary-info.use-case";
 import ExtractHeliosPaymentFlatSpecificFieldsUseCase from "./extract-helios-payment-flat-specific-fields.use-case";
 import TransformHeliosDtoToEntityUseCase from "./transform-helios-dto-to-entity.use-case";
 import { HELIOS_ENTITY } from "../__fixtures__/helios.fixture";
 import { HELIOS_DTO } from "../../../../adapters/outputs/db/providers/helios/__fixtures__/helios.fixture";
-import { STOCK_UNITE_LEGALE_ENTITY } from "../../sirene/stock-unite-legale/@types/__fixtures__/sirene-stock-unite-legale.fixture";
 import TransformHeliosEntitiesToFlat from "./transform-helios-entities-to-flat.use-case";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 import Siret from "../../../../identifier-objects/Siret";
@@ -20,22 +18,21 @@ import HeliosPort from "../../../../adapters/outputs/db/providers/helios/helios.
 import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import PaymentFlatEntity from "../../../../entities/flats/PaymentFlatEntity";
 import { ReadableStream } from "node:stream/web";
+import FindSiretFromAssociationIdentifierUseCase from "../../../associations/use-cases/find-siret-from-association-identifier.use-case";
 
 jest.mock("node:stream/web");
 
 describe("Helios Use Cases", () => {
-    const mockSirenePort = mock<SireneStockUniteLegalePort>();
-    mockSirenePort.findOneBySiren.mockResolvedValue(STOCK_UNITE_LEGALE_ENTITY);
     const ENTITIES = [HELIOS_ENTITY];
     const DTOS = [HELIOS_DTO];
 
-    afterEach(() => {
-        mockSirenePort.findOneBySiren.mockReset();
-    });
+    const mockFindSiretFromAssoIdentifier = {
+        execute: jest.fn().mockResolvedValue(new Siret(DEFAULT_ASSOCIATION.siret)),
+    } as unknown as FindSiretFromAssociationIdentifierUseCase;
 
     describe("ExtractHeliosBeneficiaryInfos", () => {
         it("returns beneficiary identifiers informations", () => {
-            const useCase = new ExtractHeliosBeneficaryInfosUseCase(mockSirenePort);
+            const useCase = new ExtractHeliosBeneficaryInfosUseCase(mockFindSiretFromAssoIdentifier);
             expect(useCase.execute(HELIOS_ENTITY)).toMatchSnapshot();
         });
     });
