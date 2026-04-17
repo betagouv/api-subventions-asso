@@ -38,19 +38,35 @@ describe("Association Use Cases", () => {
     });
 
     describe("FindSiretFromRna", () => {
+        const mockRnaSiren = {
+            find: jest.fn().mockResolvedValue([{ siren: SIREN, rna: RNA }]),
+        };
         const mockSirenePort = {
             findOneByRna: jest.fn().mockResolvedValue(STOCK_UNITE_LEGALE_ENTITY),
+            findOneBySiren: jest.fn().mockResolvedValue(STOCK_UNITE_LEGALE_ENTITY),
         };
 
         // @ts-expect-error: inject mock
-        const useCase = new FindSiretFromRnaUseCase(mockSirenePort);
+        const useCase = new FindSiretFromRnaUseCase(mockRnaSiren, mockSirenePort);
 
-        it("find unite legale", () => {
+        it("find siren from rna-siren collection", () => {
             useCase.execute(RNA);
+            expect(mockRnaSiren.find).toHaveBeenCalledWith(RNA);
+        });
+
+        it("find nic with siren from sirene unite legale", async () => {
+            await useCase.execute(RNA);
+            expect(mockSirenePort.findOneBySiren).toHaveBeenCalledWith(SIREN);
+        });
+
+        it("find siren unite legale from sirene when rna-siren does not match", async () => {
+            mockRnaSiren.find.mockResolvedValueOnce(null);
+            await useCase.execute(RNA);
             expect(mockSirenePort.findOneByRna).toHaveBeenCalledWith(RNA);
         });
 
         it("returns siret from unite legale", async () => {
+            mockRnaSiren.find.mockResolvedValueOnce(null);
             const expected = SIRET;
             const actual = await useCase.execute(RNA);
             expect(actual).toEqual(expected);
