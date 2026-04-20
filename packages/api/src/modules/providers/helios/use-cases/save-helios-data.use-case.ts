@@ -16,10 +16,12 @@ export default class SaveHeliosDataUseCase {
     ) {}
 
     async execute(dtos: HeliosDto[]) {
+        console.info("transform dto into entities...");
         const entities = dtos
             .filter(dto => dto["IMMATRICULATION"]) // quick filter to omit the empty line that only contain sum of payment
             .map(dto => this.transformUseCase.execute(dto));
 
+        console.info("filter only association lines...");
         const acceptedEntities = await asyncFilter(entities, async entity => {
             const identifier = this.getIdentifier.execute(entity.immatriculation);
             if (!identifier) return false;
@@ -29,7 +31,9 @@ export default class SaveHeliosDataUseCase {
         });
 
         // process in order to avoid populate flats if raw persistence fails
+        console.info("persist data in collection...");
         await this.heliosPort.insertMany(acceptedEntities);
+        console.info("saves entities to flats...");
         return this.saveToFlatUseCase.execute(acceptedEntities);
     }
 }

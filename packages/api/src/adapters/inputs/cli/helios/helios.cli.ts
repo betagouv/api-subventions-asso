@@ -13,7 +13,9 @@ export default class HeliosCli extends CliController {
     }
 
     async parse(filePath: string) {
+        console.info("start parsing helios file...");
         const dtos = HeliosParser.parse(filePath);
+        console.info("start persisting data...");
         await this.saveUseCase.execute(dtos);
     }
 }

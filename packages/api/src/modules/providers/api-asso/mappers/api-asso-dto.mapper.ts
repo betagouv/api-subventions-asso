@@ -41,16 +41,24 @@ export default class ApiAssoDtoMapper {
         return {
             denomination_siren: toPvs(structure.identite.nom),
             siren: toPvs(structure.identite.id_siren.toString()),
-            nic_siege: toPvs(Siret.getNic(structure.identite.id_siret_siege.toString())),
-            categorie_juridique: toPvs(structure.identite.id_forme_juridique.toString()),
-            date_creation_siren: toPvs(ApiAssoDtoMapper.apiDateToDate(structure.identite.date_creation_sirene)),
-            date_modification_siren: toPvs(ApiAssoDtoMapper.apiDateToDate(structure.identite.date_modif_siren)),
+            nic_siege: structure.identite.id_siret_siege
+                ? toPvs(Siret.getNic(structure.identite.id_siret_siege.toString()))
+                : undefined,
+            categorie_juridique: structure.identite.id_forme_juridique
+                ? toPvs(structure.identite.id_forme_juridique.toString())
+                : undefined,
+            date_creation_siren: structure.identite.date_creation_sirene
+                ? toPvs(ApiAssoDtoMapper.apiDateToDate(structure.identite.date_creation_sirene))
+                : undefined,
+            date_modification_siren: structure.identite.date_modif_siren
+                ? toPvs(ApiAssoDtoMapper.apiDateToDate(structure.identite.date_modif_siren))
+                : undefined,
             adresse_siege_siren: toPvs({
-                numero: structure.coordonnees.adresse_siege.num_voie?.toString(),
-                type_voie: structure.coordonnees.adresse_siege.type_voie,
-                voie: structure.coordonnees.adresse_siege.voie,
-                code_postal: structure.coordonnees.adresse_siege.cp?.toString(),
-                commune: structure.coordonnees.adresse_siege.commune,
+                numero: structure.coordonnees?.adresse_siege.num_voie?.toString(),
+                type_voie: structure.coordonnees?.adresse_siege.type_voie,
+                voie: structure.coordonnees?.adresse_siege.voie,
+                code_postal: structure.coordonnees?.adresse_siege.cp?.toString(),
+                commune: structure.coordonnees?.adresse_siege.commune,
             }),
             etablisements_siret: toPvs(establishmentSiret.map(e => e.id_siret.toString())),
         };
