@@ -168,19 +168,51 @@ describe("Helios Use Cases", () => {
     });
 
     describe("SaveHeliosData", () => {
+        const IDENTIFIER = new Siren(DEFAULT_ASSOCIATION.siren);
         const mockTransformDtoToEntity = {
             execute: jest.fn().mockReturnValue(HELIOS_ENTITY),
-        } as unknown as TransformHeliosDtoToEntityUseCase;
+        };
+        const mockGetIdentifier = { execute: jest.fn().mockReturnValue(IDENTIFIER) };
+        const mockCheckIsFromAsso = { execute: jest.fn().mockResolvedValue(true) };
         const mockSaveToFlat = {
             execute: jest.fn(),
-        } as unknown as SaveHeliosEntitiesToFlatUseCase;
+        };
         const mockHeliosPort = mock<HeliosPort>();
 
-        const useCase = new SaveHeliosDataUseCase(mockTransformDtoToEntity, mockSaveToFlat, mockHeliosPort);
+        const useCase = new SaveHeliosDataUseCase(
+            mockTransformDtoToEntity,
+            mockGetIdentifier,
+            // @ts-expect-error: inject mock
+            mockCheckIsFromAsso,
+            mockSaveToFlat,
+            mockHeliosPort,
+        );
 
         it("transforms dtos to entities", async () => {
             await useCase.execute(DTOS);
             expect(mockTransformDtoToEntity.execute).toHaveBeenCalledWith(DTOS[0]);
+        });
+
+        it("get identifier object to perform asso filtering", async () => {
+            const ENTITIES = [HELIOS_ENTITY, { ...HELIOS_ENTITY, immatriculation: "20000000000018" }];
+            mockTransformDtoToEntity.execute.mockReturnValueOnce(ENTITIES[0]);
+            mockTransformDtoToEntity.execute.mockReturnValueOnce(ENTITIES[1]);
+            await useCase.execute([HELIOS_DTO, HELIOS_DTO]);
+
+            ENTITIES.forEach((entity, index) => {
+                expect(mockGetIdentifier.execute).toHaveBeenNthCalledWith(index + 1, entity.immatriculation);
+            });
+        });
+
+        it("check if identifier belongs to an association ", async () => {
+            const ENTITIES = [HELIOS_ENTITY, { ...HELIOS_ENTITY, immatriculation: "20000000000018" }];
+            mockTransformDtoToEntity.execute.mockReturnValueOnce(ENTITIES[0]);
+            mockTransformDtoToEntity.execute.mockReturnValueOnce(ENTITIES[1]);
+            await useCase.execute([HELIOS_DTO, HELIOS_DTO]);
+
+            ENTITIES.forEach((_entity, index) => {
+                expect(mockCheckIsFromAsso.execute).toHaveBeenNthCalledWith(index + 1, IDENTIFIER);
+            });
         });
 
         it("persists entities", async () => {

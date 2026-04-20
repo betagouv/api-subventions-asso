@@ -1,4 +1,3 @@
-import sireneStockUniteLegaleAdapter from "../../../../adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
 import heliosAdapter from "../../../../adapters/outputs/db/providers/helios/helios.adapter";
 import applicationFlatService from "../../../application-flat/application-flat.service";
 import paymentFlatService from "../../../payment-flat/payment-flat.service";
@@ -9,11 +8,16 @@ import TransformHeliosDtoToEntityUseCase from "./transform-helios-dto-to-entity.
 import TransformHeliosEntitiesToFlat from "./transform-helios-entities-to-flat.use-case";
 import ExtractHeliosApplicationFlatSpecificFields from "./extract-helios-application-flat-specific-fields.use-case";
 import ExtractHeliosPaymentFlatSpecificFieldsUseCase from "./extract-helios-payment-flat-specific-fields.use-case";
+import {
+    createCheckIdentifierIsFromAsso,
+    createFindSiretFromAssociationIdentifier,
+} from "../../../associations/use-cases/association.use-case.factory";
+import GetIdentifierFromStringUseCase from "../../../associations/use-cases/get-identifier-from-string.use-case";
 
 export default function createSaveHeliosDataUseCase() {
     const transformUseCase = new TransformHeliosDtoToEntityUseCase();
 
-    const extractBeneficiaryInfos = new ExtractHeliosBeneficaryInfosUseCase(sireneStockUniteLegaleAdapter);
+    const extractBeneficiaryInfos = new ExtractHeliosBeneficaryInfosUseCase(createFindSiretFromAssociationIdentifier());
     const extractPaymentSpecifics = new ExtractHeliosPaymentFlatSpecificFieldsUseCase();
     const extractApplicationSpecifics = new ExtractHeliosApplicationFlatSpecificFields();
     const transformToFlatsUseCase = new TransformHeliosEntitiesToFlat(
@@ -26,6 +30,13 @@ export default function createSaveHeliosDataUseCase() {
         applicationFlatService,
         paymentFlatService,
     );
-    const saveUseCase = new SaveHeliosDataUseCase(transformUseCase, saveFlatUseCase, heliosAdapter);
+
+    const saveUseCase = new SaveHeliosDataUseCase(
+        transformUseCase,
+        new GetIdentifierFromStringUseCase(),
+        createCheckIdentifierIsFromAsso(),
+        saveFlatUseCase,
+        heliosAdapter,
+    );
     return saveUseCase;
 }
