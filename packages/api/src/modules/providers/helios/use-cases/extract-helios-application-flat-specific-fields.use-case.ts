@@ -19,6 +19,7 @@ export default class ExtractHeliosApplicationFlatSpecificFields {
             requestedAmount: null,
             grantedAmount: entity.montantPaiment,
             paymentId: entity.id,
+            object: entity.objectMandat,
         } as Omit<
             ApplicationFlatEntity,
             | "updateDate"

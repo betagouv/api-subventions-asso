@@ -68,6 +68,7 @@ describe("Helios Use Cases", () => {
                 statusLabel: ApplicationStatus.GRANTED,
                 requestedAmount: null,
                 grantedAmount: HELIOS_ENTITY.montantPaiment,
+                object: HELIOS_ENTITY.objectMandat,
             }),
         } as unknown as ExtractHeliosApplicationFlatSpecificFields;
 

@@ -7,6 +7,7 @@ exports[`Helios Use Cases ExtractHeliosApplicationFlatSpecificFields returns spe
   "applicationId": "helios-99000000000001-526",
   "applicationProviderId": "99000000000001-526",
   "grantedAmount": 105,
+  "object": "ATTRIBUTION SUBVENTION APE",
   "paymentId": "5670111202501526",
   "requestedAmount": null,
   "statusLabel": "Accordé",
