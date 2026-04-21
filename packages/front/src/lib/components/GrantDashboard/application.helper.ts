@@ -6,8 +6,8 @@ import { mapSiretPostCodeStore } from "$lib/store/association.store";
 import type { DashboardApplication } from "$lib/components/GrantDashboard/@types/DashboardGrant";
 import { NOT_APPLICABLE_VALUE } from "$lib/constants/values";
 
-export const isSCDL = (application: ApplicationFlatDto) => {
-    return !!application.fournisseur.match(new RegExp(/^scdl/));
+export const bypassInstructor = (application: ApplicationFlatDto) => {
+    return !!application.fournisseur.match(new RegExp(/^scdl/)) || application.fournisseur === "helios";
 };
 
 export const getApplicationCells = (application: ApplicationFlatDto | null, accepted: boolean): TableCell[] | null => {
@@ -26,7 +26,7 @@ export const getApplicationCells = (application: ApplicationFlatDto | null, acce
               }
             : { desc: "-" };
 
-        const instructor = isSCDL(application)
+        const instructor = bypassInstructor(application)
             ? application.nomAttribuant
             : valueOrHyphen(application.nomServiceInstructeur);
 
