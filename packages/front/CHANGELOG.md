@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.84.1](https://github.com/betagouv/datasubvention/compare/v0.84.0...v0.84.1) (2026-04-21)
+
+### Bug Fixes
+
+- **front:** display allocator name in instructor for helios data ([936cf42](https://github.com/betagouv/datasubvention/commit/936cf42988e85deb58c8d0ee50721c9519a30511))
+
+### Features
+
+- **front:** amend grant dashboard title info ([00d4a85](https://github.com/betagouv/datasubvention/commit/00d4a85e03f38754ed4786da130f5852f7c03c46))
+
 # [0.84.0](https://github.com/betagouv/datasubvention/compare/v0.83.2...v0.84.0) (2026-04-21)
 
 ### Features

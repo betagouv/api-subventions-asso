@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.84.1](https://github.com/betagouv/api-subventions-asso/compare/v0.84.0...v0.84.1) (2026-04-21)
+
+### Bug Fixes
+
+- **api:** add object in helios application flat ([e38bab2](https://github.com/betagouv/api-subventions-asso/commit/e38bab2864847d60a025879889aec88a192b4014))
+- **api:** add paymentId to helios application-flat ([f37d31f](https://github.com/betagouv/api-subventions-asso/commit/f37d31fc3e2b6251b582dd1fa8ee6afe058478d1))
+- **front:** display allocator name in instructor for helios data ([936cf42](https://github.com/betagouv/api-subventions-asso/commit/936cf42988e85deb58c8d0ee50721c9519a30511))
+
+### Features
+
+- **front:** amend grant dashboard title info ([00d4a85](https://github.com/betagouv/api-subventions-asso/commit/00d4a85e03f38754ed4786da130f5852f7c03c46))
+
 # [0.84.0](https://github.com/betagouv/api-subventions-asso/compare/v0.83.2...v0.84.0) (2026-04-21)
 
 ### Features

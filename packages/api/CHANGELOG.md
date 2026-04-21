@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.84.1](https://github.com/betagouv/api-subventions-asso/compare/v0.84.0...v0.84.1) (2026-04-21)
+
+### Bug Fixes
+
+- **api:** add object in helios application flat ([e38bab2](https://github.com/betagouv/api-subventions-asso/commit/e38bab2864847d60a025879889aec88a192b4014))
+- **api:** add paymentId to helios application-flat ([f37d31f](https://github.com/betagouv/api-subventions-asso/commit/f37d31fc3e2b6251b582dd1fa8ee6afe058478d1))
+
 # [0.84.0](https://github.com/betagouv/api-subventions-asso/compare/v0.83.2...v0.84.0) (2026-04-21)
 
 ### Features
