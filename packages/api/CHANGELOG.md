@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.84.0](https://github.com/betagouv/api-subventions-asso/compare/v0.83.2...v0.84.0) (2026-04-21)
+
+### Features
+
+- **api:** [#3865](https://github.com/betagouv/api-subventions-asso/issues/3865) parse helios data ([#3886](https://github.com/betagouv/api-subventions-asso/issues/3886)) ([d666a0c](https://github.com/betagouv/api-subventions-asso/commit/d666a0cd44efb27143ec1e6abefa50cc583f6289))
+
 ## [0.83.2](https://github.com/betagouv/api-subventions-asso/compare/v0.83.1...v0.83.2) (2026-04-09)
 
 ### Bug Fixes
