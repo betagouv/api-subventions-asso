@@ -1,9 +1,9 @@
-import HeliosDto from "../../../../adapters/inputs/cli/helios/helios.dto";
+import HeliosDto from "./helios.dto";
 import { DDMMYYYYToUTCDate } from "../../../../shared/helpers/DateHelper";
-import HeliosEntity from "../domain/helios.entity";
+import HeliosEntity from "../../../../modules/providers/helios/domain/helios.entity";
 
-export default class TransformHeliosDtoToEntityUseCase {
-    execute(dto: HeliosDto): HeliosEntity {
+export default class HeliosMapper {
+    static toEntity(dto: HeliosDto): HeliosEntity {
         return {
             // remove apostrophe - remove this when dto will be updated by the provider
             codeDep: dto["CODE_DEPARTEMENT"].replace("'", ""),

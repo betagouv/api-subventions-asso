@@ -36,28 +36,4 @@ exports[`Helios Use Cases ExtractHeliosPaymentFlatSpecificFields returns specifi
 }
 `;
 
-exports[`Helios Use Cases TransformHeliosDtoToEntity transforms dto to entity 1`] = `
-{
-  "codeDep": "35",
-  "codeInseeBc": "99000000000001",
-  "collec": "COLLECTIVITY NAME",
-  "compteNature": 65748,
-  "dateEmission": 2025-05-10T00:00:00.000Z,
-  "datePaiement": 2025-07-24T00:00:00.000Z,
-  "id": "12345678901234",
-  "immatriculation": "10000000000001",
-  "montantPaiment": 2400,
-  "natureJuridique": "6-Association",
-  "nom": "NOM ASSO 1",
-  "nomenclature": "73-M57",
-  "numMandat": 740,
-  "numeroLigne": 12,
-  "objectMandat": "SUBVENTION ANNEE 2025",
-  "typeBudgetCollectivite": "Commune",
-  "typeImmatriculation": "SIRET",
-  "typeMandat": "1-Mandat(s) ordinaire(s)",
-  "updateDate": Any<Date>,
-}
-`;
-
 exports[`Helios Use Cases TransformHeliosEntitiesToFlat returns array of application and payment flat 1`] = `[Function]`;

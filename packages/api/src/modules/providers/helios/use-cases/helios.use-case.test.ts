@@ -2,9 +2,7 @@ import { mock } from "jest-mock-extended";
 import ExtractHeliosApplicationFlatSpecificFields from "./extract-helios-application-flat-specific-fields.use-case";
 import ExtractHeliosBeneficaryInfosUseCase from "./extract-helios-beneficary-info.use-case";
 import ExtractHeliosPaymentFlatSpecificFieldsUseCase from "./extract-helios-payment-flat-specific-fields.use-case";
-import TransformHeliosDtoToEntityUseCase from "./transform-helios-dto-to-entity.use-case";
 import { HELIOS_ENTITY } from "../__fixtures__/helios.fixture";
-import { HELIOS_DTO } from "../../../../adapters/outputs/db/providers/helios/__fixtures__/helios.fixture";
 import TransformHeliosEntitiesToFlat from "./transform-helios-entities-to-flat.use-case";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 import Siret from "../../../../identifier-objects/Siret";
@@ -24,7 +22,6 @@ jest.mock("node:stream/web");
 
 describe("Helios Use Cases", () => {
     const ENTITIES = [HELIOS_ENTITY];
-    const DTOS = [HELIOS_DTO];
 
     const mockFindSiretFromAssoIdentifier = {
         execute: jest.fn().mockResolvedValue(new Siret(DEFAULT_ASSOCIATION.siret)),
@@ -48,13 +45,6 @@ describe("Helios Use Cases", () => {
         it("returns specific payment flat fields", () => {
             const useCase = new ExtractHeliosPaymentFlatSpecificFieldsUseCase();
             expect(useCase.execute(HELIOS_ENTITY)).toMatchSnapshot();
-        });
-    });
-
-    describe("TransformHeliosDtoToEntity", () => {
-        it("transforms dto to entity", () => {
-            const useCase = new TransformHeliosDtoToEntityUseCase();
-            expect(useCase.execute(HELIOS_DTO)).toMatchSnapshot({ updateDate: expect.any(Date) });
         });
     });
 
@@ -169,9 +159,7 @@ describe("Helios Use Cases", () => {
 
     describe("SaveHeliosData", () => {
         const IDENTIFIER = new Siren(DEFAULT_ASSOCIATION.siren);
-        const mockTransformDtoToEntity = {
-            execute: jest.fn().mockReturnValue(HELIOS_ENTITY),
-        };
+        const ENTITIES = [HELIOS_ENTITY, { ...HELIOS_ENTITY, immatriculation: "20000000000018" }];
         const mockGetIdentifier = { execute: jest.fn().mockReturnValue(IDENTIFIER) };
         const mockCheckIsFromAsso = { execute: jest.fn().mockResolvedValue(true) };
         const mockSaveToFlat = {
@@ -180,7 +168,6 @@ describe("Helios Use Cases", () => {
         const mockHeliosPort = mock<HeliosPort>();
 
         const useCase = new SaveHeliosDataUseCase(
-            mockTransformDtoToEntity,
             mockGetIdentifier,
             // @ts-expect-error: inject mock
             mockCheckIsFromAsso,
@@ -188,16 +175,8 @@ describe("Helios Use Cases", () => {
             mockHeliosPort,
         );
 
-        it("transforms dtos to entities", async () => {
-            await useCase.execute(DTOS);
-            expect(mockTransformDtoToEntity.execute).toHaveBeenCalledWith(DTOS[0]);
-        });
-
         it("get identifier object to perform asso filtering", async () => {
-            const ENTITIES = [HELIOS_ENTITY, { ...HELIOS_ENTITY, immatriculation: "20000000000018" }];
-            mockTransformDtoToEntity.execute.mockReturnValueOnce(ENTITIES[0]);
-            mockTransformDtoToEntity.execute.mockReturnValueOnce(ENTITIES[1]);
-            await useCase.execute([HELIOS_DTO, HELIOS_DTO]);
+            await useCase.execute(ENTITIES);
 
             ENTITIES.forEach((entity, index) => {
                 expect(mockGetIdentifier.execute).toHaveBeenNthCalledWith(index + 1, entity.immatriculation);
@@ -205,10 +184,7 @@ describe("Helios Use Cases", () => {
         });
 
         it("check if identifier belongs to an association ", async () => {
-            const ENTITIES = [HELIOS_ENTITY, { ...HELIOS_ENTITY, immatriculation: "20000000000018" }];
-            mockTransformDtoToEntity.execute.mockReturnValueOnce(ENTITIES[0]);
-            mockTransformDtoToEntity.execute.mockReturnValueOnce(ENTITIES[1]);
-            await useCase.execute([HELIOS_DTO, HELIOS_DTO]);
+            await useCase.execute(ENTITIES);
 
             ENTITIES.forEach((_entity, index) => {
                 expect(mockCheckIsFromAsso.execute).toHaveBeenNthCalledWith(index + 1, IDENTIFIER);
@@ -216,12 +192,12 @@ describe("Helios Use Cases", () => {
         });
 
         it("persists entities", async () => {
-            await useCase.execute(DTOS);
+            await useCase.execute(ENTITIES);
             expect(mockHeliosPort.insertMany).toHaveBeenCalledWith(ENTITIES);
         });
 
         it("saves entities to flats", async () => {
-            await useCase.execute(DTOS);
+            await useCase.execute(ENTITIES);
             expect(mockSaveToFlat.execute).toHaveBeenCalledWith(ENTITIES);
         });
     });
