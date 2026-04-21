@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Helios Use Cases ExtractHeliosApplicationFlatSpecificFields returns specific application flat fields 1`] = `
+{
+  "allocatorIdType": "siret",
+  "allocatorName": "COLLECTIVITE NAME",
+  "applicationId": "helios-99000000000001-526",
+  "applicationProviderId": "99000000000001-526",
+  "grantedAmount": 105,
+  "requestedAmount": null,
+  "statusLabel": "Accordé",
+}
+`;
+
+exports[`Helios Use Cases ExtractHeliosBeneficiaryInfos returns beneficiary identifiers informations 1`] = `Promise {}`;
+
+exports[`Helios Use Cases ExtractHeliosPaymentFlatSpecificFields returns specific payment flat fields 1`] = `
+{
+  "accountingAttachment": "N/A",
+  "accountingAttachmentRegion": "N/A",
+  "actionCode": "N/A",
+  "actionLabel": "N/A",
+  "activityCode": "N/A",
+  "activityLabel": "N/A",
+  "amount": 105,
+  "ej": "N/A",
+  "financialCenterCode": "N/A",
+  "financialCenterLabel": "N/A",
+  "ministry": "N/A",
+  "ministryAcronym": "N/A",
+  "mission": "N/A",
+  "operationDate": 2025-06-11T00:00:00.000Z,
+  "paymentId": "5670111202501526",
+  "programName": "N/A",
+  "programNumber": "N/A",
+}
+`;
+
+exports[`Helios Use Cases TransformHeliosDtoToEntity transforms dto to entity 1`] = `
+{
+  "codeDep": "35",
+  "codeInseeBc": "99000000000001",
+  "collec": "COLLECTIVITY NAME",
+  "compteNature": 65748,
+  "dateEmission": 2025-05-10T00:00:00.000Z,
+  "datePaiement": 2025-07-24T00:00:00.000Z,
+  "id": "12345678901234",
+  "immatriculation": "10000000000001",
+  "montantPaiment": 2400,
+  "natureJuridique": "6-Association",
+  "nom": "NOM ASSO 1",
+  "nomenclature": "73-M57",
+  "numMandat": 740,
+  "numeroLigne": 12,
+  "objectMandat": "SUBVENTION ANNEE 2025",
+  "typeBudgetCollectivite": "Commune",
+  "typeImmatriculation": "SIRET",
+  "typeMandat": "1-Mandat(s) ordinaire(s)",
+  "updateDate": Any<Date>,
+}
+`;
+
+exports[`Helios Use Cases TransformHeliosEntitiesToFlat returns array of application and payment flat 1`] = `[Function]`;

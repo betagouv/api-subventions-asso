@@ -3,9 +3,10 @@ import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUn
 import Siren from "../../../../identifier-objects/Siren";
 import { SireneUniteLegaleDbo } from "../stock-unite-legale/@types/SireneUniteLegaleDbo";
 import SireneUniteLegaleDto from "../stock-unite-legale/@types/SireneUniteLegaleDto";
+import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 
 const baseDto = {
-    siren: "123411189",
+    siren: DEFAULT_ASSOCIATION.siren,
     statutDiffusionUniteLegale: "0",
     unitePurgeeUniteLegale: "",
     dateCreationUniteLegale: "1989-02-01",

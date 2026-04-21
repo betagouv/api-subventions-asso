@@ -16,6 +16,10 @@ export default class Siret extends IdentifierObject {
         return typeof siret === "string" && /^\d{9,14}/.test(siret);
     }
 
+    static isNic(maybeNic: string) {
+        return typeof maybeNic === "string" && /^\d{5}/.test(maybeNic);
+    }
+
     constructor(siret: string) {
         if (!Siret.isSiret(siret)) {
             throw new Error("Invalid Siret : " + siret);

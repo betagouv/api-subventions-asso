@@ -64,7 +64,6 @@
         "@types/passport-local": "^1.0.38",
         "@types/swagger-ui-express": "^4.1.6",
         "api": "file:",
-        "archetype": "https://github.com/LaurentGoderre/archetype#fix-lodash_set-vuln",
         "axios": "^1.7.9",
         "bcrypt": "^5.1.1",
         "body-parser": "2.2.1",
@@ -112,6 +111,7 @@
         "tsoa": "^5.1.1",
         "winston": "^3.11.0",
         "winston-mongodb": "^5.1.1",
+        "xlsx": "file:../../vendor/xlsx-0.20.3.tgz",
         "xss": "^1.0.14"
     },
     "devDependencies": {

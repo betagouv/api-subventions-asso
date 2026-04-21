@@ -86,6 +86,18 @@ export const shortISOPeriodRegExp = new RegExp(/\d{4}-[01]\d-[0-3]\d\/\d{4}-[01]
 export const addDaysToDate = (date: Date, nbOfDays = 1) =>
     new Date(new Date(date).setUTCDate(date.getUTCDate() + nbOfDays));
 
+/**
+ *
+ * @param dateStr dd-mm-yyyy string date - i.e 11/06/2025 for 11 june 2025
+ */
+export function DDMMYYYYToUTCDate(dateStr: string) {
+    const [day, month, year] = dateStr.split("/");
+    if (!day || !month || !year)
+        throw new Error(`DDMMYYYToDate must take dd/mm/yyyy string date parameter. Given : ${dateStr}`);
+    // month start from 0
+    return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+}
+
 export function formatDateToYYYYMMDDWithSeparator(date: Date, separator: string) {
     const yyyy = date.getUTCFullYear();
     const mm = String(date.getUTCMonth() + 1).padStart(2, "0");
