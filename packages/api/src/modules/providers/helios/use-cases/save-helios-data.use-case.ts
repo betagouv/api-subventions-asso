@@ -30,6 +30,10 @@ export default class SaveHeliosDataUseCase {
             else return false;
         });
 
+        console.warn(
+            `${entities.length - acceptedEntities.length} entities over ${entities.length} where filtered out as belonging to companies`,
+        );
+
         // process in order to avoid populate flats if raw persistence fails
         console.info("persist data in collection...");
         await this.heliosPort.insertMany(acceptedEntities);
