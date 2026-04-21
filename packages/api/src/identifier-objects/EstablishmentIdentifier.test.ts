@@ -26,12 +26,12 @@ describe("EstablishmentIdentifier", () => {
 
     describe("buildIdentifierFromString", () => {
         it.each`
-            constructor | value
+            classObject | value
             ${Siret}    | ${SIRET.value}
             ${Ridet}    | ${RIDET.value}
             ${Tahitiet} | ${TAHITIET.value}
-        `("return $class class given $value", ({ constructor, value }) => {
-            const expected = new constructor(value);
+        `("return $class class given $value", ({ classObject, value }) => {
+            const expected = new classObject(value);
             const actual = EstablishmentIdentifier.buildIdentifierFromString(value);
             expect(actual).toEqual(expected);
         });

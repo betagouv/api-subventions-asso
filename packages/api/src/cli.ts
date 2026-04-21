@@ -24,6 +24,8 @@ import DataBretagneCli from "./adapters/inputs/cli/data-bretagne.cli";
 import SireneStockUniteLegaleCli from "./adapters/inputs/cli/sirene-stock-unite-legale.cli";
 import AmountsVsProgramRegionCli from "./adapters/inputs/cli/amounts-vs-program-region.cli";
 import ScdlBatchCli from "./adapters/inputs/cli/scdl-batch.cli";
+import HeliosCli from "./adapters/inputs/cli/helios/helios.cli";
+import createHeliosCli from "./adapters/inputs/cli/helios/helios.cli.factory";
 
 async function main() {
     await connectDB();
@@ -51,7 +53,10 @@ async function main() {
         SireneStockUniteLegaleCli,
         AmountsVsProgramRegionCli,
         ScdlBatchCli,
+        HeliosCli,
     ];
+
+    const factoryMap = new Map([[HeliosCli.cmdName, { factory: createHeliosCli }]]);
 
     const args = process.argv.slice(2);
 
@@ -61,7 +66,12 @@ async function main() {
         throw new Error(`Controller ${args[0]} not found`);
     }
 
-    const instance = new Controller() as unknown;
+    let instance: unknown;
+    if (factoryMap.has(Controller.cmdName)) {
+        instance = factoryMap.get(Controller.cmdName)!.factory();
+    } else {
+        instance = new Controller() as unknown;
+    }
 
     // @ts-expect-error: make a type for controller
     if (!instance[args[1]]) {

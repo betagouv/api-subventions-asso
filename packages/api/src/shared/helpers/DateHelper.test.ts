@@ -182,6 +182,22 @@ describe("DateHelper", () => {
         });
     });
 
+    describe("DDMMYYYYToDate", () => {
+        it("returns valid date", () => {
+            const expected = new Date("2025-06-11");
+            const actual = DateHelper.DDMMYYYYToUTCDate("11/06/2025");
+            console.log(expected, actual, new Date(actual));
+            expect(actual).toEqual(expected);
+        });
+
+        it("throws error if parameter is not well formated", () => {
+            const wrongDateStr = "1106/2025";
+            expect(() => DateHelper.DDMMYYYYToUTCDate(wrongDateStr)).toThrow(
+                `DDMMYYYToDate must take dd/mm/yyyy string date parameter. Given : ${wrongDateStr}`,
+            );
+        });
+    });
+
     describe("formatDateToYYYYMMDDWithSeparator", () => {
         it("should add format with right separator", () => {
             const date = new Date(Date.UTC(2025, 0, 5));

@@ -10,3 +10,4 @@ import Rna from "../Rna";
 export type CompanyIdType = Siren | Rid | Tahiti;
 export type EstablishmentIdType = Siret | Ridet | Tahitiet;
 export type AssociationIdType = Rna | Siren;
+export type AnyIdentifierIdType = CompanyIdType | EstablishmentIdType | Rna;
