@@ -60,6 +60,7 @@ describe("Helios Use Cases", () => {
 
         const mockExtractApplicationSpecificsFields = {
             execute: jest.fn().mockReturnValue({
+                paymentId: HELIOS_ENTITY.id,
                 allocatorName: HELIOS_ENTITY.collec,
                 allocatorIdType: Siret.getName(),
                 applicationId: "helios-APPLICATION_ID",

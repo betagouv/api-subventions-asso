@@ -10,6 +10,7 @@ import { ENTITIES } from "../../../../src/modules/providers/sirene/__fixtures__/
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../src/shared/LegalCategoriesAccepted";
+import applicationFlatAdapter from "../../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 
 jest.mock("../../../../src/modules/providers/api-asso/api-asso.service");
 
@@ -53,7 +54,7 @@ describe("Helios CLI", () => {
         it("persists data as flat application", async () => {
             const cli = createHeliosCli();
             await cli.parse(path.resolve(__dirname, "./helios.fixture.ods"));
-            expect((await paymentFlatAdapter.findAll()).map(expectAnyUpdateDate)).toMatchSnapshot();
+            expect((await applicationFlatAdapter.findAll()).map(expectAnyUpdateDate)).toMatchSnapshot();
         });
     });
 });
