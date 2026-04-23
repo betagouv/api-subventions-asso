@@ -199,7 +199,7 @@ describe("OsirisParser", () => {
             jest.useFakeTimers().setSystemTime(new Date("2025"));
             // @ts-expect-error: private method
             expect(() => OsirisParser.getUpdateDate(2026)).toThrow(
-                "Given export year must be lower or equal to the current year",
+                "Given export year (2026) must be lower or equal to the current year (2025)",
             );
         });
     });
