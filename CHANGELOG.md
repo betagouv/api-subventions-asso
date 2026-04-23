@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.84.3](https://github.com/betagouv/api-subventions-asso/compare/v0.84.2...v0.84.3) (2026-04-23)
+
+### Bug Fixes
+
+- **api, tool:** osiris automation tooling ([60a1d84](https://github.com/betagouv/api-subventions-asso/commit/60a1d84abb7e875ed2a81d640a5955c8377e6917))
+
 ## [0.84.2](https://github.com/betagouv/api-subventions-asso/compare/v0.84.1...v0.84.2) (2026-04-21)
 
 **Note:** Version bump only for package api-subventions-asso
