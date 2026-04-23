@@ -1,13 +1,15 @@
-require("dotenv/config"); // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+const dotenv = require("dotenv"); // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+
+dotenv.config({ path: "../.env.local" });
 
 const fs = require("fs");
 const OsirisExtractDownloader = require("./Osiris/OsirisExtractDownloader");
 const OsirisPosibilitiesBuilder = require("./Osiris/OsirisPosibilitiesBuilder");
 const OsirisPuppeteer = require("./OsirisPuppeteer/OsirisPuppeteer");
 
-const OSIRIS_URL = process.env.OSIRIS_URL || "https://osiris.extranet.jeunesse-sports.gouv.fr/";
-const OSIRIS_EMAIL = process.env.OSIRIS_EMAIL || "";
-const OSIRIS_PASSWORD = process.env.OSIRIS_PASSWORD || "";
+const OSIRIS_URL = process.env.OSIRIS_URL;
+const OSIRIS_EMAIL = process.env.OSIRIS_EMAIL;
+const OSIRIS_PASSWORD = process.env.OSIRIS_PASSWORD;
 const year = process.argv[2] || new Date().getFullYear().toString();
 const reportName = process.argv[3] || "SuiviDossiers"; // or "SuiviActions"
 

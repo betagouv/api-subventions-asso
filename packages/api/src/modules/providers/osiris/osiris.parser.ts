@@ -10,7 +10,8 @@ export default class OsirisParser {
     private static getUpdateDate(year: number) {
         const today = new Date();
         const currentYear = today.getFullYear();
-        if (year >= currentYear) throw new Error("Given export year must be lower or equal to the current year");
+        if (year > currentYear)
+            throw new Error(`Given export year (${year}) must be lower or equal to the current year (${currentYear})`);
         return today;
     }
 

@@ -74,8 +74,9 @@ console.log("Getting scalingo app info... \n");
 const addonsInfo = scalingoAppAction("addons", "").toString();
 console.log("Scalingo addons info : ", "\n", addonsInfo, "\n");
 
-const mongoId = addonsInfo.split("\n")[3].split("|")[2].trim();
-const plan = addonsInfo.split("\n")[3].split("|")[3].trim();
+// │ not |
+const mongoId = addonsInfo.split("\n")[3].split("│")[2].trim();
+const plan = addonsInfo.split("\n")[3].split("│")[3].trim();
 
 console.log(`MongoDB id : ${mongoId}`);
 console.log(`Mongo plan : ${plan}`);
