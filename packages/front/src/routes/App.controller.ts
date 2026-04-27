@@ -13,7 +13,7 @@ export class AppController {
     element: HTMLElement | undefined = undefined;
     displayBanner = new Store(false);
     constructor(config) {
-        trackerService.init(PUBLIC_ENV, config.matomo);
+        trackerService.init("prod", config.matomo);
         this.initContext();
 
         // trick to subscribe two stores because we need page AND connectedUser to be defined before running script

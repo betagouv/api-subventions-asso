@@ -21,6 +21,7 @@
     import { onMount } from "svelte";
 
     export let data;
+    console.log(data.matomo);
 
     const ctrl = new AppController({ matomo: data.matomo });
     const { displayBanner } = ctrl;

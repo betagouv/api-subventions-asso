@@ -9,6 +9,7 @@ export class TrackerService {
         if (ENV.toLowerCase() != "prod") return;
 
         if (!MATOMO_ENV.url || !MATOMO_ENV.id) console.warn("Matomo is not configured.");
+        var u = MATOMO_ENV.url;
         this._paq.push(["setTrackerUrl", u + "matomo.php"]);
         this._paq.push(["setSiteId", MATOMO_ENV.id]);
         const user = authService.getCurrentUser();
@@ -16,7 +17,7 @@ export class TrackerService {
         if (user && user._id) this._paq.push(["setUserId", user._id]);
         this._paq.push(["enableLinkTracking"]);
         this._paq.push(["trackPageView"]);
-        var u = MATOMO_ENV.url;
+
         var d = document,
             g = d.createElement("script"),
             s = d.getElementsByTagName("script")[0];
