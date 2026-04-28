@@ -9,7 +9,7 @@ export class AuthPort {
     }
 
     loginAgentConnect(rawSearchQueries) {
-        return requestsService.get(`/auth/ac/login${rawSearchQueries}`).then(res => {
+        return requestsService.get(`/auth/ac/redirect${rawSearchQueries}`).then(res => {
             return res.data.user;
         });
     }

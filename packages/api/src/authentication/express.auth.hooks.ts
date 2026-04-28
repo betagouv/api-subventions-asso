@@ -81,6 +81,11 @@ export async function registerAuthMiddlewares(app: Express) {
                 },
                 // @ts-expect-error -- typing from module does not include express
                 async (req: Request, tokenset, profile: AgentConnectUser, done) => {
+                    console.log("🔥 OIDC STRATEGY CALLBACK CALLED");
+                    console.log({
+                        hasAccessToken: !!tokenset?.access_token,
+                        profile,
+                    });
                     try {
                         const user = await userAgentConnectService.login(profile, tokenset);
                         if (user) {
@@ -102,10 +107,28 @@ export async function registerAuthMiddlewares(app: Express) {
         );
     }
 
-    // @ts-expect-error -- atypical typing of second argument of strategy
-    app.get("/auth/ac/login", passport.authenticate("oidc", { nonce: nonce() }));
+    app.get("/auth/ac/login", (req, res, next) => {
+        console.log("➡️ /auth/ac/login HIT", req.query);
 
-    app.get("/auth/ac/redirect", passport.authenticate("oidc"));
+        // @ts-expect-error -- typing from module does not include express
+        passport.authenticate("oidc", { nonce: nonce() }, (err, user, info, status) => {
+            console.log("⬅️ passport.authenticate (login) callback");
+            console.log({ err, user, info, status });
+
+            next(err);
+        });
+    });
+
+    app.get("/auth/ac/redirect", (req, res, next) => {
+        console.log("➡️ /auth/ac/redirect HIT", req.query);
+
+        passport.authenticate("oidc", (err, user, info, status) => {
+            console.log("⬅️ passport.authenticate (redirect) callback");
+            console.log({ err, user, info, status });
+
+            next(err);
+        });
+    });
 
     passport.serializeUser((user, done) => {
         done(null, user);

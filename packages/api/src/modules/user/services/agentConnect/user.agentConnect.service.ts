@@ -29,6 +29,8 @@ export class UserAgentConnectService {
 
     async initClient() {
         const agentConnectIssuer = await Issuer.discover(AGENT_CONNECT_URL);
+        console.log("Discovered issuer %s %O", agentConnectIssuer.issuer, agentConnectIssuer.metadata);
+
         this._client = new agentConnectIssuer.Client({
             client_id: AGENT_CONNECT_CLIENT_ID,
             client_secret: AGENT_CONNECT_CLIENT_SECRET,
