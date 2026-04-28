@@ -74,7 +74,7 @@ export async function registerAuthMiddlewares(app: Express) {
                     client: userAgentConnectService.client as Client,
                     params: {
                         acr_values: "eidas1",
-                        scope: "openid uid given_name email phone siret usual_name",
+                        scope: "openid uid email",
                     },
                     usePKCE: false,
                     passReqToCallback: true,
