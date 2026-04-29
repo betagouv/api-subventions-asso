@@ -1,5 +1,12 @@
 import { UpdatableUser, UserDto, UserWithJWTDto } from "dto";
-import { Client, generators, Issuer, TokenSet } from "openid-client";
+import {
+    discovery,
+    ClientSecretPost,
+    Configuration,
+    TokenEndpointResponse,
+    buildEndSessionUrl,
+    randomState,
+} from "openid-client";
 import { ObjectId } from "mongodb";
 import { BadRequestError, InternalServerError } from "core";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
@@ -21,25 +28,31 @@ import {
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 
 export class UserAgentConnectService {
-    private _client?: Client;
+    private _client?: Configuration;
 
     get client() {
         return this._client;
     }
 
     async initClient() {
-        const agentConnectIssuer = await Issuer.discover(AGENT_CONNECT_URL);
-        this._client = new agentConnectIssuer.Client({
-            client_id: AGENT_CONNECT_CLIENT_ID,
-            client_secret: AGENT_CONNECT_CLIENT_SECRET,
-            redirect_uris: [`${FRONT_OFFICE_URL}/auth/login`],
-            response_types: ["code"],
-            id_token_signed_response_alg: "ES256",
-            userinfo_signed_response_alg: "ES256",
-        }); // => Client
+        // discovery() replaces Issuer.discover() + new Client()
+        // ClientSecretPost is the auth method — matches your client_secret_post setup
+        this._client = await discovery(
+            new URL(AGENT_CONNECT_URL),
+            AGENT_CONNECT_CLIENT_ID,
+            {
+                // 3rd param — client metadata
+                client_secret: AGENT_CONNECT_CLIENT_SECRET,
+                redirect_uris: [`${FRONT_OFFICE_URL}/auth/login`],
+                response_types: ["code"],
+                id_token_signed_response_alg: "ES256",
+                userinfo_signed_response_alg: "ES256",
+            },
+            ClientSecretPost(AGENT_CONNECT_CLIENT_SECRET),
+        );
     }
 
-    async login(agentConnectUser: AgentConnectUser, tokenSet: TokenSet): Promise<UserWithJWTDto> {
+    async login(agentConnectUser: AgentConnectUser, tokenSet: TokenEndpointResponse): Promise<UserWithJWTDto> {
         // TODO for more resilience try to get by agentConnectId first
         if (!agentConnectUser.email) throw new InternalServerError("email not contained in agent connect profile");
         agentConnectUser.email = agentConnectUser.email.toLowerCase();
@@ -72,11 +85,16 @@ export class UserAgentConnectService {
         const tokenDbo = await agentConnectTokenAdapter.findLastActive(user._id);
         agentConnectTokenAdapter.deleteAllByUserId(user._id);
         if (!tokenDbo) return null;
-        return this.client.endSessionUrl({
+        return buildEndSessionUrl(this._client as Configuration, {
             id_token_hint: tokenDbo.token,
-            state: generators.state(),
+            state: randomState(),
             post_logout_redirect_uri: `${FRONT_OFFICE_URL}/`,
-        });
+        }).href;
+        // return this.client.endSessionUrl({
+        //     id_token_hint: tokenDbo.token,
+        //     state: generators.state(),
+        //     post_logout_redirect_uri: `${FRONT_OFFICE_URL}/`,
+        // });
     }
 
     async createUserFromAgentConnect(agentConnectUser: AgentConnectUser): Promise<Omit<UserDbo, "hashPassword">> {
@@ -139,7 +157,7 @@ export class UserAgentConnectService {
         ]);
     }
 
-    private async saveTokenSet(userId: ObjectId, tokenSet: TokenSet) {
+    private async saveTokenSet(userId: ObjectId, tokenSet: TokenEndpointResponse) {
         if (!tokenSet.id_token) throw new InternalServerError("invalid tokenSet to save");
         return agentConnectTokenAdapter.upsert({
             userId,

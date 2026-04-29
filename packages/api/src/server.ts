@@ -20,7 +20,7 @@ import userActivityMiddleware from "./middlewares/user-activity.middleware";
 import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
 import { headersMiddleware } from "./middlewares/headers.middleware";
-import { DEV, ENV, PROD } from "./configurations/env.conf";
+import { DEV, ENV } from "./configurations/env.conf";
 import { SESSION_SECRET } from "./configurations/pro-connect.conf";
 import { mongoSessionStoreConfig } from "./shared/MongoConnection";
 import { FRONT_OFFICE_URL } from "./configurations/front.conf";
@@ -60,7 +60,14 @@ export async function startServer(port = "8080", isTest = false) {
     );
 
     if (ENV !== "dev" && ENV !== "test") Sentry.init({ release: process.env.npm_package_version });
+
+    const IS_LOCAL = process.env.IS_LOCAL === "true";
+
     app.use(cookieParser());
+
+    // if proxy redirect to api using HTTP, trust it and continue as if it was HTTPS from the client
+    app.set("trust proxy", 1);
+
     app.use(
         session({
             secret: SESSION_SECRET,
@@ -68,10 +75,9 @@ export async function startServer(port = "8080", isTest = false) {
             saveUninitialized: false, // don't create session until something stored
             store: new MongoStore(mongoSessionStoreConfig),
             cookie: {
-                secure: PROD,
+                secure: !IS_LOCAL,
                 httpOnly: true,
                 sameSite: "lax",
-                domain: ".datasubvention.beta.gouv.fr", // leading dot covers all subdomains
                 maxAge: 8 * 60 * 60 * 1000,
             },
         }),
@@ -106,6 +112,7 @@ export async function startServer(port = "8080", isTest = false) {
     app.use(json);
 
     app.use(passport.initialize());
+    app.use(passport.session());
 
     await registerAuthMiddlewares(app); // Passport Part
 
