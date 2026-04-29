@@ -34,7 +34,6 @@ export class UserAgentConnectService {
             client_secret: AGENT_CONNECT_CLIENT_SECRET,
             redirect_uris: [`${FRONT_OFFICE_URL}/auth/login`],
             response_types: ["code"],
-            scope: "openid uid email",
             id_token_signed_response_alg: "ES256",
             userinfo_signed_response_alg: "ES256",
         }); // => Client

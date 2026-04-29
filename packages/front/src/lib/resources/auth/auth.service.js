@@ -50,14 +50,14 @@ export class AuthService {
 
     async initUserInApp() {
         if (this.connectedUser.value) return true;
-        try {
-            const user = await userService.getSelfUser();
-            this.setUserInApp(user);
-            return true;
-        } catch {
-            console.info("user not connected");
-            return false;
-        }
+        // try {
+        //     const user = await userService.getSelfUser();
+        //     this.setUserInApp(user);
+        //     return true;
+        // } catch {
+        //     console.info("user not connected");
+        //     return false;
+        // }
     }
 
     async logout() {

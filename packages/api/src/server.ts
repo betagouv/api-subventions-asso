@@ -67,14 +67,26 @@ export async function startServer(port = "8080", isTest = false) {
             resave: false, // don't save session if unmodified
             saveUninitialized: false, // don't create session until something stored
             store: new MongoStore(mongoSessionStoreConfig),
-            pauseStream: false,
             cookie: {
                 secure: PROD,
                 httpOnly: true,
                 sameSite: "lax",
+                domain: ".datasubvention.beta.gouv.fr", // leading dot covers all subdomains
+                maxAge: 8 * 60 * 60 * 1000,
             },
         }),
     );
+
+    app.use((req, res, next) => {
+        const originalSetHeader = res.setHeader.bind(res);
+        res.setHeader = (name, value) => {
+            if (name.toLowerCase() === "set-cookie") {
+                console.log("=== SET-COOKIE HEADER ===", value);
+            }
+            return originalSetHeader(name, value);
+        };
+        next();
+    });
 
     if (!isTest) app.use(expressLogger());
 

@@ -1,6 +1,6 @@
 import passport from "passport";
 import * as Sentry from "@sentry/node";
-import { Client, generators, Strategy as OpenIdClientStrategy } from "openid-client";
+import { Client, Strategy as OpenIdClientStrategy } from "openid-client";
 import { Express, Request } from "express";
 import { Strategy as JwtStrategy } from "passport-jwt";
 import { UserDto } from "dto";
@@ -11,7 +11,6 @@ import userAuthService from "../modules/user/services/auth/user.auth.service";
 import { AGENT_CONNECT_ENABLED } from "../configurations/pro-connect.conf";
 import userAgentConnectService from "../modules/user/services/agentConnect/user.agentConnect.service";
 import { AgentConnectUser } from "../modules/user/@types/AgentConnectUser";
-import nonce = generators.nonce;
 
 export async function registerAuthMiddlewares(app: Express) {
     // A passport middleware to handle User login
@@ -74,7 +73,7 @@ export async function registerAuthMiddlewares(app: Express) {
                     client: userAgentConnectService.client as Client,
                     params: {
                         acr_values: "eidas1",
-                        scope: "openid uid email",
+                        scope: "openid uid given_name usual_name email siret",
                     },
                     usePKCE: false,
                     passReqToCallback: true,
@@ -93,19 +92,51 @@ export async function registerAuthMiddlewares(app: Express) {
                             req.user = user;
                             req.authInfo = { message: "Logged in Successfully" };
                         }
-                        done(null, user);
+                        return done(null, user);
                     } catch (e) {
-                        done(e as Error);
+                        return done(e as Error);
                     }
                 },
             ),
         );
     }
 
-    // @ts-expect-error -- atypical typing of second argument of strategy
-    app.get("/auth/ac/login", passport.authenticate("oidc", { nonce: nonce() }));
+    app.get(
+        "/auth/ac/login",
+        (req, res, next) => {
+            if (req.query.code) return next(); // Step 4, skip
 
-    app.get("/auth/ac/redirect", passport.authenticate("oidc"));
+            // Force session creation BEFORE passport redirects
+            // This ensures Set-Cookie is included in the redirect response
+            // @ts-expect-error: force session creation with random field
+            req.session.initiated = true;
+            req.session.save(err => {
+                if (err) return next(err);
+                next();
+            });
+        },
+        (req, res, next) => {
+            console.log("=== LOGIN SESSION DEBUG ===");
+            console.log("Session ID:", req?.sessionID);
+            console.log("Session data:", JSON.stringify(req?.session, null, 2));
+            console.log("Cookie header received:", req.headers.cookie);
+            console.log("Has code param:", !!req.query.code);
+            next();
+        },
+        (req, res, next) => {
+            if (!req.query.code) {
+                return passport.authenticate("oidc")(req, res, next);
+            }
+            passport.authenticate("oidc", (err, user, info) => {
+                if (err) return next(err);
+                if (!user) return res.status(401).json({ message: info?.message ?? "Authentication failed" });
+                req.login(user, loginErr => {
+                    if (loginErr) return next(loginErr);
+                    return res.json({ user });
+                });
+            })(req, res, next);
+        },
+    );
 
     passport.serializeUser((user, done) => {
         done(null, user);

@@ -6,7 +6,9 @@ export class TrackerService {
     }
 
     init(ENV, MATOMO_ENV) {
+        console.log(`initializing matomo on ${ENV} environment`);
         if (ENV.toLowerCase() != "prod") return;
+        console.log(`setting url ${MATOMO_ENV.url} for app id ${MATOMO_ENV.id}`);
 
         if (!MATOMO_ENV.url || !MATOMO_ENV.id) console.warn("Matomo is not configured.");
         this._paq.push(["setTrackerUrl", u + "matomo.php"]);
