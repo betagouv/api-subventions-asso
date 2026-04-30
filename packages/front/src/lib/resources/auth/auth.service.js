@@ -4,7 +4,6 @@ import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
 import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
-import userService from "$lib/resources/users/user.service";
 import localStorageService from "$lib/services/localStorage.service";
 import { connectedUser } from "$lib/store/user.store";
 
@@ -46,18 +45,6 @@ export class AuthService {
         if (!user) return;
         this.connectedUser.set(user);
         if (user) crispService.setUserEmail(user.email);
-    }
-
-    async initUserInApp() {
-        if (this.connectedUser.value) return true;
-        // try {
-        //     const user = await userService.getSelfUser();
-        //     this.setUserInApp(user);
-        //     return true;
-        // } catch {
-        //     console.info("user not connected");
-        //     return false;
-        // }
     }
 
     async logout() {

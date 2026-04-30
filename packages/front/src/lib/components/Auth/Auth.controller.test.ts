@@ -14,17 +14,10 @@ describe("AuthController", () => {
     const mockSubscribe = vi.mocked(page.subscribe);
 
     describe("init", () => {
-        const authServiceMock = vi.spyOn(authService, "initUserInApp").mockImplementation(vi.fn());
-
         let controller;
 
         beforeEach(() => {
             controller = new AuthController();
-        });
-
-        it("should call authService", async () => {
-            await controller.init();
-            expect(authServiceMock).toHaveBeenCalledTimes(1);
         });
 
         it("should subscribe page", async () => {

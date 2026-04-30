@@ -83,16 +83,16 @@ export async function startServer(port = "8080", isTest = false) {
         }),
     );
 
-    app.use((req, res, next) => {
-        const originalSetHeader = res.setHeader.bind(res);
-        res.setHeader = (name, value) => {
-            if (name.toLowerCase() === "set-cookie") {
-                console.log("=== SET-COOKIE HEADER ===", value);
-            }
-            return originalSetHeader(name, value);
-        };
-        next();
-    });
+    // app.use((req, res, next) => {
+    //     const originalSetHeader = res.setHeader.bind(res);
+    //     res.setHeader = (name, value) => {
+    //         if (name.toLowerCase() === "set-cookie") {
+    //             console.log("=== SET-COOKIE HEADER ===", value);
+    //         }
+    //         return originalSetHeader(name, value);
+    //     };
+    //     next();
+    // });
 
     if (!isTest) app.use(expressLogger());
 

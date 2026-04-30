@@ -1,5 +1,4 @@
 import passport from "passport";
-import * as Sentry from "@sentry/node";
 import { Configuration, TokenEndpointResponse } from "openid-client";
 import { Express, Request } from "express";
 import { Strategy as JwtStrategy } from "passport-jwt";
@@ -64,16 +63,6 @@ export async function registerAuthMiddlewares(app: Express) {
                 async (req: Request, tokenSet: TokenEndpointResponse, profile: AgentConnectUser, done) => {
                     try {
                         const user = await userAgentConnectService.login(profile, tokenSet);
-                        if (user) {
-                            Sentry.captureEvent({
-                                level: "log",
-                                extra: { acUser: profile },
-                                message: "pro connect login",
-                            } as Sentry.Event);
-                            req.user = user;
-                            console.log("COCO");
-                            req.authInfo = { message: "Logged in Successfully" };
-                        }
                         return done(null, user);
                     } catch (e) {
                         return done(e as Error);
