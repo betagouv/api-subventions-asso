@@ -1,6 +1,5 @@
 import userAgentConnectService, { UserAgentConnectService } from "./user.agentConnect.service";
 import { AGENT_CONNECT_URL } from "../../../../configurations/pro-connect.conf";
-import { Issuer, TokenSet } from "openid-client";
 import { AgentConnectTokenDbo, AgentConnectUser } from "../../@types/AgentConnectUser";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import userAuthService from "../auth/user.auth.service";
@@ -16,6 +15,7 @@ import configurationsService from "../../../configurations/configurations.servic
 import userCrudService from "../crud/user.crud.service";
 import { UserDto } from "dto";
 import { InternalServerError } from "core";
+import * as openidClient from "openid-client";
 
 jest.mock("../../../../configurations/pro-connect.conf", () => ({
     AGENT_CONNECT_CLIENT_ID: "mocked_client_id",
@@ -46,10 +46,11 @@ describe("userAgentConnectService", () => {
 
     const TOKENSET = {
         id_token: "tokenHint",
-    } as TokenSet;
+    } as openidClient.TokenEndpointResponse;
 
     let clientConstructorMock;
     let endSessionMock;
+    let mockDiscovery;
 
     beforeAll(() => {
         clientConstructorMock = jest.fn(() => {});
@@ -64,16 +65,15 @@ describe("userAgentConnectService", () => {
                     return endSessionMock(...args);
                 }
             },
-        } as unknown as Issuer;
-        jest.spyOn(Issuer, "discover").mockResolvedValue(mockIssuer);
+        } as unknown as openidClient.Configuration;
+        mockDiscovery = jest.spyOn(openidClient, "discovery").mockResolvedValue(mockIssuer);
         userAgentConnectService.initClient();
     });
 
     describe("initClient", () => {
         it("discovers client", async () => {
-            const issuerDiscoverSpy = jest.spyOn(Issuer, "discover");
             await userAgentConnectService.initClient();
-            expect(issuerDiscoverSpy).toHaveBeenCalledWith(AGENT_CONNECT_URL);
+            expect(mockDiscovery).toHaveBeenCalledWith(AGENT_CONNECT_URL);
         });
 
         it("initializes client with proper args", async () => {
