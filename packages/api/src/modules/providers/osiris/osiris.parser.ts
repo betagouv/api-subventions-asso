@@ -1,52 +1,32 @@
 import { DefaultObject } from "../../../@types";
-import type LegalInformations from "../../search/@types/LegalInformations";
 import { GenericParser } from "../../../shared/GenericParser";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
-import OsirisRequestEntity from "./entities/OsirisRequestEntity";
-import type OsirisRequestInformations from "./@types/OsirisRequestInformations";
+import OsirisRequestDto from "../../../adapters/inputs/cli/osiris/osiris-request.dto";
 import type OsirisActionsInformations from "./@types/OsirisActionsInformations";
 
 export default class OsirisParser {
     private static getUpdateDate(year: number) {
         const today = new Date();
         const currentYear = today.getFullYear();
-        if (year > currentYear)
+
+        if (year > currentYear) {
             throw new Error(`Given export year (${year}) must be lower or equal to the current year (${currentYear})`);
+        }
+
         return today;
     }
 
-    public static parseRequests(content: Buffer, year: number): OsirisRequestEntity[] {
+    public static parseRequests(content: Buffer): OsirisRequestDto[] {
         const data = GenericParser.xlsxParse<string>(content)[0].data;
         const headers = data.slice(0, 2) as string[][];
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
-        return rows.map(row => {
-            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
-                headers,
-                row,
-                OsirisRequestEntity.defaultMainCategory,
-            ) as DefaultObject<DefaultObject<string | number>>;
-
-            data.Dossier["Exercice Budgetaire"] = year; // create artificial column to match IOsirisRequestInformations
-
-            const indexedInformations = GenericParser.indexDataByPathObject<string | number>(
-                OsirisRequestEntity.indexedProviderInformationsPath,
-                data,
-            ) as OsirisRequestInformations;
-            const legalInformations = GenericParser.indexDataByPathObject(
-                OsirisRequestEntity.indexedLegalInformationsPath,
-                data,
-            ) as unknown as LegalInformations;
-
-            return new OsirisRequestEntity(legalInformations, indexedInformations, data, this.getUpdateDate(year));
-        });
+        return rows.map(row => OsirisParser.rowToRowWithHeaders(headers, row, "Dossier") as OsirisRequestDto);
     }
 
     public static parseActions(content: Buffer, year: number) {
         const data = GenericParser.xlsxParse<string>(content)[0].data;
-
         const headers = data.slice(0, 2) as string[][];
-
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
         return rows.map((row: unknown[]) => {

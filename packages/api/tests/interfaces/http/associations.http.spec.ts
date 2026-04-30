@@ -141,7 +141,11 @@ describe("/association", () => {
             const actual = (await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date()))[0];
 
             expect(actual).toMatchObject({
-                associationIdentifier: OSIRIS_REQUEST_ENTITY.legalInformations.siret.slice(0, 9),
+                associationIdentifier: (
+                    OSIRIS_REQUEST_ENTITY.association?.siret || OSIRIS_REQUEST_ENTITY.beneficiaire?.siret
+                )
+                    ?.toString()
+                    .slice(0, 9),
             });
         });
 

@@ -1,15 +1,16 @@
 import fs from "fs";
 
-import { StaticImplements } from "../../../decorators/static-implements.decorator";
-import { ApplicationFlatCli, CliStaticInterface } from "../../../@types";
-import OsirisParser from "../../../modules/providers/osiris/osiris.parser";
-import osirisService, { InvalidOsirisRequestError } from "../../../modules/providers/osiris/osiris.service";
-import OsirisActionEntity from "../../../modules/providers/osiris/entities/OsirisActionEntity";
-import OsirisRequestEntity from "../../../modules/providers/osiris/entities/OsirisRequestEntity";
-import { COLORS } from "../../../shared/LogOptions";
-import * as CliHelper from "../../../shared/helpers/CliHelper";
-import { GenericParser } from "../../../shared/GenericParser";
-import dataLogService from "../../../modules/data-log/dataLog.service";
+import { StaticImplements } from "../../../../decorators/static-implements.decorator";
+import { ApplicationFlatCli, CliStaticInterface } from "../../../../@types";
+import OsirisParser from "../../../../modules/providers/osiris/osiris.parser";
+import osirisService, { InvalidOsirisRequestError } from "../../../../modules/providers/osiris/osiris.service";
+import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
+import OsirisRequestEntity from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
+import OsirisRequestMapper from "./osiris-request.mapper";
+import { COLORS } from "../../../../shared/LogOptions";
+import * as CliHelper from "../../../../shared/helpers/CliHelper";
+import { GenericParser } from "../../../../shared/GenericParser";
+import dataLogService from "../../../../modules/data-log/dataLog.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class OsirisCli implements ApplicationFlatCli {
@@ -36,7 +37,9 @@ export default class OsirisCli implements ApplicationFlatCli {
         const fileContent = fs.readFileSync(file);
 
         if (type === "requests") {
-            const requests = OsirisParser.parseRequests(fileContent, parseInt(extractYear, 10));
+            const requests = OsirisParser.parseRequests(fileContent).map(dto =>
+                OsirisRequestMapper.toEntity(dto, parseInt(extractYear, 10)),
+            );
 
             console.info(`Check ${requests.length} entities!`);
             requests.forEach(entity => {
@@ -118,7 +121,7 @@ export default class OsirisCli implements ApplicationFlatCli {
     }
 
     async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
-        const requests = OsirisParser.parseRequests(contentFile, year);
+        const requests = OsirisParser.parseRequests(contentFile).map(dto => OsirisRequestMapper.toEntity(dto, year));
         let nbErrors = 0;
 
         let tictackClock = true;

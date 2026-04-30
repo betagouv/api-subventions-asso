@@ -15,8 +15,18 @@ export class OsirisJoiner {
             {
                 $lookup: {
                     from: osirisActionAdapter.collectionName,
-                    localField: osirisRequestAdapter.joinIndexes.osirisActionPort,
-                    foreignField: osirisActionAdapter.joinIndexes.osirisRequestPort,
+                    let: {
+                        requestUniqueId: {
+                            $concat: ["$dossier.osirisId", "-", { $toString: "$dossier.exerciceBudgetaire" }],
+                        },
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ["$indexedInformations.requestUniqueId", "$$requestUniqueId"] },
+                            },
+                        },
+                    ],
                     as: "actions",
                 },
             },
@@ -29,7 +39,7 @@ export class OsirisJoiner {
 
     findByExerciseCursor(exercise: number): AggregationCursor<OsirisRequestWithActions> {
         return this.applicationCollection.aggregate([
-            { $match: { "providerInformations.exercise": exercise } },
+            { $match: { "dossier.exerciceBudgetaire": exercise } },
             ...this.joinPipeline,
         ]);
     }

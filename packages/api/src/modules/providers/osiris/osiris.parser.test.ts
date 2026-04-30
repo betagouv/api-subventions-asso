@@ -1,9 +1,6 @@
 import OsirisParser from "./osiris.parser";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
-import OsirisRequestEntity from "./entities/OsirisRequestEntity";
-import OsirisRequestEntityFixture, {
-    OSIRIS_ACTION_ENTITY,
-} from "../../../../tests/modules/providers/osiris/__fixtures__/OsirisEntities";
+import { OSIRIS_ACTION_ENTITY } from "../../../../tests/modules/providers/osiris/__fixtures__/OsirisEntities";
 import { GenericParser } from "../../../shared/GenericParser";
 import { DefaultObject } from "../../../@types";
 jest.mock("../../../shared/GenericParser");
@@ -27,20 +24,9 @@ describe("OsirisParser", () => {
             { Dossier: { "N° Dossier Osiris": ROWS[2][0], "N° Dossier Compte Asso": ROWS[2][1] } },
         ]; // expected mapped rows
         const DATA = [...HEADERS, ...ROWS, []]; // mock xls data with footer at the end
-        const INDEXED_INFORMATIONS = OsirisRequestEntityFixture.providerInformations;
-        const LEGAL_INFORMATIONS = OsirisRequestEntityFixture.legalInformations;
-        let indexDataCount = 0;
 
         beforeAll(() => {
             jest.spyOn(GenericParser, "xlsxParse").mockReturnValue([{ name: "page1", data: DATA }]); // data wrap in array because first xls page
-            // indexDataByPathObject is called twice, once for legal informations and once for indexed informations for each row
-            jest.spyOn(GenericParser, "indexDataByPathObject").mockImplementation(() => {
-                let mockedData;
-                if (indexDataCount % 2 === 0) mockedData = INDEXED_INFORMATIONS;
-                else mockedData = LEGAL_INFORMATIONS;
-                indexDataCount++;
-                return mockedData;
-            });
 
             let rowCount = 0;
             mockRowToRowWithHeaders = jest
@@ -58,56 +44,21 @@ describe("OsirisParser", () => {
         });
 
         it("parses data", () => {
-            OsirisParser.parseRequests(BUFFER, 2022);
+            OsirisParser.parseRequests(BUFFER);
             expect(GenericParser.xlsxParse).toHaveBeenCalledWith(BUFFER);
         });
 
         it("adds headers to rows", () => {
-            OsirisParser.parseRequests(BUFFER, 2022);
+            OsirisParser.parseRequests(BUFFER);
             ROWS.forEach((row, index) => {
                 // @ts-expect-error: assert private mock calls
-                expect(OsirisParser.rowToRowWithHeaders).toHaveBeenNthCalledWith(
-                    index + 1,
-                    HEADERS,
-                    row,
-                    OsirisRequestEntity.defaultMainCategory,
-                );
+                expect(OsirisParser.rowToRowWithHeaders).toHaveBeenNthCalledWith(index + 1, HEADERS, row, "Dossier");
             });
         });
 
-        it("builds indexed informations", () => {
-            OsirisParser.parseRequests(BUFFER, 2022);
-
-            MAPPED_ROWS.forEach((row, index) => {
-                expect(GenericParser.indexDataByPathObject).toHaveBeenNthCalledWith(
-                    index + 1 + index, // add second time index to skip legal informations calls
-                    OsirisRequestEntity.indexedProviderInformationsPath,
-                    row,
-                );
-            });
-        });
-
-        it("builds legal informations", () => {
-            OsirisParser.parseRequests(BUFFER, 2022);
-            MAPPED_ROWS.forEach((row, index) => {
-                expect(GenericParser.indexDataByPathObject).toHaveBeenNthCalledWith(
-                    index + 1 + index + 1, // add another index + 1 to skip indexed informations calls
-                    OsirisRequestEntity.indexedLegalInformationsPath,
-                    row,
-                );
-            });
-        });
-
-        // this also test that the exercise is added to indexed informations
-        it("returns osiris request entities", () => {
-            // to test that updateDate is equal to currentDate
-            jest.useFakeTimers().setSystemTime(new Date("2025-08-07"));
-            const actual = OsirisParser.parseRequests(BUFFER, 2022);
-
-            // could not mock only OsirisRequestEntity constructor to make this a unit test
-            // static methods / properties are required during process and we cannot mock the totality of the class
-            expect(actual).toMatchSnapshot();
-            jest.useFakeTimers().useRealTimers();
+        it("returns osiris request dtos", () => {
+            const actual = OsirisParser.parseRequests(BUFFER);
+            expect(actual).toEqual(MAPPED_ROWS);
         });
     });
 

@@ -51,10 +51,12 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
 
     public async bulkAddRequest(requests: OsirisRequestEntity[]): Promise<BulkUpsertResult> {
         const rnaSirens: { rna: Rna; siren: Siren }[] = [];
+
         for (const request of requests) {
-            const { rna, siret } = request.legalInformations;
+            const { rna, siret } = OsirisRequestMapper.getLegalInformations(request);
             if (rna) rnaSirens.push({ rna: new Rna(rna), siren: new Siret(siret).toSiren() });
         }
+
         const [metadataRequests] = await Promise.all([
             osirisRequestAdapter.bulkUpsert(requests),
             rnaSirenService.insertMany(rnaSirens),
@@ -64,42 +66,45 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
     }
 
     public validRequest(request: OsirisRequestEntity, rnaNeeded = true) {
-        if (!Siret.isSiret(request.legalInformations.siret)) {
+        const legalInformations = OsirisRequestMapper.getLegalInformations(request);
+        const providerInformations = OsirisRequestMapper.getProviderInformations(request);
+
+        if (!Siret.isSiret(legalInformations.siret)) {
             return {
-                message: `INVALID SIRET FOR ${request.legalInformations.siret}`,
-                data: request.legalInformations,
+                message: `INVALID SIRET FOR ${legalInformations.siret}`,
+                data: legalInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET,
             };
         }
 
-        if (rnaNeeded && !Rna.isRna(request.legalInformations.rna)) {
+        if (rnaNeeded && !Rna.isRna(legalInformations.rna)) {
             return {
-                message: `INVALID RNA FOR ${request.legalInformations.rna}`,
-                data: request.legalInformations,
+                message: `INVALID RNA FOR ${legalInformations.rna}`,
+                data: legalInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_RNA,
             };
         }
 
-        if (!isAssociationName(request.legalInformations.name)) {
+        if (!isAssociationName(legalInformations.name)) {
             return {
-                message: `INVALID NAME FOR ${request.legalInformations.name}`,
-                data: request.legalInformations,
+                message: `INVALID NAME FOR ${legalInformations.name}`,
+                data: legalInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_NAME,
             };
         }
 
-        if (!isCompteAssoId(request.providerInformations.compteAssoId)) {
+        if (!isCompteAssoId(providerInformations.compteAssoId)) {
             return {
-                message: `INVALID COMPTE ASSO ID FOR ${request.legalInformations.name}`,
-                data: request.providerInformations,
+                message: `INVALID COMPTE ASSO ID FOR ${legalInformations.name}`,
+                data: providerInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_CAID,
             };
         }
 
-        if (!isOsirisRequestId(request.providerInformations.osirisId)) {
+        if (!isOsirisRequestId(providerInformations.osirisId)) {
             return {
-                message: `INVALID OSIRIS ID FOR ${request.legalInformations.name}`,
-                data: request.providerInformations,
+                message: `INVALID OSIRIS ID FOR ${legalInformations.name}`,
+                data: providerInformations,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_OSIRISID,
             };
         }
@@ -112,13 +117,14 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
 
         if (validation !== true && validation.code === VALID_REQUEST_ERROR_CODE.INVALID_RNA) {
             const rnaSirenEntities = await rnaSirenService.find(
-                new Siret(osirisRequest.legalInformations.siret).toSiren(),
+                new Siret(OsirisRequestMapper.getLegalInformations(osirisRequest).siret).toSiren(),
             );
 
             if (!rnaSirenEntities || !rnaSirenEntities.length) {
                 validation = osirisService.validRequest(osirisRequest, false); // we still want the request if there is no rna
             } else {
-                osirisRequest.legalInformations.rna = rnaSirenEntities[0].rna.value;
+                const association = osirisRequest.association || osirisRequest.beneficiaire;
+                if (association) association.rna = rnaSirenEntities[0].rna.value;
                 validation = osirisService.validRequest(osirisRequest); // Re-validate with the new rna
             }
         }
@@ -152,21 +158,26 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         const requests = await osirisRequestAdapter.findBySiret(siret);
 
         for (const request of requests) {
-            request.actions = await osirisActionAdapter.findByRequestUniqueId(request.providerInformations.uniqueId);
+            request.actions = await osirisActionAdapter.findByRequestUniqueId(
+                OsirisRequestMapper.getProviderInformations(request).uniqueId,
+            );
         }
+
         return requests;
     }
 
     public async findBySiren(siren: Siren) {
         const requests = await osirisRequestAdapter.findBySiren(siren);
-
         const actions = await osirisActionAdapter.findBySiren(siren);
 
         for (const request of requests) {
             request.actions = actions.filter(
-                a => a.indexedInformations.requestUniqueId === request.providerInformations.uniqueId,
+                a =>
+                    a.indexedInformations.requestUniqueId ===
+                    OsirisRequestMapper.getProviderInformations(request).uniqueId,
             );
         }
+
         return requests;
     }
 
@@ -174,8 +185,11 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         const requests = await osirisRequestAdapter.findByRna(rna);
 
         for (const request of requests) {
-            request.actions = await osirisActionAdapter.findByRequestUniqueId(request.providerInformations.uniqueId);
+            request.actions = await osirisActionAdapter.findByRequestUniqueId(
+                OsirisRequestMapper.getProviderInformations(request).uniqueId,
+            );
         }
+
         return requests;
     }
 
@@ -200,6 +214,7 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
             const { actions, ...request } = requestWithActions;
             return OsirisRequestMapper.toApplicationFlat(request, actions);
         });
+
         return stream;
     }
 

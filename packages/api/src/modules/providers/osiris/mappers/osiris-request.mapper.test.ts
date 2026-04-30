@@ -9,6 +9,7 @@ import Siret from "../../../../identifier-objects/Siret";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import { GenericParser } from "../../../../shared/GenericParser";
+
 jest.mock("../../../../shared/GenericParser");
 
 jest.mock("../../providers.mapper", () => ({
@@ -55,9 +56,7 @@ describe("OsirisRequestAdapter", () => {
         it("returns years", () => {
             const expected = [2023, 2024, 2025];
             const actual = OsirisRequestMapper.getPluriannualYears({
-                data: {
-                    Dossier: { "Exercice Début": 2023, "Exercice Fin": 2025 },
-                },
+                dossier: { exerciceDebut: 2023, exerciceFin: 2025 },
             } as OsirisRequestEntity);
             expect(actual).toEqual(expected);
         });
@@ -144,20 +143,23 @@ describe("OsirisRequestAdapter", () => {
         });
 
         it("gets identifier type", () => {
+            const beneficiary = OsirisEntity.association || OsirisEntity.beneficiaire;
+
             OsirisRequestMapper.toApplicationFlat(OsirisEntity, ACTIONS);
-            expect(mockGetAssoIdType).toHaveBeenCalledWith(OsirisEntity.legalInformations.siret);
+            expect(mockGetAssoIdType).toHaveBeenCalledWith(beneficiary?.siret);
         });
 
         it("format excel date", () => {
             OsirisRequestMapper.toApplicationFlat(OsirisEntity, ACTIONS);
-            // @ts-expect-error: data is defined in mock
-            expect(mockExcelDateToJSDate).toHaveBeenCalledWith(OsirisEntity.data["Dossier"]["Date Reception"]);
+            expect(mockExcelDateToJSDate).toHaveBeenCalledWith(OsirisEntity.dossier.dateReception);
         });
 
         it("retrieves the real ridet from the one disguised in siret by osiris", () => {
+            const beneficiary = OsirisEntity.association || OsirisEntity.beneficiaire;
+
             mockGetAssoIdType.mockReturnValue(Ridet.getName());
             OsirisRequestMapper.toApplicationFlat(OsirisEntity, ACTIONS);
-            expect(mockCleanRidet).toHaveBeenCalledWith(OsirisEntity.legalInformations.siret);
+            expect(mockCleanRidet).toHaveBeenCalledWith(beneficiary?.siret);
         });
 
         it("gets cofinancers", () => {
@@ -179,7 +181,7 @@ describe("OsirisRequestAdapter", () => {
 
         it("nullify idVersement if EJ is missing", () => {
             const actual = OsirisRequestMapper.toApplicationFlat(
-                { ...OsirisEntity, providerInformations: { ...OsirisEntity.providerInformations, ej: undefined } },
+                { ...OsirisEntity, dossier: { ...OsirisEntity.dossier, ej: undefined } },
                 ACTIONS,
             );
             expect(actual).toMatchSnapshot();

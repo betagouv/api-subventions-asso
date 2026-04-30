@@ -1,5 +1,5 @@
 import path from "path";
-import OsirisCli from "../../../src/adapters/inputs/cli/osiris.cli";
+import OsirisCli from "../../../src/adapters/inputs/cli/osiris/osiris.cli";
 import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
 import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
 import { osirisActionAdapter, osirisRequestAdapter } from "../../../src/adapters/outputs/db/providers/osiris";
@@ -160,7 +160,7 @@ describe("OsirisCli", () => {
 
         describe("syncApplicationFlat", () => {
             it("creates applications flat from requests and actions", async () => {
-                await new OsirisCli().syncApplicationFlat(REQUEST_DBO.providerInformations.exercise);
+                await new OsirisCli().syncApplicationFlat(REQUEST_DBO.dossier.exerciceBudgetaire as number);
                 const applications = await applicationFlatAdapter.findAll();
                 expect(applications).toMatchSnapshot();
             });

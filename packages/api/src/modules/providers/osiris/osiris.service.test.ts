@@ -16,7 +16,6 @@ import osirisJoiner from "../../../adapters/outputs/db/providers/osiris/osiris.j
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 
 jest.mock("../../application-flat/application-flat.helper");
-jest.mock("./mappers/osiris-request.mapper");
 jest.mock("../../../adapters/outputs/db/providers/osiris");
 jest.mock("../../rna-siren/rna-siren.service");
 jest.mock("../../application-flat/application-flat.service");
@@ -64,8 +63,8 @@ describe("OsirisService", () => {
 
     describe("bulkAddRequest", () => {
         const REQUESTS = [
-            { legalInformations: { rna: "W000000001", siret: "12345678900001" } },
-            { legalInformations: { rna: "W000000002", siret: "12345678900002" } },
+            { association: { rna: "W000000001", siret: "12345678900001" } },
+            { association: { rna: "W000000002", siret: "12345678900002" } },
         ] as unknown as OsirisRequestEntity[];
 
         it("calls osiris port", async () => {
@@ -111,7 +110,7 @@ describe("OsirisService", () => {
     });
 
     describe("validateAndComplete", () => {
-        const REQUEST = { legalInformations: { siret: "12345678900001" } } as unknown as OsirisRequestEntity;
+        const REQUEST = { association: { siret: "12345678900001" } } as unknown as OsirisRequestEntity;
         let mockValidate: jest.SpyInstance;
 
         beforeAll(() => {
@@ -148,7 +147,7 @@ describe("OsirisService", () => {
                 jest.mocked(rnaSirenService.find).mockResolvedValueOnce([{ rna: RNA }] as unknown as RnaSirenEntity[]);
                 await osirisService.validateAndComplete({ ...REQUEST });
                 const expected = { ...REQUEST };
-                expected.legalInformations.rna = RNA.value;
+                expected.association!.rna = RNA.value;
                 expect(mockValidate).toHaveBeenNthCalledWith(2, expected);
             });
         });
