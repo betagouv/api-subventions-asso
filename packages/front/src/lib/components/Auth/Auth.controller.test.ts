@@ -28,16 +28,16 @@ describe("AuthController", () => {
         it("page subscribe's callback calls controlAuth", async () => {
             await controller.init();
             const callback = vi.mocked(mockSubscribe).mock.calls[0][0];
-            callback(PAGE);
+            await callback(PAGE);
             expect(authService.controlAuth).toHaveBeenCalledWith(AuthLevels.ADMIN);
         });
 
         it("page subscribe's callback sets result from controlAuth in show store", async () => {
-            vi.mocked(authService.controlAuth).mockReturnValueOnce(true);
+            vi.mocked(authService.controlAuth).mockResolvedValueOnce(true);
             const showSetSpy = vi.spyOn(controller.show, "set");
             await controller.init();
             const callback = vi.mocked(mockSubscribe).mock.calls[0][0];
-            callback(PAGE);
+            await callback(PAGE);
             expect(showSetSpy).toHaveBeenCalledWith(true);
         });
     });

@@ -194,79 +194,44 @@ describe("authService", () => {
         });
     });
 
-    describe("initUserInApp", () => {
-        beforeAll(() => {
-            connectedUserStoreSpy.value.mockReturnValue();
-        });
-        afterAll(() => connectedUserStoreSpy.value.mockReset());
-        it("returns true if user already stored", async () => {
-            connectedUserStoreSpy.value.mockReturnValueOnce("something");
-            const expected = true;
-            const actual = await authService.initUserInApp();
-            expect(actual).toBe(expected);
-        });
-
-        it("calls userService.getSelfUser", async () => {
-            await authService.initUserInApp();
-            expect(userService.getSelfUser).toHaveBeenCalled();
-        });
-
-        it("calls setUserInApp with result", async () => {
-            const USER = "something";
-            vi.mocked(userService.getSelfUser).mockResolvedValueOnce(USER);
-            const setUserSpy = vi.spyOn(authService, "setUserInApp").mockReturnValue(undefined);
-            await authService.initUserInApp();
-            expect(setUserSpy).toHaveBeenCalledWith(USER);
-        });
-
-        it("returns true if result", async () => {
-            const USER = "something";
-            vi.mocked(userService.getSelfUser).mockResolvedValueOnce(USER);
-            vi.spyOn(authService, "setUserInApp").mockReturnValue(undefined);
-            const expected = true;
-            const actual = await authService.initUserInApp();
-            expect(actual).toBe(expected);
-        });
-
-        it("returns false if failure", async () => {
-            vi.mocked(userService.getSelfUser).mockRejectedValueOnce(new Error("anything"));
-            const expected = false;
-            const actual = await authService.initUserInApp();
-            expect(actual).toBe(expected);
-        });
-    });
-
     describe("controlAuth", () => {
         let getUserSpy;
         let mockIsAdmin;
+        let mockGetSelfUser;
+        let mockSetUserInApp;
 
         beforeAll(() => {
+            mockSetUserInApp = vi.spyOn(authService, "setUserInApp").mockImplementation(vi.fn());
             mockIsAdmin = vi.spyOn(authService, "_isAdmin").mockReturnValue(true);
             getUserSpy = vi.spyOn(authService, "getCurrentUser");
+            mockGetSelfUser = vi.spyOn(userService, "getSelfUser").mockResolvedValue({ email: "foo.bar@beta.gouv.fr" });
         });
 
-        afterAll(() => mockIsAdmin.mockRestore());
+        afterAll(() => [mockIsAdmin, getUserSpy, mockSetUserInApp].forEach(mock => mock.mockRestore()));
 
-        function correctReturn(requiredLevel, user, expected) {
+        async function correctReturn(requiredLevel, user, expected) {
             if (user) getUserSpy.mockReturnValueOnce(user);
-            const actual = authService.controlAuth(requiredLevel);
+            const actual = await authService.controlAuth(requiredLevel);
             expect(actual).toBe(expected);
         }
 
         /* eslint-disable vitest/expect-expect */
-        it("returns true if no auth needed", () => {
-            return correctReturn(AuthLevels.NONE, undefined, true);
+        it("returns true if no auth needed", async () => {
+            return await correctReturn(AuthLevels.NONE, undefined, true);
         });
 
-        it("calls redirectToLogin if no user", () => {
-            const redirectSpy = vi.spyOn(authService, "redirectToLogin").mockResolvedValueOnce(true);
+        it("try to get user if already connected", async () => {
             getUserSpy.mockReturnValueOnce(undefined);
-            authService.controlAuth(AuthLevels.USER);
-            expect(redirectSpy).toHaveBeenCalled();
+            await authService.controlAuth(AuthLevels.USER);
+            expect(mockGetSelfUser).toHaveBeenCalled();
         });
 
-        it("returns false if no user", () => {
-            correctReturn(AuthLevels.USER, undefined, false);
+        it("calls redirectToLogin if not recently connected", async () => {
+            getUserSpy.mockReturnValueOnce(undefined);
+            vi.spyOn(userService, "getSelfUser").mockRejectedValue(new Error("401 Error"));
+            const redirectSpy = vi.spyOn(authService, "redirectToLogin").mockResolvedValueOnce(true);
+            await authService.controlAuth(AuthLevels.USER);
+            expect(redirectSpy).toHaveBeenCalled();
         });
 
         it("redirect to home if user not admin and admin required", () => {
@@ -274,11 +239,6 @@ describe("authService", () => {
             getUserSpy.mockReturnValueOnce({ roles: [] });
             authService.controlAuth(AuthLevels.ADMIN);
             expect(goToUrl).toHaveBeenCalledWith("/");
-        });
-
-        it("returns false if user not admin and admin required", () => {
-            mockIsAdmin.mockReturnValueOnce(false);
-            correctReturn(AuthLevels.ADMIN, { roles: [] }, false);
         });
 
         it("returns true if user is admin and admin required", () => {
