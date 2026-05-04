@@ -6,7 +6,6 @@ const baseConfig = {
     transform: {
         "\\.(ts)$": "ts-jest",
     },
-    transformIgnorePatterns: ["node_modules/(?!(openid-client)/)"],
     modulePathIgnorePatterns: ["./build"],
 };
 

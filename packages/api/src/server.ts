@@ -75,8 +75,8 @@ export async function startServer(port = "8080", isTest = false) {
             saveUninitialized: false, // don't create session until something stored
             store: new MongoStore(mongoSessionStoreConfig),
             cookie: {
-                secure: !IS_LOCAL,
                 httpOnly: true,
+                secure: !IS_LOCAL,
                 sameSite: "lax",
                 maxAge: 8 * 60 * 60 * 1000,
             },

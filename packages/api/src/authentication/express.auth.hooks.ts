@@ -14,6 +14,20 @@ import { AgentConnectStrategy } from "./proconnect.strategy";
 import userCrudService from "../modules/user/services/crud/user.crud.service";
 
 export async function registerAuthMiddlewares(app: Express) {
+    // @ts-expect-error: fix this later
+    passport.serializeUser((user: UserDto, done) => {
+        done(null, user.email);
+    });
+
+    passport.deserializeUser(async (email: string, done) => {
+        try {
+            const user = await userCrudService.findByEmail(email);
+            done(null, user);
+        } catch (err) {
+            done(err);
+        }
+    });
+
     // define passport login strategy
     passport.use(
         "login",
@@ -63,7 +77,7 @@ export async function registerAuthMiddlewares(app: Express) {
                 async (req: Request, tokenSet: TokenEndpointResponse, profile: AgentConnectUser, done) => {
                     try {
                         const user = await userAgentConnectService.login(profile, tokenSet);
-                        return done(null, user);
+                        return done(null, user, { idToken: tokenSet.id_token });
                     } catch (e) {
                         return done(e as Error);
                     }
@@ -71,20 +85,6 @@ export async function registerAuthMiddlewares(app: Express) {
             ),
         );
     }
-
-    // @ts-expect-error: fix this later
-    passport.serializeUser((user: UserDto, done) => {
-        done(null, user.email);
-    });
-
-    passport.deserializeUser(async (email: string, done) => {
-        try {
-            const user = await userCrudService.findByEmail(email);
-            done(null, user);
-        } catch (err) {
-            done(err, null);
-        }
-    });
 
     app.post("/auth/login", (req, res, next) => {
         passport.authenticate("login", (error, user, info: IVerifyOptions) => {
@@ -96,6 +96,19 @@ export async function registerAuthMiddlewares(app: Express) {
 
             next();
         })(req, res, next);
+    });
+
+    app.get("/auth/logout", (req, res, next) => {
+        req.logout(err => {
+            if (err) return next(err);
+            req.session.destroy(err => {
+                if (err) return next(err);
+                // clear OIDC token
+                res.clearCookie("connect.sid");
+                // pass to TSOA route
+                next();
+            });
+        });
     });
 
     app.get(

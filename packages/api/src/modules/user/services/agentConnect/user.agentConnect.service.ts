@@ -90,11 +90,6 @@ export class UserAgentConnectService {
             state: randomState(),
             post_logout_redirect_uri: `${FRONT_OFFICE_URL}/`,
         }).href;
-        // return this.client.endSessionUrl({
-        //     id_token_hint: tokenDbo.token,
-        //     state: generators.state(),
-        //     post_logout_redirect_uri: `${FRONT_OFFICE_URL}/`,
-        // });
     }
 
     async createUserFromAgentConnect(agentConnectUser: AgentConnectUser): Promise<Omit<UserDbo, "hashPassword">> {
