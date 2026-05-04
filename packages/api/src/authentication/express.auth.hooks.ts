@@ -28,7 +28,7 @@ export async function registerAuthMiddlewares(app: Express) {
         }
     });
 
-    // define passport login strategy
+    // only use for API usage (consumer) -> retrieve consumer token
     passport.use(
         "login",
         new LocalStrategy(
@@ -47,7 +47,7 @@ export async function registerAuthMiddlewares(app: Express) {
         ),
     );
 
-    // define passport jwt strategy
+    // only used for consumers (through consumer JWT token)
     passport.use(
         new JwtStrategy(
             {

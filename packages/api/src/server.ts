@@ -20,7 +20,7 @@ import userActivityMiddleware from "./middlewares/user-activity.middleware";
 import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
 import { headersMiddleware } from "./middlewares/headers.middleware";
-import { DEV, ENV } from "./configurations/env.conf";
+import { DEV, ENV, PROD } from "./configurations/env.conf";
 import { SESSION_SECRET } from "./configurations/pro-connect.conf";
 import { mongoSessionStoreConfig } from "./shared/MongoConnection";
 import { FRONT_OFFICE_URL } from "./configurations/front.conf";
@@ -61,8 +61,6 @@ export async function startServer(port = "8080", isTest = false) {
 
     if (ENV !== "dev" && ENV !== "test") Sentry.init({ release: process.env.npm_package_version });
 
-    const IS_LOCAL = process.env.IS_LOCAL === "true";
-
     app.use(cookieParser());
 
     // if proxy redirect to api using HTTP, trust it and continue as if it was HTTPS from the client
@@ -76,23 +74,12 @@ export async function startServer(port = "8080", isTest = false) {
             store: new MongoStore(mongoSessionStoreConfig),
             cookie: {
                 httpOnly: true,
-                secure: !IS_LOCAL,
+                secure: PROD,
                 sameSite: "lax",
                 maxAge: 8 * 60 * 60 * 1000,
             },
         }),
     );
-
-    // app.use((req, res, next) => {
-    //     const originalSetHeader = res.setHeader.bind(res);
-    //     res.setHeader = (name, value) => {
-    //         if (name.toLowerCase() === "set-cookie") {
-    //             console.log("=== SET-COOKIE HEADER ===", value);
-    //         }
-    //         return originalSetHeader(name, value);
-    //     };
-    //     next();
-    // });
 
     if (!isTest) app.use(expressLogger());
 

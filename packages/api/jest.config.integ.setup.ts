@@ -8,7 +8,8 @@ import crypto from "crypto";
 
 process.env.JWT_SECRET = crypto.randomBytes(256).toString("base64");
 process.env.BETA_GOUV_DOMAIN = "beta.gouv.fr";
-process.env.AGENT_CONNECT_ENABLED = "true";
+process.env.AGENT_CONNECT_ENABLED = "false";
+process.env.AGENT_CONNECT_URL = "https://agent-connect.url";
 process.env.API_BREVO_TOKEN = "1FT47%TRADF!";
 process.env.MAIL_USER = "mail-user@datasubvention";
 process.env.RATE_LIMIT = "50"; // 20 in real app but can break integration test. Still limiting to 50 as more than that means we should break routes / test file
@@ -22,7 +23,6 @@ process.env.RATE_LIMIT = "50"; // 20 in real app but can break integration test.
 import { existsSync, mkdirSync } from "fs";
 import { Server } from "http";
 import axios from "axios";
-import { Issuer } from "openid-client";
 import db, { connectDB, client } from "./src/shared/MongoConnection";
 import { initIndexes } from "./src/shared/MongoInit";
 import { startServer } from "./src/server";
@@ -53,8 +53,19 @@ jest.mock("./src/configurations/env.conf", () => ({
 jest.mock("openid-client");
 jest.mock("express-session", () => ({
     __esModule: true,
-    default: () => (_req, _res, next) => next(),
-})); // TODO should be better mocked in order to actually test session managment
+    default: () => (_req, _res, next) => {
+        // used to setup oidc for integ tests
+        _req.session = {
+            id: "test-session-id",
+            cookie: {},
+            destroy: jest.fn(cb => cb && cb()),
+            save: jest.fn(cb => cb && cb()),
+            reload: jest.fn(cb => cb && cb()),
+            regenerate: jest.fn(cb => cb && cb()),
+        };
+        next();
+    },
+}));
 jest.mock("connect-mongodb-session", () => {
     class MongoStore {}
     return jest.fn(() => MongoStore);
@@ -111,14 +122,14 @@ const addBetaGouvEmailDomain = async () => {
 beforeAll(async () => {
     jest.mocked(axios.request).mockResolvedValue({ data: null });
 
-    const mockIssuer = {
-        Client: class Client {
-            endSessionUrl(...args) {
-                return jest.fn((..._args) => {})(...args);
-            }
-        },
-    } as unknown as Issuer;
-    jest.spyOn(Issuer, "discover").mockResolvedValue(mockIssuer);
+    // const mockIssuer = {
+    //     Client: class Client {
+    //         endSessionUrl(...args) {
+    //             return jest.fn((..._args) => {})(...args);
+    //         }
+    //     },
+    // } as unknown as Issuer;
+    // jest.spyOn(Issuer, "discover").mockResolvedValue(mockIssuer);
 
     await connectDB();
     if (!existsSync("./logs")) {

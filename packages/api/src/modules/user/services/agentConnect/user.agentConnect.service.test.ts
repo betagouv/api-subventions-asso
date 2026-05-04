@@ -1,5 +1,9 @@
 import userAgentConnectService, { UserAgentConnectService } from "./user.agentConnect.service";
-import { AGENT_CONNECT_URL } from "../../../../configurations/pro-connect.conf";
+import {
+    AGENT_CONNECT_CLIENT_ID,
+    AGENT_CONNECT_CLIENT_SECRET,
+    AGENT_CONNECT_URL,
+} from "../../../../configurations/pro-connect.conf";
 import { AgentConnectTokenDbo, AgentConnectUser } from "../../@types/AgentConnectUser";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import userAuthService from "../auth/user.auth.service";
@@ -20,7 +24,7 @@ import * as openidClient from "openid-client";
 jest.mock("../../../../configurations/pro-connect.conf", () => ({
     AGENT_CONNECT_CLIENT_ID: "mocked_client_id",
     AGENT_CONNECT_CLIENT_SECRET: "mocked_client_secret",
-    AGENT_CONNECT_URL: "agent-connect/url",
+    AGENT_CONNECT_URL: "https://agent-connect/url",
 }));
 jest.mock("../../../../configurations/front.conf", () => ({
     FRONT_OFFICE_URL: "http://my.front",
@@ -48,52 +52,35 @@ describe("userAgentConnectService", () => {
         id_token: "tokenHint",
     } as openidClient.TokenEndpointResponse;
 
-    let clientConstructorMock;
-    let endSessionMock;
-    let mockDiscovery;
+    const CLIENT_SECRET_POST = () => "ClientAuth";
+    const CONFIGURATION = { foo: "bar" };
 
-    beforeAll(() => {
-        clientConstructorMock = jest.fn(() => {});
-        endSessionMock = jest.fn();
-        const mockIssuer = {
-            Client: class Client {
-                constructor(...args) {
-                    clientConstructorMock(...args);
-                }
-
-                endSessionUrl(...args) {
-                    return endSessionMock(...args);
-                }
-            },
-        } as unknown as openidClient.Configuration;
-        mockDiscovery = jest.spyOn(openidClient, "discovery").mockResolvedValue(mockIssuer);
+    beforeEach(() => {
+        jest.mocked(openidClient.ClientSecretPost).mockReturnValue(CLIENT_SECRET_POST);
+        // @ts-expect-error: mock Configuration
+        jest.mocked(openidClient.discovery).mockReturnValue(CONFIGURATION);
         userAgentConnectService.initClient();
     });
 
     describe("initClient", () => {
         it("discovers client", async () => {
-            await userAgentConnectService.initClient();
-            expect(mockDiscovery).toHaveBeenCalledWith(AGENT_CONNECT_URL);
+            expect(openidClient.discovery).toHaveBeenCalledWith(
+                new URL(AGENT_CONNECT_URL),
+                AGENT_CONNECT_CLIENT_ID,
+                {
+                    client_secret: AGENT_CONNECT_CLIENT_SECRET,
+                    redirect_uris: [`${FRONT_OFFICE_URL}/auth/login`],
+                    response_types: ["code"],
+                    id_token_signed_response_alg: "ES256",
+                    userinfo_signed_response_alg: "ES256",
+                },
+                CLIENT_SECRET_POST,
+            );
         });
 
-        it("initializes client with proper args", async () => {
-            await userAgentConnectService.initClient();
-            const actual = clientConstructorMock.mock.calls[0][0];
-            expect(actual).toMatchInlineSnapshot(`
-                {
-                  "client_id": "mocked_client_id",
-                  "client_secret": "mocked_client_secret",
-                  "id_token_signed_response_alg": "ES256",
-                  "redirect_uris": [
-                    "http://my.front/auth/login",
-                  ],
-                  "response_types": [
-                    "code",
-                  ],
-                  "scope": "openid given_name family_name preferred_username birthdate email",
-                  "userinfo_signed_response_alg": "ES256",
-                }
-            `);
+        it("initializes client", async () => {
+            // @ts-expect-error: test private assignment
+            expect(userAgentConnectService._client).toEqual(CONFIGURATION);
         });
     });
 
@@ -167,12 +154,18 @@ describe("userAgentConnectService", () => {
     });
 
     describe("getLogoutUrl", () => {
+        const LOGOUT_URL = "https://app.auth/logout";
+        // @ts-expect-error: mock URL
+        beforeAll(() => jest.mocked(openidClient.buildEndSessionUrl).mockReturnValue(LOGOUT_URL));
+
         const TOKEN: AgentConnectTokenDbo = {
             _id: new ObjectId(),
             creationDate: new Date(),
             token: "TOKEN",
             userId: USER_WITHOUT_SECRET._id,
         };
+
+        const RANDOM_STRING = "RANDOM";
 
         it("fails if client not initialized", async () => {
             const service = new UserAgentConnectService();
@@ -196,22 +189,24 @@ describe("userAgentConnectService", () => {
         });
 
         it("generates url based on retrieved token", async () => {
-            const expected = {
-                id_token_hint: TOKEN.token,
-                state: expect.any(String),
-                post_logout_redirect_uri: `${FRONT_OFFICE_URL}/`,
-            };
             jest.mocked(agentConnectTokenAdapter.findLastActive).mockResolvedValueOnce(TOKEN);
+            jest.mocked(openidClient.randomState).mockReturnValue(RANDOM_STRING);
             await userAgentConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
-            expect(endSessionMock).toHaveBeenCalledWith(expected);
+            expect(openidClient.buildEndSessionUrl).toHaveBeenCalledWith(CONFIGURATION, {
+                id_token_hint: TOKEN.token,
+                state: RANDOM_STRING,
+                post_logout_redirect_uri: `${FRONT_OFFICE_URL}/`,
+            });
         });
 
         it("returns generated url", async () => {
-            const expected = "logout/token";
+            const URL = { href: "logout/token" };
+            const expected = URL.href;
             jest.mocked(agentConnectTokenAdapter.findLastActive).mockResolvedValueOnce(TOKEN);
-            endSessionMock.mockReturnValue(expected);
+            // @ts-expect-error: mock URL
+            jest.mocked(openidClient.buildEndSessionUrl).mockReturnValue(URL);
             const actual = await userAgentConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
-            expect(actual).toBe(expected);
+            expect(actual).toEqual(expected);
         });
     });
 

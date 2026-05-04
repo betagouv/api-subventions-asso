@@ -1,3 +1,4 @@
 export const discovery = jest.fn();
-export const Configuration = jest.fn();
-export const TokenEndpointResponse = jest.fn();
+export const ClientSecretPost = jest.fn();
+export const randomState = jest.fn();
+export const buildEndSessionUrl = jest.fn();
