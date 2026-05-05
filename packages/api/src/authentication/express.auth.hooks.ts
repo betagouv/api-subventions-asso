@@ -111,34 +111,19 @@ export async function registerAuthMiddlewares(app: Express) {
         });
     });
 
-    app.get(
-        "/auth/ac/login",
-        (req, res, next) => {
-            if (req.query.code) return next(); // Step 4, skip
-
-            // Force session creation BEFORE passport redirects
-            // This ensures Set-Cookie is included in the redirect response
-            // @ts-expect-error: force session creation with random field
-            req.session.initiated = true;
-            req.session.save(err => {
-                if (err) return next(err);
-                next();
+    app.get("/auth/ac/login", (req, res, next) => {
+        if (!req.query.code) {
+            return passport.authenticate("oidc")(req, res, next);
+        }
+        passport.authenticate("oidc", (err, user, info) => {
+            if (err) return next(err);
+            if (!user) return res.status(401).json({ message: info?.message ?? "Authentication failed" });
+            req.login(user, loginErr => {
+                if (loginErr) return next(loginErr);
+                return res.json({ user });
             });
-        },
-        (req, res, next) => {
-            if (!req.query.code) {
-                return passport.authenticate("oidc")(req, res, next);
-            }
-            passport.authenticate("oidc", (err, user, info) => {
-                if (err) return next(err);
-                if (!user) return res.status(401).json({ message: info?.message ?? "Authentication failed" });
-                req.login(user, loginErr => {
-                    if (loginErr) return next(loginErr);
-                    return res.json({ user });
-                });
-            })(req, res, next);
-        },
-    );
+        })(req, res, next);
+    });
 
     // only used to allow jwt connection for consumer or classic login/pwd strategy
     app.use((req, res, next) => {
