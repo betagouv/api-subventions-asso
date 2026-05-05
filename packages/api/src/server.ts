@@ -63,6 +63,9 @@ export async function startServer(port = "8080", isTest = false) {
 
     app.use(cookieParser());
 
+    // if proxy redirect to api using HTTP, trust it and continue as if it was HTTPS from the client
+    app.set("trust proxy", 1);
+
     app.use(
         session({
             secret: SESSION_SECRET,
