@@ -1,6 +1,6 @@
 import path from "path";
 import OsirisCli from "../../../src/adapters/inputs/cli/osiris/osiris.cli";
-import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
+import OsirisParser from "../../../src/adapters/inputs/cli/osiris/osiris.parser";
 import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
 import { osirisActionAdapter, osirisRequestAdapter } from "../../../src/adapters/outputs/db/providers/osiris";
 import { REQUEST_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.request.fixtures";

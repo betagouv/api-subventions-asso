@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import OsirisParser from "../../../../src/modules/providers/osiris/osiris.parser";
+import OsirisParser from "../../../../src/adapters/inputs/cli/osiris/osiris.parser";
 import OsirisActionEntity from "../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
 
 describe("OsirisParser", () => {

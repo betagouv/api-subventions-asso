@@ -2,7 +2,7 @@ import fs from "fs";
 
 import { StaticImplements } from "../../../../decorators/static-implements.decorator";
 import { ApplicationFlatCli, CliStaticInterface } from "../../../../@types";
-import OsirisParser from "../../../../modules/providers/osiris/osiris.parser";
+import OsirisParser from "./osiris.parser";
 import osirisService, { InvalidOsirisRequestError } from "../../../../modules/providers/osiris/osiris.service";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";

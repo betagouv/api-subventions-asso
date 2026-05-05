@@ -1,8 +1,8 @@
-import { DefaultObject } from "../../../@types";
-import { GenericParser } from "../../../shared/GenericParser";
-import OsirisActionEntity from "./entities/OsirisActionEntity";
-import { OsirisRequestRawData } from "../../../adapters/inputs/cli/osiris/osiris-request.dto";
-import type OsirisActionsInformations from "./@types/OsirisActionsInformations";
+import { DefaultObject } from "../../../../@types";
+import { GenericParser } from "../../../../shared/GenericParser";
+import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
+import { OsirisRequestRawData } from "./osiris-request.dto";
+import type OsirisActionsInformations from "../../../../modules/providers/osiris/@types/OsirisActionsInformations";
 
 export default class OsirisParser {
     private static getUpdateDate(year: number) {

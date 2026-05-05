@@ -1,9 +1,9 @@
 import OsirisParser from "./osiris.parser";
-import OsirisActionEntity from "./entities/OsirisActionEntity";
-import { OSIRIS_ACTION_ENTITY } from "../../../../tests/modules/providers/osiris/__fixtures__/OsirisEntities";
-import { GenericParser } from "../../../shared/GenericParser";
-import { DefaultObject } from "../../../@types";
-jest.mock("../../../shared/GenericParser");
+import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
+import { OSIRIS_ACTION_ENTITY } from "../../../../../tests/modules/providers/osiris/__fixtures__/OsirisEntities";
+import { GenericParser } from "../../../../shared/GenericParser";
+import { DefaultObject } from "../../../../@types";
+jest.mock("../../../../shared/GenericParser");
 
 describe("OsirisParser", () => {
     describe("parseRequests", () => {

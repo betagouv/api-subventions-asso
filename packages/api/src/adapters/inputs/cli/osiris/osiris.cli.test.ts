@@ -1,9 +1,9 @@
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
-import OsirisParser from "../../../../modules/providers/osiris/osiris.parser";
+import OsirisParser from "./osiris.parser";
 import osirisService from "../../../../modules/providers/osiris/osiris.service";
 import OsirisCli from "./osiris.cli";
 
-jest.mock("../../../../modules/providers/osiris/osiris.parser");
+jest.mock("./osiris.parser");
 jest.mock("../../../../modules/providers/osiris/osiris.service");
 
 describe("Osiris cli", () => {
