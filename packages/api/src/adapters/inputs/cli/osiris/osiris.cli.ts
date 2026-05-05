@@ -8,7 +8,6 @@ import OsirisActionEntity from "../../../../modules/providers/osiris/entities/Os
 import OsirisRequestEntity from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
 import OsirisRequestDto from "./osiris-request.dto";
 import OsirisRequestMapper from "./osiris-request.mapper";
-import { COLORS } from "../../../../shared/LogOptions";
 import * as CliHelper from "../../../../shared/helpers/CliHelper";
 import { GenericParser } from "../../../../shared/GenericParser";
 import dataLogService from "../../../../modules/data-log/dataLog.service";
