@@ -25,52 +25,6 @@ export default class OsirisCli implements ApplicationFlatCli {
         return Boolean(dto.dossier?.osirisId);
     }
 
-    public validate(type: string, file: string, extractYear = "2022") {
-        if (typeof type != "string" && typeof file != "string" && typeof extractYear != "string") {
-            throw new Error("Validate command need type, extractYear and file args");
-        }
-
-        if (Number.isNaN(parseInt(extractYear, 10))) {
-            throw new Error("extractYear must be a number");
-        }
-
-        if (!fs.existsSync(file)) {
-            throw new Error(`File not found ${file}`);
-        }
-
-        const fileContent = fs.readFileSync(file);
-
-        if (type === "requests") {
-            const requests = OsirisParser.parseRequests(fileContent)
-                .map(raw => OsirisRequestMapper.toDto(raw))
-                .filter(dto => OsirisCli.isCompleteRequestDto(dto))
-                .map(dto => OsirisRequestMapper.toEntity(dto, parseInt(extractYear, 10)));
-
-            console.info(`Check ${requests.length} entities!`);
-            requests.forEach(entity => {
-                const result = osirisService.validRequest(entity);
-                if (result !== true) {
-                    console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
-                }
-            });
-
-            console.info(`${COLORS.Reset}Validation done`);
-        } else if (type === "actions") {
-            const actions = OsirisParser.parseActions(fileContent, parseInt(extractYear, 10));
-            console.info(`Check ${actions.length} entities!`);
-            actions.forEach(entity => {
-                const result = osirisService.validAction(entity);
-                if (result !== true) {
-                    console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
-                }
-            });
-
-            console.info(`${COLORS.Reset}Validation done`);
-        } else {
-            throw new Error(`The type ${type} is not found`);
-        }
-    }
-
     public async parse(type: "requests" | "actions", file: string, extractYear: string): Promise<unknown> {
         if (typeof type != "string" && typeof file != "string" && typeof extractYear != "string") {
             throw new Error("Parse command need type, extractYear and file args");
