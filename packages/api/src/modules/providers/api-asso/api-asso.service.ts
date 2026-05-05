@@ -341,7 +341,10 @@ export class ApiAssoService
         }
 
         const documents = await this.findDocuments(identifier.associationIdentifier);
-        return documents.filter(document => document.__meta__.siret == identifier.siret?.value);
+        // Keep documents without siret in __meta__ (RNA documents !?) like _filterAssoDocs() in Documents.controller.ts from front
+        return documents.filter(
+            document => !document.__meta__.siret || document.__meta__.siret == identifier.siret?.value,
+        );
     }
 
     async getRibs(identifier: EstablishmentIdentifier) {

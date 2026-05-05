@@ -916,6 +916,15 @@ describe("ApiAssoService", () => {
                 const actual = await apiAssoService.getDocuments(ESTABLISHMENT_ID);
                 expect(actual).toHaveLength(expected);
             });
+
+            it("should keep documents without siret in __meta__ (e.g. RNA documents)", async () => {
+                const RNA_DOC = { __meta__: {} };
+                const MATCHING_DOC = { __meta__: { siret: SIRET.value } };
+                const OTHER_DOC = { __meta__: { siret: SIREN.toSiret("00002").value } };
+                findDocumentsMock.mockResolvedValueOnce([RNA_DOC, MATCHING_DOC, OTHER_DOC]);
+                const actual = await apiAssoService.getDocuments(ESTABLISHMENT_ID);
+                expect(actual).toEqual([RNA_DOC, MATCHING_DOC]);
+            });
         });
     });
 });
