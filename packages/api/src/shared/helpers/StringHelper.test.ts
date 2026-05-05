@@ -71,4 +71,37 @@ describe("StringHelper", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("sanitizeHeader", () => {
+        it.each`
+            input                                          | expected
+            ${"N° Dossier Osiris"}                         | ${"No Dossier Osiris"}
+            ${"Coordonnées correspondance (publipostage)"} | ${"Coordonnees correspondance publipostage"}
+            ${"Représentant légal"}                        | ${"Representant legal"}
+            ${"R&D"}                                       | ${"R et D"}
+            ${"  spaced  "}                                | ${"spaced"}
+            ${""}                                          | ${""}
+            ${"IBAN"}                                      | ${"IBAN"}
+        `("returns $expected for $input", ({ input, expected }) => {
+            expect(StringHelper.sanitizeHeader(input)).toEqual(expected);
+        });
+    });
+
+    describe("headerToCamelCase", () => {
+        it.each`
+            input                                          | expected
+            ${"N° Dossier Osiris"}                         | ${"noDossierOsiris"}
+            ${"N° Dossier Compte Asso"}                    | ${"noDossierCompteAsso"}
+            ${"Coordonnées correspondance (publipostage)"} | ${"coordonneesCorrespondancePublipostage"}
+            ${"Représentant légal"}                        | ${"representantLegal"}
+            ${"IBAN"}                                      | ${"iban"}
+            ${"BIC"}                                       | ${"bic"}
+            ${"R&D"}                                       | ${"rEtD"}
+            ${"  spaced  "}                                | ${"spaced"}
+            ${""}                                          | ${""}
+            ${"single"}                                    | ${"single"}
+        `("returns $expected for $input", ({ input, expected }) => {
+            expect(StringHelper.headerToCamelCase(input)).toEqual(expected);
+        });
+    });
 });

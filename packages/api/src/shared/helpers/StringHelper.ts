@@ -38,3 +38,26 @@ export function removeWhitespace(str: string) {
     if (typeof str !== "string") return str;
     return str.replace(/\s+/g, "");
 }
+
+export function sanitizeHeader(value: string): string {
+    return value
+        .normalize("NFD") // Remove accents + other special characters
+        .replace(/[\u0300-\u036f]/g, "") // Remove accents
+        .replace(/&/g, " et ") // Replace & with " et "
+        .replace(/°/g, "o") // Replace ° with "o"
+        .replace(/[^a-zA-Z0-9]+/g, " ") // Replace non-alphanumeric characters with a space
+        .trim();
+}
+
+export function headerToCamelCase(value: string): string {
+    const words = sanitizeHeader(value).split(/\s+/).filter(Boolean); // Split value in words and filter out empty words
+    if (!words.length) return "";
+
+    return words
+        .map((word, index) => {
+            const lower = word.toLowerCase();
+            if (index === 0) return lower;
+            return lower.charAt(0).toUpperCase() + lower.slice(1);
+        })
+        .join("");
+}

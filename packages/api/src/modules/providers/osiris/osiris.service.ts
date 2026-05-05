@@ -7,7 +7,7 @@ import Siret from "../../../identifier-objects/Siret";
 import Siren from "../../../identifier-objects/Siren";
 import Rna from "../../../identifier-objects/Rna";
 import { osirisRequestAdapter, osirisActionAdapter } from "../../../adapters/outputs/db/providers/osiris";
-import OsirisRequestMapper from "./mappers/osiris-request.mapper";
+import OsirisMapper from "./osiris.mapper";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import ApplicationFlatProvider from "../../application-flat/@types/applicationFlatProvider";
@@ -53,8 +53,9 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         const rnaSirens: { rna: Rna; siren: Siren }[] = [];
 
         for (const request of requests) {
-            const { rna, siret } = OsirisRequestMapper.getLegalInformations(request);
-            if (rna) rnaSirens.push({ rna: new Rna(rna), siren: new Siret(siret).toSiren() });
+            const rna = request.association?.rna;
+            const siret = request.association?.siret;
+            if (rna && siret) rnaSirens.push({ rna: new Rna(rna), siren: new Siret(siret).toSiren() });
         }
 
         const [metadataRequests] = await Promise.all([
@@ -66,45 +67,49 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
     }
 
     public validRequest(request: OsirisRequestEntity, rnaNeeded = true) {
-        const legalInformations = OsirisRequestMapper.getLegalInformations(request);
-        const providerInformations = OsirisRequestMapper.getProviderInformations(request);
+        const association = request.association || {};
+        const siret = association.siret as string;
+        const rna = association.rna as string;
+        const name = association.nom as string;
+        const compteAssoId = request.dossier?.compteAssoId as string;
+        const osirisId = request.dossier?.osirisId as string;
 
-        if (!Siret.isSiret(legalInformations.siret)) {
+        if (!Siret.isSiret(siret)) {
             return {
-                message: `INVALID SIRET FOR ${legalInformations.siret}`,
-                data: legalInformations,
+                message: `INVALID SIRET FOR ${siret}`,
+                data: { siret, rna, name },
                 code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET,
             };
         }
 
-        if (rnaNeeded && !Rna.isRna(legalInformations.rna)) {
+        if (rnaNeeded && !Rna.isRna(rna)) {
             return {
-                message: `INVALID RNA FOR ${legalInformations.rna}`,
-                data: legalInformations,
+                message: `INVALID RNA FOR ${rna}`,
+                data: { siret, rna, name },
                 code: VALID_REQUEST_ERROR_CODE.INVALID_RNA,
             };
         }
 
-        if (!isAssociationName(legalInformations.name)) {
+        if (!isAssociationName(name)) {
             return {
-                message: `INVALID NAME FOR ${legalInformations.name}`,
-                data: legalInformations,
+                message: `INVALID NAME FOR ${name}`,
+                data: { siret, rna, name },
                 code: VALID_REQUEST_ERROR_CODE.INVALID_NAME,
             };
         }
 
-        if (!isCompteAssoId(providerInformations.compteAssoId)) {
+        if (!isCompteAssoId(compteAssoId)) {
             return {
-                message: `INVALID COMPTE ASSO ID FOR ${legalInformations.name}`,
-                data: providerInformations,
+                message: `INVALID COMPTE ASSO ID FOR ${name}`,
+                data: { compteAssoId, osirisId },
                 code: VALID_REQUEST_ERROR_CODE.INVALID_CAID,
             };
         }
 
-        if (!isOsirisRequestId(providerInformations.osirisId)) {
+        if (!isOsirisRequestId(osirisId)) {
             return {
-                message: `INVALID OSIRIS ID FOR ${legalInformations.name}`,
-                data: providerInformations,
+                message: `INVALID OSIRIS ID FOR ${name}`,
+                data: { compteAssoId, osirisId },
                 code: VALID_REQUEST_ERROR_CODE.INVALID_OSIRISID,
             };
         }
@@ -116,15 +121,14 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         let validation = this.validRequest(osirisRequest);
 
         if (validation !== true && validation.code === VALID_REQUEST_ERROR_CODE.INVALID_RNA) {
-            const rnaSirenEntities = await rnaSirenService.find(
-                new Siret(OsirisRequestMapper.getLegalInformations(osirisRequest).siret).toSiren(),
-            );
+            const siret = osirisRequest.association?.siret as string;
+            const rnaSirenEntities = await rnaSirenService.find(new Siret(siret).toSiren());
 
             if (!rnaSirenEntities || !rnaSirenEntities.length) {
                 validation = osirisService.validRequest(osirisRequest, false); // we still want the request if there is no rna
             } else {
-                const association = osirisRequest.association || osirisRequest.beneficiaire;
-                if (association) association.rna = rnaSirenEntities[0].rna.value;
+                osirisRequest.association = osirisRequest.association || {};
+                osirisRequest.association.rna = rnaSirenEntities[0].rna.value;
                 validation = osirisService.validRequest(osirisRequest); // Re-validate with the new rna
             }
         }
@@ -158,9 +162,8 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         const requests = await osirisRequestAdapter.findBySiret(siret);
 
         for (const request of requests) {
-            request.actions = await osirisActionAdapter.findByRequestUniqueId(
-                OsirisRequestMapper.getProviderInformations(request).uniqueId,
-            );
+            const uniqueId = `${request.dossier.osirisId}-${request.dossier.exerciceBudgetaire}`;
+            request.actions = await osirisActionAdapter.findByRequestUniqueId(uniqueId);
         }
 
         return requests;
@@ -171,11 +174,8 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         const actions = await osirisActionAdapter.findBySiren(siren);
 
         for (const request of requests) {
-            request.actions = actions.filter(
-                a =>
-                    a.indexedInformations.requestUniqueId ===
-                    OsirisRequestMapper.getProviderInformations(request).uniqueId,
-            );
+            const uniqueId = `${request.dossier.osirisId}-${request.dossier.exerciceBudgetaire}`;
+            request.actions = actions.filter(a => a.indexedInformations.requestUniqueId === uniqueId);
         }
 
         return requests;
@@ -185,9 +185,8 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         const requests = await osirisRequestAdapter.findByRna(rna);
 
         for (const request of requests) {
-            request.actions = await osirisActionAdapter.findByRequestUniqueId(
-                OsirisRequestMapper.getProviderInformations(request).uniqueId,
-            );
+            const uniqueId = `${request.dossier.osirisId}-${request.dossier.exerciceBudgetaire}`;
+            request.actions = await osirisActionAdapter.findByRequestUniqueId(uniqueId);
         }
 
         return requests;
@@ -212,7 +211,7 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
     private createStream(cursor: AggregationCursor<OsirisRequestWithActions>) {
         const stream: ReadableStream<ApplicationFlatEntity> = cursorToStream(cursor, requestWithActions => {
             const { actions, ...request } = requestWithActions;
-            return OsirisRequestMapper.toApplicationFlat(request, actions);
+            return OsirisMapper.toApplicationFlat(request, actions);
         });
 
         return stream;

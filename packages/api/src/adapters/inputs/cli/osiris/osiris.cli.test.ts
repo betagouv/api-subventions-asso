@@ -17,7 +17,7 @@ describe("Osiris cli", () => {
     describe("parse requests", () => {
         const CONTENT_FILE = Buffer.from("toto");
         const YEAR = 1789;
-        const DTOS = [
+        const RAW_ROWS = [
             {
                 Dossier: { "N° Dossier Osiris": "DD75-24-0001" },
                 Association: { "N° Siret": "12345678900001" },
@@ -29,7 +29,7 @@ describe("Osiris cli", () => {
         ];
 
         beforeEach(() => {
-            jest.mocked(OsirisParser.parseRequests).mockReturnValue(DTOS);
+            jest.mocked(OsirisParser.parseRequests).mockReturnValue(RAW_ROWS);
             jest.mocked(osirisService.validateAndComplete).mockImplementation(r => Promise.resolve(r));
         });
 

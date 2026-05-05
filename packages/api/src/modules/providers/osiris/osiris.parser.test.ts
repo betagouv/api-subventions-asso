@@ -52,7 +52,7 @@ describe("OsirisParser", () => {
             OsirisParser.parseRequests(BUFFER);
             ROWS.forEach((row, index) => {
                 // @ts-expect-error: assert private mock calls
-                expect(OsirisParser.rowToRowWithHeaders).toHaveBeenNthCalledWith(index + 1, HEADERS, row, "Dossier");
+                expect(OsirisParser.rowToRowWithHeaders).toHaveBeenNthCalledWith(index + 1, HEADERS, row);
             });
         });
 

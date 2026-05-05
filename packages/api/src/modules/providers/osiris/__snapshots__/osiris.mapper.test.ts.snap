@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`OsirisRequestAdapter toApplicationFlat nullify idVersement if EJ is missing 1`] = `
+exports[`OsirisMapper toApplicationFlat nullify idVersement if EJ is missing 1`] = `
 {
   "allocatorId": null,
   "allocatorIdType": null,
@@ -66,7 +66,7 @@ exports[`OsirisRequestAdapter toApplicationFlat nullify idVersement if EJ is mis
 }
 `;
 
-exports[`OsirisRequestAdapter toApplicationFlat returns application flat with date from object id 1`] = `
+exports[`OsirisMapper toApplicationFlat returns application flat with date from object id 1`] = `
 {
   "allocatorId": null,
   "allocatorIdType": null,
@@ -132,7 +132,7 @@ exports[`OsirisRequestAdapter toApplicationFlat returns application flat with da
 }
 `;
 
-exports[`OsirisRequestAdapter toApplicationFlat returns application flat with default date 1`] = `
+exports[`OsirisMapper toApplicationFlat returns application flat with default date 1`] = `
 {
   "allocatorId": null,
   "allocatorIdType": null,
