@@ -61,13 +61,16 @@ export async function startServer(port = "8080", isTest = false) {
 
     if (ENV !== "dev" && ENV !== "test") Sentry.init({ release: process.env.npm_package_version });
     app.use(cookieParser());
+
+    // if proxy redirect to api using HTTP, trust it and continue as if it was HTTPS from the client
+    app.set("trust proxy", 1);
+
     app.use(
         session({
             secret: SESSION_SECRET,
             resave: false, // don't save session if unmodified
             saveUninitialized: false, // don't create session until something stored
             store: new MongoStore(mongoSessionStoreConfig),
-            pauseStream: false,
             cookie: {
                 secure: PROD,
                 httpOnly: true,
