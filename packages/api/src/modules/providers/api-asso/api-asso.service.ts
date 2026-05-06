@@ -65,28 +65,6 @@ export class ApiAssoService
         }
     }
 
-    public async findRnaSiren(identifier: Rna | Siren): Promise<{ rna: Rna; siren: Siren } | null> {
-        const structure = await this.sendRequest<StructureDto>(`/api/structure/${identifier.value}`);
-        let rna: Rna, siren: Siren;
-        // sometimes identite is not defined even if request status is 200
-        if (!structure?.identite) return null;
-
-        if (identifier.name === Rna.getName()) {
-            // API is not robust and sometimes SIREN is sent as number
-            const identiteSiren = structure.identite?.id_siren?.toString();
-            if (!identiteSiren) return null;
-            rna = identifier;
-            siren = new Siren(identiteSiren);
-        } else {
-            const identiteRna = structure?.identite?.id_rna;
-            if (!identiteRna) return null;
-            siren = identifier;
-            rna = new Rna(identiteRna);
-        }
-
-        return { rna, siren };
-    }
-
     public async findAssociationByRna(rna: Rna): Promise<AssociationWithProviderValues | null> {
         const rnaStructure = await this.sendRequest<RnaStructureDto>(`/api/rna/${rna.value}`);
 
@@ -138,7 +116,7 @@ export class ApiAssoService
                     establishment,
                     ribs,
                     structure.representant_legal,
-                    structure.identite.date_modif_siren,
+                    structure.identite!.date_modif_siren,
                 ),
             );
     }

@@ -113,41 +113,6 @@ describe("ApiAssoService", () => {
         });
     });
 
-    describe("findRnaSiren", () => {
-        const RNA_STR = "W760938289";
-        const SIREN_STR = "954983829";
-        const RNA = new Rna(RNA_STR);
-
-        beforeEach(() => {
-            // @ts-expect-error: mock
-            mockSendRequest.mockResolvedValue({ identite: { id_rna: RNA_STR, id_siren: SIREN_STR } });
-        });
-
-        afterAll(() => mockSendRequest.mockReset());
-
-        it("should return null if identite is undefined", async () => {
-            // @ts-expect-error: mock
-            mockSendRequest.mockResolvedValueOnce({});
-            const expected = null;
-            const actual = await apiAssoService.findRnaSiren(RNA);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return identifiers", async () => {
-            // @ts-expect-error: mock
-            mockSendRequest.mockResolvedValueOnce({
-                identite: {
-                    id_rna: RNA_STR,
-                    id_siren: SIREN_STR,
-                },
-            });
-
-            const expected = { rna: new Rna(RNA_STR), siren: new Siren(SIREN_STR) };
-            const actual = await apiAssoService.findRnaSiren(RNA);
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("fetchDocuments", () => {
         const ASSOCIATION_ID = AssociationIdentifier.fromRna(new Rna(RNA));
         it("call sendRequest()", async () => {

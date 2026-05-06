@@ -1,6 +1,5 @@
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import rnaSirenAdapter from "../../adapters/outputs/db/rna-siren/rna-siren.adapter";
-import apiAssoService from "../providers/api-asso/api-asso.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
@@ -8,8 +7,12 @@ import associationIdentifierService from "../association-identifier/association-
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import Siret from "../../identifier-objects/Siret";
 import { FullAssociationIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
+import FindRnaSirenUseCase from "../providers/api-asso/use-cases/find-rna-siren.use-case";
+import { createFindRnaSirenUseCase } from "../providers/api-asso/use-cases/api-asso.use-case.factory";
 
 export class RnaSirenService {
+    constructor(private findApiAssoRnaSiren: FindRnaSirenUseCase) {}
+
     async findFromUnknownIdentifier(str: string) {
         const identifier = associationIdentifierService.identifierStringToEntity(str);
         return this.find(identifier);
@@ -26,7 +29,7 @@ export class RnaSirenService {
     }
 
     async findFromApiAsso(identifier: Rna | Siren): Promise<RnaSirenEntity | null> {
-        const rnaSiren = await apiAssoService.findRnaSiren(identifier);
+        const rnaSiren = await this.findApiAssoRnaSiren.execute(identifier);
 
         if (!rnaSiren) return null;
 
@@ -80,6 +83,6 @@ export class RnaSirenService {
     }
 }
 
-const rnaSirenService = new RnaSirenService();
+const rnaSirenService = new RnaSirenService(createFindRnaSirenUseCase());
 
 export default rnaSirenService;

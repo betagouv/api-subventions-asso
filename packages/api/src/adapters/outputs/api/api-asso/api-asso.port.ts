@@ -4,8 +4,8 @@ import { RnaStructureDto } from "../../../../modules/providers/api-asso/dto/RnaS
 import { SirenStructureDto } from "../../../../modules/providers/api-asso/dto/SirenStructureDto";
 
 export default interface ApiAssoPort {
-    getStructure(identifier: Rna | Siren): Promise<StructureDto>;
-    getRnaStructure(rna: Rna): Promise<RnaStructureDto>;
-    getSirenStructure(siren: Siren): Promise<SirenStructureDto>;
-    getDocuments(identifier: Siren | Rna): Promise<StructureDocumentDto>;
+    getStructure(identifier: Rna | Siren): Promise<StructureDto | null>;
+    getRnaStructure(rna: Rna): Promise<RnaStructureDto | null>;
+    getSirenStructure(siren: Siren): Promise<SirenStructureDto | null>;
+    getDocuments(identifier: Siren | Rna): Promise<StructureDocumentDto | null>;
 }

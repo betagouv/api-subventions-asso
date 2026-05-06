@@ -99,7 +99,7 @@ export interface DocumentsDto {
 }
 
 export default interface StructureDto {
-    identite: {
+    identite?: {
         nom: string;
         nom_sirene?: string;
         sigle: string;

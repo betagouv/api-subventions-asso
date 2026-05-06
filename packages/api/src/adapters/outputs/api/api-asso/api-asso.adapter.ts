@@ -20,35 +20,37 @@ class ApiAssoAdapter implements ApiAssoPort {
         this.http = new ProviderRequestService("api-asso");
     }
 
-    private handleCache<T>(route: string, response: RequestResponse<T>): T {
-        const data = response.data;
-        this.cache.add(route, data);
-        return data;
+    private cacheAndReturn<T>(route: string, response: RequestResponse<T>): T | null {
+        if (response.status === 200 && (typeof response.data != "string" || !response.data.includes("Error"))) {
+            this.cache.add(route, response.data);
+            return response.data;
+        }
+        return null;
     }
 
     // @TODO: put this route/cache logic inside ProviderRequestService ?
     private send<T>(route: string) {
         const cacheResponse = this.cache.get(route);
         if (cacheResponse) return Promise.resolve(cacheResponse as T);
-        else return this.http.get<T>(route).then(response => this.handleCache(route, response));
+        else return this.http.get<T>(route).then(response => this.cacheAndReturn(route, response));
     }
 
-    getStructure(identifier: Rna | Siren): Promise<StructureDto> {
+    getStructure(identifier: Rna | Siren) {
         const route = `${this.basePath}/api/structure/${identifier.value}`;
         return this.send<StructureDto>(route);
     }
 
-    getRnaStructure(rna: Rna): Promise<RnaStructureDto> {
+    getRnaStructure(rna: Rna) {
         const route = `${this.basePath}/api/rna/${rna.value}`;
         return this.send<RnaStructureDto>(route);
     }
 
-    getSirenStructure(siren: Siren): Promise<SirenStructureDto> {
+    getSirenStructure(siren: Siren) {
         const route = `${this.basePath}/api/siren/${siren.value}`;
         return this.send<SirenStructureDto>(route);
     }
 
-    getDocuments(identifier: Rna | Siren): Promise<StructureDocumentDto> {
+    getDocuments(identifier: Rna | Siren) {
         const route = `${this.basePath}/proxy_db_asso/documents/${identifier.value}`;
         return this.send<StructureDocumentDto>(route);
     }
