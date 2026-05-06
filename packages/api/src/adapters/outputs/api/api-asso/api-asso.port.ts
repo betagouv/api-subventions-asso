@@ -1,14 +1,11 @@
-import { Association, Establishment } from "dto";
-import { AssociationIdentifier, Rna, Siren } from "../../../../identifier-objects";
-import { DocumentsDto } from "../../../../modules/providers/api-asso/dto/StructureDto";
+import { Rna, Siren } from "../../../../identifier-objects";
+import StructureDto, { StructureDocumentDto } from "../../../../modules/providers/api-asso/dto/StructureDto";
+import { RnaStructureDto } from "../../../../modules/providers/api-asso/dto/RnaStructureDto";
+import { SirenStructureDto } from "../../../../modules/providers/api-asso/dto/SirenStructureDto";
 
-// @TODO: no import from package dto inside adapters
-// move mapping inside domain
 export default interface ApiAssoPort {
-    findRnaSiren(identifier: Rna | Siren): Promise<{ rna: Rna; siren: Siren } | null>;
-    findAssociationByRna(rna: Rna): Promise<Association | null>;
-    findAssociationBySiren(siren: Siren): Promise<Association | null>;
-    findEstablishmentsBySiren(siren: Siren): Promise<Establishment | null>;
-    // @TODO: rename DocumentsDto into ApiAssoDocumentDto
-    fetchDocuments(identifier: AssociationIdentifier): Promise<DocumentsDto | undefined>;
+    getStructure(identifier: Rna | Siren): Promise<StructureDto>;
+    getRnaStructure(rna: Rna): Promise<RnaStructureDto>;
+    getSirenStructure(siren: Siren): Promise<SirenStructureDto>;
+    getDocuments(identifier: Siren | Rna): Promise<StructureDocumentDto>;
 }
