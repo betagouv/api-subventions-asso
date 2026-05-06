@@ -25,10 +25,7 @@ describe("OsirisCli", () => {
         });
 
         it("should call osiris parser", async () => {
-            const filePath = path.resolve(
-                __dirname,
-                "../../modules/providers/osiris/__fixtures__/SuiviDossiers_test.xls",
-            );
+            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviDossiers_test.xls");
             await controller.parse("requests", filePath, "2022");
             expect(OsirisParser.parseRequests).toHaveBeenCalled();
         });
@@ -42,10 +39,7 @@ describe("OsirisCli", () => {
         });
 
         it("should register new import", async () => {
-            const filePath = path.resolve(
-                __dirname,
-                "../../modules/providers/osiris/__fixtures__/SuiviDossiers_test.xls",
-            );
+            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviDossiers_test.xls");
             await controller.parse("requests", filePath, "2022");
 
             const actual = await dataLogAdapter.findAll();
@@ -58,10 +52,7 @@ describe("OsirisCli", () => {
         });
 
         it("persists requests", async () => {
-            const filePath = path.resolve(
-                __dirname,
-                "../../modules/providers/osiris/__fixtures__/SuiviDossiers_test.xls",
-            );
+            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviDossiers_test.xls");
             await controller.parse("requests", filePath, "2022");
             const requests = await osirisRequestAdapter.findAll();
             expect(
@@ -89,10 +80,7 @@ describe("OsirisCli", () => {
         });
 
         it("should call osiris parser", async () => {
-            const filePath = path.resolve(
-                __dirname,
-                "../../modules/providers/osiris/__fixtures__/SuiviActions_test.xls",
-            );
+            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviActions_test.xls");
             await controller.parse("actions", filePath, "2022");
             expect(consoleWarn).not.toBeCalled();
             expect(OsirisParser.parseActions).toHaveBeenCalled();
@@ -107,10 +95,7 @@ describe("OsirisCli", () => {
         });
 
         it("should register new import", async () => {
-            const filePath = path.resolve(
-                __dirname,
-                "../../modules/providers/osiris/__fixtures__/SuiviActions_test.xls",
-            );
+            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviActions_test.xls");
             await controller.parse("actions", filePath, "2022");
 
             const actual = await dataLogAdapter.findAll();
@@ -120,6 +105,16 @@ describe("OsirisCli", () => {
                 integrationDate: expect.any(Date),
                 providerId: "osiris",
             });
+        });
+
+        it("persists actions", async () => {
+            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviActions_test.xls");
+            await controller.parse("actions", filePath, "2022");
+
+            const actions = await osirisActionAdapter.getAll();
+            expect(
+                actions.map(action => ({ ...action, _id: expect.any(String), updateDate: expect.any(Date) })),
+            ).toMatchSnapshot();
         });
     });
 
@@ -131,10 +126,7 @@ describe("OsirisCli", () => {
         });
 
         it("should throw an error because unknown is not valid type", () => {
-            const filePath = path.resolve(
-                __dirname,
-                "../../modules/providers/osiris/__fixtures__/SuiviDossiers_test.xls",
-            );
+            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviDossiers_test.xls");
 
             expect(() => controller.parse("unknown" as "actions", filePath, "2022")).rejects.toThrow(
                 "The type unknown is not taken into account",

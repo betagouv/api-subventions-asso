@@ -1,10 +1,7 @@
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import osirisRequestAdapter from "../../../src/adapters/outputs/db/providers/osiris/osiris.request.adapter";
 import request from "supertest";
-import {
-    OSIRIS_REQUEST_ENTITY,
-    OSIRIS_ACTION_ENTITY,
-} from "../../modules/providers/osiris/__fixtures__/OsirisEntities";
+import { OSIRIS_REQUEST_ENTITY, OSIRIS_ACTION_ENTITY } from "../cli/__fixtures__/OsirisEntities";
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenAdapter from "../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";

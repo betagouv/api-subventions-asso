@@ -1,17 +1,10 @@
 import OsirisRequestMapper from "./osiris-request.mapper";
-import OSIRIS_REQUEST_DTO, {
-    OSIRIS_REQUEST_RAW_DATA,
-    OSIRIS_REQUEST_RAW_DATA_DOSSIER_ACTION,
-} from "./__fixtures__/osiris-request.fixture";
+import OSIRIS_REQUEST_DTO, { OSIRIS_REQUEST_RAW_DATA } from "./__fixtures__/osiris-request.fixture";
 
 describe("OsirisRequestMapper", () => {
     describe("toDto", () => {
         it("converts raw OSIRIS XLSX rows to a semantic camelCase DTO", () => {
             expect(OsirisRequestMapper.toDto(OSIRIS_REQUEST_RAW_DATA)).toMatchSnapshot();
-        });
-
-        it("folds the legacy 'Dossier' and post-2024 'Dossier/action' headers into a single dossier", () => {
-            expect(OsirisRequestMapper.toDto(OSIRIS_REQUEST_RAW_DATA_DOSSIER_ACTION)).toMatchSnapshot();
         });
 
         it("ignores unknown raw categories", () => {

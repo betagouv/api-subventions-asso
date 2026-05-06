@@ -2,12 +2,14 @@ import OsirisActionEntity from "./OsirisActionEntity";
 
 export type OsirisRequestValue = string | number | boolean | Date | null | undefined;
 
+export const OsirisRequestDefaultMainCategory = "Dossier";
+
 export interface OsirisRequestDossier {
     osirisId: string;
     compteAssoId?: string;
     ej?: string;
     exerciceBudgetaire: number;
-    exerciceDebut?: number;
+    exerciceDebut?: number | Date;
     exerciceFin?: number;
     dateReception?: number | string | Date;
     dateCommission?: number | string | Date;
@@ -31,7 +33,6 @@ export interface OsirisRequestAssociation {
 
 export interface OsirisRequestMontants {
     coutTotalDesCharges?: number;
-    coutTotalCharges?: number;
     demande?: number;
     propose?: number;
     accorde?: number;
@@ -53,9 +54,7 @@ export interface OsirisRequestRepresentantLegal {
     civilite?: string;
     fonction?: string;
     courriel?: string;
-    adresseMessagerie?: string;
     telephone?: string;
-    noTelephone?: string;
     [key: string]: OsirisRequestValue;
 }
 

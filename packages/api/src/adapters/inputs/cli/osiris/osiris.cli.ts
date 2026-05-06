@@ -80,8 +80,11 @@ export default class OsirisCli implements ApplicationFlatCli {
     }
 
     async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
-        const requests = OsirisParser.parseRequests(contentFile)
-            .map(raw => OsirisRequestMapper.toDto(raw))
+        const dtos: OsirisRequestDto[] = OsirisParser.parseRequests(contentFile).map(raw =>
+            OsirisRequestMapper.toDto(raw),
+        );
+
+        const entities: OsirisRequestEntity[] = dtos
             .filter(dto => OsirisCli.isCompleteRequestDto(dto))
             .map(dto => OsirisRequestMapper.toEntity(dto, year));
 
@@ -97,7 +100,7 @@ export default class OsirisCli implements ApplicationFlatCli {
 
         // validate all requests in any order
         await Promise.all(
-            requests.map(r =>
+            entities.map(r =>
                 osirisService
                     .validateAndComplete(r)
                     .then(() => validated.push(r))
@@ -118,10 +121,10 @@ export default class OsirisCli implements ApplicationFlatCli {
 
         if (!result) return;
 
-        CliHelper.printProgress(validated.length, requests.length);
+        CliHelper.printProgress(validated.length, entities.length);
 
         console.info(`
-            ${validated.length}/${requests.length}
+            ${validated.length}/${entities.length}
             ${result.insertedCount + result.upsertedCount} requests created and ${
                 result.modifiedCount + result.matchedCount
             } requests updated

@@ -8,7 +8,8 @@ export interface OsirisRequestDossierDto {
     ej?: string;
     dateReception?: number | string | Date;
     dateCommission?: number | string | Date;
-    exerciceDebut?: number;
+    exerciceBudgetaire?: number;
+    exerciceDebut?: number | Date;
     exerciceFin?: number;
     etatDossier?: string;
     service?: string;
@@ -38,14 +39,11 @@ export interface OsirisRequestRepresentantLegalDto {
     civilite?: string;
     fonction?: string;
     courriel?: string;
-    adresseMessagerie?: string;
     telephone?: string;
-    noTelephone?: string;
 }
 
 export interface OsirisRequestMontantsDto {
     coutTotalDesCharges?: number;
-    coutTotalCharges?: number;
     demande?: number;
     propose?: number;
     accorde?: number;

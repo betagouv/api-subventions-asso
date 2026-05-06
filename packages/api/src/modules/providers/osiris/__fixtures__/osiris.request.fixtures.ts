@@ -39,7 +39,7 @@ export const REQUEST_ENTITY: OsirisRequestEntity = {
         fonction: "Président",
         civilite: "Monsieur",
         courriel: "johndoe@hotmail.fr",
-        noTelephone: "0601020304",
+        telephone: "0601020304",
     },
     montants: {
         coutTotalDesCharges: 25500,

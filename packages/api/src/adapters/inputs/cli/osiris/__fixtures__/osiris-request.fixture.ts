@@ -91,7 +91,7 @@ const OSIRIS_REQUEST_DTO: OsirisRequestDto = {
         civilite: "Monsieur",
         fonction: "Président",
         courriel: "johndoe@example.org",
-        noTelephone: "0601020304",
+        telephone: "0601020304",
     },
     montants: {
         coutTotalDesCharges: 25500,
@@ -112,16 +112,3 @@ const OSIRIS_REQUEST_DTO: OsirisRequestDto = {
 };
 
 export default OSIRIS_REQUEST_DTO;
-
-// Raw shape with both "Dossier" and "Dossier/action" headers, used to assert
-// that toDto() folds them into a single semantic `dossier` key.
-export const OSIRIS_REQUEST_RAW_DATA_DOSSIER_ACTION: OsirisRequestRawData = {
-    "Dossier/action": {
-        "N° Dossier Osiris": "DD71-24-0094",
-        "N° Dossier Compte Asso": "LE_COMPTE_ASSO_ID",
-    },
-    Dossier: {
-        "N° Dossier Osiris": "DD71-24-0094",
-        "N° EJ": "EJ00001",
-    },
-};

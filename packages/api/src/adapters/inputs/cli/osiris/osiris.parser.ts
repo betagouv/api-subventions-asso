@@ -3,6 +3,7 @@ import { GenericParser } from "../../../../shared/GenericParser";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import { OsirisRequestRawData } from "./osiris-request.dto";
 import type OsirisActionsInformations from "../../../../modules/providers/osiris/@types/OsirisActionsInformations";
+import { OsirisRequestDefaultMainCategory } from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
 
 export default class OsirisParser {
     private static getUpdateDate(year: number) {
@@ -21,7 +22,14 @@ export default class OsirisParser {
         const headers = data.slice(0, 2) as string[][];
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
-        return rows.map(row => OsirisParser.rowToRowWithHeaders(headers, row) as OsirisRequestRawData);
+        return rows.map(
+            row =>
+                OsirisParser.rowToRowWithHeaders(
+                    headers,
+                    row,
+                    OsirisRequestDefaultMainCategory,
+                ) as OsirisRequestRawData,
+        );
     }
 
     public static parseActions(content: Buffer, year: number) {

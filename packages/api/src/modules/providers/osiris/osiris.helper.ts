@@ -25,9 +25,9 @@ export function cleanRidet(osirisRidet: string): string {
 }
 
 export function getPluriannualYears(entity: OsirisRequestEntity): number[] {
-    const startYear = entity.dossier.exerciceDebut;
-    const endYear = entity.dossier.exerciceFin;
-    if (startYear === undefined || endYear === undefined) return [];
+    const startYear = parseInt(`${entity.dossier.exerciceDebut}`, 10);
+    const endYear = parseInt(`${entity.dossier.exerciceFin}`, 10);
+    if (isNaN(startYear) || isNaN(endYear)) return [];
 
     const years: number[] = [];
     for (let start = startYear; start <= endYear; start++) {

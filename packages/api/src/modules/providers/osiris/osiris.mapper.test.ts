@@ -2,7 +2,7 @@ const mockLabel = "NORMALIZED_LABEL";
 const mockToStatus = jest.fn(() => mockLabel);
 
 import OsirisMapper from "./osiris.mapper";
-import OsirisEntity from "../../../../tests/modules/providers/osiris/__fixtures__/OsirisEntities";
+import OsirisEntity from "../../../../tests/interfaces/cli/__fixtures__/OsirisEntities";
 import Ridet from "../../../identifier-objects/Ridet";
 import { RIDET_STR } from "../../../../tests/__fixtures__/association.fixture";
 import Siret from "../../../identifier-objects/Siret";

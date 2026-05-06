@@ -110,8 +110,8 @@ export default class OsirisMapper {
             prenom: representantLegal.prenom as string,
             civilite: representantLegal.civilite as string,
             role: representantLegal.fonction as string,
-            telephone: (representantLegal.telephone || representantLegal.noTelephone) as string,
-            email: (representantLegal.courriel || representantLegal.adresseMessagerie) as string,
+            telephone: representantLegal.telephone as string,
+            email: representantLegal.courriel as string,
         };
 
         return {

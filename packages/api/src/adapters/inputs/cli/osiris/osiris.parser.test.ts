@@ -1,6 +1,7 @@
 import OsirisParser from "./osiris.parser";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
-import { OSIRIS_ACTION_ENTITY } from "../../../../../tests/modules/providers/osiris/__fixtures__/OsirisEntities";
+import { OsirisRequestDefaultMainCategory } from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
+import { OSIRIS_ACTION_ENTITY } from "../../../../../tests/interfaces/cli/__fixtures__/OsirisEntities";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { DefaultObject } from "../../../../@types";
 jest.mock("../../../../shared/GenericParser");
@@ -52,7 +53,12 @@ describe("OsirisParser", () => {
             OsirisParser.parseRequests(BUFFER);
             ROWS.forEach((row, index) => {
                 // @ts-expect-error: assert private mock calls
-                expect(OsirisParser.rowToRowWithHeaders).toHaveBeenNthCalledWith(index + 1, HEADERS, row);
+                expect(OsirisParser.rowToRowWithHeaders).toHaveBeenNthCalledWith(
+                    index + 1,
+                    HEADERS,
+                    row,
+                    OsirisRequestDefaultMainCategory,
+                );
             });
         });
 

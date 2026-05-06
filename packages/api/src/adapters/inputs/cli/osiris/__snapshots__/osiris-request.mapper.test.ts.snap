@@ -7,7 +7,7 @@ exports[`OsirisRequestMapper toDto converts raw OSIRIS XLSX rows to a semantic c
     "iban": "FR7642559100000800330277358",
     "nom": "ASSOCIATION TEST",
     "rna": "W595004053",
-    "siege": "Oui",
+    "siege": true,
     "siret": "35130347400024",
   },
   "coordonnees": {
@@ -17,7 +17,7 @@ exports[`OsirisRequestMapper toDto converts raw OSIRIS XLSX rows to a semantic c
   },
   "dossier": {
     "compteAssoId": "22-040341",
-    "dateCommission": 43600,
+    "dateCommission": 2019-05-15T00:00:00.000Z,
     "dateReception": 43549.44370065972,
     "ej": "EJ00001",
     "etatDossier": "Terminé",
@@ -42,9 +42,9 @@ exports[`OsirisRequestMapper toDto converts raw OSIRIS XLSX rows to a semantic c
     "civilite": "Monsieur",
     "courriel": "johndoe@example.org",
     "fonction": "Président",
-    "noTelephone": "0601020304",
     "nom": "Doe",
     "prenom": "John",
+    "telephone": "0601020304",
   },
   "versements": {
     "acompte": 0,
@@ -52,16 +52,6 @@ exports[`OsirisRequestMapper toDto converts raw OSIRIS XLSX rows to a semantic c
     "realise": 0,
     "reversementCompensation": 0,
     "solde": 0,
-  },
-}
-`;
-
-exports[`OsirisRequestMapper toDto folds the legacy 'Dossier' and post-2024 'Dossier/action' headers into a single dossier 1`] = `
-{
-  "dossier": {
-    "compteAssoId": "LE_COMPTE_ASSO_ID",
-    "ej": "EJ00001",
-    "osirisId": "DD71-24-0094",
   },
 }
 `;
@@ -109,9 +99,9 @@ exports[`OsirisRequestMapper toEntity composes a complete OSIRIS request entity 
     "civilite": "Monsieur",
     "courriel": "johndoe@example.org",
     "fonction": "Président",
-    "noTelephone": "0601020304",
     "nom": "Doe",
     "prenom": "John",
+    "telephone": "0601020304",
   },
   "updateDate": 2026-01-01T00:00:00.000Z,
   "versements": {

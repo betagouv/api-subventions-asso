@@ -1,7 +1,7 @@
-import type OsirisActionsInformations from "../../../../../src/modules/providers/osiris/@types/OsirisActionsInformations";
-import OsirisActionEntity from "../../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
-import type OsirisRequestEntity from "../../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
-import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";
+import type OsirisActionsInformations from "../../../../src/modules/providers/osiris/@types/OsirisActionsInformations";
+import OsirisActionEntity from "../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
+import type OsirisRequestEntity from "../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
+import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 
 export const OSIRIS_REQUEST_ENTITY: OsirisRequestEntity = {
     dossier: {
