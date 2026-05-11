@@ -88,14 +88,17 @@ export const addDaysToDate = (date: Date, nbOfDays = 1) =>
 
 /**
  *
- * @param dateStr dd-mm-yyyy string date - i.e 11/06/2025 for 11 june 2025
+ * @param dateStr dd-mm-yyyy or dd/mm/yyyy string date - i.e 11/06/2025 for 11 june 2025
  */
-export function DDMMYYYYToUTCDate(dateStr: string) {
-    const [day, month, year] = dateStr.split("/");
-    if (!day || !month || !year)
-        throw new Error(`DDMMYYYToDate must take dd/mm/yyyy string date parameter. Given : ${dateStr}`);
-    // month start from 0
-    return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+export function DDMMYYYYToUTCDate(dateStr: string, separator: "-" | "/") {
+    const ACCEPTED_SEPARATORS = ["-", "/"];
+
+    if (ACCEPTED_SEPARATORS.includes(separator)) {
+        const [day, month, year] = dateStr.split(separator);
+        if (!day || !month || !year) throw new Error(`String does match DD MM YYYY format. Given : ${dateStr}`);
+        // month start from 0
+        return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+    } else throw new Error("Invalid Date Separator.");
 }
 
 export function formatDateToYYYYMMDDWithSeparator(date: Date, separator: string) {

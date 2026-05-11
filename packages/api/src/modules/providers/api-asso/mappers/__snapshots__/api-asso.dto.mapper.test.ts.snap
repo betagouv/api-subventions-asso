@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ApiAssoDtoAdapter rnaStructureToAssociation should transform to association 1`] = `
+exports[`ApiAsso DTO Mapper rnaStructureToAssociation should transform to association 1`] = `
 {
   "adresse_siege_rna": [
     {
@@ -91,7 +91,7 @@ exports[`ApiAssoDtoAdapter rnaStructureToAssociation should transform to associa
 }
 `;
 
-exports[`ApiAssoDtoAdapter sirenStructureToAssociation should transform to association 1`] = `
+exports[`ApiAsso DTO Mapper sirenStructureToAssociation should transform to association 1`] = `
 {
   "adresse_siege_siren": [
     {
@@ -169,7 +169,7 @@ exports[`ApiAssoDtoAdapter sirenStructureToAssociation should transform to assoc
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEstablishment should return establishment with contact 1`] = `
+exports[`ApiAsso DTO Mapper toEstablishment should return establishment with contact 1`] = `
 {
   "adresse": [
     {
@@ -255,7 +255,7 @@ exports[`ApiAssoDtoAdapter toEstablishment should return establishment with cont
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEstablishment should return establishment with rib 1`] = `
+exports[`ApiAsso DTO Mapper toEstablishment should return establishment with rib 1`] = `
 {
   "adresse": [
     {
@@ -332,7 +332,7 @@ exports[`ApiAssoDtoAdapter toEstablishment should return establishment with rib 
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEstablishment should return establishment without contact 1`] = `
+exports[`ApiAsso DTO Mapper toEstablishment should return establishment without contact 1`] = `
 {
   "adresse": [
     {
@@ -386,7 +386,7 @@ exports[`ApiAssoDtoAdapter toEstablishment should return establishment without c
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEstablishment should return establishment without rib 1`] = `
+exports[`ApiAsso DTO Mapper toEstablishment should return establishment without rib 1`] = `
 {
   "adresse": [
     {

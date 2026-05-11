@@ -182,19 +182,27 @@ describe("DateHelper", () => {
         });
     });
 
-    describe("DDMMYYYYToDate", () => {
-        it("returns valid date", () => {
+    describe("DDMMYYYYToUTCDate", () => {
+        it.each([
+            { str: "11/06/2025", separator: "/" },
+            { str: "11-06-2025", separator: "-" },
+        ])("returns valid date", ({ str, separator }) => {
             const expected = new Date("2025-06-11");
-            const actual = DateHelper.DDMMYYYYToUTCDate("11/06/2025");
-            console.log(expected, actual, new Date(actual));
+            const actual = DateHelper.DDMMYYYYToUTCDate(str, separator as "-" | "/");
             expect(actual).toEqual(expected);
         });
 
         it("throws error if parameter is not well formated", () => {
             const wrongDateStr = "1106/2025";
-            expect(() => DateHelper.DDMMYYYYToUTCDate(wrongDateStr)).toThrow(
-                `DDMMYYYToDate must take dd/mm/yyyy string date parameter. Given : ${wrongDateStr}`,
+            expect(() => DateHelper.DDMMYYYYToUTCDate(wrongDateStr, "/")).toThrow(
+                `String does match DD MM YYYY format. Given : ${wrongDateStr}`,
             );
+        });
+
+        it("throw error if separator is not allowed", () => {
+            const dateStr = "11/06/2025";
+            // @ts-expect-error: guard wrong separator
+            expect(() => DateHelper.DDMMYYYYToUTCDate(dateStr, "|")).toThrow("Invalid Date Separator.");
         });
     });
 

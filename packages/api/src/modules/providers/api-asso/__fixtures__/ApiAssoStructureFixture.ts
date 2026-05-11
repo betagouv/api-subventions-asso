@@ -7,11 +7,14 @@ import StructureDto, {
     StructureRnaDocumentDto,
 } from "../dto/StructureDto";
 
+// @ts-expect-error incomplete fixture
+export const STRUCTURE_ESTABLISHMENT_DTO: StructureEstablishmentDto = {
+    id_siret: 50922194100000,
+    adresse: {},
+};
+
 export const fixtureEstablishments = [
-    {
-        id_siret: 50922194100000,
-        adresse: {},
-    },
+    STRUCTURE_ESTABLISHMENT_DTO,
     {
         id_siret: 50922194100001,
         adresse: {},

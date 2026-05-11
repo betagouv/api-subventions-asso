@@ -1,4 +1,4 @@
-import ApiAssoDtoMapper from "../mappers/api-asso-dto.mapper";
+import ApiAssoDtoMapper from "../mappers/api-asso.dto.mapper";
 
 export const RnaDtoDocument = {
     __meta__: {},

@@ -1,4 +1,24 @@
-import { SirenStructureDto } from "../dto/SirenStructureDto";
+import { SirenStructureDto, SirenStructureEstablishmentDto } from "../dto/SirenStructureDto";
+
+export const SIREN_STRUCTURE_ESTABLISHMENT: SirenStructureEstablishmentDto = {
+    actif: true,
+    adresse: {
+        cplt_1: "Place des orties",
+        num_voie: 18,
+        voie: "MEURIS",
+        commune: "Londre",
+        code_insee: 42424,
+        cp: 42424,
+        type_voie: "RUE",
+    },
+    id_siret: 12300464800021,
+    est_siege: true,
+    date_actif: "2019-01-02",
+    id_activite_principale: "94.99Z",
+    annee_activite_principale: 0,
+    effectif_salarie_cent: 0,
+    annee_effectif_salarie_cent: 0,
+};
 
 export const sirenStructureFixture: SirenStructureDto = {
     identite: {
@@ -43,25 +63,7 @@ export const sirenStructureFixture: SirenStructureDto = {
     },
     nbEtabsActifs: 1,
     etablissement: [
-        {
-            actif: true,
-            adresse: {
-                cplt_1: "Place des orties",
-                num_voie: 18,
-                voie: "MEURIS",
-                commune: "Londre",
-                code_insee: 42424,
-                cp: 42424,
-                type_voie: "RUE",
-            },
-            id_siret: 12300464800021,
-            est_siege: true,
-            date_actif: "2019-01-02",
-            id_activite_principale: "94.99Z",
-            annee_activite_principale: 0,
-            effectif_salarie_cent: 0,
-            annee_effectif_salarie_cent: 0,
-        },
+        SIREN_STRUCTURE_ESTABLISHMENT,
         {
             actif: false,
             adresse: {

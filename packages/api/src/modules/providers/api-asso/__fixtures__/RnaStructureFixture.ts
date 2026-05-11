@@ -1,6 +1,6 @@
 import { RnaStructureDto } from "../dto/RnaStructureDto";
 
-export const rnaStructureFixture: RnaStructureDto = {
+export const RNA_STRUCTURE_DTO: RnaStructureDto = {
     identite: {
         nom: "Asso qui n'existe pas",
         sigle: "Asso qui n'existe p...",

@@ -8,7 +8,7 @@ import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import providers from "../providers";
 import FonjepEntityMapper from "../providers/fonjep/mappers/fonjep-entity.mapper";
 import subventionsService from "../subventions/subventions.service";
-import ApiAssoDtoMapper from "../providers/api-asso/mappers/api-asso-dto.mapper";
+import ApiAssoDtoMapper from "../providers/api-asso/mappers/api-asso.dto.mapper";
 import grantService from "../grant/grant.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";

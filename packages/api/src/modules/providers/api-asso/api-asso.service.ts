@@ -3,7 +3,6 @@ import { XMLParser } from "fast-xml-parser";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DefaultObject } from "../../../@types";
-import { API_ASSO_URL, API_ASSO_TOKEN } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
@@ -15,16 +14,17 @@ import AssociationIdentifier from "../../../identifier-objects/AssociationIdenti
 import Rna from "../../../identifier-objects/Rna";
 import Siren from "../../../identifier-objects/Siren";
 import EstablishmentIdentifier from "../../../identifier-objects/EstablishmentIdentifier";
-import ApiAssoDtoMapper from "./mappers/api-asso-dto.mapper";
+import ApiAssoDtoMapper from "./mappers/api-asso.dto.mapper";
 import StructureDto, {
     DocumentsDto,
     StructureDacDocumentDto,
     StructureDocumentDto,
     StructureRnaDocumentDto,
 } from "./dto/StructureDto";
-import { RnaStructureDto } from "./dto/RnaStructureDto";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
 import { StructureIdentifier } from "../../../identifier-objects/@types/StructureIdentifier";
+import apiAssoAdapter from "../../../adapters/outputs/api/api-asso/api-asso.adapter";
+import ApiAssoPort from "../../../adapters/outputs/api/api-asso/api-asso.port";
 
 export class ApiAssoService
     extends ProviderCore
@@ -33,7 +33,7 @@ export class ApiAssoService
     // API documented in part "contrat d'interface" https://lecompteasso.associations.gouv.fr/lapi-association/
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 
-    constructor() {
+    constructor(private apiAssoAdapter: ApiAssoPort) {
         super({
             name: "API ASSO",
             type: ProviderEnum.api,
@@ -43,30 +43,8 @@ export class ApiAssoService
         });
     }
 
-    private async sendRequest<T>(route: string): Promise<T | null> {
-        const requestValue = this.requestCache.get(route);
-        if (requestValue !== null) return requestValue as T;
-
-        try {
-            const res = await this.http.get<T>(`${API_ASSO_URL}/${route}`, {
-                headers: {
-                    Accept: "application/json",
-                    "X-Gravitee-Api-Key": API_ASSO_TOKEN as string,
-                },
-            });
-
-            if (res.status === 200 && (typeof res.data != "string" || !res.data.includes("Error"))) {
-                this.requestCache.add(route, res.data);
-                return res.data;
-            }
-            return null;
-        } catch {
-            return null;
-        }
-    }
-
     public async findAssociationByRna(rna: Rna): Promise<AssociationWithProviderValues | null> {
-        const rnaStructure = await this.sendRequest<RnaStructureDto>(`/api/rna/${rna.value}`);
+        const rnaStructure = await this.apiAssoAdapter.getRnaStructure(rna);
 
         if (!rnaStructure) return null;
         if (hasEmptyProperties(rnaStructure.identite) || !rnaStructure.identite.date_modif_rna) return null; // sometimes an empty shell object if given by the api
@@ -78,17 +56,20 @@ export class ApiAssoService
     }
 
     public async findAssociationBySiren(siren: Siren): Promise<AssociationWithProviderValues | null> {
-        const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren.value}`);
+        const sirenStructure = await this.apiAssoAdapter.getSirenStructure(siren);
         const isSirenStructureValid = structure => structure.etablissement && structure.etablissement.length;
 
         if (!sirenStructure || !isSirenStructureValid(sirenStructure)) {
-            const structure = await this.sendRequest<SirenStructureDto>(`/api/structure/${siren.value}`);
-            if (!structure || hasEmptyProperties(structure.identite)) return null;
-            if (!structure.identite.date_modif_siren)
-                structure.identite.date_modif_siren = this.getDefaultDateModifSiren(structure);
+            const structure = await this.apiAssoAdapter.getStructure(siren);
+
+            if (!structure) return structure;
+
+            if (!structure.identite!.date_modif_siren)
+                structure.identite!.date_modif_siren = this.getDefaultDateModifSiren(structure);
             return ApiAssoDtoMapper.sirenStructureToAssociation(structure);
         }
-        if (!sirenStructure?.identite || !Object.keys(sirenStructure.identite).length) return null; // sometimes an empty shell object if given by the api
+
+        if (hasEmptyProperties(sirenStructure.identite)) return null; // sometimes an empty shell object if given by the api
 
         if (!sirenStructure.identite.date_modif_siren)
             sirenStructure.identite.date_modif_siren = this.getDefaultDateModifSiren(sirenStructure);
@@ -97,10 +78,9 @@ export class ApiAssoService
     }
 
     public async findEstablishmentsBySiren(siren: Siren): Promise<EstablishmentWithProviderValues[]> {
-        const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren.value}`);
+        const structure = await this.apiAssoAdapter.getStructure(siren);
 
-        if (!structure?.identite || !Object.keys(structure.identite).length || hasEmptyProperties(structure.identite))
-            return []; // sometimes an empty shell object if given by the api
+        if (!structure?.identite || hasEmptyProperties(structure.identite)) return []; // sometimes an empty shell object if given by the api
 
         if (!structure.identite.date_modif_siren)
             structure.identite.date_modif_siren = this.getDefaultDateModifSiren(structure);
@@ -209,14 +189,12 @@ export class ApiAssoService
         return documents.filter(document => document.meta.etat === "courant");
     }
 
-    private async fetchDocuments(identifier: AssociationIdentifier): Promise<DocumentsDto | undefined> {
-        const identifierValue = identifier.getValue(["siren", "rna"]);
+    private async fetchDocuments(assoIdentifier: AssociationIdentifier): Promise<DocumentsDto | undefined> {
+        let identifier: Siren | Rna | undefined = assoIdentifier.siren;
+        if (!identifier) identifier = assoIdentifier.rna;
+        if (!identifier) throw new Error("Identifier not supported for documents fetching.");
 
-        if (!identifierValue) {
-            throw new Error("Identifier not supported for documents fetching.");
-        }
-
-        const result = await this.sendRequest<StructureDocumentDto>(`/proxy_db_asso/documents/${identifierValue}`);
+        const result = await this.apiAssoAdapter.getDocuments(identifier);
 
         let docs: DocumentsDto | undefined;
 
@@ -334,6 +312,6 @@ export class ApiAssoService
     }
 }
 
-const apiAssoService = new ApiAssoService();
+const apiAssoService = new ApiAssoService(apiAssoAdapter);
 
 export default apiAssoService;

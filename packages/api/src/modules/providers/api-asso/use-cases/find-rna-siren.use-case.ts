@@ -1,5 +1,6 @@
 import ApiAssoPort from "../../../../adapters/outputs/api/api-asso/api-asso.port";
 import { Rna, Siren } from "../../../../identifier-objects";
+import { hasEmptyProperties } from "../../../../shared/helpers/ObjectHelper";
 
 export default class FindRnaSirenUseCase {
     constructor(private apiAssoPort: ApiAssoPort) {}
@@ -9,8 +10,8 @@ export default class FindRnaSirenUseCase {
         if (!structure) return structure;
 
         const identite = structure.identite;
-        // sometimes identite is not defined even if request status is 200
-        if (!identite) return null;
+        // sometimes identite is not defined or is an empty shell (even if request status is 200)
+        if (hasEmptyProperties(identite)) return null;
 
         let rna: Rna, siren: Siren;
         if (identifier instanceof Rna) {

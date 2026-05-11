@@ -8,7 +8,7 @@ import AssociationIdentifier from "../../identifier-objects/AssociationIdentifie
 import Siret from "../../identifier-objects/Siret";
 import { FullAssociationIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 import FindRnaSirenUseCase from "../providers/api-asso/use-cases/find-rna-siren.use-case";
-import { createFindRnaSirenUseCase } from "../providers/api-asso/use-cases/api-asso.use-case.factory";
+import { findRnaSiren } from "../providers/api-asso/use-cases/api-asso.use-case.factory";
 
 export class RnaSirenService {
     constructor(private findApiAssoRnaSiren: FindRnaSirenUseCase) {}
@@ -83,6 +83,6 @@ export class RnaSirenService {
     }
 }
 
-const rnaSirenService = new RnaSirenService(createFindRnaSirenUseCase());
+const rnaSirenService = new RnaSirenService(findRnaSiren);
 
 export default rnaSirenService;
