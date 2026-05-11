@@ -4,9 +4,9 @@ import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
 import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
-import userService from "$lib/resources/users/user.service";
 import localStorageService from "$lib/services/localStorage.service";
 import { connectedUser } from "$lib/store/user.store";
+import userService from "../users/user.service";
 
 export class AuthService {
     constructor() {
@@ -48,18 +48,6 @@ export class AuthService {
         if (user) crispService.setUserEmail(user.email);
     }
 
-    async initUserInApp() {
-        if (this.connectedUser.value) return true;
-        try {
-            const user = await userService.getSelfUser();
-            this.setUserInApp(user);
-            return true;
-        } catch {
-            console.info("user not connected");
-            return false;
-        }
-    }
-
     async logout() {
         const { url, _success } = await authPort.logout();
         this.connectedUser.set(null);
@@ -75,15 +63,20 @@ export class AuthService {
     getCurrentUserStore() {
         return this.connectedUser;
     }
-    controlAuth(requiredLevel = AuthLevels.USER) {
+
+    async controlAuth(requiredLevel = AuthLevels.USER) {
         if (requiredLevel === AuthLevels.NONE) return true;
         const user = this.getCurrentUser();
         if (!user) {
-            this.redirectToLogin();
-            return false;
+            await userService
+                .getSelfUser()
+                .then(self => {
+                    console.log("prob here");
+                    this.setUserInApp(self);
+                })
+                .catch(() => this.redirectToLogin());
         } else if (requiredLevel === AuthLevels.ADMIN && !this._isAdmin(user)) {
             goToUrl("/");
-            return false;
         }
         return true;
     }

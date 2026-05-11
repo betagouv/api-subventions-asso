@@ -3,6 +3,10 @@ import { UnauthorizedError } from "core";
 import { LoginRequest } from "../@types";
 import userActivationService from "../modules/user/services/activation/user.activation.service";
 
+/**
+ * TSOA auth setting
+ * Used in tsoa.json
+ */
 export function expressAuthentication(req: LoginRequest, securityName = "jwt", scopes: string[] = []) {
     if (securityName !== "jwt") {
         console.warn(`${securityName} is not an valid security please change by jwt`);

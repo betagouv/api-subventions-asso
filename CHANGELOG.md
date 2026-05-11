@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.84.5](https://github.com/betagouv/api-subventions-asso/compare/v0.84.4...v0.84.5) (2026-05-06)
+
+### Bug Fixes
+
+- **api, front:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) proconnect migration ([#3898](https://github.com/betagouv/api-subventions-asso/issues/3898)) ([c695d08](https://github.com/betagouv/api-subventions-asso/commit/c695d08abd9965454c705354ccf4835412edcbcb)), closes [#3896](https://github.com/betagouv/api-subventions-asso/issues/3896) [#3900](https://github.com/betagouv/api-subventions-asso/issues/3900)
+
+### Features
+
+- **api:** revert grant statistique total label ([e727146](https://github.com/betagouv/api-subventions-asso/commit/e7271463b96f2b9d71788cbc1d0cd1ad9fb17b51))
+
 ## [0.84.4](https://github.com/betagouv/api-subventions-asso/compare/v0.84.3...v0.84.4) (2026-04-23)
 
 **Note:** Version bump only for package api-subventions-asso

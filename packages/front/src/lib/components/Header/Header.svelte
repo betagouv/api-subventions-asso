@@ -128,6 +128,16 @@
             <div class="fr-header__menu-links" />
         </div>
     </div>
+
+    <!-- <div class="fr-header__menu critical-error" id="critical-error" aria-labelledby="header__menu__button">
+        <div class="fr-container">
+            <div>
+                ⚠️ ProConnect indisponible – La connexion à Data.Subvention via ProConnect est actuellement impossible.
+                Notre équipe technique est entièrement mobilisée pour rétablir le service dans les plus brefs délais.
+                Merci de votre compréhension.
+            </div>
+        </div>
+    </div> -->
 </header>
 
 <style>
@@ -148,4 +158,11 @@
     .app-logo a {
         display: flex;
     }
+
+    /* .critical-error {
+        padding: 16px 16px 16px 16px;
+        background-color: #fcbfbf;
+        color: #5e2a2b;
+        font-weight: 700;
+    } */
 </style>

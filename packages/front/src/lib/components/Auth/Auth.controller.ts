@@ -9,10 +9,9 @@ export default class AuthController {
     }
 
     async init() {
-        await authService.initUserInApp();
-
-        page.subscribe(newPage => {
-            this.show.set(authService.controlAuth(newPage?.data?.authLevel));
+        page.subscribe(async newPage => {
+            const show = await authService.controlAuth(newPage?.data?.authLevel);
+            this.show.set(show);
         });
     }
 }
