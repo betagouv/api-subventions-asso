@@ -4,7 +4,7 @@ import "./configurations/env.conf";
 
 import FonjepCli from "./adapters/inputs/cli/fonjep.cli";
 import ChorusCli from "./adapters/inputs/cli/chorus.cli";
-import OsirisCli from "./adapters/inputs/cli/osiris.cli";
+import OsirisCli from "./adapters/inputs/cli/osiris/osiris.cli";
 import UserCli from "./adapters/inputs/cli/user.cli";
 import ConsumerCli from "./adapters/inputs/cli/consumer.cli";
 import { connectDB } from "./shared/MongoConnection";

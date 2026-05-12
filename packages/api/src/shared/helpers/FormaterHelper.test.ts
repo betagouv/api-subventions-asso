@@ -1,14 +1,14 @@
 import ApiAssoDtoMapper from "../../modules/providers/api-asso/mappers/api-asso-dto.mapper";
 import ApiEntrepriseMapper from "../../modules/providers/api-entreprise/mappers/api-entreprise.mapper";
 import FonjepEntityMapper from "../../modules/providers/fonjep/mappers/fonjep-entity.mapper";
-import OsirisRequestMapper from "../../modules/providers/osiris/mappers/osiris-request.mapper";
+import OsirisMapper from "../../modules/providers/osiris/osiris.mapper";
 import ProviderValueMapper from "../mappers/provider-value.mapper";
 import FormaterHelper from "./FormaterHelper";
 
 const PROVIDER_SCORE = {
     [ApiAssoDtoMapper.providerNameSiren]: 1,
     [ApiEntrepriseMapper.PROVIDER_NAME]: 1,
-    [OsirisRequestMapper.PROVIDER_NAME]: 0.5,
+    [OsirisMapper.PROVIDER_NAME]: 0.5,
     [FonjepEntityMapper.PROVIDER_NAME]: 0.5,
 };
 

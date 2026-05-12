@@ -1,0 +1,115 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OsirisRequestMapper toDto converts raw OSIRIS XLSX rows to a semantic camelCase DTO 1`] = `
+{
+  "association": {
+    "bic": "CCOPFRPPXXX",
+    "iban": "FR7642559100000800330277358",
+    "nom": "ASSOCIATION TEST",
+    "rna": "W595004053",
+    "siege": true,
+    "siret": "35130347400024",
+  },
+  "coordonnees": {
+    "codePostal": "59200",
+    "commune": "TOURCOING",
+    "voie": "98 rue de Paris",
+  },
+  "dossier": {
+    "compteAssoId": "22-040341",
+    "dateCommission": 2019-05-15T00:00:00.000Z,
+    "dateReception": 43549.44370065972,
+    "ej": "EJ00001",
+    "etatDossier": "Terminé",
+    "exerciceDebut": 2022,
+    "exerciceFin": 2024,
+    "noProgrammeTypeFinancement": "FDVA",
+    "osirisId": "DD59-22-0654",
+    "pluriannualite": "Annuel",
+    "service": "DR-CENT",
+    "sousTypeFinancement": "Financement global",
+  },
+  "montants": {
+    "accorde": 7200,
+    "coutTotalDesCharges": 25500,
+    "demande": 7500,
+    "propose": 7200,
+  },
+  "nbActions": {
+    "nombreActions": 1,
+  },
+  "representantLegal": {
+    "civilite": "Monsieur",
+    "courriel": "johndoe@example.org",
+    "fonction": "Président",
+    "nom": "Doe",
+    "prenom": "John",
+    "telephone": "0601020304",
+  },
+  "versements": {
+    "acompte": 0,
+    "compensationN1": 0,
+    "realise": 0,
+    "reversementCompensation": 0,
+    "solde": 0,
+  },
+}
+`;
+
+exports[`OsirisRequestMapper toEntity composes a complete OSIRIS request entity from a DTO 1`] = `
+{
+  "association": {
+    "bic": "CCOPFRPPXXX",
+    "iban": "FR7642559100000800330277358",
+    "nom": "ASSOCIATION TEST",
+    "rna": "W595004053",
+    "siege": "Oui",
+    "siret": "35130347400024",
+  },
+  "coordonnees": {
+    "codePostal": "59200",
+    "commune": "TOURCOING",
+    "voie": "98 rue de Paris",
+  },
+  "dossier": {
+    "compteAssoId": "22-040341",
+    "dateCommission": 43600,
+    "dateReception": 43549.44370065972,
+    "ej": "EJ00001",
+    "etatDossier": "Terminé",
+    "exerciceBudgetaire": 2024,
+    "exerciceDebut": 2022,
+    "exerciceFin": 2024,
+    "noProgrammeTypeFinancement": "FDVA",
+    "osirisId": "DD59-22-0654",
+    "pluriannualite": "Annuel",
+    "service": "DR-CENT",
+    "sousTypeFinancement": "Financement global",
+  },
+  "montants": {
+    "accorde": 7200,
+    "coutTotalDesCharges": 25500,
+    "demande": 7500,
+    "propose": 7200,
+  },
+  "nbActions": {
+    "nombreActions": 1,
+  },
+  "representantLegal": {
+    "civilite": "Monsieur",
+    "courriel": "johndoe@example.org",
+    "fonction": "Président",
+    "nom": "Doe",
+    "prenom": "John",
+    "telephone": "0601020304",
+  },
+  "updateDate": 2026-01-01T00:00:00.000Z,
+  "versements": {
+    "acompte": 0,
+    "compensationN1": 0,
+    "realise": 0,
+    "reversementCompensation": 0,
+    "solde": 0,
+  },
+}
+`;

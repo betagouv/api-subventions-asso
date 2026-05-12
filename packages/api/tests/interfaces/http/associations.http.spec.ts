@@ -1,10 +1,7 @@
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import osirisRequestAdapter from "../../../src/adapters/outputs/db/providers/osiris/osiris.request.adapter";
 import request from "supertest";
-import {
-    OSIRIS_REQUEST_ENTITY,
-    OSIRIS_ACTION_ENTITY,
-} from "../../modules/providers/osiris/__fixtures__/OsirisEntities";
+import { OSIRIS_REQUEST_ENTITY, OSIRIS_ACTION_ENTITY } from "../cli/__fixtures__/OsirisEntities";
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenAdapter from "../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
@@ -141,7 +138,7 @@ describe("/association", () => {
             const actual = (await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date()))[0];
 
             expect(actual).toMatchObject({
-                associationIdentifier: OSIRIS_REQUEST_ENTITY.legalInformations.siret.slice(0, 9),
+                associationIdentifier: OSIRIS_REQUEST_ENTITY.association?.siret?.toString().slice(0, 9),
             });
         });
 

@@ -1,15 +1,16 @@
 import fs from "fs";
 
-import { StaticImplements } from "../../../decorators/static-implements.decorator";
-import { ApplicationFlatCli, CliStaticInterface } from "../../../@types";
-import OsirisParser from "../../../modules/providers/osiris/osiris.parser";
-import osirisService, { InvalidOsirisRequestError } from "../../../modules/providers/osiris/osiris.service";
-import OsirisActionEntity from "../../../modules/providers/osiris/entities/OsirisActionEntity";
-import OsirisRequestEntity from "../../../modules/providers/osiris/entities/OsirisRequestEntity";
-import { COLORS } from "../../../shared/LogOptions";
-import * as CliHelper from "../../../shared/helpers/CliHelper";
-import { GenericParser } from "../../../shared/GenericParser";
-import dataLogService from "../../../modules/data-log/dataLog.service";
+import { StaticImplements } from "../../../../decorators/static-implements.decorator";
+import { ApplicationFlatCli, CliStaticInterface } from "../../../../@types";
+import OsirisParser from "./osiris.parser";
+import osirisService, { InvalidOsirisRequestError } from "../../../../modules/providers/osiris/osiris.service";
+import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
+import OsirisRequestEntity from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
+import OsirisRequestDto from "./osiris-request.dto";
+import OsirisRequestMapper from "./osiris-request.mapper";
+import * as CliHelper from "../../../../shared/helpers/CliHelper";
+import { GenericParser } from "../../../../shared/GenericParser";
+import dataLogService from "../../../../modules/data-log/dataLog.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class OsirisCli implements ApplicationFlatCli {
@@ -20,47 +21,8 @@ export default class OsirisCli implements ApplicationFlatCli {
         requests: "./logs/osiris.parse.requests.log.txt",
     };
 
-    public validate(type: string, file: string, extractYear = "2022") {
-        if (typeof type != "string" && typeof file != "string" && typeof extractYear != "string") {
-            throw new Error("Validate command need type, extractYear and file args");
-        }
-
-        if (Number.isNaN(parseInt(extractYear, 10))) {
-            throw new Error("extractYear must be a number");
-        }
-
-        if (!fs.existsSync(file)) {
-            throw new Error(`File not found ${file}`);
-        }
-
-        const fileContent = fs.readFileSync(file);
-
-        if (type === "requests") {
-            const requests = OsirisParser.parseRequests(fileContent, parseInt(extractYear, 10));
-
-            console.info(`Check ${requests.length} entities!`);
-            requests.forEach(entity => {
-                const result = osirisService.validRequest(entity);
-                if (result !== true) {
-                    console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
-                }
-            });
-
-            console.info(`${COLORS.Reset}Validation done`);
-        } else if (type === "actions") {
-            const actions = OsirisParser.parseActions(fileContent, parseInt(extractYear, 10));
-            console.info(`Check ${actions.length} entities!`);
-            actions.forEach(entity => {
-                const result = osirisService.validAction(entity);
-                if (result !== true) {
-                    console.error(`${COLORS.FgRed}${result.message}${COLORS.Reset}`, result.data);
-                }
-            });
-
-            console.info(`${COLORS.Reset}Validation done`);
-        } else {
-            throw new Error(`The type ${type} is not found`);
-        }
+    private static isCompleteRequestDto(dto: OsirisRequestDto): boolean {
+        return Boolean(dto.dossier?.osirisId);
     }
 
     public async parse(type: "requests" | "actions", file: string, extractYear: string): Promise<unknown> {
@@ -118,19 +80,27 @@ export default class OsirisCli implements ApplicationFlatCli {
     }
 
     async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
-        const requests = OsirisParser.parseRequests(contentFile, year);
-        let nbErrors = 0;
+        const dtos: OsirisRequestDto[] = OsirisParser.parseRequests(contentFile).map(raw =>
+            OsirisRequestMapper.toDto(raw),
+        );
 
+        const entities: OsirisRequestEntity[] = dtos
+            .filter(dto => OsirisCli.isCompleteRequestDto(dto))
+            .map(dto => OsirisRequestMapper.toEntity(dto, year));
+
+        let nbErrors = 0;
         let tictackClock = true;
+
         const ticTacInterval = setInterval(() => {
             tictackClock = !tictackClock;
             console.log(tictackClock ? "TIC" : "TAC");
         }, 100000);
+
         const validated: OsirisRequestEntity[] = [];
 
         // validate all requests in any order
         await Promise.all(
-            requests.map(r =>
+            entities.map(r =>
                 osirisService
                     .validateAndComplete(r)
                     .then(() => validated.push(r))
@@ -146,12 +116,15 @@ export default class OsirisCli implements ApplicationFlatCli {
         );
 
         const result = await osirisService.bulkAddRequest(validated);
+
         clearInterval(ticTacInterval);
+
         if (!result) return;
 
-        CliHelper.printProgress(validated.length, requests.length);
+        CliHelper.printProgress(validated.length, entities.length);
+
         console.info(`
-            ${validated.length}/${requests.length}
+            ${validated.length}/${entities.length}
             ${result.insertedCount + result.upsertedCount} requests created and ${
                 result.modifiedCount + result.matchedCount
             } requests updated
@@ -161,17 +134,20 @@ export default class OsirisCli implements ApplicationFlatCli {
 
     async _parseAction(contentFile: Buffer, year: number, logs: unknown[]) {
         const actions = OsirisParser.parseActions(contentFile, year);
-        let nbErrors = 0;
 
+        let nbErrors = 0;
         let tictackClock = true;
+
         const ticTacInterval = setInterval(() => {
             tictackClock = !tictackClock;
             console.log(tictackClock ? "TIC" : "TAC");
         }, 100000);
+
         const validated: OsirisActionEntity[] = [];
 
         actions.map(a => {
             const validation = osirisService.validAction(a);
+
             if (validation !== true) {
                 logs.push(
                     `\n\nThis request is not registered because: ${validation.message}\n`,
@@ -182,10 +158,13 @@ export default class OsirisCli implements ApplicationFlatCli {
         });
 
         const result = await osirisService.bulkAddActions(validated);
+
         clearInterval(ticTacInterval);
+
         if (!result) return;
 
         CliHelper.printProgress(validated.length, actions.length);
+
         console.info(`
             ${validated.length}/${actions.length}
             ${result.insertedCount + result.upsertedCount} actions created and ${

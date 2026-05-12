@@ -1,52 +1,40 @@
-import { DefaultObject } from "../../../@types";
-import type LegalInformations from "../../search/@types/LegalInformations";
-import { GenericParser } from "../../../shared/GenericParser";
-import OsirisActionEntity from "./entities/OsirisActionEntity";
-import OsirisRequestEntity from "./entities/OsirisRequestEntity";
-import type OsirisRequestInformations from "./@types/OsirisRequestInformations";
-import type OsirisActionsInformations from "./@types/OsirisActionsInformations";
+import { DefaultObject } from "../../../../@types";
+import { GenericParser } from "../../../../shared/GenericParser";
+import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
+import { OsirisRequestRawData } from "./osiris-request.dto";
+import type OsirisActionsInformations from "../../../../modules/providers/osiris/@types/OsirisActionsInformations";
+import { OsirisRequestDefaultMainCategory } from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
 
 export default class OsirisParser {
     private static getUpdateDate(year: number) {
         const today = new Date();
         const currentYear = today.getFullYear();
-        if (year > currentYear)
+
+        if (year > currentYear) {
             throw new Error(`Given export year (${year}) must be lower or equal to the current year (${currentYear})`);
+        }
+
         return today;
     }
 
-    public static parseRequests(content: Buffer, year: number): OsirisRequestEntity[] {
+    public static parseRequests(content: Buffer): OsirisRequestRawData[] {
         const data = GenericParser.xlsxParse<string>(content)[0].data;
         const headers = data.slice(0, 2) as string[][];
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
-        return rows.map(row => {
-            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
-                headers,
-                row,
-                OsirisRequestEntity.defaultMainCategory,
-            ) as DefaultObject<DefaultObject<string | number>>;
-
-            data.Dossier["Exercice Budgetaire"] = year; // create artificial column to match IOsirisRequestInformations
-
-            const indexedInformations = GenericParser.indexDataByPathObject<string | number>(
-                OsirisRequestEntity.indexedProviderInformationsPath,
-                data,
-            ) as OsirisRequestInformations;
-            const legalInformations = GenericParser.indexDataByPathObject(
-                OsirisRequestEntity.indexedLegalInformationsPath,
-                data,
-            ) as unknown as LegalInformations;
-
-            return new OsirisRequestEntity(legalInformations, indexedInformations, data, this.getUpdateDate(year));
-        });
+        return rows.map(
+            row =>
+                OsirisParser.rowToRowWithHeaders(
+                    headers,
+                    row,
+                    OsirisRequestDefaultMainCategory,
+                ) as OsirisRequestRawData,
+        );
     }
 
     public static parseActions(content: Buffer, year: number) {
         const data = GenericParser.xlsxParse<string>(content)[0].data;
-
         const headers = data.slice(0, 2) as string[][];
-
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
         return rows.map((row: unknown[]) => {
@@ -68,9 +56,14 @@ export default class OsirisParser {
         });
     }
 
-    private static findMainCategory(headers: string[][], position: number, defaultMainCategory: string) {
+    private static findMainCategory(headers: string[][], position: number, defaultMainCategory?: string) {
         const findLastHeader = (position: number): string => {
-            if (position < 0) return defaultMainCategory;
+            if (position < 0) {
+                if (defaultMainCategory !== undefined) return defaultMainCategory;
+                throw new Error(
+                    `Cannot determine OSIRIS main category for column ${position}: no header found in the first row`,
+                );
+            }
             return headers[0][position] || findLastHeader(position - 1);
         };
 
@@ -81,7 +74,7 @@ export default class OsirisParser {
         return (headers[1][position] as string).trim();
     }
 
-    private static rowToRowWithHeaders(headers: string[][], row: unknown[], defaultMainCategory: string) {
+    private static rowToRowWithHeaders(headers: string[][], row: unknown[], defaultMainCategory?: string) {
         const data: DefaultObject<DefaultObject<string | number>> = {};
 
         row.forEach((value, index) => {

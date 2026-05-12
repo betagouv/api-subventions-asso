@@ -2,7 +2,7 @@ import { ProviderValues, Establishment } from "dto";
 
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "core";
-import OsirisRequestMapper from "../providers/osiris/mappers/osiris-request.mapper";
+import OsirisMapper from "../providers/osiris/osiris.mapper";
 import { DefaultObject } from "../../@types";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import providers from "../providers";
@@ -23,7 +23,7 @@ export class EstablishmentService {
     private provider_score: DefaultObject<number> = {
         [ApiAssoDtoMapper.providerNameSiren]: 1,
         [ApiEntrepriseMapper.PROVIDER_NAME]: 1,
-        [OsirisRequestMapper.PROVIDER_NAME]: 0.5,
+        [OsirisMapper.PROVIDER_NAME]: 0.5,
         [FonjepEntityMapper.PROVIDER_NAME]: 0.5,
     };
 

@@ -1,126 +1,83 @@
-import { ParserInfo, ParserPath } from "../../../../@types";
-import type LegalInformations from "../../../search/@types/LegalInformations";
-import type OsirisRequestInformations from "../@types/OsirisRequestInformations";
-import { GenericParser } from "../../../../shared/GenericParser";
 import OsirisActionEntity from "./OsirisActionEntity";
-import type { ProviderDataEntity } from "../../../../@types/ProviderData";
 
-const dossier = ["Dossier/action", "Dossier"];
+export type OsirisRequestValue = string | number | boolean | Date | null | undefined;
 
-export default class OsirisRequestEntity implements ProviderDataEntity {
-    public static defaultMainCategory = "Dossier";
+export const OsirisRequestDefaultMainCategory = "Dossier";
 
-    public static adaptsToNb = value => (value ? (typeof value === "number" ? value : parseFloat(value)) : value);
+export interface OsirisRequestDossier {
+    osirisId: string;
+    compteAssoId?: string;
+    ej?: string;
+    exerciceBudgetaire: number;
+    exerciceDebut?: number | Date;
+    exerciceFin?: number;
+    dateReception?: number | string | Date;
+    dateCommission?: number | string | Date;
+    etatDossier?: string;
+    service?: string;
+    noProgrammeTypeFinancement?: string;
+    sousTypeFinancement?: string;
+    pluriannualite?: string;
+    [key: string]: OsirisRequestValue;
+}
 
-    public static indexedProviderInformationsPath: {
-        [key: string]: ParserPath | ParserInfo<string | number>;
-    } = {
-        osirisId: [dossier, "N° Dossier Osiris"],
-        exercise: { path: [dossier, "Exercice Budgetaire"] },
-        compteAssoId: [dossier, "N° Dossier Compte Asso"],
-        ej: [dossier, "N° EJ"],
-        amountAwarded: {
-            path: ["Montants", "Accordé"],
-            adapter: value => {
-                if (!value) return value;
-                if (typeof value == "number") return value;
-                return parseFloat(value);
-            },
-        },
-        dateCommission: {
-            path: [dossier, "Date Commission"],
-            adapter: value => {
-                if (!value) return value;
-                if (typeof value == "number") return GenericParser.ExcelDateToJSDate(value);
-                const [day, month, year] = value.split("/").map(v => parseInt(v, 10));
-                return new Date(Date.UTC(year, month - 1, day));
-            },
-        },
-        exerciceDebut: {
-            path: [dossier, "Exercice Début"],
-            adapter: value => {
-                if (!value) return value;
-                if (typeof value == "number") return value;
-                return new Date(Date.UTC(parseInt(value), 0));
-            },
-        },
-        etablissementSiege: {
-            path: ["Association", "Siège"],
-            adapter: value => value === "Oui",
-        },
-        etablissementVoie: ["Coordonnées correspondance (publipostage)", "Voie"],
-        etablissementCodePostal: ["Coordonnées correspondance (publipostage)", "Code Postal"],
-        etablissementCommune: ["Coordonnées correspondance (publipostage)", "Commune"],
-        etablissementIBAN: ["Association", "IBAN"],
-        etablissementBIC: ["Association", "BIC"],
+export interface OsirisRequestAssociation {
+    siret?: string;
+    rna?: string;
+    nom?: string;
+    siege?: boolean | string;
+    iban?: string;
+    bic?: string;
+    [key: string]: OsirisRequestValue;
+}
 
-        representantNom: ["Représentant légal", "Nom"],
-        representantPrenom: ["Représentant légal", ["Prénom", "Prenom"]],
-        representantRole: ["Représentant légal", "Fonction"],
-        representantCivilite: ["Représentant légal", ["Civilité", "Civilite"]],
-        representantEmail: ["Représentant légal", ["Courriel", "Adresse messagerie"]],
-        representantPhone: ["Représentant légal", "N° Téléphone"],
+export interface OsirisRequestMontants {
+    coutTotalDesCharges?: number;
+    demande?: number;
+    propose?: number;
+    accorde?: number;
+    [key: string]: OsirisRequestValue;
+}
 
-        service_instructeur: [dossier, "Service"],
-        dispositif: [dossier, "N° programme  / Type financement"],
-        sous_dispositif: [dossier, "Sous-Type financement"],
-        status: [dossier, ["Etat Dossier", "Etat dossier"]],
-        pluriannualite: [dossier, "Pluriannualité"],
+export interface OsirisRequestVersements {
+    acompte?: number;
+    solde?: number;
+    realise?: number;
+    compensationN1?: number;
+    reversementCompensation?: number;
+    [key: string]: OsirisRequestValue;
+}
 
-        montantsTotal: {
-            path: ["Montants", "Coût (Total des Charges)"],
-            adapter: OsirisRequestEntity.adaptsToNb,
-        },
-        montantsDemande: {
-            path: ["Montants", "Demandé"],
-            adapter: OsirisRequestEntity.adaptsToNb,
-        },
-        montantsPropose: {
-            path: ["Montants", "Proposé"],
-            adapter: OsirisRequestEntity.adaptsToNb,
-        },
-        montantsAccorde: {
-            path: ["Montants", "Accordé"],
-            adapter: OsirisRequestEntity.adaptsToNb,
-        },
+export interface OsirisRequestRepresentantLegal {
+    nom?: string;
+    prenom?: string;
+    civilite?: string;
+    fonction?: string;
+    courriel?: string;
+    telephone?: string;
+    [key: string]: OsirisRequestValue;
+}
 
-        versementAcompte: {
-            path: ["Versements", "Acompte"],
-            adapter: OsirisRequestEntity.adaptsToNb,
-        },
-        versementSolde: {
-            path: ["Versements", "Solde"],
-            adapter: OsirisRequestEntity.adaptsToNb,
-        },
-        versementRealise: {
-            path: ["Versements", "Réalisé"],
-            adapter: OsirisRequestEntity.adaptsToNb,
-        },
-        versementCompensationN1: {
-            path: ["Versements", "Compensation N-1"],
-            adapter: OsirisRequestEntity.adaptsToNb,
-        },
-        versementCompensationN: {
-            path: ["Versements", "Reversement/Compensation"],
-            adapter: OsirisRequestEntity.adaptsToNb,
-        },
-    };
+export interface OsirisRequestCoordonnees {
+    voie?: string;
+    codePostal?: string;
+    commune?: string;
+    [key: string]: OsirisRequestValue;
+}
 
-    public static indexedLegalInformationsPath = {
-        siret: [["Association", "Bénéficiaire"], "N° Siret"],
-        rna: [["Association", "Bénéficiaire"], "N° RNA"],
-        name: [["Association", "Bénéficiaire"], "Nom"],
-    };
+export interface OsirisRequestNbActions {
+    nombreActions?: number;
+    [key: string]: OsirisRequestValue;
+}
 
-    public provider = "Osiris";
-
-    constructor(
-        public legalInformations: LegalInformations,
-        public providerInformations: OsirisRequestInformations,
-        public data: unknown,
-        public updateDate: Date,
-        public actions?: OsirisActionEntity[],
-    ) {
-        this.providerInformations.uniqueId = `${this.providerInformations.osirisId}-${this.providerInformations.exercise}`;
-    }
+export default interface OsirisRequestEntity {
+    dossier: OsirisRequestDossier;
+    association?: OsirisRequestAssociation;
+    coordonnees?: OsirisRequestCoordonnees;
+    representantLegal?: OsirisRequestRepresentantLegal;
+    montants?: OsirisRequestMontants;
+    versements?: OsirisRequestVersements;
+    nbActions?: OsirisRequestNbActions;
+    updateDate: Date;
+    actions?: OsirisActionEntity[];
 }

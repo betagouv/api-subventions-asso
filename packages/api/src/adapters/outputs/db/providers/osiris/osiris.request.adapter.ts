@@ -1,4 +1,4 @@
-import { FindOneAndUpdateOptions } from "mongodb";
+import { AnyBulkWriteOperation, Filter, FindOneAndUpdateOptions } from "mongodb";
 import OsirisRequestEntity from "../../../../../modules/providers/osiris/entities/OsirisRequestEntity";
 import MongoAdapter from "../../MongoAdapter";
 import Siret from "../../../../../identifier-objects/Siret";
@@ -11,15 +11,22 @@ export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> impl
     collectionName = "osiris-requests";
 
     async createIndexes() {
-        await this.collection.createIndex({ "providerInformations.uniqueId": 1 }, { unique: true });
-        await this.collection.createIndex({ "providerInformations.osirisId": 1 });
-        await this.collection.createIndex({ "legalInformations.rna": 1 });
-        await this.collection.createIndex({ "legalInformations.siret": 1 });
+        await this.collection.createIndex({ "dossier.osirisId": 1, "dossier.exerciceBudgetaire": 1 }, { unique: true });
+        await this.collection.createIndex({ "dossier.osirisId": 1 });
+        await this.collection.createIndex({ "association.rna": 1 });
+        await this.collection.createIndex({ "association.siret": 1 });
     }
 
     joinIndexes = {
-        osirisActionPort: "providerInformations.uniqueId",
+        osirisActionPort: "dossier.osirisId",
     };
+
+    private getUpsertFilter(osirisRequest: OsirisRequestEntity): Filter<OsirisRequestEntity> {
+        return {
+            "dossier.osirisId": osirisRequest.dossier.osirisId,
+            "dossier.exerciceBudgetaire": osirisRequest.dossier.exerciceBudgetaire,
+        } as Filter<OsirisRequestEntity>;
+    }
 
     public async add(osirisRequest: OsirisRequestEntity): Promise<void> {
         await this.collection.insertOne(osirisRequest);
@@ -31,28 +38,24 @@ export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> impl
     public async update(osirisRequest: OsirisRequestEntity): Promise<OsirisRequestEntity> {
         const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
         const updateRes = await this.collection.findOneAndUpdate(
-            { "providerInformations.uniqueId": osirisRequest.providerInformations.uniqueId },
+            this.getUpsertFilter(osirisRequest),
             { $set: osirisRequest },
             options,
         );
-        //@ts-expect-error -- mongo typing expects no metadata
-        return updateRes?.value as OsirisRequestEntity;
+
+        return (updateRes as { value?: OsirisRequestEntity })?.value as OsirisRequestEntity;
     }
 
     public upsertOne(osirisRequest: OsirisRequestEntity) {
         const options = { upsert: true } as FindOneAndUpdateOptions;
-        return this.collection.updateOne(
-            { "providerInformations.uniqueId": osirisRequest.providerInformations.uniqueId },
-            { $set: osirisRequest },
-            options,
-        );
+        return this.collection.updateOne(this.getUpsertFilter(osirisRequest), { $set: osirisRequest }, options);
     }
 
     public async bulkUpsert(osirisRequests: OsirisRequestEntity[]): Promise<BulkUpsertResult> {
-        const bulk = osirisRequests.map(request => {
+        const bulk: AnyBulkWriteOperation<OsirisRequestEntity>[] = osirisRequests.map(request => {
             return {
                 updateOne: {
-                    filter: { "providerInformations.uniqueId": request.providerInformations.uniqueId },
+                    filter: this.getUpsertFilter(request),
                     update: { $set: request },
                     upsert: true,
                 },
@@ -80,31 +83,26 @@ export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> impl
 
     public findBySiret(siret: Siret): Promise<OsirisRequestEntity[]> {
         return this.collection
-            .find({
-                "legalInformations.siret": siret.value,
-            })
+            .find({ "association.siret": siret.value } as unknown as Filter<OsirisRequestEntity>)
             .toArray();
     }
 
     public findByRna(rna: Rna): Promise<OsirisRequestEntity[]> {
         return this.collection
-            .find({
-                "legalInformations.rna": rna.value,
-            })
+            .find({ "association.rna": rna.value } as unknown as Filter<OsirisRequestEntity>)
             .toArray();
     }
 
     public async findBySiren(siren: Siren): Promise<OsirisRequestEntity[]> {
         return this.collection
             .find({
-                "legalInformations.siret": new RegExp(`^${siren.value}\\d{5}`),
-            })
+                "association.siret": new RegExp(`^${siren.value}\\d{5}`),
+            } as unknown as Filter<OsirisRequestEntity>)
             .toArray();
     }
 
-    // used in migration and integration tests
     public findAll(): Promise<OsirisRequestEntity[]> {
-        return this.collection.find().toArray();
+        return this.collection.find({}).toArray();
     }
 }
 
