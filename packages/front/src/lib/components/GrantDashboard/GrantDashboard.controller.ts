@@ -1,4 +1,4 @@
-import type { GrantFlatDto, StructureIdentifierDto } from "dto";
+import type { ApplicationFlatDto, GrantFlatDto, StructureIdentifierDto } from "dto";
 import ApplicationInfoModal from "./Modals/ApplicationInfoModal.svelte";
 import PaymentsInfoModal from "./Modals/PaymentsInfoModal.svelte";
 import { getApplicationCells, getApplicationDashboardData, isGranted } from "./application.helper";
@@ -18,6 +18,7 @@ import type { SortableRow } from "$lib/components/GrantDashboard/@types/Dashboar
 import { grantCompareFn } from "$lib/components/GrantDashboard/sort.helper";
 import type { Option } from "$lib/types/FieldOption";
 import { getOrInit } from "$lib/helpers/array.helper";
+import grantPort from "$lib/resources/grant/grant.port";
 
 export class GrantDashboardController {
     public identifier: StructureIdentifierDto;
@@ -182,7 +183,11 @@ export class GrantDashboardController {
     public onApplicationClick(index) {
         if (!this.rows.value[index].applicationCells) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.subvention.more_information");
-        data.set({ application: (this.rows.value as SortableRow[])[index].grant.application });
+        const application = (this.rows.value as SortableRow[])[index].grant.application as ApplicationFlatDto;
+        data.set({
+            application: application,
+            details: grantPort.getApplicationProviderDetails(application),
+        });
         modal.set(ApplicationInfoModal);
     }
 }
