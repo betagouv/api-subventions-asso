@@ -1,5 +1,5 @@
 import OsirisParser from "./osiris.parser";
-import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
+import { OsirisActionDefaultMainCategory } from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import { OsirisRequestDefaultMainCategory } from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
 import { OSIRIS_ACTION_ENTITY } from "../../../../../tests/interfaces/cli/__fixtures__/OsirisEntities";
 import { GenericParser } from "../../../../shared/GenericParser";
@@ -121,33 +121,16 @@ describe("OsirisParser", () => {
                     index + 1,
                     HEADERS,
                     row,
-                    OsirisActionEntity.defaultMainCategory,
+                    OsirisActionDefaultMainCategory,
                 );
             });
         });
 
-        it("builds indexed informations", () => {
-            OsirisParser.parseActions(BUFFER, 2022);
-
-            MAPPED_ROWS.forEach((row, index) => {
-                expect(GenericParser.indexDataByPathObject).toHaveBeenNthCalledWith(
-                    index + 1,
-                    OsirisActionEntity.indexedInformationsPath,
-                    row,
-                );
-            });
-        });
-
-        // this also test that the exercise is added to indexed informations
-        it("returns osiris action entities", () => {
-            // to test that updateDate is equal to currentDate
-            jest.useFakeTimers().setSystemTime(new Date("2025-08-07"));
+        // this also test that the exercise is added to raw data
+        it("returns raw action data", () => {
             const actual = OsirisParser.parseActions(BUFFER, 2022);
 
-            // could not mock only OsirisActionEntity constructor to make this a unit test
-            // static methods / properties are required during process and we cannot mock the totality of the class
             expect(actual).toMatchSnapshot();
-            jest.useFakeTimers().useRealTimers();
         });
     });
 

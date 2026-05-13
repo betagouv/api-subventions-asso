@@ -1,93 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`OsirisParser parseActions returns osiris action entities 1`] = `
+exports[`OsirisParser parseActions returns raw action data 1`] = `
 [
-  OsirisActionEntity {
-    "data": {
-      "Dossier/action": {
-        "Exercice Budgetaire": 2022,
-        "Numero Action Osiris": "DD59-23-0123-1",
-        "N° Dossier Compte Asso": "23-001234",
-      },
+  {
+    "Dossier/action": {
+      "Exercice Budgetaire": 2022,
+      "Numero Action Osiris": "DD59-23-0123-1",
+      "N° Dossier Compte Asso": "23-001234",
     },
-    "indexedInformations": {
-      "compteAssoId": "LE_COMPTE_ASSO_ID",
-      "description": "description de l'action",
-      "ej": "EJ00001",
-      "exercise": 2022,
-      "intitule": "intitulé de l'action",
-      "montants_versement_accorde": 150000,
-      "montants_versement_attribue": 150000,
-      "montants_versement_compensation": 0,
-      "montants_versement_demande": 170000,
-      "montants_versement_propose": 150000,
-      "montants_versement_realise": 120000,
-      "montants_versement_total": 150000,
-      "nature_aide": "aide en numéraire",
-      "osirisActionId": "DD71-24-0094-01",
-      "requestUniqueId": "DD71-24-0094-2022",
-      "siret": "10000000000001",
-      "uniqueId": "DD71-24-0094-01-2022",
-    },
-    "updateDate": 2025-08-07T00:00:00.000Z,
   },
-  OsirisActionEntity {
-    "data": {
-      "Dossier/action": {
-        "Exercice Budgetaire": 2022,
-        "Numero Action Osiris": "DD59-24-0456-1",
-        "N° Dossier Compte Asso": "24-005678",
-      },
+  {
+    "Dossier/action": {
+      "Exercice Budgetaire": 2022,
+      "Numero Action Osiris": "DD59-24-0456-1",
+      "N° Dossier Compte Asso": "24-005678",
     },
-    "indexedInformations": {
-      "compteAssoId": "LE_COMPTE_ASSO_ID",
-      "description": "description de l'action",
-      "ej": "EJ00001",
-      "exercise": 2022,
-      "intitule": "intitulé de l'action",
-      "montants_versement_accorde": 150000,
-      "montants_versement_attribue": 150000,
-      "montants_versement_compensation": 0,
-      "montants_versement_demande": 170000,
-      "montants_versement_propose": 150000,
-      "montants_versement_realise": 120000,
-      "montants_versement_total": 150000,
-      "nature_aide": "aide en numéraire",
-      "osirisActionId": "DD71-24-0094-01",
-      "requestUniqueId": "DD71-24-0094-2022",
-      "siret": "10000000000001",
-      "uniqueId": "DD71-24-0094-01-2022",
-    },
-    "updateDate": 2025-08-07T00:00:00.000Z,
   },
-  OsirisActionEntity {
-    "data": {
-      "Dossier/action": {
-        "Exercice Budgetaire": 2022,
-        "Numero Action Osiris": "DD59-25-0789-1",
-        "N° Dossier Compte Asso": "25-009101",
-      },
+  {
+    "Dossier/action": {
+      "Exercice Budgetaire": 2022,
+      "Numero Action Osiris": "DD59-25-0789-1",
+      "N° Dossier Compte Asso": "25-009101",
     },
-    "indexedInformations": {
-      "compteAssoId": "LE_COMPTE_ASSO_ID",
-      "description": "description de l'action",
-      "ej": "EJ00001",
-      "exercise": 2022,
-      "intitule": "intitulé de l'action",
-      "montants_versement_accorde": 150000,
-      "montants_versement_attribue": 150000,
-      "montants_versement_compensation": 0,
-      "montants_versement_demande": 170000,
-      "montants_versement_propose": 150000,
-      "montants_versement_realise": 120000,
-      "montants_versement_total": 150000,
-      "nature_aide": "aide en numéraire",
-      "osirisActionId": "DD71-24-0094-01",
-      "requestUniqueId": "DD71-24-0094-2022",
-      "siret": "10000000000001",
-      "uniqueId": "DD71-24-0094-01-2022",
-    },
-    "updateDate": 2025-08-07T00:00:00.000Z,
   },
 ]
 `;

@@ -2,8 +2,11 @@ import OsirisActionEntity from "../../../../modules/providers/osiris/entities/Os
 import OsirisParser from "./osiris.parser";
 import osirisService from "../../../../modules/providers/osiris/osiris.service";
 import OsirisCli from "./osiris.cli";
+import OsirisActionMapper from "./osiris-action.mapper";
+import OsirisActionDto, { OsirisActionRawData } from "./osiris-action.dto";
 
 jest.mock("./osiris.parser");
+jest.mock("./osiris-action.mapper");
 jest.mock("../../../../modules/providers/osiris/osiris.service");
 
 describe("Osiris cli", () => {
@@ -77,11 +80,14 @@ describe("Osiris cli", () => {
     describe("parse actions", () => {
         const CONTENT_FILE = Buffer.from("toto");
         const YEAR = 1789;
+        const RAW_DATA = ["rawData1", "rawData2"] as unknown as OsirisActionRawData[];
+        const DTOS = ["dto1", "dto2"] as unknown as OsirisActionDto[];
         const DOCS = ["entity1", "entity2"] as unknown as OsirisActionEntity[];
 
         beforeEach(() => {
-            jest.mocked(OsirisParser.parseActions).mockReturnValue(DOCS);
-            jest.mocked(osirisService.validAction).mockReturnValue(true);
+            jest.mocked(OsirisParser.parseActions).mockReturnValue(RAW_DATA);
+            jest.mocked(OsirisActionMapper.toDto).mockImplementation(raw => DTOS[RAW_DATA.indexOf(raw)]);
+            jest.mocked(OsirisActionMapper.toEntity).mockImplementation(dto => DOCS[DTOS.indexOf(dto)]);
         });
 
         it("calls parser with content file and year", async () => {
@@ -89,17 +95,21 @@ describe("Osiris cli", () => {
             expect(OsirisParser.parseActions).toHaveBeenCalledWith(CONTENT_FILE, YEAR);
         });
 
-        it("validates all documents", async () => {
+        it("maps raw data to DTOs", async () => {
             await cli._parseAction(CONTENT_FILE, YEAR, []);
-            expect(osirisService.validAction).toHaveBeenCalledWith(DOCS[0]);
-            expect(osirisService.validAction).toHaveBeenCalledWith(DOCS[1]);
+            expect(OsirisActionMapper.toDto).toHaveBeenCalledWith(RAW_DATA[0]);
+            expect(OsirisActionMapper.toDto).toHaveBeenCalledWith(RAW_DATA[1]);
         });
 
-        it("saves validated documents", async () => {
-            jest.mocked(osirisService.validAction).mockReturnValueOnce(false);
-
+        it("maps DTOs to entities with year", async () => {
             await cli._parseAction(CONTENT_FILE, YEAR, []);
-            expect(osirisService.bulkAddActions).toHaveBeenCalledWith([DOCS[1]]);
+            expect(OsirisActionMapper.toEntity).toHaveBeenCalledWith(DTOS[0], YEAR);
+            expect(OsirisActionMapper.toEntity).toHaveBeenCalledWith(DTOS[1], YEAR);
+        });
+
+        it("bulk saves all entities without validation", async () => {
+            await cli._parseAction(CONTENT_FILE, YEAR, []);
+            expect(osirisService.bulkAddActions).toHaveBeenCalledWith(DOCS);
         });
     });
 
