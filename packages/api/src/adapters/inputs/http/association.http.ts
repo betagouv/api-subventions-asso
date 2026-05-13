@@ -143,6 +143,7 @@ export class AssociationHttp extends Controller {
     @Example<GetSubventionsResponseDto>({
         subventions: [OLD_APPLICATON_DTO],
     })
+    @Deprecated()
     @Get("/subventions")
     @Response<HttpErrorInterface>("404", "Association introuvable")
     public async getDemandeSubventions(
@@ -164,6 +165,7 @@ export class AssociationHttp extends Controller {
     @Example<GetPaymentsResponseDto>({
         versements: [OLD_PAYMENT_DTO],
     })
+    @Deprecated()
     @Get("/versements")
     public async getPayments(
         @Path() identifier: AssociationIdentifierDto,
