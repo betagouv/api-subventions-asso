@@ -13,24 +13,21 @@
   "scripts": {
     "prepare": "husky",
     "preinstall": "npx only-allow pnpm",
-    "dev": "lerna run dev",
-    "build:front": "lerna run build --scope=front",
-    "build:api": "lerna run build --scope=api",
-    "build:dto": "lerna run build --scope=dto",
-    "build:core": "lerna run build --scope=core",
-    "build": "lerna run build",
+    "build:front": "pnpm --filter front... build",
+    "build:api": "pnpm --filter api... build",
+    "build:dto": "pnpm --filter dto build ",
+    "build:core": "pnpm --filter core build",
+    "build": "pnpm -r build",
     "scalingo-postbuild": "bash ./build.bash",
     "postinstall": "bash ./post-install.bash",
-    "generate": "lerna run generate",
-    "lint": "lerna run lint:all",
-    "prettier": "lerna run prettier:all",
-    "test": "lerna run test",
-    "test:unit": "lerna run test:unit",
-    "test:cov": "lerna run test:cov",
-    "migration:apply": "lerna run migration:apply",
-    "release": "lerna version --conventional-commits",
+    "generate": "pnpm --filter api generate",
+    "dev": "pnpm -r --parallel dev",
     "start": "node ./packages/api/build/src/index.js",
-    "lint-format": "lerna run --concurrency 1 lint-format "
+    "test": "pnpm --filter api --filter front test",
+    "migration:apply": "pnpm --filter api migration:apply",
+    "release": "commit-and-tag-version",
+    "lint-format": "pnpm -r --workspace-concurrency=1 run lint-format",
+    "lint": "pnpm -r lint"
   },
   "repository": {
     "type": "git",
@@ -45,7 +42,6 @@
   "dependencies": {
     "axios": "^1.7.4",
     "d3": "^7.9.0",
-    "lerna": "^9.0.3",
     "prettier-plugin-svelte": "^3.4.0"
   },
   "devDependencies": {
@@ -53,6 +49,7 @@
     "@commitlint/config-conventional": "^16.2.4",
     "@eslint/js": "^9.25.1",
     "@typescript-eslint/parser": "^8.31.0",
+    "commit-and-tag-version": "~12.7.1",
     "eslint": "^9.25.0",
     "eslint-config-prettier": "^8.10.0",
     "eslint-import-resolver-typescript": "^4.3.4",
