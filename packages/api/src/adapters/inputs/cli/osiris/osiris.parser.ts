@@ -1,9 +1,9 @@
 import { DefaultObject } from "../../../../@types";
 import { GenericParser } from "../../../../shared/GenericParser";
-import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import { OsirisRequestRawData } from "./osiris-request.dto";
-import type OsirisActionsInformations from "../../../../modules/providers/osiris/@types/OsirisActionsInformations";
+import { OsirisActionRawData } from "./osiris-action.dto";
 import { OsirisRequestDefaultMainCategory } from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
+import { OsirisActionDefaultMainCategory } from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 
 export default class OsirisParser {
     private static getUpdateDate(year: number) {
@@ -32,7 +32,7 @@ export default class OsirisParser {
         );
     }
 
-    public static parseActions(content: Buffer, year: number) {
+    public static parseActions(content: Buffer, year: number): OsirisActionRawData[] {
         const data = GenericParser.xlsxParse<string>(content)[0].data;
         const headers = data.slice(0, 2) as string[][];
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
@@ -41,18 +41,13 @@ export default class OsirisParser {
             const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
                 headers,
                 row,
-                OsirisActionEntity.defaultMainCategory,
+                OsirisActionDefaultMainCategory,
             ) as DefaultObject<DefaultObject<string | number>>;
             const dossier = data["Dossier/action"] || data["Dossier"];
 
-            dossier["Exercice Budgetaire"] = year; // add artificial column to match IOsirisActionsInformations
+            dossier["Exercice Budgetaire"] = year;
 
-            const indexedInformations = GenericParser.indexDataByPathObject(
-                OsirisActionEntity.indexedInformationsPath,
-                data,
-            ) as unknown as OsirisActionsInformations;
-
-            return new OsirisActionEntity(indexedInformations, data, this.getUpdateDate(year));
+            return data as OsirisActionRawData;
         });
     }
 

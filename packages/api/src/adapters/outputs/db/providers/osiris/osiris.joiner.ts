@@ -23,7 +23,7 @@ export class OsirisJoiner {
                     pipeline: [
                         {
                             $match: {
-                                $expr: { $eq: ["$indexedInformations.requestUniqueId", "$$requestUniqueId"] },
+                                $expr: { $eq: ["$dossier.requestUniqueId", "$$requestUniqueId"] },
                             },
                         },
                     ],

@@ -11,15 +11,15 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
     collectionName = "osiris-actions";
 
     async createIndexes() {
-        await this.collection.createIndex({ "indexedInformations.uniqueId": 1 }, { unique: true });
-        await this.collection.createIndex({ "indexedInformations.osirisActionId": 1 });
-        await this.collection.createIndex({ "indexedInformations.requestUniqueId": 1 });
-        await this.collection.createIndex({ "indexedInformations.compteAssoId": 1 });
-        await this.collection.createIndex({ "indexedInformations.siret": 1 });
+        await this.collection.createIndex({ "dossier.uniqueId": 1 }, { unique: true });
+        await this.collection.createIndex({ "dossier.osirisActionId": 1 });
+        await this.collection.createIndex({ "dossier.requestUniqueId": 1 });
+        await this.collection.createIndex({ "dossier.compteAssoId": 1 });
+        await this.collection.createIndex({ "beneficiaire.siret": 1 });
     }
 
     joinIndexes = {
-        osirisRequestPort: "indexedInformations.requestUniqueId",
+        osirisRequestPort: "dossier.requestUniqueId",
     };
 
     // Action Part
@@ -34,7 +34,7 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
     public async update(osirisAction: OsirisActionEntity): Promise<OsirisActionEntity> {
         const options: FindOneAndUpdateOptions = { returnDocument: "after", includeResultMetadata: true };
         const updateRes = await this.collection.findOneAndUpdate(
-            { "indexedInformations.uniqueId": osirisAction.indexedInformations.uniqueId },
+            { "dossier.uniqueId": osirisAction.dossier.uniqueId },
             { $set: osirisAction },
             options,
         );
@@ -48,7 +48,7 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
     public upsertOne(osirisAction: OsirisActionEntity) {
         const options = { upsert: true } as FindOneAndUpdateOptions;
         return this.collection.updateOne(
-            { "indexedInformations.uniqueId": osirisAction.indexedInformations.uniqueId },
+            { "dossier.uniqueId": osirisAction.dossier.uniqueId },
             { $set: osirisAction },
             options,
         );
@@ -58,7 +58,7 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
         const bulk = osirisActions.map(action => {
             return {
                 updateOne: {
-                    filter: { "indexedInformations.uniqueId": action.indexedInformations.uniqueId },
+                    filter: { "dossier.uniqueId": action.dossier.uniqueId },
                     update: { $set: action },
                     upsert: true,
                 },
@@ -93,17 +93,17 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
     }
 
     public async getAllByExercise(exercise: number) {
-        return this.cursorFind({ indexedInformations: { exercise } }).toArray();
+        return this.cursorFind({ "dossier.exerciceBudgetaire": exercise }).toArray();
     }
 
     public async findByRequestUniqueId(requestUniqueId: string): Promise<OsirisActionEntity[]> {
-        const dbos = await this.collection.find({ "indexedInformations.requestUniqueId": requestUniqueId }).toArray();
+        const dbos = await this.collection.find({ "dossier.requestUniqueId": requestUniqueId }).toArray();
         return dbos.map(dbo => OsirisActionMapper.toEntity(dbo));
     }
 
     public async findBySiren(siren: Siren): Promise<OsirisActionEntity[]> {
         const dbos = await this.collection
-            .find({ "indexedInformations.siret": new RegExp(`^${siren.value}\\d{5}`) })
+            .find({ "beneficiaire.siret": new RegExp(`^${siren.value}\\d{5}`) })
             .toArray();
         return dbos.map(dbo => OsirisActionMapper.toEntity(dbo));
     }
