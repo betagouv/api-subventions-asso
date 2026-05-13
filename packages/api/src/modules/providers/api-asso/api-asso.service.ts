@@ -1,4 +1,4 @@
-import { AssociationWithProviderValues, Establishment, DocumentDto } from "dto";
+import { AssociationWithProviderValues, Establishment, DocumentWithProviderValueDto } from "dto";
 import { XMLParser } from "fast-xml-parser";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
@@ -262,7 +262,7 @@ export class ApiAssoService
         return ribs.map(rib => ApiAssoDtoMapper.dacDocumentToRib(rib));
     }
 
-    private async findDocuments(identifier: AssociationIdentifier): Promise<DocumentDto[]> {
+    private async findDocuments(identifier: AssociationIdentifier): Promise<DocumentWithProviderValueDto[]> {
         const documents = await this.fetchDocuments(identifier);
 
         if (!documents) return [];
@@ -333,7 +333,7 @@ export class ApiAssoService
 
     isDocumentProvider = true;
 
-    async getDocuments(identifier: StructureIdentifier): Promise<DocumentDto[]> {
+    async getDocuments(identifier: StructureIdentifier): Promise<DocumentWithProviderValueDto[]> {
         if (identifier instanceof AssociationIdentifier) {
             return this.findDocuments(identifier);
         }

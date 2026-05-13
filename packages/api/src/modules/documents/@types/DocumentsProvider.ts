@@ -1,4 +1,4 @@
-import { DocumentDto } from "dto";
+import { DocumentWithProviderValueDto } from "dto";
 import Provider from "../../providers/@types/IProvider";
 import EstablishmentIdentifier from "../../../identifier-objects/EstablishmentIdentifier";
 import { StructureIdentifier } from "../../../identifier-objects/@types/StructureIdentifier";
@@ -6,6 +6,6 @@ import { StructureIdentifier } from "../../../identifier-objects/@types/Structur
 export default interface DocumentProvider extends Provider {
     isDocumentProvider: boolean;
 
-    getDocuments(identifier: StructureIdentifier): Promise<DocumentDto[]>;
-    getRibs?: (identifier: EstablishmentIdentifier) => Promise<DocumentDto[]>;
+    getDocuments(identifier: StructureIdentifier): Promise<DocumentWithProviderValueDto[]>;
+    getRibs?: (identifier: EstablishmentIdentifier) => Promise<DocumentWithProviderValueDto[]>;
 }

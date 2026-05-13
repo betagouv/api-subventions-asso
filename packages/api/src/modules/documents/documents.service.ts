@@ -1,7 +1,7 @@
 import fs from "fs";
 import childProcess from "child_process";
 import { IncomingMessage } from "http";
-import { DocumentDto, DocumentRequestDto } from "dto";
+import { DocumentWithProviderValueDto, DocumentRequestDto } from "dto";
 import * as Sentry from "@sentry/node";
 import mime from "mime-types";
 import providers from "../providers";
@@ -55,10 +55,10 @@ export class DocumentsService {
             ),
         );
 
-        return result.flat() as DocumentDto[];
+        return result.flat() as DocumentWithProviderValueDto[];
     }
 
-    private aggregateDocuments(id: StructureIdentifier): Promise<DocumentDto[]> {
+    private aggregateDocuments(id: StructureIdentifier): Promise<DocumentWithProviderValueDto[]> {
         return this.aggregate(this.getDocumentProviders(), "getDocuments", id);
     }
 

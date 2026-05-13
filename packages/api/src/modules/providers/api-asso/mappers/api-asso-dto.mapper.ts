@@ -1,4 +1,4 @@
-import { Establishment, AssociationWithProviderValues, DocumentDto, AssociationNature } from "dto";
+import { Establishment, AssociationWithProviderValues, DocumentWithProviderValueDto, AssociationNature } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import {
     StructureDacDocumentDto,
@@ -160,7 +160,7 @@ export default class ApiAssoDtoMapper {
         return encodeURIComponent(distantUrl);
     }
 
-    static rnaDocumentToDocument(rnaDocument: StructureRnaDocumentDto): DocumentDto {
+    static rnaDocumentToDocument(rnaDocument: StructureRnaDocumentDto): DocumentWithProviderValueDto {
         let date = new Date(Date.UTC(rnaDocument.annee as number, 0));
         // DTO expect date, so we use 1970 as a hack to know that the date is not defined
         if (!isValidDate(date)) date = new Date(Date.UTC(1970, 0));
@@ -175,7 +175,7 @@ export default class ApiAssoDtoMapper {
         };
     }
 
-    static dacDocumentToDocument(dacDocument: StructureDacDocumentDto): DocumentDto {
+    static dacDocumentToDocument(dacDocument: StructureDacDocumentDto): DocumentWithProviderValueDto {
         const isoDate = new Date(dacDocument.time_depot);
         const toLCAPv = ProviderValueFactory.buildProviderValueMapper(
             this.providerNameLcaDocument,
@@ -200,7 +200,7 @@ export default class ApiAssoDtoMapper {
         };
     }
 
-    static dacDocumentToRib(rib: StructureDacDocumentDto): DocumentDto {
+    static dacDocumentToRib(rib: StructureDacDocumentDto): DocumentWithProviderValueDto {
         const isoDate = new Date(rib.time_depot);
 
         const toLCAPv = ProviderValueFactory.buildProviderValueMapper(this.providerNameLcaDocument, isoDate);
