@@ -10,7 +10,7 @@ import { BodaccRecordDto } from "./BodaccRecordDto";
 import { AssociationNature } from "./AssociationNature";
 import { Establishment } from "../establishments";
 
-export interface Association {
+export interface AssociationWithProviderValues {
     siren?: ProviderValues<SirenDto>;
     rna?: ProviderValues<RnaDto>;
     nic_siege?: ProviderValues<string>;

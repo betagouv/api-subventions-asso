@@ -1,4 +1,4 @@
-import { ApplicationStatus, Association, Establishment, RnaDto, ApplicationNature } from "dto";
+import { ApplicationStatus, AssociationWithProviderValues, Establishment, RnaDto, ApplicationNature } from "dto";
 import ProviderValueFactory from "../../../shared/ProviderValueFactory";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
@@ -34,7 +34,10 @@ export default class OsirisMapper {
 
     private static readonly toStatus = toStatusFactory(OsirisMapper._statusConversionArray);
 
-    static toAssociation(entity: OsirisRequestEntity, actions: OsirisActionEntity[] = []): Association {
+    static toAssociation(
+        entity: OsirisRequestEntity,
+        actions: OsirisActionEntity[] = [],
+    ): AssociationWithProviderValues {
         const association = entity.association || {};
         const siret = association.siret as string;
         const rna = association.rna as string;

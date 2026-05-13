@@ -1,4 +1,4 @@
-export * from "./Association";
+export * from "./AssociationWithProviderValues";
 export * from "./AssociationNature";
 export * from "./BodaccRecordDto";
 export * from "./ExtraitRcsDto";

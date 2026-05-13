@@ -198,32 +198,32 @@ describe("ApiAssoService", () => {
         const ASSOCIATION_ID_WITH_RNA = AssociationIdentifier.fromRna(RNA);
         const ASSOCIATION_ID = AssociationIdentifier.fromSirenAndRna(SIREN, RNA);
 
-        describe("getAssociations", () => {
+        describe("getAssociationsWithProviderValues", () => {
             const findAssociationBySirenMock = jest.spyOn(apiAssoService, "findAssociationBySiren");
             const findAssociationByRnaMock = jest.spyOn(apiAssoService, "findAssociationByRna");
 
             it("should call findAssociationBySiren", async () => {
                 findAssociationBySirenMock.mockResolvedValueOnce(null);
-                await apiAssoService.getAssociations(ASSOCIATION_ID_WITHOUT_RNA);
+                await apiAssoService.getAssociationsWithProviderValues(ASSOCIATION_ID_WITHOUT_RNA);
                 expect(findAssociationBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
             it("should call findAssociationByRna", async () => {
                 findAssociationByRnaMock.mockResolvedValueOnce(null);
-                await apiAssoService.getAssociations(ASSOCIATION_ID_WITH_RNA);
+                await apiAssoService.getAssociationsWithProviderValues(ASSOCIATION_ID_WITH_RNA);
                 expect(findAssociationByRnaMock).toHaveBeenCalledWith(RNA);
             });
 
             it("should call findAssociationBySiren and findAssociationByRna", async () => {
                 findAssociationBySirenMock.mockResolvedValueOnce(null);
                 findAssociationByRnaMock.mockResolvedValueOnce(null);
-                await apiAssoService.getAssociations(ASSOCIATION_ID);
+                await apiAssoService.getAssociationsWithProviderValues(ASSOCIATION_ID);
                 expect(findAssociationBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
             it("should return empty array", async () => {
                 findAssociationBySirenMock.mockResolvedValueOnce(null);
-                const actual = await apiAssoService.getAssociations(ASSOCIATION_ID_WITHOUT_RNA);
+                const actual = await apiAssoService.getAssociationsWithProviderValues(ASSOCIATION_ID_WITHOUT_RNA);
                 expect(actual).toHaveLength(0);
             });
 
@@ -233,7 +233,7 @@ describe("ApiAssoService", () => {
                 findAssociationBySirenMock.mockResolvedValueOnce({ data: true });
                 // @ts-expect-error: mock
                 findAssociationByRnaMock.mockResolvedValueOnce({ data: true });
-                const actual = await apiAssoService.getAssociations(ASSOCIATION_ID);
+                const actual = await apiAssoService.getAssociationsWithProviderValues(ASSOCIATION_ID);
                 expect(actual).toHaveLength(expected);
             });
         });

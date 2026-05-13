@@ -1,4 +1,4 @@
-import { Association, Establishment, DocumentDto } from "dto";
+import { AssociationWithProviderValues, Establishment, DocumentDto } from "dto";
 import { XMLParser } from "fast-xml-parser";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
@@ -87,7 +87,7 @@ export class ApiAssoService
         return { rna, siren };
     }
 
-    public async findAssociationByRna(rna: Rna): Promise<Association | null> {
+    public async findAssociationByRna(rna: Rna): Promise<AssociationWithProviderValues | null> {
         const rnaStructure = await this.sendRequest<RnaStructureDto>(`/api/rna/${rna.value}`);
 
         if (!rnaStructure) return null;
@@ -99,7 +99,7 @@ export class ApiAssoService
         return structure.identite?.date_creation_sirene || "1900-01-01";
     }
 
-    public async findAssociationBySiren(siren: Siren): Promise<Association | null> {
+    public async findAssociationBySiren(siren: Siren): Promise<AssociationWithProviderValues | null> {
         const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren.value}`);
         const isSirenStructureValid = structure => structure.etablissement && structure.etablissement.length;
 
@@ -287,8 +287,10 @@ export class ApiAssoService
 
     isAssociationsProvider = true;
 
-    async getAssociations(identifier: AssociationIdentifier): Promise<Association[]> {
-        const associations: Association[] = [];
+    async getAssociationsWithProviderValues(
+        identifier: AssociationIdentifier,
+    ): Promise<AssociationWithProviderValues[]> {
+        const associations: AssociationWithProviderValues[] = [];
 
         if (identifier.siren) {
             const sirenAssociation = await this.findAssociationBySiren(identifier.siren);

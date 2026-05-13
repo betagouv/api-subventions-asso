@@ -1,4 +1,4 @@
-import { Association, Establishment } from "dto";
+import { AssociationWithProviderValues, Establishment } from "dto";
 import apiAssoService from "../../src/modules/providers/api-asso/api-asso.service";
 import ProviderValueFactory from "../../src/shared/ProviderValueFactory";
 
@@ -32,7 +32,7 @@ const API_ASSO_ADDRESS = {
     commune: "Rennes",
 };
 
-export const API_ASSO_ASSOCIATION_FROM_SIREN: Association = {
+export const API_ASSO_ASSOCIATION_FROM_SIREN: AssociationWithProviderValues = {
     siren: apiAssoToPVs(SIREN_STR),
     nic_siege: apiAssoToPVs(NIC_STR),
     categorie_juridique: apiAssoToPVs("Association loi 1901"),

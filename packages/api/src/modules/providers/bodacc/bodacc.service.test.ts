@@ -37,19 +37,19 @@ describe("Bodacc Service", () => {
         });
     });
 
-    describe("getAssociations", () => {
+    describe("getAssociationsWithProviderValues", () => {
         let mockSendRequest: jest.SpyInstance;
         beforeEach(() => {
             mockSendRequest = jest.spyOn(bodaccService, "sendRequest").mockImplementation(async () => BODACC_DTO);
         });
 
         it("should call sendRequest with siren", async () => {
-            await bodaccService.getAssociations(ASSOCIATION_ID);
+            await bodaccService.getAssociationsWithProviderValues(ASSOCIATION_ID);
             expect(mockSendRequest).toHaveBeenCalledWith(SIREN);
         });
 
         it("should call BodaccMapper.toAssociation", async () => {
-            await bodaccService.getAssociations(ASSOCIATION_ID);
+            await bodaccService.getAssociationsWithProviderValues(ASSOCIATION_ID);
             expect(mockToAssociation).toHaveBeenCalledWith(BODACC_DTO);
         });
     });

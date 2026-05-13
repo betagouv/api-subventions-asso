@@ -1,4 +1,4 @@
-import { ProviderValues, Association } from "dto";
+import { ProviderValues, AssociationWithProviderValues } from "dto";
 
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "core";
@@ -22,17 +22,20 @@ export class AssociationsService {
         [ApiAssoDtoMapper.providerNameRna]: 1,
     };
 
-    async getAssociation(associationIdentifier: AssociationIdentifier): Promise<Association> {
+    async getAssociation(associationIdentifier: AssociationIdentifier): Promise<AssociationWithProviderValues> {
         const data = await this.aggregate(associationIdentifier);
         if (!data.length) throw new NotFoundError("Association not found");
-        return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
+        return FormaterHelper.formatData(
+            data as DefaultObject<ProviderValues>[],
+            this.provider_score,
+        ) as AssociationWithProviderValues;
     }
 
     private async aggregate(associationIdentifier: AssociationIdentifier) {
         const associationProviders = this.getAssociationProviders();
         const promises = associationProviders.map(async provider => {
             try {
-                const assos = await provider.getAssociations(associationIdentifier);
+                const assos = await provider.getAssociationsWithProviderValues(associationIdentifier);
                 if (assos) return assos;
             } catch (e) {
                 Sentry.captureException(e);
@@ -40,7 +43,7 @@ export class AssociationsService {
             }
             return null;
         });
-        return (await Promise.all(promises)).flat().filter(asso => asso) as Association[];
+        return (await Promise.all(promises)).flat().filter(asso => asso) as AssociationWithProviderValues[];
     }
 
     public isAssociationsProvider(provider: unknown): provider is AssociationsProvider {

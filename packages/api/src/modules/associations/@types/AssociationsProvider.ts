@@ -1,9 +1,10 @@
-import { Association } from "dto";
+import { AssociationWithProviderValues } from "dto";
 import Provider from "../../providers/@types/IProvider";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 
 export default interface AssociationsProvider extends Provider {
     isAssociationsProvider: boolean;
 
-    getAssociations(identifier: AssociationIdentifier): Promise<Association[]>;
+    // getAssociations(identifier: AssociationIdentifier): Promise<Association>;
+    getAssociationsWithProviderValues(identifier: AssociationIdentifier): Promise<AssociationWithProviderValues[]>;
 }

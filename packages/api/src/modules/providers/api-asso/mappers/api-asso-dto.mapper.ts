@@ -1,4 +1,4 @@
-import { Establishment, Association, DocumentDto, AssociationNature } from "dto";
+import { Establishment, AssociationWithProviderValues, DocumentDto, AssociationNature } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import {
     StructureDacDocumentDto,
@@ -30,7 +30,7 @@ export default class ApiAssoDtoMapper {
         return Array.isArray(establishments) ? establishments : [establishments];
     }
 
-    static sirenStructureToAssociation(structure: SirenStructureDto): Association {
+    static sirenStructureToAssociation(structure: SirenStructureDto): AssociationWithProviderValues {
         const toPvs = ProviderValueFactory.buildProviderValuesMapper(
             this.providerNameSiren,
             ApiAssoDtoMapper.apiDateToDate(structure.identite.date_modif_siren),
@@ -64,7 +64,7 @@ export default class ApiAssoDtoMapper {
         };
     }
 
-    static rnaStructureToAssociation(structure: RnaStructureDto): Association {
+    static rnaStructureToAssociation(structure: RnaStructureDto): AssociationWithProviderValues {
         const toPVs = ProviderValueFactory.buildProviderValuesMapper(
             this.providerNameRna,
             ApiAssoDtoMapper.apiDateToDate(structure.identite.date_modif_rna),
