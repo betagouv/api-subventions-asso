@@ -128,10 +128,12 @@ export default class OsirisActionMapper {
             const fields = mapping.fields as Record<string, string | FieldMapping>;
             const target = (dto[mapping.key] as OsirisActionRawCategory) || {};
 
-            for (const [rawField, value] of Object.entries(rawValues)) {
+            for (const [rawField, rawValue] of Object.entries(rawValues)) {
                 const fieldConfig = fields[rawField];
                 if (!fieldConfig) continue;
-                if (value === null || value === undefined) continue;
+
+                const value: OsirisActionRawValue = typeof rawValue === "string" ? rawValue.trim() : rawValue;
+                if (value === null || value === undefined || value === "") continue;
 
                 if (typeof fieldConfig === "string") {
                     target[fieldConfig] = value as OsirisActionRawValue;
