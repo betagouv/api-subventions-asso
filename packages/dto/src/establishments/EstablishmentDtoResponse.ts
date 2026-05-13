@@ -1,8 +1,8 @@
 import { AssociationWithProviderValues } from "../associations";
 import { DemandeSubvention } from "../demandeSubvention";
-import { Establishment } from "./Establishment";
+import { EstablishmentWithProviderValues } from "./EstablishmentWithProviderValues";
 
-export interface EstablishmentDetailed extends Establishment {
+export interface EstablishmentDetailed extends EstablishmentWithProviderValues {
     association: AssociationWithProviderValues;
     demandes_subventions: DemandeSubvention[] | null;
 }

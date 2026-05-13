@@ -1,11 +1,11 @@
-import { Establishment } from "../establishments";
+import { EstablishmentWithProviderValues } from "../establishments";
 
 export interface GetEstablishmentSuccessResponseDto {
-    etablissement: Omit<Omit<Establishment, "demandes_subventions">, "versements">;
+    etablissement: Omit<Omit<EstablishmentWithProviderValues, "demandes_subventions">, "versements">;
 }
 
 export interface SearchEstablishmentSuccessResponseDto {
-    etablissement: Establishment;
+    etablissement: EstablishmentWithProviderValues;
 }
 
 export type GetEstablishmentResponseDto = GetEstablishmentSuccessResponseDto | SearchEstablishmentSuccessResponseDto;

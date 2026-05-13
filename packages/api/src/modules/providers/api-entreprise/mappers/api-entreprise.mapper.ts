@@ -1,4 +1,4 @@
-import { Establishment } from "dto";
+import { EstablishmentWithProviderValues } from "dto";
 import { getMonthFromFrenchStr } from "../../../../shared/helpers/DateHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import type ApiEntrepriseHeadcount from "../@types/ApiEntrepriseHeadcount";
@@ -6,7 +6,7 @@ import Siret from "../../../../identifier-objects/Siret";
 
 export default class ApiEntrepriseMapper {
     static PROVIDER_NAME = "API Entreprise";
-    static toEstablishment(data: ApiEntrepriseHeadcount): Establishment {
+    static toEstablishment(data: ApiEntrepriseHeadcount): EstablishmentWithProviderValues {
         const toProviderValue = ProviderValueFactory.buildProviderValuesMapper(
             this.PROVIDER_NAME,
             new Date(parseInt(data.annee, 10), parseInt(data.mois, 10)),

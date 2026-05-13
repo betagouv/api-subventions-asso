@@ -1,4 +1,4 @@
-import { ProviderValues, Establishment } from "dto";
+import { ProviderValues, EstablishmentWithProviderValues } from "dto";
 
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "core";
@@ -36,7 +36,7 @@ export class EstablishmentService {
             // force TS typing because Establishment[] is DefaultObject<ProviderValues>[]
             data as unknown as DefaultObject<ProviderValues>[],
             this.provider_score,
-        ) as unknown as Establishment;
+        ) as unknown as EstablishmentWithProviderValues;
     }
 
     async getEstablishments(identifier: AssociationIdentifier) {
@@ -55,7 +55,7 @@ export class EstablishmentService {
 
                 return acc;
             },
-            {} as DefaultObject<Establishment[]>,
+            {} as DefaultObject<EstablishmentWithProviderValues[]>,
         );
         const establishments = Object.values(groupBySiret).map(
             establishment =>
@@ -64,11 +64,13 @@ export class EstablishmentService {
                     // @ts-expect-error: transform Establishment[] to DefaultObject<ProviderValues>[]
                     establishment as DefaultObject<ProviderValues>[],
                     this.provider_score,
-                ) as Establishment,
+                ) as EstablishmentWithProviderValues,
         );
 
-        const sortEstablishmentsByStatus = (establishmentA: Establishment, establishmentB: Establishment) =>
-            this.scoreEstablishment(establishmentB) - this.scoreEstablishment(establishmentA);
+        const sortEstablishmentsByStatus = (
+            establishmentA: EstablishmentWithProviderValues,
+            establishmentB: EstablishmentWithProviderValues,
+        ) => this.scoreEstablishment(establishmentB) - this.scoreEstablishment(establishmentA);
         const sortedEstablishment = establishments.sort(sortEstablishmentsByStatus); // The order is the "siege" first, the secondary is open, the third is closed.
         return sortedEstablishment.map(establishment => EstablishmentMapper.toSimplifiedEstablishment(establishment));
     }
@@ -98,7 +100,7 @@ export class EstablishmentService {
 
         const promises = establishmentProviders.map(provider => {
             try {
-                return provider.getEstablishments(id);
+                return provider.getEstablishmentsWithProviderValues(id);
             } catch (e) {
                 Sentry.captureException(e);
                 console.error(provider, e);
@@ -116,7 +118,7 @@ export class EstablishmentService {
         return (data as EstablishmentProvider).isEstablishmentProvider;
     }
 
-    private scoreEstablishment(establishment: Establishment) {
+    private scoreEstablishment(establishment: EstablishmentWithProviderValues) {
         let score = 0;
 
         if (establishment.ouvert && establishment.ouvert[0].value) score += 1;

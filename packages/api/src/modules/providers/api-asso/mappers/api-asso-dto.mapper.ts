@@ -1,4 +1,9 @@
-import { Establishment, AssociationWithProviderValues, DocumentWithProviderValueDto, AssociationNature } from "dto";
+import {
+    EstablishmentWithProviderValues,
+    AssociationWithProviderValues,
+    DocumentWithProviderValueDto,
+    AssociationNature,
+} from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import {
     StructureDacDocumentDto,
@@ -105,7 +110,7 @@ export default class ApiAssoDtoMapper {
         ribs: StructureRibDto[],
         representantsLegaux: StructureRepresentantLegalDto[],
         dateModif: string,
-    ): Establishment {
+    ): EstablishmentWithProviderValues {
         const toSirenPvs = ProviderValueFactory.buildProviderValuesMapper(
             this.providerNameSiren,
             ApiAssoDtoMapper.apiDateToDate(dateModif),

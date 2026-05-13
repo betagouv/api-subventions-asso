@@ -1,5 +1,5 @@
 import grantExtractService from "./grant-extract.service";
-import { Association, EstablishmentSimplified } from "dto";
+import { Association, EstablishmentSimplifiedWithProviderValues } from "dto";
 import grantService from "./grant.service";
 import associationsService from "../associations/associations.service";
 import GrantMapper from "./grant.mapper";
@@ -24,7 +24,7 @@ describe("GrantExtractService", () => {
         const IDENTIFIER = EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIRET.toSiren()));
         // @ts-expect-error: we don't care about the structure here
         const GRANTS: GrantFlatEntity[] = [1, 2, 3];
-        const ESTABS = [{ siret: [{ value: SIRET.value }] }] as unknown as EstablishmentSimplified[];
+        const ESTABS = [{ siret: [{ value: SIRET.value }] }] as unknown as EstablishmentSimplifiedWithProviderValues[];
         const ASSO = { denomination_siren: [{ value: "NomAsso" }] } as unknown as Association;
         const ESTABS_BY_SIRET = { [SIRET.value]: ESTABS[0] };
         let isSirenSpy: jest.SpyInstance;

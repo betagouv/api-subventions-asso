@@ -1,4 +1,4 @@
-import { AssociationWithProviderValues, Establishment } from "dto";
+import { AssociationWithProviderValues, EstablishmentWithProviderValues } from "dto";
 import apiAssoService from "../../src/modules/providers/api-asso/api-asso.service";
 import ProviderValueFactory from "../../src/shared/ProviderValueFactory";
 
@@ -61,7 +61,7 @@ const API_ASSO_CONTACT = {
     role: "Photographe",
 };
 
-export const API_ASSO_ESTABLISHMENTS_FROM_SIREN: Establishment[] = [
+export const API_ASSO_ESTABLISHMENTS_FROM_SIREN: EstablishmentWithProviderValues[] = [
     {
         siret: apiAssoToPVs(SIRET_STR),
         nic: apiAssoToPVs(NIC_STR),

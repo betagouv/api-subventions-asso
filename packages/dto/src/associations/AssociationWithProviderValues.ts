@@ -8,7 +8,7 @@ import { Payment } from "../payments/Payment";
 import { ExtraitRcsDto } from "./ExtraitRcsDto";
 import { BodaccRecordDto } from "./BodaccRecordDto";
 import { AssociationNature } from "./AssociationNature";
-import { Establishment } from "../establishments";
+import { EstablishmentWithProviderValues } from "../establishments";
 
 export interface AssociationWithProviderValues {
     siren?: ProviderValues<SirenDto>;
@@ -57,7 +57,7 @@ export interface AssociationWithProviderValues {
         ETPT?: ProviderValues<number>;
     };
     versements?: Payment[];
-    etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Establishment)[] | null;
+    etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & EstablishmentWithProviderValues)[] | null;
     extrait_rcs?: ProviderValues<ExtraitRcsDto> | null;
     bodacc?: ProviderValues<BodaccRecordDto[]>;
 }

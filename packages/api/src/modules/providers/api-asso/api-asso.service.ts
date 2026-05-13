@@ -1,4 +1,4 @@
-import { AssociationWithProviderValues, Establishment, DocumentWithProviderValueDto } from "dto";
+import { AssociationWithProviderValues, EstablishmentWithProviderValues, DocumentWithProviderValueDto } from "dto";
 import { XMLParser } from "fast-xml-parser";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
@@ -118,7 +118,7 @@ export class ApiAssoService
         return ApiAssoDtoMapper.sirenStructureToAssociation(sirenStructure);
     }
 
-    public async findEstablishmentsBySiren(siren: Siren): Promise<Establishment[]> {
+    public async findEstablishmentsBySiren(siren: Siren): Promise<EstablishmentWithProviderValues[]> {
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren.value}`);
 
         if (!structure?.identite || !Object.keys(structure.identite).length || hasEmptyProperties(structure.identite))
@@ -315,7 +315,9 @@ export class ApiAssoService
 
     isEstablishmentProvider = true;
 
-    async getEstablishments(identifier: StructureIdentifier): Promise<Establishment[]> {
+    async getEstablishmentsWithProviderValues(
+        identifier: StructureIdentifier,
+    ): Promise<EstablishmentWithProviderValues[]> {
         if (identifier instanceof AssociationIdentifier && identifier.siren) {
             return this.findEstablishmentsBySiren(identifier.siren);
         } else if (identifier instanceof EstablishmentIdentifier && identifier.siret) {

@@ -231,7 +231,7 @@ describe("/association", () => {
     });
 
     describe("/{structure_identifier}/etablissements", () => {
-        it("should return EstablishmentSimplified[]", async () => {
+        it("should return EstablishmentSimplifiedWithProviderValues[]", async () => {
             const response = await request(g.app)
                 .get(`/association/${SIREN_STR}/etablissements`)
                 .set("x-access-token", await createAndGetUserToken())

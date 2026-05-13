@@ -1,4 +1,10 @@
-import { ApplicationStatus, AssociationWithProviderValues, Establishment, RnaDto, ApplicationNature } from "dto";
+import {
+    ApplicationStatus,
+    AssociationWithProviderValues,
+    EstablishmentWithProviderValues,
+    RnaDto,
+    ApplicationNature,
+} from "dto";
 import ProviderValueFactory from "../../../shared/ProviderValueFactory";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
@@ -98,7 +104,7 @@ export default class OsirisMapper {
         };
     }
 
-    static toEstablishment(entity: OsirisRequestEntity): Establishment {
+    static toEstablishment(entity: OsirisRequestEntity): EstablishmentWithProviderValues {
         const association = entity.association || {};
         const coordonnees = entity.coordonnees || {};
         const representantLegal = entity.representantLegal || {};

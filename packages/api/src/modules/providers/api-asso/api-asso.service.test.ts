@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Establishment } from "dto";
+import { EstablishmentWithProviderValues } from "dto";
 import ApiAssoDtoMapper from "./mappers/api-asso-dto.mapper";
 import apiAssoService from "./api-asso.service";
 import { DacDtoDocument, RnaDtoDocument } from "./__fixtures__/DtoDocumentFixture";
@@ -19,7 +19,7 @@ jest.mock("./mappers/api-asso-dto.mapper", () => ({
     rnaDocumentToDocument: jest.fn().mockImplementation(() => RnaDtoDocument),
     dacDocumentToDocument: jest.fn().mockImplementation(() => DacDtoDocument),
     dacDocumentToRib: jest.fn(),
-    toEstablishment: r => ({ ...r, siret: [{ value: r.id_siret }] }) as unknown as Establishment,
+    toEstablishment: r => ({ ...r, siret: [{ value: r.id_siret }] }) as unknown as EstablishmentWithProviderValues,
     rnaStructureToAssociation: jest.fn().mockImplementation(data => data),
     sirenStructureToAssociation: jest.fn().mockImplementation(data => data),
 }));
@@ -395,20 +395,20 @@ describe("ApiAssoService", () => {
             findDocumentsMock.mockRestore();
         });
 
-        describe("getEstablishments", () => {
+        describe("getEstablishmentsWithProviderValues", () => {
             const SIREN = new Siren("000000000");
             const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
             const SIRET = SIREN.toSiret("00001");
             const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
             it("should call findEstablishmentsBySiren with Association identifier", async () => {
                 findEstablishmentsBySirenMock.mockResolvedValueOnce([]);
-                await apiAssoService.getEstablishments(ASSOCIATION_ID);
+                await apiAssoService.getEstablishmentsWithProviderValues(ASSOCIATION_ID);
                 expect(findEstablishmentsBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
             it("should call findEstablishmentsBySiren with Establishment identifier", async () => {
                 findEstablishmentsBySirenMock.mockResolvedValueOnce([]);
-                await apiAssoService.getEstablishments(ESTABLISHMENT_ID);
+                await apiAssoService.getEstablishmentsWithProviderValues(ESTABLISHMENT_ID);
                 expect(findEstablishmentsBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
@@ -418,7 +418,7 @@ describe("ApiAssoService", () => {
                     { siret: [{ value: SIRET.value }] },
                     { siret: [{ value: SIREN.toSiret("00002").value }] },
                 ]);
-                const actual = await apiAssoService.getEstablishments(ESTABLISHMENT_ID);
+                const actual = await apiAssoService.getEstablishmentsWithProviderValues(ESTABLISHMENT_ID);
                 expect(actual).toHaveLength(expected);
             });
         });
@@ -440,7 +440,7 @@ describe("ApiAssoService", () => {
                     .mockReturnValue("1900-01-01");
                 toEstablishmentMock = jest
                     .spyOn(ApiAssoDtoMapper, "toEstablishment")
-                    .mockImplementation(data => data as unknown as Establishment);
+                    .mockImplementation(data => data as unknown as EstablishmentWithProviderValues);
             });
 
             afterAll(() => {
