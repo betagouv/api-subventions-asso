@@ -1,4 +1,5 @@
 import OsirisActionDto, { OsirisActionRawData } from "../osiris-action.dto";
+import DEFAULT_ASSOCIATION from "../../../../../../tests/__fixtures__/association.fixture";
 
 export const OSIRIS_ACTION_RAW_DATA: OsirisActionRawData = {
     "Dossier/action": {
@@ -8,7 +9,7 @@ export const OSIRIS_ACTION_RAW_DATA: OsirisActionRawData = {
         "N° EJ": "EJ00001",
     },
     Bénéficiaire: {
-        "N° Siret": "10000000000001",
+        "N° Siret": DEFAULT_ASSOCIATION.siret,
     },
     "Fédération d'affiliation": {
         Fédération: "Fédération Sportive",
@@ -71,7 +72,7 @@ const OSIRIS_ACTION_DTO: OsirisActionDto = {
         ej: "EJ00001",
     },
     beneficiaire: {
-        siret: "10000000000001",
+        siret: DEFAULT_ASSOCIATION.siret,
     },
     federation: {
         federation: "Fédération Sportive",

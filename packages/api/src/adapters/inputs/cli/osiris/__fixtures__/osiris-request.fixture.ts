@@ -1,4 +1,5 @@
 import OsirisRequestDto, { OsirisRequestRawData } from "../osiris-request.dto";
+import DEFAULT_ASSOCIATION from "../../../../../../tests/__fixtures__/association.fixture";
 
 // Raw shape produced by OsirisParser.parseRequests, with the original French
 // XLSX labels. Used to feed OsirisRequestMapper.toDto() in tests.
@@ -18,9 +19,9 @@ export const OSIRIS_REQUEST_RAW_DATA: OsirisRequestRawData = {
         Pluriannualite: "Annuel",
     },
     Bénéficiaire: {
-        "N° RNA": "W595004053",
-        "N° Siret": "35130347400024",
-        Nom: "ASSOCIATION TEST",
+        "N° RNA": DEFAULT_ASSOCIATION.rna,
+        "N° Siret": DEFAULT_ASSOCIATION.siret,
+        Nom: DEFAULT_ASSOCIATION.name,
         Siege: "Oui",
         IBAN: "FR7642559100000800330277358",
         BIC: "CCOPFRPPXXX",
@@ -73,9 +74,9 @@ const OSIRIS_REQUEST_DTO: OsirisRequestDto = {
         pluriannualite: "Annuel",
     },
     association: {
-        rna: "W595004053",
-        siret: "35130347400024",
-        nom: "ASSOCIATION TEST",
+        rna: DEFAULT_ASSOCIATION.rna,
+        siret: DEFAULT_ASSOCIATION.siret,
+        nom: DEFAULT_ASSOCIATION.name,
         siege: "Oui",
         iban: "FR7642559100000800330277358",
         bic: "CCOPFRPPXXX",
