@@ -13,6 +13,7 @@ import { GenericParser } from "../../../../shared/GenericParser";
 import dataLogService from "../../../../modules/data-log/dataLog.service";
 import OsirisActionDto from "./osiris-action.dto";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
+import { isCompteAssoId, isOsirisActionId } from "../../../../shared/Validators";
 
 @StaticImplements<CliStaticInterface>()
 export default class OsirisCli implements ApplicationFlatCli {
@@ -25,6 +26,24 @@ export default class OsirisCli implements ApplicationFlatCli {
 
     private static isCompleteRequestDto(dto: OsirisRequestDto): boolean {
         return Boolean(dto.dossier?.osirisId);
+    }
+
+    private static validateActionDto(dto: OsirisActionDto): { message: string; data: unknown } | true {
+        if (!isCompteAssoId(dto.dossier?.compteAssoId ?? "")) {
+            return {
+                message: `INVALID COMPTE ASSO ID (${dto.dossier?.compteAssoId}) FOR SIRET ${dto.beneficiaire?.siret}`,
+                data: dto.dossier,
+            };
+        }
+
+        if (!isOsirisActionId(dto.dossier?.numeroActionOsiris ?? "")) {
+            return {
+                message: `INVALID OSIRIS ACTION ID (${dto.dossier?.numeroActionOsiris}) FOR SIRET ${dto.beneficiaire?.siret}`,
+                data: dto.dossier,
+            };
+        }
+
+        return true;
     }
 
     public async parse(type: "requests" | "actions", file: string, extractYear: string): Promise<unknown> {
@@ -134,12 +153,28 @@ export default class OsirisCli implements ApplicationFlatCli {
         `);
     }
 
-    async _parseAction(contentFile: Buffer, year: number, _logs: unknown[]) {
+    async _parseAction(contentFile: Buffer, year: number, logs: unknown[]) {
         const dtos: OsirisActionDto[] = OsirisParser.parseActions(contentFile, year).map(raw =>
             OsirisActionMapper.toDto(raw),
         );
 
-        const entities: OsirisActionEntity[] = dtos.map(dto => OsirisActionMapper.toEntity(dto, year));
+        let nbErrors = 0;
+        const validDtos: OsirisActionDto[] = [];
+
+        dtos.forEach(dto => {
+            const validation = OsirisCli.validateActionDto(dto);
+
+            if (validation !== true) {
+                logs.push(
+                    `\n\nThis action is not registered because: ${validation.message}\n`,
+                    JSON.stringify(validation.data, null, "\t"),
+                );
+
+                nbErrors += 1;
+            } else validDtos.push(dto);
+        });
+
+        const entities: OsirisActionEntity[] = validDtos.map(dto => OsirisActionMapper.toEntity(dto, year));
 
         let tictackClock = true;
 
@@ -157,10 +192,11 @@ export default class OsirisCli implements ApplicationFlatCli {
         CliHelper.printProgress(entities.length, entities.length);
 
         console.info(`
-            ${entities.length}/${entities.length}
+            ${entities.length}/${dtos.length}
             ${result.insertedCount + result.upsertedCount} actions created and ${
                 result.modifiedCount + result.matchedCount
             } actions updated
+            ${nbErrors} actions not valid
         `);
     }
 

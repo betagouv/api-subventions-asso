@@ -81,7 +81,10 @@ describe("Osiris cli", () => {
         const CONTENT_FILE = Buffer.from("toto");
         const YEAR = 1789;
         const RAW_DATA = ["rawData1", "rawData2"] as unknown as OsirisActionRawData[];
-        const DTOS = ["dto1", "dto2"] as unknown as OsirisActionDto[];
+        const DTOS: OsirisActionDto[] = [
+            { dossier: { numeroActionOsiris: "DD75-23-0001-1", compteAssoId: "23-000001" } },
+            { dossier: { numeroActionOsiris: "DD75-23-0002-1", compteAssoId: "23-000002" } },
+        ];
         const DOCS = ["entity1", "entity2"] as unknown as OsirisActionEntity[];
 
         beforeEach(() => {
@@ -107,7 +110,7 @@ describe("Osiris cli", () => {
             expect(OsirisActionMapper.toEntity).toHaveBeenCalledWith(DTOS[1], YEAR);
         });
 
-        it("bulk saves all entities without validation", async () => {
+        it("bulk saves all valid entities", async () => {
             await cli._parseAction(CONTENT_FILE, YEAR, []);
             expect(osirisService.bulkAddActions).toHaveBeenCalledWith(DOCS);
         });
