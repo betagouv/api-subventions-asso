@@ -46,6 +46,7 @@
         "node-xlsx": "^0.24.0",
         "puppeteer": "^14.4.1",
         "qs": "^6.11.2",
-        "signalr": "^2.4.3"
+        "signalr": "^2.4.3",
+        "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"
     }
 }
