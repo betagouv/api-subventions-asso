@@ -273,7 +273,7 @@ Les `hotfix` sont à merger sur la branche mère `PROD` ou `main`. Il faut esnui
 
 À chaque commit, un hook husky vérifie le nom du commit selon le [Conventionnal Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
-Pour faire simple, chaque commit doit spécifier le ou les packages lerna ciblés par le développement ainsi qu'un mot clé identifiant la nature du développement (feature, refactoring, test, hotfix, etc).
+Pour faire simple, chaque commit doit spécifier le ou les packages ciblés par le développement ainsi qu'un mot clé identifiant la nature du développement (feature, refactoring, test, hotfix, etc).
 
 Par exemple, un commit de feature classique sur l'API se nommera "feat(api): nouvelle fonctionnalité".
 

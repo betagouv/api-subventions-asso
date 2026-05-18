@@ -2,7 +2,7 @@
 
 if [ -z "$PACKAGE" ]
 then
-  npx lerna run build
+  pnpm build
 else
   pnpm build:$PACKAGE
 fi
