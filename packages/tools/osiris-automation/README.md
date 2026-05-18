@@ -23,6 +23,10 @@ Régulièrement le chromium s'ouvre sur une page blanche. En ouvrant un nouvel o
 
 Le téléchargement est long (surtout pour les actions) et plante régulièrement sans remontée d'erreur. Il faut alors relancer le script qui reprendra à la dernière possibilité téléchargée.
 
+## NETTOYAGE
+
+Le script Osiris/remove-empty-files.js permet de supprimer les fichiers ne contenant aucune ligne (mise à part en-têtes et pied de page) et alléger l'archive à envoyer sur Scalingo.
+
 ## IMPORTATION
 
 Pour importer les fichiers sur Scalingo, se référer au script présent dans `packages/api/tools/osiris`

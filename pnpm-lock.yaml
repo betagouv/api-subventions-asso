@@ -467,6 +467,9 @@ importers:
       signalr:
         specifier: ^2.4.3
         version: 2.4.3
+      xlsx:
+        specifier: file:../../vendor/xlsx-0.20.3.tgz
+        version: file:vendor/xlsx-0.20.3.tgz
 
 packages:
 
