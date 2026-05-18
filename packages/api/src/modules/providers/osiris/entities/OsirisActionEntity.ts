@@ -7,12 +7,10 @@ export interface OsirisActionDossier {
     compteAssoId: string;
     exerciceBudgetaire: number;
     ej?: string;
-    [key: string]: unknown;
 }
 
 export interface OsirisActionBeneficiaire {
     siret?: string;
-    [key: string]: unknown;
 }
 
 export interface OsirisActionFederation {
@@ -20,7 +18,6 @@ export interface OsirisActionFederation {
     nombreLicencies?: number;
     nombreLicenciesHommes?: number;
     nombreLicenciesFemmes?: number;
-    [key: string]: unknown;
 }
 
 export interface OsirisActionMoyens {
@@ -36,13 +33,11 @@ export interface OsirisActionMoyens {
     emploiesAidesETPT: number;
     volontairesNombre: number;
     volontairesETPT: number;
-    [key: string]: unknown;
 }
 
 export interface OsirisActionTerritoires {
     statut?: string;
     commentaire?: string;
-    [key: string]: unknown;
 }
 
 export interface OsirisActionCaracteristiques {
@@ -54,18 +49,15 @@ export interface OsirisActionCaracteristiques {
     natureAide?: string;
     modaliteAide?: string;
     modaliteOuDispositif?: string;
-    [key: string]: unknown;
 }
 
 export interface OsirisActionEvaluation {
     indicateurs?: string;
-    [key: string]: unknown;
 }
 
 export interface OsirisActionCofinanceurs {
     noms?: string;
     montantsDemandes?: number;
-    [key: string]: unknown;
 }
 
 export interface OsirisActionMontants {
@@ -76,7 +68,6 @@ export interface OsirisActionMontants {
     montantTotalAttribue?: number;
     realise?: number;
     compensation?: number;
-    [key: string]: unknown;
 }
 
 export default interface OsirisActionEntity {
