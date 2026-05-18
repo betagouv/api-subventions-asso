@@ -1,4 +1,5 @@
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
+import { sanitizeFloat } from "../../../../shared/helpers/NumberHelper";
 import OsirisActionDto, {
     OsirisActionBeneficiaireDto,
     OsirisActionCaracteristiquesDto,
@@ -14,94 +15,85 @@ import OsirisActionDto, {
     OsirisActionTerritoiresDto,
 } from "./osiris-action.dto";
 
-type FieldMap<T> = Readonly<Record<string, keyof T | FieldMapping>>;
-type AdapterFunction = (value: OsirisActionRawValue) => OsirisActionRawValue;
+type Formatter = (value: OsirisActionRawValue) => OsirisActionRawValue;
+type FieldMap<T> = Readonly<Record<string, { dtoKey: keyof T & string; format?: Formatter }>>;
 
 interface FieldMapping {
     dtoKey: string;
-    format?: AdapterFunction;
+    format?: Formatter;
 }
-
 interface CategoryMapping {
     key: keyof OsirisActionDto;
-    fields: Readonly<Record<string, string | FieldMapping>>;
+    fields: Readonly<Record<string, FieldMapping>>;
 }
 
-const toNumber = (value: OsirisActionRawValue): number | null | undefined => {
-    if (!value) return value as null | undefined;
-    if (typeof value === "number") return value;
-    const cleanValue = (value as string).replace(/[^0-9.,-]/g, "").replace(",", ".");
-    const parsed = parseFloat(cleanValue);
-    return isNaN(parsed) ? undefined : parsed;
-};
-
 const DOSSIER_FIELDS = {
-    "Numero Action Osiris": "numeroActionOsiris",
-    "N° Dossier Compte Asso": "compteAssoId",
-    "Exercice budgetaire": "exerciceBudgetaire",
-    "Exercice Budgetaire": "exerciceBudgetaire",
-    "N° EJ": "ej",
+    "Numero Action Osiris": { dtoKey: "numeroActionOsiris" },
+    "N° Dossier Compte Asso": { dtoKey: "compteAssoId" },
+    "Exercice budgetaire": { dtoKey: "exerciceBudgetaire" },
+    "Exercice Budgetaire": { dtoKey: "exerciceBudgetaire" },
+    "N° EJ": { dtoKey: "ej" },
 } as const satisfies FieldMap<OsirisActionDossierDto>;
 
 const BENEFICIAIRE_FIELDS = {
-    "N° Siret": "siret",
+    "N° Siret": { dtoKey: "siret" },
 } as const satisfies FieldMap<OsirisActionBeneficiaireDto>;
 
 const FEDERATION_FIELDS = {
-    Fédération: "federation",
-    "Nombre licenciés": { dtoKey: "nombreLicencies", format: toNumber },
-    "Nombre licenciés hommes": { dtoKey: "nombreLicenciesHommes", format: toNumber },
-    "Nombre licenciées femmes": { dtoKey: "nombreLicenciesFemmes", format: toNumber },
+    Fédération: { dtoKey: "federation" },
+    "Nombre licenciés": { dtoKey: "nombreLicencies", format: sanitizeFloat },
+    "Nombre licenciés hommes": { dtoKey: "nombreLicenciesHommes", format: sanitizeFloat },
+    "Nombre licenciées femmes": { dtoKey: "nombreLicenciesFemmes", format: sanitizeFloat },
 } as const satisfies FieldMap<OsirisActionFederationDto>;
 
 const MOYENS_FIELDS = {
-    "Bénévoles Nombre": { dtoKey: "benevolesNombre", format: toNumber },
-    "Bénévoles ETPT": { dtoKey: "benevolesETPT", format: toNumber },
-    "Salariés Nombre": { dtoKey: "salariesNombre", format: toNumber },
-    "Salariés ETPT": { dtoKey: "salariesETPT", format: toNumber },
-    "Dont en CDI Nombre": { dtoKey: "salariesCDINombre", format: toNumber },
-    "Dont en CDI ETPT": { dtoKey: "salariesCDIETPT", format: toNumber },
-    "Dont en CDD Nombre": { dtoKey: "salariesCDDNombre", format: toNumber },
-    "Dont en CDD ETPT": { dtoKey: "salariesCDDETPT", format: toNumber },
-    "Dont emplois aidés Nombre": { dtoKey: "emploiesAidesNombre", format: toNumber },
-    "Dont emplois aidés ETPT": { dtoKey: "emploiesAidesETPT", format: toNumber },
-    "Volontaires Nombre": { dtoKey: "volontairesNombre", format: toNumber },
-    "Volontaires ETPT": { dtoKey: "volontairesETPT", format: toNumber },
+    "Bénévoles Nombre": { dtoKey: "benevolesNombre", format: sanitizeFloat },
+    "Bénévoles ETPT": { dtoKey: "benevolesETPT", format: sanitizeFloat },
+    "Salariés Nombre": { dtoKey: "salariesNombre", format: sanitizeFloat },
+    "Salariés ETPT": { dtoKey: "salariesETPT", format: sanitizeFloat },
+    "Dont en CDI Nombre": { dtoKey: "salariesCDINombre", format: sanitizeFloat },
+    "Dont en CDI ETPT": { dtoKey: "salariesCDIETPT", format: sanitizeFloat },
+    "Dont en CDD Nombre": { dtoKey: "salariesCDDNombre", format: sanitizeFloat },
+    "Dont en CDD ETPT": { dtoKey: "salariesCDDETPT", format: sanitizeFloat },
+    "Dont emplois aidés Nombre": { dtoKey: "emploiesAidesNombre", format: sanitizeFloat },
+    "Dont emplois aidés ETPT": { dtoKey: "emploiesAidesETPT", format: sanitizeFloat },
+    "Volontaires Nombre": { dtoKey: "volontairesNombre", format: sanitizeFloat },
+    "Volontaires ETPT": { dtoKey: "volontairesETPT", format: sanitizeFloat },
 } as const satisfies FieldMap<OsirisActionMoyensDto>;
 
 const TERRITOIRES_FIELDS = {
-    Statut: "statut",
-    Commentaire: "commentaire",
+    Statut: { dtoKey: "statut" },
+    Commentaire: { dtoKey: "commentaire" },
 } as const satisfies FieldMap<OsirisActionTerritoiresDto>;
 
 const CARACTERISTIQUES_FIELDS = {
-    Rang: { dtoKey: "rang", format: toNumber },
-    Intitulé: "intitule",
-    Objectifs: "objectifs",
-    "Objectifs opérationnels": "objectifsOperationnels",
-    Description: "description",
-    "Nature de l'aide": "natureAide",
-    "Modalité de l'aide": "modaliteAide",
-    "Modalité ou dispositif": "modaliteOuDispositif",
+    Rang: { dtoKey: "rang", format: sanitizeFloat },
+    Intitulé: { dtoKey: "intitule" },
+    Objectifs: { dtoKey: "objectifs" },
+    "Objectifs opérationnels": { dtoKey: "objectifsOperationnels" },
+    Description: { dtoKey: "description" },
+    "Nature de l'aide": { dtoKey: "natureAide" },
+    "Modalité de l'aide": { dtoKey: "modaliteAide" },
+    "Modalité ou dispositif": { dtoKey: "modaliteOuDispositif" },
 } as const satisfies FieldMap<OsirisActionCaracteristiquesDto>;
 
 const EVALUATION_FIELDS = {
-    Indicateurs: "indicateurs",
+    Indicateurs: { dtoKey: "indicateurs" },
 } as const satisfies FieldMap<OsirisActionEvaluationDto>;
 
 const COFINANCEURS_FIELDS = {
-    Noms: "noms",
-    "Montants demandés": { dtoKey: "montantsDemandes", format: toNumber },
+    Noms: { dtoKey: "noms" },
+    "Montants demandés": { dtoKey: "montantsDemandes", format: sanitizeFloat },
 } as const satisfies FieldMap<OsirisActionCofinanceursDto>;
 
 const MONTANTS_FIELDS = {
-    "Coût (total charges)": { dtoKey: "coutTotalCharges", format: toNumber },
-    Demandé: { dtoKey: "demande", format: toNumber },
-    Proposé: { dtoKey: "propose", format: toNumber },
-    Accordé: { dtoKey: "accorde", format: toNumber },
-    "Montant Total Attribué": { dtoKey: "montantTotalAttribue", format: toNumber },
-    Réalisé: { dtoKey: "realise", format: toNumber },
-    Compensation: { dtoKey: "compensation", format: toNumber },
+    "Coût (total charges)": { dtoKey: "coutTotalCharges", format: sanitizeFloat },
+    Demandé: { dtoKey: "demande", format: sanitizeFloat },
+    Proposé: { dtoKey: "propose", format: sanitizeFloat },
+    Accordé: { dtoKey: "accorde", format: sanitizeFloat },
+    "Montant Total Attribué": { dtoKey: "montantTotalAttribue", format: sanitizeFloat },
+    Réalisé: { dtoKey: "realise", format: sanitizeFloat },
+    Compensation: { dtoKey: "compensation", format: sanitizeFloat },
 } as const satisfies FieldMap<OsirisActionMontantsDto>;
 
 export const CATEGORY_MAPPING = {
@@ -125,7 +117,7 @@ export default class OsirisActionMapper {
             const mapping = (CATEGORY_MAPPING as Record<string, CategoryMapping>)[rawCategory];
             if (!mapping || !rawValues) continue;
 
-            const fields = mapping.fields as Record<string, string | FieldMapping>;
+            const fields = mapping.fields as Record<string, FieldMapping>;
             const target = (dto[mapping.key] as OsirisActionRawCategory) || {};
 
             for (const [rawField, rawValue] of Object.entries(rawValues)) {
@@ -135,12 +127,8 @@ export default class OsirisActionMapper {
                 const value: OsirisActionRawValue = typeof rawValue === "string" ? rawValue.trim() : rawValue;
                 if (value === null || value === undefined || value === "") continue;
 
-                if (typeof fieldConfig === "string") {
-                    target[fieldConfig] = value as OsirisActionRawValue;
-                } else {
-                    const formattedValue = fieldConfig.format ? fieldConfig.format(value) : value;
-                    target[fieldConfig.dtoKey] = formattedValue as OsirisActionRawValue;
-                }
+                const formattedValue = fieldConfig.format ? fieldConfig.format(value) : value;
+                target[fieldConfig.dtoKey] = formattedValue as OsirisActionRawValue;
             }
 
             dto[mapping.key] = target;
