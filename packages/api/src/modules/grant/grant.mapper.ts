@@ -1,4 +1,4 @@
-import { Association, EstablishmentSimplified } from "dto";
+import { AssociationWithProviderValues, EstablishmentSimplifiedWithProviderValues } from "dto";
 import { GrantToExtract } from "./@types/GrantToExtract";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
@@ -34,8 +34,8 @@ export default class GrantMapper {
 
     static grantToExtractLine(
         grant: GrantFlatEntity,
-        asso: Association,
-        estabBySiret: Record<string, EstablishmentSimplified>,
+        asso: AssociationWithProviderValues,
+        estabBySiret: Record<string, EstablishmentSimplifiedWithProviderValues>,
     ): GrantToExtract {
         if (!grant.application && grant.payments.length === 0) throw new Error("grant has no application nor payment");
 

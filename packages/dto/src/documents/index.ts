@@ -1,3 +1,3 @@
-export * from "./DocumentDto";
+export * from "./DocumentWithProviderValueDto";
 export * from "./DocumentRequestDto";
 export * from "./GetDocumentsResponseDto";

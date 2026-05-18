@@ -1,4 +1,4 @@
-import { ApplicationNature, ApplicationStatus, DocumentDto, ProviderValue } from "dto";
+import { ApplicationNature, ApplicationStatus, DocumentWithProviderValueDto, ProviderValue } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
 import { toStatusFactory } from "../../providers.mapper";
@@ -62,7 +62,7 @@ export default class DauphinDtoMapper {
     }
 
     public static toDocuments(documentReferences: DauphinDocumentDto[]) {
-        const resultArray: DocumentDto[] = [];
+        const resultArray: DocumentWithProviderValueDto[] = [];
         let toPV: <T>(T) => ProviderValue<T>;
         for (const reference of documentReferences) {
             if (!reference.documents?.length) continue;

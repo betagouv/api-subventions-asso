@@ -1,3 +1,3 @@
-export * from "./Establishment";
+export * from "./EstablishmentWithProviderValues";
 export * from "./EstablishmentDtoResponse";
-export * from "./EstablishmentSimplified";
+export * from "./EstablishmentSimplifiedWithProviderValues";

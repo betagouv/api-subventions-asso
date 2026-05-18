@@ -1,4 +1,4 @@
-import { DocumentDto } from "dto";
+import { DocumentWithProviderValueDto } from "dto";
 
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
@@ -70,7 +70,7 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
         return siren.toSiret(nic);
     }
 
-    async getDocuments(identifier: StructureIdentifier): Promise<DocumentDto[]> {
+    async getDocuments(identifier: StructureIdentifier): Promise<DocumentWithProviderValueDto[]> {
         if (identifier instanceof AssociationIdentifier && !identifier.siren) {
             return [];
         }

@@ -1,5 +1,5 @@
 import GrantMapper from "./grant.mapper";
-import { Association, ProviderValues, EstablishmentSimplified } from "dto";
+import { Association, ProviderValues, EstablishmentSimplifiedWithProviderValues } from "dto";
 import paymentService from "../payments/payments.service";
 import { CHORUS_PAYMENT_FLAT_ENTITY, LONELY_CHORUS_PAYMENT } from "../payment-flat/__fixtures__/payment-flat.fixture";
 import { APPLICATION_LINK_TO_CHORUS } from "../application-flat/__fixtures__/application-flat.fixture";
@@ -81,7 +81,7 @@ describe("GrantAdapter", () => {
                 nic: makePVs("1234"),
                 adresse: makePVs({ code_postal: "31170" }),
             },
-        } as Record<string, EstablishmentSimplified>;
+        } as Record<string, EstablishmentSimplifiedWithProviderValues>;
 
         let singlePropMock: jest.SpyInstance;
         let addressToOneLineStringMock: jest.SpyInstance;

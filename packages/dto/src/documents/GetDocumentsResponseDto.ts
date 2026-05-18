@@ -1,9 +1,9 @@
-import { DocumentDto } from "./DocumentDto";
+import { DocumentWithProviderValueDto } from "./DocumentWithProviderValueDto";
 
 /** Réponse de GET /association/{identifier}/documents */
 export interface GetDocumentsSuccessResponseDto {
     /** Documents administratifs de l'association (RIB, statuts, attestations...) */
-    documents: DocumentDto[];
+    documents: DocumentWithProviderValueDto[];
 }
 
 export type GetDocumentsResponseDto = GetDocumentsSuccessResponseDto;

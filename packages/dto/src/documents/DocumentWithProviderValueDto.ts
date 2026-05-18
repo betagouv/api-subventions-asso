@@ -1,6 +1,6 @@
 import { SiretDto, ProviderValue } from "../shared";
 
-export interface DocumentDto {
+export interface DocumentWithProviderValueDto {
     /** Type de document (ex : RIB, attestation, statuts INSEE...) */
     type: ProviderValue<string>;
     /** URL d'accès au document */

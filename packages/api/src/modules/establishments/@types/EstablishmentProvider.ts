@@ -1,8 +1,9 @@
-import { Establishment } from "dto";
+import { EstablishmentWithProviderValues } from "dto";
 import Provider from "../../providers/@types/IProvider";
 import { StructureIdentifier } from "../../../identifier-objects/@types/StructureIdentifier";
 
 export default interface EstablishmentProvider extends Provider {
     isEstablishmentProvider: boolean;
-    getEstablishments(identifier: StructureIdentifier): Promise<Establishment[]>;
+    // getEstablishments(identifier: StructureIdentifier): Promise<Establishment[]>;
+    getEstablishmentsWithProviderValues(identifier: StructureIdentifier): Promise<EstablishmentWithProviderValues[]>;
 }

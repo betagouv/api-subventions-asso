@@ -1,6 +1,6 @@
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import associationsService from "./associations.service";
-import { Establishment, Payment, DocumentDto, DemandeSubvention } from "dto";
+import { Establishment, Payment, DocumentWithProviderValueDto, DemandeSubvention } from "dto";
 import subventionService from "../subventions/subventions.service";
 import providers from "../providers";
 import establishmentService from "../establishments/establishment.service";
@@ -136,7 +136,7 @@ describe("associationsService", () => {
 
     describe("getDocuments()", () => {
         it("should call documentService.getDocumentMock()", async () => {
-            getDocumentMock.mockImplementationOnce(() => Promise.resolve([{}] as DocumentDto[]));
+            getDocumentMock.mockImplementationOnce(() => Promise.resolve([{}] as DocumentWithProviderValueDto[]));
             await associationsService.getDocuments(IDENTIFIER);
             expect(getDocumentMock).toHaveBeenCalledWith(IDENTIFIER);
         });

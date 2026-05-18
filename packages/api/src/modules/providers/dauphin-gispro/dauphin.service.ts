@@ -1,6 +1,6 @@
 import { IncomingMessage } from "http";
 import qs from "qs";
-import { DocumentDto } from "dto";
+import { DocumentWithProviderValueDto } from "dto";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
@@ -174,7 +174,7 @@ export class DauphinService extends ProviderCore implements DocumentProvider {
 
     // no RIB document in dauphin
 
-    async getDocuments(identifier: StructureIdentifier): Promise<DocumentDto[]> {
+    async getDocuments(identifier: StructureIdentifier): Promise<DocumentWithProviderValueDto[]> {
         if (identifier instanceof AssociationIdentifier && !identifier.siren) {
             return [];
         }

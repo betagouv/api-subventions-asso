@@ -1,7 +1,7 @@
-import { Establishment, EstablishmentSimplified } from "dto";
+import { EstablishmentWithProviderValues, EstablishmentSimplifiedWithProviderValues } from "dto";
 
 export class EstablishmentMapper {
-    static toSimplifiedEstablishment(establishment: Establishment) {
+    static toSimplifiedEstablishment(establishment: EstablishmentWithProviderValues) {
         const { siret, nic, siege, ouvert, adresse, headcount } = establishment;
         return {
             siret,
@@ -10,6 +10,6 @@ export class EstablishmentMapper {
             ouvert,
             adresse,
             headcount,
-        } as EstablishmentSimplified;
+        } as EstablishmentSimplifiedWithProviderValues;
     }
 }

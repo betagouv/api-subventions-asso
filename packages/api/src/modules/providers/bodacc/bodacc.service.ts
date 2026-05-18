@@ -1,4 +1,4 @@
-import { Association } from "dto";
+import { AssociationWithProviderValues } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import ProviderCore from "../provider.core";
@@ -32,7 +32,9 @@ export class BodaccService extends ProviderCore implements AssociationsProvider 
             return null;
         }
     }
-    async getAssociations(identifier: AssociationIdentifier): Promise<Association[]> {
+    async getAssociationsWithProviderValues(
+        identifier: AssociationIdentifier,
+    ): Promise<AssociationWithProviderValues[]> {
         if (!identifier.siren) return [];
 
         const bodaccDto = await this.sendRequest(identifier.siren);
