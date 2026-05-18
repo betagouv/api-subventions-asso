@@ -18,3 +18,4 @@ export * from "./src/dataViz";
 export * from "./src/flat";
 export * from "./src/depositScdlProcess";
 export * from "./src/scdl";
+export * from "./src/providers";
