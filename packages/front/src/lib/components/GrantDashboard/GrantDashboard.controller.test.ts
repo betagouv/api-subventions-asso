@@ -19,7 +19,9 @@ import type {
 import { grantCompareFn } from "$lib/components/GrantDashboard/sort.helper";
 import type { TableCell } from "$lib/dsfr/TableCell.types";
 import type { GrantFlatDto } from "dto";
+import grantPort from "$lib/resources/grant/grant.port";
 
+vi.mock("$lib/resources/grant/grant.port");
 vi.mock("$lib/helpers/identifierHelper");
 vi.mock("$lib/resources/establishments/establishment.service");
 vi.mock("$lib/resources/establishments/establishment.port");
@@ -57,11 +59,14 @@ describe("GrantDashboard Controller", () => {
 
     const FLAT_GRANTS = () => [GRANT_FROM_2021(), GRANT_FROM_2023(), GRANT_FROM_2024()] as GrantFlatDto[];
 
+    const APPLICATION_FLAT_DETAILS = { actions: [] };
+
     let CTRL: GrantDashboardController;
 
     beforeAll(() => {
         vi.mocked(associationPort.getGrants).mockResolvedValue(FLAT_GRANTS());
         vi.mocked(establishmentPort.getGrants).mockResolvedValue(FLAT_GRANTS());
+        vi.mocked(grantPort.getApplicationProviderDetails).mockResolvedValue(APPLICATION_FLAT_DETAILS);
     });
 
     describe("constructor", () => {
@@ -410,7 +415,9 @@ describe("GrantDashboard Controller", () => {
 
             it("sets data", () => {
                 CTRL[method](INDEX);
-                expect(data.set).toHaveBeenCalledWith(modalData);
+                if (method === "onApplicationClick") {
+                    expect(data.set).toHaveBeenCalledWith({ ...modalData, details: expect.any(Promise) });
+                } else expect(data.set).toHaveBeenCalledWith(modalData);
             });
 
             it("sets modal component", () => {

@@ -1,40 +1,74 @@
-<script>
+<script lang="ts">
     import { data } from "$lib/store/modal.store";
     import { numberToEuro } from "$lib/helpers/dataHelper.js";
+    import type Store from "$lib/core/Store";
+    import type { ApplicationFlatDto, OsirisActions } from "dto";
+    import Spinner from "$lib/components/Spinner.svelte";
+    import { ProviderName, type ProviderDetailsMap } from "$lib/resources/grant/grant.port";
+
+    // @TODO: put this somewhere else ?
+    type ApplicationModalData<T = ProviderDetailsMap[ProviderName]> = {
+        application: ApplicationFlatDto;
+        details: Promise<T>;
+    };
+
+    // used to type data
+    const modalData = data as Store<ApplicationModalData>;
+
+    let osirisDetails: Promise<OsirisActions>;
+
+    $: {
+        const appData = $data as ApplicationModalData;
+        if (appData?.application.fournisseur === ProviderName.osiris) {
+            osirisDetails = (appData as ApplicationModalData<OsirisActions>).details;
+        }
+    }
 </script>
 
-<!-- ApplicationFlatDto -->
-{#if $data.application}
+<section>
+    <h4 class="fr-icon-arrow-right-line">Informations collectées</h4>
+    <p class="fr-text--lead">
+        {#if $modalData.application.montantAccorde}
+            <span class="fr-text--bold">{numberToEuro($modalData.application.montantAccorde)}</span>
+            ont été accordés {#if $modalData.application.montantDemande}
+                sur <span class="fr-text--bold">{numberToEuro($modalData.application.montantDemande)}</span>
+                demandés{/if}.
+        {:else if $modalData.application.montantDemande}
+            <span class="fr-text--bold">{numberToEuro($modalData.application.montantDemande)}</span>
+            ont été demandés.
+        {/if}
+    </p>
+    {#if $modalData.application.dateDepotDemande}
+        <p class="fr-text--lg">
+            <span class="fr-text--bold">Date de dépôt de la demande :</span>
+            {$modalData.application.dateDepotDemande}
+        </p>{/if}
+    {#if $modalData.application.dateDecision}
+        <p class="fr-text--lg">
+            <span class="fr-text--bold">Date de décision du service instructeur :</span>
+            {$modalData.application.dateDecision}
+        </p>{/if}
+</section>
+{#if $modalData.application?.objet}
     <section>
-        <h4 class="fr-icon-arrow-right-line">Informations collectées</h4>
-        <p class="fr-text--lead">
-            {#if $data.application.montantAccorde}
-                <span class="fr-text--bold">{numberToEuro($data.application.montantAccorde)}</span>
-                ont été accordés {#if $data.application.montantDemande}
-                    sur <span class="fr-text--bold">{numberToEuro($data.application.montantDemande)}</span>
-                    demandés{/if}.
-            {:else if $data.application.montantDemande}
-                <span class="fr-text--bold">{numberToEuro($data.application.montantDemande)}</span>
-                ont été demandés.
-            {/if}
-        </p>
-        {#if $data.application.date_depot}
-            <p class="fr-text--lg">
-                <span class="fr-text--bold">Date de dépôt de la demande :</span>
-                {$data.application.date_depot}
-            </p>{/if}
-        {#if $data.application.date_decision}
-            <p class="fr-text--lg">
-                <span class="fr-text--bold">Date de décision du service instructeur :</span>
-                {$data.application.date_decision}
-            </p>{/if}
+        <p>{$modalData.application.objet}</p>
     </section>
-    {#if $data.application?.objet}
-        <section>
-            <p>{$data.application.objet}</p>
-        </section>
-    {/if}
 {/if}
+
+<!-- OSIRIS APPLICATION DETAILS -->
+{#await osirisDetails}
+    <Spinner></Spinner>
+{:then details}
+    <section>
+        <h4 class="fr-icon-arrow-right-line">Actions de la subvention</h4>
+        {#each details.actions as action (action.intitule)}
+            <div>
+                <h5>{action.intitule}</h5>
+                <p>{action.description}</p>
+            </div>
+        {/each}
+    </section>
+{/await}
 
 <style>
     section h4 {
