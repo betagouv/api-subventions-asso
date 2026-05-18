@@ -3,7 +3,6 @@ import { MongoCnxError } from "../../../../../shared/errors/MongoCnxError";
 import OsirisActionEntity from "../../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import MongoAdapter from "../../MongoAdapter";
 import Siren from "../../../../../identifier-objects/Siren";
-import OsirisActionMapper from "./osiris-action.mapper";
 import { OsirisActionPort } from "./osiris-action.port";
 import { BulkUpsertResult } from "../../@types/bulk-upsert-result";
 
@@ -86,7 +85,7 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
     }
 
     public cursorFind(query = {}) {
-        return this.collection.find(query).map(dbo => OsirisActionMapper.toEntity(dbo));
+        return this.collection.find(query, { projection: { _id: 0 } });
     }
 
     public async getAll() {
@@ -98,15 +97,15 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
     }
 
     public async findByRequestUniqueId(requestUniqueId: string): Promise<OsirisActionEntity[]> {
-        const dbos = await this.collection.find({ "dossier.requestUniqueId": requestUniqueId }).toArray();
-        return dbos.map(dbo => OsirisActionMapper.toEntity(dbo));
+        return this.collection
+            .find({ "dossier.requestUniqueId": requestUniqueId }, { projection: { _id: 0 } })
+            .toArray();
     }
 
     public async findBySiren(siren: Siren): Promise<OsirisActionEntity[]> {
-        const dbos = await this.collection
-            .find({ "beneficiaire.siret": new RegExp(`^${siren.value}\\d{5}`) })
+        return this.collection
+            .find({ "beneficiaire.siret": new RegExp(`^${siren.value}\\d{5}`) }, { projection: { _id: 0 } })
             .toArray();
-        return dbos.map(dbo => OsirisActionMapper.toEntity(dbo));
     }
 }
 
