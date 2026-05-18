@@ -88,10 +88,8 @@ describe("osiris.helper", () => {
                     },
                 } as OsirisActionEntity,
                 {
-                    indexedInformations: {
-                        cofinanceurs: "",
-                    },
-                } as OsirisActionEntity,
+                    cofinanceurs: undefined,
+                } as unknown as OsirisActionEntity,
             ]);
             expect(actual).toEqual(expected);
         });

@@ -1,7 +1,6 @@
 import OsirisParser from "./osiris.parser";
 import { OsirisActionDefaultMainCategory } from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import { OsirisRequestDefaultMainCategory } from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
-import { OSIRIS_ACTION_ENTITY } from "../../../../../tests/interfaces/cli/__fixtures__/OsirisEntities";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { DefaultObject } from "../../../../@types";
 jest.mock("../../../../shared/GenericParser");
@@ -87,11 +86,9 @@ describe("OsirisParser", () => {
             { "Dossier/action": { "Numero Action Osiris": ROWS[2][0], "N° Dossier Compte Asso": ROWS[2][1] } },
         ]; // expected mapped rows
         const DATA = [...HEADERS, ...ROWS, []]; // mock xls data with footer at the end
-        const INDEXED_INFORMATIONS = OSIRIS_ACTION_ENTITY.indexedInformations;
 
         beforeAll(() => {
             jest.spyOn(GenericParser, "xlsxParse").mockReturnValue([{ name: "page1", data: DATA }]); // data wrap in array because first xls page
-            jest.spyOn(GenericParser, "indexDataByPathObject").mockReturnValue(INDEXED_INFORMATIONS);
 
             let rowCount = 0;
             mockRowToRowWithHeaders = jest
