@@ -8,7 +8,7 @@ import { BRANCHE_ACCEPTED } from "../../../../shared/ChorusBrancheAccepted";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { getShortISODate, isValidDate } from "../../../../shared/helpers/DateHelper";
-import { santitizeFloat } from "../../../../shared/helpers/NumberHelper";
+import { sanitizeFloat } from "../../../../shared/helpers/NumberHelper";
 import { ChorusDto } from "../@types/ChorusDto";
 import ChorusFseEntity from "../entities/ChorusFseEntity";
 import ChorusMapper from "./chorus.mapper";
@@ -34,7 +34,7 @@ export class ChorusFseMapper {
             throw new Error(`The branch ${branchCode} is not accepted in data`);
         }
 
-        const amount = santitizeFloat(dto["Montant payé"]);
+        const amount = sanitizeFloat(dto["Montant payé"]);
         if (isNaN(amount)) {
             throw new Error(`Amount is not a number`);
         }

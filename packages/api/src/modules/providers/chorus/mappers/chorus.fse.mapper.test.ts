@@ -1,5 +1,5 @@
 import { GenericParser } from "../../../../shared/GenericParser";
-import { santitizeFloat } from "../../../../shared/helpers/NumberHelper";
+import { sanitizeFloat } from "../../../../shared/helpers/NumberHelper";
 import { PARSED_DATA } from "../__fixtures__/ChorusFixtures";
 import { ChorusFseMapper } from "./chorus.fse.mapper";
 
@@ -11,13 +11,13 @@ describe("ChorusFseMapper", () => {
 
     describe("dtoToEntity", () => {
         beforeEach(() => {
-            jest.mocked(santitizeFloat).mockReturnValue(CHORUS_DTO["Montant payé"]);
+            jest.mocked(sanitizeFloat).mockReturnValue(CHORUS_DTO["Montant payé"]);
             jest.mocked(GenericParser.getDateFromXLSX).mockReturnValue(new Date("2026-03-03"));
         });
 
         it("should sanitize amount", () => {
             ChorusFseMapper.dtoToEntity(CHORUS_DTO);
-            expect(santitizeFloat).toHaveBeenCalledWith(CHORUS_DTO["Montant payé"]);
+            expect(sanitizeFloat).toHaveBeenCalledWith(CHORUS_DTO["Montant payé"]);
         });
 
         it("should format XLSX date", () => {

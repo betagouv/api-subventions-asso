@@ -11,7 +11,7 @@ export function addWithNull(toBeIncreased: number | null, toAdd: number | null) 
     return toAdd;
 }
 
-export function santitizeFloat(value) {
+export function sanitizeFloat(value) {
     if (!value || typeof value === "number") return value;
 
     return parseFloat(value.replaceAll("\r", "").replaceAll(" ", "").replaceAll(",", "."));

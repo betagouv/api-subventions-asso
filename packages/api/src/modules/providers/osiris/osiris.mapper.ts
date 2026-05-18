@@ -7,7 +7,7 @@ import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEn
 import Siret from "../../../identifier-objects/Siret";
 import Ridet from "../../../identifier-objects/Ridet";
 import { CompanyIdType, EstablishmentIdType } from "../../../identifier-objects/@types/IdentifierType";
-import { santitizeFloat } from "../../../shared/helpers/NumberHelper";
+import { sanitizeFloat } from "../../../shared/helpers/NumberHelper";
 import { cleanRidet, getAssoIdType, getCofinancers, getPluriannualYears, toOsirisDate } from "./osiris.helper";
 
 export default class OsirisMapper {
@@ -203,8 +203,8 @@ export default class OsirisMapper {
             statusLabel: this.toStatus(dossier.etatDossier as string),
             object: actions.map(action => action.caracteristiques?.intitule).join("|"),
             nature: ApplicationNature.MONEY,
-            requestedAmount: santitizeFloat(montants.demande),
-            grantedAmount: santitizeFloat(montants.accorde),
+            requestedAmount: sanitizeFloat(montants.demande),
+            grantedAmount: sanitizeFloat(montants.accorde),
             totalAmount: null,
             ej,
             paymentId,

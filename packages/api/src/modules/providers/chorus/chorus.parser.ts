@@ -8,7 +8,7 @@ import ChorusEntity from "./entities/ChorusEntity";
 import ChorusFseEntity from "./entities/ChorusFseEntity";
 import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
 import { ChorusDto } from "./@types/ChorusDto";
-import { santitizeFloat } from "../../../shared/helpers/NumberHelper";
+import { sanitizeFloat } from "../../../shared/helpers/NumberHelper";
 
 export default class ChorusParser {
     static parse(content: Buffer, options?: { withoutEuropeanData: boolean }) {
@@ -132,14 +132,14 @@ export default class ChorusParser {
             numeroDemandePaiement: dto["N° DP"],
             numPosteDP: Number(dto["N° poste DP"]),
             codeSociete: dto["Société"],
-            exercice: santitizeFloat(dto["Exercice comptable"]),
+            exercice: sanitizeFloat(dto["Exercice comptable"]),
             numeroTier: dto["Fournisseur payé (DP)"],
             nomStructure: dto["Désignation de la structure"],
             centreFinancier: dto["Centre financier"],
             codeCentreFinancier: dto["Centre financier CODE"],
             domaineFonctionnel: dto["Domaine fonctionnel"],
             codeDomaineFonctionnel: dto["Domaine fonctionnel CODE"],
-            amount: santitizeFloat(dto["EUR"] ?? dto["Montant payé"]),
+            amount: sanitizeFloat(dto["EUR"] ?? dto["Montant payé"]),
             dateOperation: GenericParser.getDateFromXLSX(dto["Date de dernière opération sur la DP"]),
             updateDate: new Date(),
         };
