@@ -1,3 +1,4 @@
+// legacy type linked to AssociationWithProviderValues
 export interface BodaccRecordDtoSnakeCase {
     id: string;
     timestamp: Date;
