@@ -1,4 +1,4 @@
-import { Association } from "dto";
+import { AssociationWithProviderValues } from "dto";
 import ApiAssoPort from "../../../../adapters/outputs/api/api-asso/api-asso.port";
 import { Rna } from "../../../../identifier-objects";
 import { hasEmptyProperties } from "../../../../shared/helpers/ObjectHelper";
@@ -7,7 +7,7 @@ import AsyncUseCase from "../../../../@types/use-case/AsyncUseCase";
 
 // Retrieve association structure information from the RNA repository
 // @TODO: not used yet
-export default class GetRnaAssoUseCase implements AsyncUseCase<Rna, Association | null> {
+export default class GetRnaAssoUseCase implements AsyncUseCase<Rna, AssociationWithProviderValues | null> {
     constructor(
         private apiAssoPort: ApiAssoPort,
         private toAsso: TransformRnaStructureToAssoUseCase,

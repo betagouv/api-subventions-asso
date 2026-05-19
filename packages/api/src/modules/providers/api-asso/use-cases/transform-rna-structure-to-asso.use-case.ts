@@ -1,4 +1,4 @@
-import { Association, AssociationNature } from "dto";
+import { AssociationWithProviderValues, AssociationNature } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { RnaStructureDto } from "../dto/RnaStructureDto";
 import { DDMMYYYYToUTCDate } from "../../../../shared/helpers/DateHelper";
@@ -6,7 +6,10 @@ import UseCase from "../../../../@types/use-case/UseCase";
 
 // @TODO: create entities as use case never transform to DTO. It is the adapters that transform entities to DTO.
 // Not used yet
-export default class TransformRnaStructureToAssoUseCase implements UseCase<RnaStructureDto, Association> {
+export default class TransformRnaStructureToAssoUseCase implements UseCase<
+    RnaStructureDto,
+    AssociationWithProviderValues
+> {
     execute(structure: RnaStructureDto) {
         const toPVs = ProviderValueFactory.buildProviderValuesMapper(
             "RNA",
