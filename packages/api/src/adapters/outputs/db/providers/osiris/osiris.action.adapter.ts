@@ -107,6 +107,21 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
             .find({ "beneficiaire.siret": new RegExp(`^${siren.value}\\d{5}`) }, { projection: { _id: 0 } })
             .toArray();
     }
+
+    public async findByOsirisId(osirisId: string): Promise<OsirisActionEntity[]> {
+        return this.collection
+            .find({ "dossier.requestUniqueId": new RegExp(`^${osirisId}-\\d+$`) }, { projection: { _id: 0 } }) // regex to match the osirisId with the year
+            .toArray();
+    }
+
+    public async findByOsirisIds(osirisIds: string[]): Promise<OsirisActionEntity[]> {
+        return this.collection
+            .find(
+                { "dossier.requestUniqueId": { $in: osirisIds.map(id => new RegExp(`^${id}-\\d+$`)) } },
+                { projection: { _id: 0 } },
+            ) // regex to match the osirisIds with the year
+            .toArray();
+    }
 }
 
 const osirisActionAdapter: OsirisActionAdapter = new OsirisActionAdapter();
