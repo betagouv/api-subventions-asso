@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import qs from "qs";
 
-import { ExtraitRcsDto } from "dto";
+import { ExtraitRcsDtoSnakeCase } from "dto";
 import { StructureIdentifiersError } from "core";
 import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf";
 import { DefaultObject } from "../../../@types";
@@ -124,7 +124,7 @@ export class ApiEntrepriseService extends ProviderCore {
     public async getExtractRcs(siren: Siren) {
         try {
             return (
-                await this.sendRequest<{ data: ExtraitRcsDto }>(
+                await this.sendRequest<{ data: ExtraitRcsDtoSnakeCase }>(
                     `v3/infogreffe/rcs/unites_legales/${siren.value}/extrait_kbis`,
                     {},
                     this.RCS_EXTRACT_REASON,
