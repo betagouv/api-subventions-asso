@@ -57,5 +57,5 @@ export function toOsirisDate(value: unknown): Date | unknown {
     if (value instanceof Date) return value;
     if (typeof value === "number") return GenericParser.ExcelDateToJSDate(value);
 
-    return DDMMYYYYToUTCDate(`${value}`);
+    return DDMMYYYYToUTCDate(`${value}`, "/");
 }

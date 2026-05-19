@@ -1,4 +1,4 @@
-import ApiAssoDtoMapper from "../../modules/providers/api-asso/mappers/api-asso-dto.mapper";
+import ApiAssoDtoMapper from "../../modules/providers/api-asso/mappers/api-asso.dto.mapper";
 import ApiEntrepriseMapper from "../../modules/providers/api-entreprise/mappers/api-entreprise.mapper";
 import FonjepEntityMapper from "../../modules/providers/fonjep/mappers/fonjep-entity.mapper";
 import OsirisMapper from "../../modules/providers/osiris/osiris.mapper";

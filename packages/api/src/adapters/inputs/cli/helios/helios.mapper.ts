@@ -11,8 +11,8 @@ export default class HeliosMapper {
             collec: dto["COLLEC"],
             compteNature: dto["COMPTE_NATURE"],
             // @TODO: those date are not good as it is in french date format DD/MM/YYYY
-            dateEmission: DDMMYYYYToUTCDate(dto["DATE_EMISSION"]),
-            datePaiement: DDMMYYYYToUTCDate(dto["DATE_PAIEMENT"]),
+            dateEmission: DDMMYYYYToUTCDate(dto["DATE_EMISSION"], "/"),
+            datePaiement: DDMMYYYYToUTCDate(dto["DATE_PAIEMENT"], "/"),
             id: dto["ID"],
             immatriculation: dto["IMMATRICULATION"],
             montantPaiment: dto["MONTANT_PAIEMENT"],

@@ -357,6 +357,8 @@ describe("/parcours-depot", () => {
                 .field("depositScdlLogDto", JSON.stringify(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2))
                 .set("x-access-token", token);
 
+            console.log(response);
+
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual(
                 expect.objectContaining({

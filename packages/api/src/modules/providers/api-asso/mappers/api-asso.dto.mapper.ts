@@ -5,7 +5,7 @@ import {
     AssociationNature,
 } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
-import {
+import StructureDto, {
     StructureDacDocumentDto,
     StructureEstablishmentDto,
     StructureRepresentantLegalDto,
@@ -16,29 +16,51 @@ import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { RnaStructureDto } from "../dto/RnaStructureDto";
 import { SirenStructureDto, SirenStructureEstablishmentDto } from "../dto/SirenStructureDto";
 import Siret from "../../../../identifier-objects/Siret";
+import { hasEmptyProperties } from "../../../../shared/helpers/ObjectHelper";
 
 export default class ApiAssoDtoMapper {
     static providerNameRna = "RNA";
     static providerNameLcaDocument = "Le Compte Asso";
     static providerNameSiren = "SIREN";
 
-    static apiDateToDate(stringDate: string) {
-        if (!stringDate) throw new TypeError("should be a string to become a date");
-        const [year, month, day] = stringDate.split("-").map(string => parseInt(string, 10));
-        return new Date(Date.UTC(year, month - 1, day));
-    }
-
+    // typescript overloads
     protected static formatEstablishementSiret(
         establishments: SirenStructureEstablishmentDto[] | SirenStructureEstablishmentDto | undefined,
+    ): SirenStructureEstablishmentDto[];
+    protected static formatEstablishementSiret(
+        establishments: StructureEstablishmentDto[] | StructureEstablishmentDto | undefined,
+    ): StructureEstablishmentDto[];
+    protected static formatEstablishementSiret(
+        establishments: SirenStructureEstablishmentDto[] | StructureEstablishmentDto[] | undefined,
+    ): SirenStructureEstablishmentDto[] | StructureEstablishmentDto[];
+
+    // real implementation
+    protected static formatEstablishementSiret(
+        establishments:
+            | SirenStructureEstablishmentDto[]
+            | StructureEstablishmentDto[]
+            | SirenStructureEstablishmentDto
+            | StructureEstablishmentDto
+            | undefined,
     ) {
         if (!establishments) return [];
         return Array.isArray(establishments) ? establishments : [establishments];
     }
 
-    static sirenStructureToAssociation(structure: SirenStructureDto): AssociationWithProviderValues {
+    private static hasIdentity<T extends SirenStructureDto | RnaStructureDto | StructureDto>(
+        structure: T,
+    ): structure is T & { identite: NonNullable<T["identite"]> } {
+        return !!hasEmptyProperties(structure.identite);
+    }
+
+    static sirenStructureToAssociation(
+        structure: SirenStructureDto | StructureDto,
+    ): AssociationWithProviderValues | null {
+        if (!structure || !this.hasIdentity(structure) || !structure.identite.id_siren) return null;
+
         const toPvs = ProviderValueFactory.buildProviderValuesMapper(
             this.providerNameSiren,
-            ApiAssoDtoMapper.apiDateToDate(structure.identite.date_modif_siren),
+            new Date(structure.identite!.date_modif_siren),
         );
 
         const establishmentSiret = this.formatEstablishementSiret(structure.etablissement);
@@ -53,10 +75,10 @@ export default class ApiAssoDtoMapper {
                 ? toPvs(structure.identite.id_forme_juridique.toString())
                 : undefined,
             date_creation_siren: structure.identite.date_creation_sirene
-                ? toPvs(ApiAssoDtoMapper.apiDateToDate(structure.identite.date_creation_sirene))
+                ? toPvs(new Date(structure.identite.date_creation_sirene))
                 : undefined,
             date_modification_siren: structure.identite.date_modif_siren
-                ? toPvs(ApiAssoDtoMapper.apiDateToDate(structure.identite.date_modif_siren))
+                ? toPvs(new Date(structure.identite.date_modif_siren))
                 : undefined,
             adresse_siege_siren: toPvs({
                 numero: structure.coordonnees?.adresse_siege.num_voie?.toString(),
@@ -72,7 +94,7 @@ export default class ApiAssoDtoMapper {
     static rnaStructureToAssociation(structure: RnaStructureDto): AssociationWithProviderValues {
         const toPVs = ProviderValueFactory.buildProviderValuesMapper(
             this.providerNameRna,
-            ApiAssoDtoMapper.apiDateToDate(structure.identite.date_modif_rna),
+            new Date(structure.identite.date_modif_rna),
         );
 
         // structure.identite.util_publique seems not to be implemented yet
@@ -85,9 +107,9 @@ export default class ApiAssoDtoMapper {
             rna: toPVs(structure.identite.id_rna),
             denomination_rna: toPVs(structure.identite.nom),
             date_creation_rna: structure.identite.date_pub_jo
-                ? toPVs(ApiAssoDtoMapper.apiDateToDate(structure.identite.date_pub_jo))
+                ? toPVs(new Date(structure.identite.date_pub_jo))
                 : undefined,
-            date_modification_rna: toPVs(ApiAssoDtoMapper.apiDateToDate(structure.identite.date_modif_rna)),
+            date_modification_rna: toPVs(new Date(structure.identite.date_modif_rna)),
             objet_social: toPVs(structure.activites.objet),
             code_objet_social_1: toPVs(structure.activites.lib_objet_social1),
             adresse_siege_rna: toPVs({
@@ -111,13 +133,10 @@ export default class ApiAssoDtoMapper {
         representantsLegaux: StructureRepresentantLegalDto[],
         dateModif: string,
     ): EstablishmentWithProviderValues {
-        const toSirenPvs = ProviderValueFactory.buildProviderValuesMapper(
-            this.providerNameSiren,
-            ApiAssoDtoMapper.apiDateToDate(dateModif),
-        );
+        const toSirenPvs = ProviderValueFactory.buildProviderValuesMapper(this.providerNameSiren, new Date(dateModif));
         const toLCAPvs = ProviderValueFactory.buildProviderValuesMapper(
             this.providerNameLcaDocument,
-            ApiAssoDtoMapper.apiDateToDate(dateModif),
+            new Date(dateModif),
         );
 
         const toContact = (r: StructureRepresentantLegalDto) => ({

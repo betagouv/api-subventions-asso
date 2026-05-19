@@ -2,12 +2,12 @@ export interface SirenStructureEstablishmentDto {
     actif: boolean;
     adresse: {
         cplt_1?: string;
-        num_voie: number;
-        voie: string;
-        commune: string;
-        code_insee: number;
-        cp: number;
-        type_voie: string;
+        num_voie?: number;
+        voie?: string;
+        commune?: string;
+        code_insee?: number;
+        cp?: number;
+        type_voie?: string;
     };
     id_siret: number;
     est_siege: boolean;

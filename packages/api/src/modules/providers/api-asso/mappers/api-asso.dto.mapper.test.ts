@@ -1,4 +1,4 @@
-import ApiAssoDtoMapper from "./api-asso-dto.mapper";
+import ApiAssoDtoMapper from "./api-asso.dto.mapper";
 import { StructureRepresentantLegalDto } from "../dto/StructureDto";
 import {
     fixtureAsso,
@@ -9,18 +9,18 @@ import {
 import { DacDtoDocument, RnaDtoDocument } from "../__fixtures__/DtoDocumentFixture";
 import { ApiAssoDocumentFixture } from "../__fixtures__/ApiAssoDocumentFixture";
 import { sirenStructureFixture } from "../__fixtures__/SirenStructureFixture";
-import { rnaStructureFixture } from "../__fixtures__/RnaStructureFixture";
+import { RNA_STRUCTURE_DTO } from "../__fixtures__/RnaStructureFixture";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { Personne } from "dto";
 
-describe("ApiAssoDtoAdapter", () => {
+describe("ApiAsso DTO Mapper", () => {
     describe("toEstablishment", () => {
         it("should return establishment with rib", () => {
             const actual = ApiAssoDtoMapper.toEstablishment(
                 fixtureEstablishments[0],
                 fixtureRib,
                 [],
-                fixtureAsso.identite.date_modif_siren,
+                fixtureAsso.identite!.date_modif_siren,
             );
 
             expect(actual).toMatchSnapshot();
@@ -31,7 +31,7 @@ describe("ApiAssoDtoAdapter", () => {
                 fixtureEstablishments[0],
                 [],
                 fixtureRepresentantLegal,
-                fixtureAsso.identite.date_modif_siren,
+                fixtureAsso.identite!.date_modif_siren,
             );
 
             expect(actual).toMatchSnapshot();
@@ -42,7 +42,7 @@ describe("ApiAssoDtoAdapter", () => {
                 fixtureEstablishments[1],
                 fixtureRib,
                 [],
-                fixtureAsso.identite.date_modif_siren,
+                fixtureAsso.identite!.date_modif_siren,
             );
 
             expect(actual).toMatchSnapshot();
@@ -53,7 +53,7 @@ describe("ApiAssoDtoAdapter", () => {
                 fixtureEstablishments[1],
                 [],
                 undefined as unknown as StructureRepresentantLegalDto[],
-                fixtureAsso.identite.date_modif_siren,
+                fixtureAsso.identite!.date_modif_siren,
             );
 
             expect(actual).toMatchSnapshot();
@@ -66,7 +66,7 @@ describe("ApiAssoDtoAdapter", () => {
                 [
                     { telephone: 222, id_siret: fixtureEstablishments[1].id_siret },
                 ] as unknown as StructureRepresentantLegalDto[],
-                fixtureAsso.identite.date_modif_siren,
+                fixtureAsso.identite!.date_modif_siren,
             );
 
             const expected = "222";
@@ -153,33 +153,55 @@ describe("ApiAssoDtoAdapter", () => {
         const originalFormatEstablishementSiret = ApiAssoDtoMapper.formatEstablishementSiret;
         const mockedFormatEstablishementSiret = jest.fn().mockReturnValue(sirenStructureFixture.etablissement);
 
+        const mockHasIdentity = jest.fn();
+
+        beforeEach(() => {
+            // @ts-expect-error: mock private method
+            ApiAssoDtoMapper.hasIdentity = mockHasIdentity;
+        });
+
+        afterEach(() => {
+            mockHasIdentity.mockReset();
+        });
+
         // @ts-expect-error: protected
         beforeAll(() => (ApiAssoDtoMapper.formatEstablishementSiret = mockedFormatEstablishementSiret));
         // @ts-expect-error: protected
         afterAll(() => (ApiAssoDtoMapper.formatEstablishementSiret = originalFormatEstablishementSiret));
 
         it("should transform to association", () => {
+            mockHasIdentity.mockReturnValue(true);
             expect(ApiAssoDtoMapper.sirenStructureToAssociation(sirenStructureFixture)).toMatchSnapshot();
+        });
+
+        it("returns null if structure has no identity", () => {
+            mockHasIdentity.mockReturnValue(false);
+
+            const expected = null;
+            const actual = ApiAssoDtoMapper.sirenStructureToAssociation({
+                ...sirenStructureFixture,
+                // @ts-expect-error: edge case
+                identite: {},
+            });
+            expect(actual).toEqual(expected);
+        });
+
+        it("returns null if id_siren is not defined", () => {
+            mockHasIdentity.mockReturnValue(true);
+
+            const expected = null;
+            const actual = ApiAssoDtoMapper.sirenStructureToAssociation({
+                ...sirenStructureFixture,
+                // @ts-expect-error: edge case
+                identite: { ...sirenStructureFixture.identite, id_siren: undefined },
+            });
+            expect(actual).toEqual(expected);
         });
     });
 
     describe("rnaStructureToAssociation", () => {
         it("should transform to association", () => {
-            expect(ApiAssoDtoMapper.rnaStructureToAssociation(rnaStructureFixture)).toMatchSnapshot();
-        });
-    });
-
-    describe("apiDateToDate", () => {
-        it("should throw if falsy value", () => {
-            const test = () => ApiAssoDtoMapper.apiDateToDate("");
-
-            expect(test).toThrowError();
-        });
-
-        it("should return valid date", () => {
-            const actual = ApiAssoDtoMapper.apiDateToDate("2022-12-23");
-
-            expect(actual).toEqual(new Date(Date.UTC(2022, 11, 23)));
+            expect(ApiAssoDtoMapper.rnaStructureToAssociation(RNA_STRUCTURE_DTO)).toMatchSnapshot();
         });
     });
 

@@ -1,0 +1,183 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApiAsso Use Cases TransformRnaStructureToAsso sets structure as public utility 1`] = `
+{
+  "adresse_siege_rna": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "object",
+      "value": {
+        "code_postal": "42424",
+        "commune": "Londre",
+        "numero": "18",
+        "type_voie": "RUE",
+        "voie": "MEURIS",
+      },
+    },
+  ],
+  "code_objet_social_1": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "conduite d'activités économiques",
+    },
+  ],
+  "date_creation_rna": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "object",
+      "value": 1912-07-21T00:00:00.000Z,
+    },
+  ],
+  "date_modification_rna": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "object",
+      "value": 1917-07-15T00:00:00.000Z,
+    },
+  ],
+  "date_rup": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "2018-05-13",
+    },
+  ],
+  "denomination_rna": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "Asso qui n'existe pas",
+    },
+  ],
+  "nature": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "Reconnue d'utilité publique",
+    },
+  ],
+  "objet_social": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "Object social !",
+    },
+  ],
+  "rna": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "W000000000",
+    },
+  ],
+  "rup": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "boolean",
+      "value": true,
+    },
+  ],
+}
+`;
+
+exports[`ApiAsso Use Cases TransformRnaStructureToAsso transforms rna structure to association  1`] = `
+{
+  "adresse_siege_rna": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "object",
+      "value": {
+        "code_postal": "42424",
+        "commune": "Londre",
+        "numero": "18",
+        "type_voie": "RUE",
+        "voie": "MEURIS",
+      },
+    },
+  ],
+  "code_objet_social_1": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "conduite d'activités économiques",
+    },
+  ],
+  "date_creation_rna": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "object",
+      "value": 1912-07-21T00:00:00.000Z,
+    },
+  ],
+  "date_modification_rna": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "object",
+      "value": 1917-07-15T00:00:00.000Z,
+    },
+  ],
+  "date_rup": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "2018-05-13",
+    },
+  ],
+  "denomination_rna": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "Asso qui n'existe pas",
+    },
+  ],
+  "nature": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "Simplement déclarée",
+    },
+  ],
+  "objet_social": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "Object social !",
+    },
+  ],
+  "rna": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "W000000000",
+    },
+  ],
+  "rup": [
+    {
+      "last_update": 1917-07-15T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "boolean",
+      "value": true,
+    },
+  ],
+}
+`;

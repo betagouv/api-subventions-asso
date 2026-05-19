@@ -1,3 +1,4 @@
+import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 import StructureDto, {
     StructureDacDocumentDto,
     StructureEstablishmentDto,
@@ -6,11 +7,14 @@ import StructureDto, {
     StructureRnaDocumentDto,
 } from "../dto/StructureDto";
 
+// @ts-expect-error incomplete fixture
+export const STRUCTURE_ESTABLISHMENT_DTO: StructureEstablishmentDto = {
+    id_siret: 50922194100000,
+    adresse: {},
+};
+
 export const fixtureEstablishments = [
-    {
-        id_siret: 50922194100000,
-        adresse: {},
-    },
+    STRUCTURE_ESTABLISHMENT_DTO,
     {
         id_siret: 50922194100001,
         adresse: {},
@@ -64,13 +68,13 @@ export const fixtureRepresentantLegal = [
     },
 ] as unknown as StructureRepresentantLegalDto[];
 
-export const fixtureAsso = {
+export const fixtureAsso: StructureDto = {
     identite: {
         nom: "TEST",
         nom_sirene: "TEST SIREN 2",
-        id_rna: "W00000000",
-        id_siren: 509221941,
-        id_siret_siege: 5092219410000,
+        id_rna: DEFAULT_ASSOCIATION.rna,
+        id_siren: DEFAULT_ASSOCIATION.siren,
+        id_siret_siege: Number(DEFAULT_ASSOCIATION.siret),
         id_forme_juridique: "9220",
         date_creat: "1994-07-04",
         date_creation_sirene: "1985-02-26",
