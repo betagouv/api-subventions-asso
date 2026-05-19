@@ -43,21 +43,6 @@ describe("ResetPwdController", () => {
             const expected = ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND;
             await expect(test).rejects.toEqual(expected);
         });
-
-        // eslint-disable-next-line vitest/no-commented-out-tests
-        /*        TODO
-        it.each`
-            queryParam   | expected
-            ${undefined} | ${false}
-            ${"TRUE"}    | ${true}
-        `(
-            "gets active query param",
-            ({ queryParam, expected }) => {},
-        );
-
-        it("sets title for activation according activation", () => {});
-
-        it("sets title for reset according activation", () => {});*/
     });
 
     describe("onSubmit", () => {

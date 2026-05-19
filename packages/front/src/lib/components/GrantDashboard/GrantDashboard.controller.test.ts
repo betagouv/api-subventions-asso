@@ -376,11 +376,7 @@ describe("GrantDashboard Controller", () => {
             });
         });
 
-        describe.each`
-            side            | method                  | keyWordInTracker | modalComponent          | modalData
-            ${"payment"}    | ${"onPaymentClick"}     | ${"payment"}     | ${PaymentsInfoModal}    | ${{ payments: "P1" }}
-            ${"subvention"} | ${"onApplicationClick"} | ${"subvention"}  | ${ApplicationInfoModal} | ${{ application: "A1" }}
-        `("onRowClick: $side side", ({ method, keyWordInTracker, modalComponent, modalData }) => {
+        describe("on row click handlers", () => {
             const INDEX = 1;
             const SUBV = [
                 { application: "A0", payments: "P0" },
@@ -399,30 +395,56 @@ describe("GrantDashboard Controller", () => {
                 CTRL.rows.value = ROWS;
             });
 
-            it("if no cells, nothing happens", () => {
-                CTRL.rows.value = [ROWS[0], {} as SortableRow];
-                CTRL[method](INDEX);
-                expect(trackerService.buttonClickEvent).not.toHaveBeenCalled();
-                expect(data.set).not.toHaveBeenCalled();
-                expect(modal.set).not.toHaveBeenCalled();
+            describe("onPaymentClick", () => {
+                it("if no cells, nothing happens", () => {
+                    CTRL.rows.value = [ROWS[0], {} as SortableRow];
+                    CTRL.onPaymentClick(INDEX);
+                    expect(trackerService.buttonClickEvent).not.toHaveBeenCalled();
+                    expect(data.set).not.toHaveBeenCalled();
+                    expect(modal.set).not.toHaveBeenCalled();
+                });
+
+                it("tracks button click", () => {
+                    CTRL.onPaymentClick(INDEX);
+                    const eventTag = `association-etablissement.dashbord.payment.more_information`;
+                    expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(eventTag);
+                });
+
+                it("sets data", () => {
+                    CTRL.onPaymentClick(INDEX);
+                    expect(data.set).toHaveBeenCalledWith({ payments: "P1" });
+                });
+
+                it("sets modal component", () => {
+                    CTRL.onPaymentClick(INDEX);
+                    expect(modal.set).toHaveBeenCalledWith(PaymentsInfoModal);
+                });
             });
 
-            it("tracks button click", () => {
-                CTRL[method](INDEX);
-                const eventTag = `association-etablissement.dashbord.${keyWordInTracker}.more_information`;
-                expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(eventTag);
-            });
+            describe("onApplicationClick", () => {
+                it("if no cells, nothing happens", () => {
+                    CTRL.rows.value = [ROWS[0], {} as SortableRow];
+                    CTRL.onApplicationClick(INDEX);
+                    expect(trackerService.buttonClickEvent).not.toHaveBeenCalled();
+                    expect(data.set).not.toHaveBeenCalled();
+                    expect(modal.set).not.toHaveBeenCalled();
+                });
 
-            it("sets data", () => {
-                CTRL[method](INDEX);
-                if (method === "onApplicationClick") {
-                    expect(data.set).toHaveBeenCalledWith({ ...modalData, details: expect.any(Promise) });
-                } else expect(data.set).toHaveBeenCalledWith(modalData);
-            });
+                it("tracks button click", () => {
+                    CTRL.onApplicationClick(INDEX);
+                    const eventTag = `association-etablissement.dashbord.subvention.more_information`;
+                    expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(eventTag);
+                });
 
-            it("sets modal component", () => {
-                CTRL[method](INDEX);
-                expect(modal.set).toHaveBeenCalledWith(modalComponent);
+                it("sets data", () => {
+                    CTRL.onApplicationClick(INDEX);
+                    expect(data.set).toHaveBeenCalledWith({ application: "A1", details: expect.any(Promise) });
+                });
+
+                it("sets modal component", () => {
+                    CTRL.onApplicationClick(INDEX);
+                    expect(modal.set).toHaveBeenCalledWith(ApplicationInfoModal);
+                });
             });
         });
     });

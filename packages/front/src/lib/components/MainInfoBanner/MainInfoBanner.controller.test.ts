@@ -1,6 +1,7 @@
 vi.mock("svelte");
 import { MainInfoBannerController } from "./MainInfoBanner.controller";
 import configurationsService from "$lib/resources/configurations/configurations.service";
+import { unmount } from "svelte";
 
 describe("MainInfoBannerController", () => {
     let controller;
@@ -19,12 +20,9 @@ describe("MainInfoBannerController", () => {
     });
 
     describe("close()", () => {
-        beforeEach(() => {
-            controller.component = { $destroy: vi.fn() };
-        });
-        it("should destroy component", () => {
+        it("should unmount component", () => {
             controller.close();
-            expect(controller.component.$destroy).toHaveBeenCalledTimes(1);
+            expect(unmount).toHaveBeenCalledTimes(1);
         });
     });
 });

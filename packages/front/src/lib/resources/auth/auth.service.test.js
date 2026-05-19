@@ -215,7 +215,6 @@ describe("authService", () => {
             expect(actual).toBe(expected);
         }
 
-        /* eslint-disable vitest/expect-expect */
         it("returns true if no auth needed", async () => {
             return await correctReturn(AuthLevels.NONE, undefined, true);
         });
@@ -248,7 +247,6 @@ describe("authService", () => {
         it("returns true if user is not admin and simple user required", () => {
             correctReturn(AuthLevels.USER, { roles: [] }, true);
         });
-        /* eslint-enable vitest/expect-expect */
     });
 
     describe("_isAdmin", () => {

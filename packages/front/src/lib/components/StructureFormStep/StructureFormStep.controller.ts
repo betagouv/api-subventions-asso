@@ -1,5 +1,5 @@
 import { AgentTypeEnum, AgentJobTypeEnum, RegistrationSrcTypeEnum } from "dto";
-import type { ComponentType, SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 import OperatorSubStep from "./OperatorSubStep/OperatorSubStep.svelte";
 import CentralSubStep from "./CentralSubStep/CentralSubStep.svelte";
 import TerritorialCollectivitySubStep from "./TerritorialCollectivitySubStep/TerritorialCollectivitySubStep.svelte";
@@ -15,8 +15,7 @@ interface Context {
 }
 
 interface SubStep {
-    component: typeof SvelteComponent;
-    // valid: boolean
+    component: Component;
 }
 
 export default class StructureFormStepController {
@@ -53,7 +52,7 @@ export default class StructureFormStepController {
         { value: RegistrationSrcTypeEnum.OTHER, label: "Autre" },
     ];
 
-    private static subStepByAgentType: Record<AgentTypeEnum, ComponentType> = {
+    private static subStepByAgentType: Record<AgentTypeEnum, Component> = {
         [AgentTypeEnum.CENTRAL_ADMIN]: CentralSubStep,
         [AgentTypeEnum.OPERATOR]: OperatorSubStep,
         [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: TerritorialCollectivitySubStep,
