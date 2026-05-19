@@ -26,10 +26,8 @@ describe("OsirisMapper", () => {
 
         const ACTIONS = [
             {
-                indexedInformations: {
-                    // copied from real data
-                    cofinanceurs:
-                        "Direction départementale de Saône-et-Loire;DRAC;ARS;Bourgogne-Franche-Comté;Saône-et-Loire;Politque de la ville;CAF;",
+                cofinanceurs: {
+                    noms: "Direction départementale de Saône-et-Loire;DRAC;ARS;Bourgogne-Franche-Comté;Saône-et-Loire;Politque de la ville;CAF;",
                 },
             } as OsirisActionEntity,
         ];

@@ -1,0 +1,132 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OsirisActionMapper toDto converts raw OSIRIS XLSX rows to a semantic camelCase DTO 1`] = `
+{
+  "beneficiaire": {
+    "siret": "10000000000001",
+  },
+  "caracteristiques": {
+    "description": "description de l'action",
+    "intitule": "intitulé de l'action",
+    "modaliteAide": "Subvention",
+    "modaliteOuDispositif": "FDVA",
+    "natureAide": "aide en numéraire",
+    "objectifs": "Objectifs de l'action",
+    "objectifsOperationnels": "Objectifs opérationnels détaillés",
+    "rang": 1,
+  },
+  "cofinanceurs": {
+    "montantsDemandes": 50000,
+    "noms": "Conseil Régional, Département",
+  },
+  "dossier": {
+    "compteAssoId": "LE_COMPTE_ASSO_ID",
+    "ej": "EJ00001",
+    "exerciceBudgetaire": 2022,
+    "numeroActionOsiris": "DD71-24-0094-01",
+  },
+  "evaluation": {
+    "indicateurs": "Nombre de bénéficiaires",
+  },
+  "federation": {
+    "federation": "Fédération Sportive",
+    "nombreLicencies": 150,
+    "nombreLicenciesFemmes": 70,
+    "nombreLicenciesHommes": 80,
+  },
+  "montants": {
+    "accorde": 150000,
+    "compensation": 0,
+    "coutTotalCharges": 150000,
+    "demande": 170000,
+    "montantTotalAttribue": 150000,
+    "propose": 150000,
+    "realise": 120000,
+  },
+  "moyens": {
+    "benevolesETPT": 2.5,
+    "benevolesNombre": 10,
+    "emploiesAidesETPT": 1,
+    "emploiesAidesNombre": 1,
+    "salariesCDDETPT": 1.5,
+    "salariesCDDNombre": 2,
+    "salariesCDIETPT": 3,
+    "salariesCDINombre": 3,
+    "salariesETPT": 4.5,
+    "salariesNombre": 5,
+    "volontairesETPT": 1.8,
+    "volontairesNombre": 2,
+  },
+  "territoires": {
+    "commentaire": "Zone prioritaire",
+    "statut": "QPV",
+  },
+}
+`;
+
+exports[`OsirisActionMapper toEntity composes a complete OSIRIS action entity from a DTO 1`] = `
+{
+  "beneficiaire": {
+    "siret": "10000000000001",
+  },
+  "caracteristiques": {
+    "description": "description de l'action",
+    "intitule": "intitulé de l'action",
+    "modaliteAide": "Subvention",
+    "modaliteOuDispositif": "FDVA",
+    "natureAide": "aide en numéraire",
+    "objectifs": "Objectifs de l'action",
+    "objectifsOperationnels": "Objectifs opérationnels détaillés",
+    "rang": 1,
+  },
+  "cofinanceurs": {
+    "montantsDemandes": 50000,
+    "noms": "Conseil Régional, Département",
+  },
+  "dossier": {
+    "compteAssoId": "LE_COMPTE_ASSO_ID",
+    "ej": "EJ00001",
+    "exerciceBudgetaire": 2024,
+    "osirisActionId": "DD71-24-0094-01",
+    "requestUniqueId": "DD71-24-0094-2024",
+    "uniqueId": "DD71-24-0094-01-2024",
+  },
+  "evaluation": {
+    "indicateurs": "Nombre de bénéficiaires",
+  },
+  "federation": {
+    "federation": "Fédération Sportive",
+    "nombreLicencies": 150,
+    "nombreLicenciesFemmes": 70,
+    "nombreLicenciesHommes": 80,
+  },
+  "montants": {
+    "accorde": 150000,
+    "compensation": 0,
+    "coutTotalCharges": 150000,
+    "demande": 170000,
+    "montantTotalAttribue": 150000,
+    "propose": 150000,
+    "realise": 120000,
+  },
+  "moyens": {
+    "benevolesETPT": 2.5,
+    "benevolesNombre": 10,
+    "emploiesAidesETPT": 1,
+    "emploiesAidesNombre": 1,
+    "salariesCDDETPT": 1.5,
+    "salariesCDDNombre": 2,
+    "salariesCDIETPT": 3,
+    "salariesCDINombre": 3,
+    "salariesETPT": 4.5,
+    "salariesNombre": 5,
+    "volontairesETPT": 1.8,
+    "volontairesNombre": 2,
+  },
+  "territoires": {
+    "commentaire": "Zone prioritaire",
+    "statut": "QPV",
+  },
+  "updateDate": 2026-01-01T00:00:00.000Z,
+}
+`;

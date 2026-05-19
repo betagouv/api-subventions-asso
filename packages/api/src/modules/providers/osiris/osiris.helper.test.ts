@@ -65,14 +65,13 @@ describe("osiris.helper", () => {
 
             const actual = osirisHelper.getCofinancers([
                 {
-                    indexedInformations: {
-                        cofinanceurs:
-                            "Direction départementale de Saône-et-Loire;DRAC;ARS;Bourgogne-Franche-Comté;Saône-et-Loire;Politque de la ville;CAF;",
+                    cofinanceurs: {
+                        noms: "Direction départementale de Saône-et-Loire;DRAC;ARS;Bourgogne-Franche-Comté;Saône-et-Loire;Politque de la ville;CAF;",
                     },
                 } as OsirisActionEntity,
                 {
-                    indexedInformations: {
-                        cofinanceurs: "Politque de la ville;CAF;Aides privées;",
+                    cofinanceurs: {
+                        noms: "Politque de la ville;CAF;Aides privées;",
                     },
                 } as OsirisActionEntity,
             ]);
@@ -84,15 +83,13 @@ describe("osiris.helper", () => {
 
             const actual = osirisHelper.getCofinancers([
                 {
-                    indexedInformations: {
-                        cofinanceurs: "",
+                    cofinanceurs: {
+                        noms: "",
                     },
                 } as OsirisActionEntity,
                 {
-                    indexedInformations: {
-                        cofinanceurs: "",
-                    },
-                } as OsirisActionEntity,
+                    cofinanceurs: undefined,
+                } as unknown as OsirisActionEntity,
             ]);
             expect(actual).toEqual(expected);
         });

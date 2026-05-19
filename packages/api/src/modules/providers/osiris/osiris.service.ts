@@ -1,6 +1,6 @@
 import { AggregationCursor } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
+import { isAssociationName, isCompteAssoId, isOsirisRequestId } from "../../../shared/Validators";
 import ProviderCore from "../provider.core";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import Siret from "../../../identifier-objects/Siret";
@@ -140,24 +140,6 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         return osirisActionAdapter.bulkUpsert(actions);
     }
 
-    public validAction(action: OsirisActionEntity) {
-        if (!isCompteAssoId(action.indexedInformations.compteAssoId)) {
-            return {
-                message: `INVALID COMPTE ASSO ID FOR ${action.indexedInformations.compteAssoId}`,
-                data: action.indexedInformations,
-            };
-        }
-
-        if (!isOsirisActionId(action.indexedInformations.osirisActionId)) {
-            return {
-                message: `INVALID OSIRIS ACTION ID FOR ${action.indexedInformations.osirisActionId}`,
-                data: action.indexedInformations,
-            };
-        }
-
-        return true;
-    }
-
     public async findBySiret(siret: Siret) {
         const requests = await osirisRequestAdapter.findBySiret(siret);
 
@@ -175,7 +157,7 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
 
         for (const request of requests) {
             const uniqueId = `${request.dossier.osirisId}-${request.dossier.exerciceBudgetaire}`;
-            request.actions = actions.filter(a => a.indexedInformations.requestUniqueId === uniqueId);
+            request.actions = actions.filter(a => a.dossier.requestUniqueId === uniqueId);
         }
 
         return requests;

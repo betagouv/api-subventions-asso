@@ -1,5 +1,4 @@
-import type OsirisActionsInformations from "../../../../src/modules/providers/osiris/@types/OsirisActionsInformations";
-import OsirisActionEntity from "../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
+import type OsirisActionEntity from "../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
 import type OsirisRequestEntity from "../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 
@@ -30,28 +29,33 @@ export const OSIRIS_REQUEST_ENTITY: OsirisRequestEntity = {
     actions: [],
 };
 
-export const OSIRIS_ACTION_ENTITY = new OsirisActionEntity(
-    {
+export const OSIRIS_ACTION_ENTITY: OsirisActionEntity = {
+    dossier: {
         osirisActionId: "DD71-24-0094-01",
+        uniqueId: "DD71-24-0094-01-2022",
         requestUniqueId: "DD71-24-0094-2022",
         compteAssoId: "LE_COMPTE_ASSO_ID",
-
+        exerciceBudgetaire: 2022,
         ej: "EJ00001",
+    },
+    beneficiaire: {
         siret: DEFAULT_ASSOCIATION.siret,
+    },
+    caracteristiques: {
         intitule: "intitulé de l'action",
         description: "description de l'action",
-        nature_aide: "aide en numéraire",
-        montants_versement_total: 150000,
-        montants_versement_demande: 170000,
-        montants_versement_propose: 150000,
-        montants_versement_accorde: 150000,
-        montants_versement_attribue: 150000,
-        montants_versement_realise: 120000,
-        montants_versement_compensation: 0,
-        exercise: 2022,
-    } as OsirisActionsInformations,
-    {},
-    new Date("2025"),
-);
+        natureAide: "aide en numéraire",
+    },
+    montants: {
+        coutTotalCharges: 150000,
+        demande: 170000,
+        propose: 150000,
+        accorde: 150000,
+        montantTotalAttribue: 150000,
+        realise: 120000,
+        compensation: 0,
+    },
+    updateDate: new Date("2025"),
+};
 
 export default OSIRIS_REQUEST_ENTITY;

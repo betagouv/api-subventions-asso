@@ -5,10 +5,10 @@ exports[`OsirisRequestMapper toDto converts raw OSIRIS XLSX rows to a semantic c
   "association": {
     "bic": "CCOPFRPPXXX",
     "iban": "FR7642559100000800330277358",
-    "nom": "ASSOCIATION TEST",
-    "rna": "W595004053",
+    "nom": "DEFAULT_ASSOCIATION",
+    "rna": "W000000000",
     "siege": true,
-    "siret": "35130347400024",
+    "siret": "10000000000001",
   },
   "coordonnees": {
     "codePostal": "59200",
@@ -61,10 +61,10 @@ exports[`OsirisRequestMapper toEntity composes a complete OSIRIS request entity 
   "association": {
     "bic": "CCOPFRPPXXX",
     "iban": "FR7642559100000800330277358",
-    "nom": "ASSOCIATION TEST",
-    "rna": "W595004053",
+    "nom": "DEFAULT_ASSOCIATION",
+    "rna": "W000000000",
     "siege": "Oui",
-    "siret": "35130347400024",
+    "siret": "10000000000001",
   },
   "coordonnees": {
     "codePostal": "59200",

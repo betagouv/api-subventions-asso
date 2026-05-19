@@ -42,7 +42,7 @@ export function getPluriannualYears(entity: OsirisRequestEntity): number[] {
 export function getCofinancers(actions: OsirisActionEntity[]): string[] {
     const cofinancersNames = Array.from(
         actions.reduce((acc, action) => {
-            const cofinancers = action.indexedInformations.cofinanceurs;
+            const cofinancers = action.cofinanceurs?.noms;
             if (!cofinancers) return acc;
             cofinancers.split(";").forEach(cofinancer => acc.add(cofinancer));
             return acc;

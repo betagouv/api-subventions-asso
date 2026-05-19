@@ -21,8 +21,13 @@ describe("OsirisActionPort", () => {
 
     const OSIRIS_ACTION_ID = "OSIRIS_ACTION_ID";
     const ENTITY = {
-        indexedInformations: { osirisActionId: OSIRIS_ACTION_ID },
-        data: {},
+        dossier: {
+            osirisActionId: OSIRIS_ACTION_ID,
+            uniqueId: "unique-id",
+            requestUniqueId: "request-unique-id",
+            exerciceBudgetaire: 2022,
+        },
+        updateDate: new Date(),
     } as OsirisActionEntity;
     describe("add()", () => {
         it("should insert an OsirisActionEntity and return entity", async () => {

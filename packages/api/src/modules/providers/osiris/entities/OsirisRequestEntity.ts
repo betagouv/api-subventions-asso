@@ -1,7 +1,5 @@
 import OsirisActionEntity from "./OsirisActionEntity";
 
-export type OsirisRequestValue = string | number | boolean | Date | null | undefined;
-
 export const OsirisRequestDefaultMainCategory = "Dossier";
 
 export interface OsirisRequestDossier {
@@ -18,7 +16,6 @@ export interface OsirisRequestDossier {
     noProgrammeTypeFinancement?: string;
     sousTypeFinancement?: string;
     pluriannualite?: string;
-    [key: string]: OsirisRequestValue;
 }
 
 export interface OsirisRequestAssociation {
@@ -28,7 +25,6 @@ export interface OsirisRequestAssociation {
     siege?: boolean | string;
     iban?: string;
     bic?: string;
-    [key: string]: OsirisRequestValue;
 }
 
 export interface OsirisRequestMontants {
@@ -36,7 +32,6 @@ export interface OsirisRequestMontants {
     demande?: number;
     propose?: number;
     accorde?: number;
-    [key: string]: OsirisRequestValue;
 }
 
 export interface OsirisRequestVersements {
@@ -45,7 +40,6 @@ export interface OsirisRequestVersements {
     realise?: number;
     compensationN1?: number;
     reversementCompensation?: number;
-    [key: string]: OsirisRequestValue;
 }
 
 export interface OsirisRequestRepresentantLegal {
@@ -55,19 +49,16 @@ export interface OsirisRequestRepresentantLegal {
     fonction?: string;
     courriel?: string;
     telephone?: string;
-    [key: string]: OsirisRequestValue;
 }
 
 export interface OsirisRequestCoordonnees {
     voie?: string;
     codePostal?: string;
     commune?: string;
-    [key: string]: OsirisRequestValue;
 }
 
 export interface OsirisRequestNbActions {
     nombreActions?: number;
-    [key: string]: OsirisRequestValue;
 }
 
 export default interface OsirisRequestEntity {

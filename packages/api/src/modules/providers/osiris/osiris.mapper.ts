@@ -13,7 +13,7 @@ import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEn
 import Siret from "../../../identifier-objects/Siret";
 import Ridet from "../../../identifier-objects/Ridet";
 import { CompanyIdType, EstablishmentIdType } from "../../../identifier-objects/@types/IdentifierType";
-import { santitizeFloat } from "../../../shared/helpers/NumberHelper";
+import { sanitizeFloat } from "../../../shared/helpers/NumberHelper";
 import { cleanRidet, getAssoIdType, getCofinancers, getPluriannualYears, toOsirisDate } from "./osiris.helper";
 
 export default class OsirisMapper {
@@ -53,17 +53,13 @@ export default class OsirisMapper {
         const toPVs = ProviderValueFactory.buildProviderValuesMapper(OsirisMapper.PROVIDER_NAME, dataDate);
         const isSiege = association.siege === "Oui" || association.siege === true;
         const federation =
-            actions.length &&
-            actions.find(action => action.indexedInformations.federation)?.indexedInformations.federation;
+            actions.length && actions.find(action => action.federation?.federation)?.federation?.federation;
         const licencies =
-            actions.length &&
-            actions.find(action => action.indexedInformations.federation)?.indexedInformations.licencies;
+            actions.length && actions.find(action => action.federation?.federation)?.federation?.nombreLicencies;
         const licenciesHommes =
-            actions.length &&
-            actions.find(action => action.indexedInformations.federation)?.indexedInformations.licenciesHommes;
+            actions.length && actions.find(action => action.federation?.federation)?.federation?.nombreLicenciesHommes;
         const licenciesFemmes =
-            actions.length &&
-            actions.find(action => action.indexedInformations.federation)?.indexedInformations.licenciesFemmes;
+            actions.length && actions.find(action => action.federation?.federation)?.federation?.nombreLicenciesFemmes;
 
         return {
             siren: toPVs(Siret.getSiren(siret)),
@@ -80,24 +76,24 @@ export default class OsirisMapper {
                           femmes: toPVs(licenciesFemmes),
                       }
                     : undefined,
-            ...(actions.length
+            ...(actions.length && actions[0].moyens
                 ? {
                       benevoles: {
-                          nombre: toPVs(actions[0].indexedInformations.benevoles),
-                          ETPT: toPVs(actions[0].indexedInformations.benevolesETPT),
+                          nombre: toPVs(actions[0].moyens.benevolesNombre),
+                          ETPT: toPVs(actions[0].moyens.benevolesETPT),
                       },
                       salaries: {
-                          nombre: toPVs(actions[0].indexedInformations.salaries),
-                          cdi: toPVs(actions[0].indexedInformations.salariesCDI),
-                          cdiETPT: toPVs(actions[0].indexedInformations.salariesCDIETPT),
-                          cdd: toPVs(actions[0].indexedInformations.salariesCDD),
-                          cddETPT: toPVs(actions[0].indexedInformations.salariesCDDETPT),
-                          emploisAides: toPVs(actions[0].indexedInformations.emploiesAides),
-                          emploisAidesETPT: toPVs(actions[0].indexedInformations.emploiesAidesETPT),
+                          nombre: toPVs(actions[0].moyens.salariesNombre),
+                          cdi: toPVs(actions[0].moyens.salariesCDINombre),
+                          cdiETPT: toPVs(actions[0].moyens.salariesCDIETPT),
+                          cdd: toPVs(actions[0].moyens.salariesCDDNombre),
+                          cddETPT: toPVs(actions[0].moyens.salariesCDDETPT),
+                          emploisAides: toPVs(actions[0].moyens.emploiesAidesNombre),
+                          emploisAidesETPT: toPVs(actions[0].moyens.emploiesAidesETPT),
                       },
                       volontaires: {
-                          nombre: toPVs(actions[0].indexedInformations.volontaires),
-                          ETPT: toPVs(actions[0].indexedInformations.volontairesETPT),
+                          nombre: toPVs(actions[0].moyens.volontairesNombre),
+                          ETPT: toPVs(actions[0].moyens.volontairesETPT),
                       },
                   }
                 : {}),
@@ -214,10 +210,10 @@ export default class OsirisMapper {
             scheme: dossier.noProgrammeTypeFinancement,
             subScheme: dossier.sousTypeFinancement,
             statusLabel: this.toStatus(dossier.etatDossier as string),
-            object: actions.map(action => action.indexedInformations.intitule).join("|"),
+            object: actions.map(action => action.caracteristiques?.intitule).join("|"),
             nature: ApplicationNature.MONEY,
-            requestedAmount: santitizeFloat(montants.demande),
-            grantedAmount: santitizeFloat(montants.accorde),
+            requestedAmount: sanitizeFloat(montants.demande),
+            grantedAmount: sanitizeFloat(montants.accorde),
             totalAmount: null,
             ej,
             paymentId,
