@@ -2,53 +2,37 @@ import { Adresse, RnaDto, SirenDto, SiretDto } from "../shared";
 import { AssociationNature } from "./AssociationNature";
 import { BodaccRecord } from "./BodaccRecord";
 import { ExtraitRcs } from "./ExtraitRcs";
+import { EstablishmentIdentifiers, UniteLegaleIdentifiers } from "../shared/Identifiers";
 
 export default interface Association {
-    siren?: SirenDto;
-    rna?: RnaDto;
-    nicSiege?: string;
-    categorieJuridique?: string;
+    // fields from schema
+    typeIdAsso: UniteLegaleIdentifiers;
+    idAsso: SirenDto;
+    typeIdEtablissementSiege: EstablishmentIdentifiers;
+    idEtablissementSiege: SiretDto;
+    rna: RnaDto;
     denominationSiren?: string;
     denominationRna?: string;
-    dateCreationSiren?: Date;
-    dateCreationRna?: Date;
+    adresseSiegeRna: Adresse;
+    adresseSiegeSiren: Adresse;
+    communeSiege: string;
+    etablisementsSiret: string[];
+    dateCreationSiren: Date;
+    dateCreationRna: Date;
     dateModificationRna?: Date;
     dateModificationSiren?: Date;
-    objetSocial?: string;
-    codeObjetSocial1?: string;
-    codeObjetSocial2?: string;
-    etablisementsSiret?: SiretDto[];
-    adresseSiegeRna?: Adresse;
-    adresseSiege_siren?: Adresse;
     nature?: AssociationNature;
     // Association reconnue d'utilité publique (RUP)
     rup?: boolean;
     // Date de reconnaissance
     dateRup?: string;
-    federation?: string;
-    licencies?: {
-        // Uniquement les asso sportive
-        total?: number;
-        hommes?: number;
-        femmes?: number;
-    };
-    benevoles?: {
-        nombre?: number;
-        etpt?: number;
-    };
-    salaries?: {
-        nombre?: number;
-        cdi?: number;
-        cdiEtpt?: number;
-        cdd?: number;
-        cddEtpt?: number;
-        emploisAides?: number;
-        emploisAidesEtpt?: number;
-    };
-    volontaires?: {
-        nombre?: number;
-        etpt?: number;
-    };
+    active: boolean;
+    codeApe: string;
+    libelleApe: string;
+    objetSocial?: string;
+    codeObjetSocial1?: string;
+    codeObjetSocial2?: string;
     extraitRcs?: ExtraitRcs | null;
     bodacc?: BodaccRecord[];
+    categorieJuridique?: string;
 }
