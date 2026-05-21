@@ -46,7 +46,12 @@ export default class OsirisCli implements ApplicationFlatCli {
         return true;
     }
 
-    public async parse(type: "requests" | "actions", file: string, extractYear: string): Promise<unknown> {
+    public async parse(
+        type: "requests" | "actions",
+        file: string,
+        extractYear: string,
+        mode?: string,
+    ): Promise<unknown> {
         if (typeof type != "string" && typeof file != "string" && typeof extractYear != "string") {
             throw new Error("Parse command need type, extractYear and file args");
         }
@@ -59,6 +64,8 @@ export default class OsirisCli implements ApplicationFlatCli {
             throw new Error(`File not found ${file}`);
         }
 
+        const rnaNeeded: boolean = mode?.toUpperCase() === "WITHOUT-RNA" ? false : true; // true by default to exclude potential companies (which cannot have an RNA)
+
         const files = GenericParser.findFiles(file);
         const logs: unknown[] = [];
 
@@ -67,7 +74,7 @@ export default class OsirisCli implements ApplicationFlatCli {
 
         return files
             .reduce((acc, filePath) => {
-                return acc.then(() => this._parse(type, filePath, parseInt(extractYear, 10), logs));
+                return acc.then(() => this._parse(type, filePath, parseInt(extractYear, 10), logs, rnaNeeded));
             }, Promise.resolve())
             .then(() =>
                 fs.writeFileSync(this.logFileParsePath[type], logs.join(""), {
@@ -77,14 +84,14 @@ export default class OsirisCli implements ApplicationFlatCli {
             );
     }
 
-    protected async _parse(type: string, file: string, year: number, logs: unknown[]) {
+    protected async _parse(type: string, file: string, year: number, logs: unknown[], rnaNeeded = true) {
         console.info("\nStart parse file: ", file);
         logs.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
         const fileContent = fs.readFileSync(file);
 
         if (type === "requests") {
-            await this._parseRequest(fileContent, year, logs);
+            await this._parseRequest(fileContent, year, logs, rnaNeeded);
         } else if (type === "actions") {
             await this._parseAction(fileContent, year, logs);
         } else {
@@ -100,7 +107,7 @@ export default class OsirisCli implements ApplicationFlatCli {
         });
     }
 
-    async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
+    async _parseRequest(contentFile: Buffer, year: number, logs: unknown[], rnaNeeded = true) {
         const dtos: OsirisRequestDto[] = OsirisParser.parseRequests(contentFile).map(raw =>
             OsirisRequestMapper.toDto(raw),
         );
@@ -123,14 +130,21 @@ export default class OsirisCli implements ApplicationFlatCli {
         await Promise.all(
             entities.map(r =>
                 osirisService
-                    .validateAndComplete(r)
+                    .validateAndComplete(r, rnaNeeded)
                     .then(() => validated.push(r))
-                    .catch((e: InvalidOsirisRequestError) => {
-                        console.log(`\n\nThis request is not registered because: ${e.validation.message}\n`);
+                    .catch((e: unknown) => {
+                        const isInvalidOsirisRequestError = e instanceof InvalidOsirisRequestError;
+                        const data = isInvalidOsirisRequestError ? e.validation.data : undefined;
+                        const message = isInvalidOsirisRequestError
+                            ? e.validation.message
+                            : String(e instanceof Error ? e.message : e);
+
+                        console.log(`\n\nThis request is not registered because: ${message}\n`);
                         logs.push(
-                            `\n\nThis request is not registered because: ${e.validation.message}\n`,
-                            JSON.stringify(e.validation.data, null, "\t"),
+                            `\n\nThis request is not registered because: ${message}\n`,
+                            JSON.stringify(data, null, "\t"),
                         );
+
                         nbErrors += 1;
                     }),
             ),
