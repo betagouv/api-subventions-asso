@@ -13,15 +13,17 @@
 <div class="fr-col fr-col-lg-12 fr-grid-row fr-grid-row--center">
     <table>
         <thead>
-            <th>Email</th>
-            <th>Roles</th>
-            <th>Actif</th>
-            <th>Nombre de recherches</th>
-            <th>Date dernière recherche</th>
-            <th>Date d'inscription</th>
-            <th>Lien d'activation</th>
-            <th>Date du token de reset</th>
-            <th>Action</th>
+            <tr>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Actif</th>
+                <th>Nombre de recherches</th>
+                <th>Date dernière recherche</th>
+                <th>Date d'inscription</th>
+                <th>Lien d'activation</th>
+                <th>Date du token de reset</th>
+                <th>Action</th>
+            </tr>
         </thead>
         <tbody>
             {#each $users as user, index (index)}
@@ -45,7 +47,8 @@
                                 Inactif
                                 <span
                                     class="fr-icon-question-line tooltip-icon fr-icon--sm fr-ml-1v"
-                                    aria-hidden="true" />
+                                    aria-hidden="true">
+                                </span>
                             </div>
                         {/if}
                     </td>
@@ -70,7 +73,7 @@
                             {new Date(user.resetTokenDate).toLocaleString()}
                         </td>
                     {:else}
-                        <td colspan="2" />
+                        <td colspan="2"></td>
                     {/if}
                     <td>
                         <Button

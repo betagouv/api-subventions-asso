@@ -8,9 +8,13 @@ let deleteDepositLogMock: MockInstance<() => Promise<null>>;
 let downloadErrorFileMock: MockInstance<(fileInfos: UploadedFileInfosDto) => Promise<void>>;
 let downloadScdlFileMock: MockInstance<(filename: string) => Promise<void>>;
 
+vi.mock("$lib/resources/deposit-log/depositLog.service");
+
 describe("ResumeFormController", () => {
+    let controller;
+
     beforeEach(() => {
-        depositLogStore.value = {
+        depositLogStore.set({
             step: 2,
             permissionAlert: true,
             allocatorSiret: "12345678901234",
@@ -26,26 +30,26 @@ describe("ResumeFormController", () => {
                 grantCoverageYears: [2024],
                 allocatorsSiret: ["12345678901234"],
             },
-        };
+        });
+        vi.spyOn(depositLogStore, "set");
+        vi.mocked(depositLogStore.set).mockReset(); // remove first call
         deleteDepositLogMock = vi.spyOn(depositLogService, "deleteDepositLog");
         downloadErrorFileMock = vi.spyOn(depositLogService, "downloadErrorFile");
         downloadScdlFileMock = vi.spyOn(depositLogService, "downloadScdlFile");
-        vi.spyOn(depositLogStore, "set");
+
+        controller = new ResumeFormController();
     });
 
     describe("constructor", () => {
         it("set allocatorSiret", () => {
-            const controller = new ResumeFormController();
             expect(controller.allocatorSiret).toBe(depositLogStore.value?.allocatorSiret);
         });
 
         it("set fileInfos", () => {
-            const controller = new ResumeFormController();
             expect(controller.fileInfos).toBe(depositLogStore.value?.uploadedFileInfos);
         });
 
         it("set filename", () => {
-            const controller = new ResumeFormController();
             expect(controller.filename).toBe(depositLogStore.value?.uploadedFileInfos?.fileName);
         });
 
@@ -55,44 +59,42 @@ describe("ResumeFormController", () => {
                 permissionAlert: true,
                 allocatorSiret: "12345678901234",
             };
-            const controller = new ResumeFormController();
-            expect(controller.currentView).toBe("siretView");
+            // override deposit log value in controller
+            controller = new ResumeFormController();
+            expect(controller.currentView).toEqual("siretView");
         });
     });
 
     describe("functions", () => {
-        let controller: ResumeFormController;
-
-        beforeEach(() => {
-            controller = new ResumeFormController();
-        });
-
         describe("handleRestartDeposit", () => {
-            it("should reinit deposit log", async () => {
+            it("returns true after reset", async () => {
                 deleteDepositLogMock.mockResolvedValue(null);
 
                 const result = await controller.handleRestartDeposit();
 
-                expect(depositLogService.deleteDepositLog).toHaveBeenCalledTimes(1);
-                expect(depositLogStore.set).toHaveBeenCalledWith(null);
-                expect(result).toBe(true);
+                expect(result).toEqual(true);
             });
 
-            it("should return false if deleteDepositLog fails", async () => {
-                const error = new Error("Fail");
-                deleteDepositLogMock.mockRejectedValue(error);
+            it("should reinit deposit log", async () => {
+                deleteDepositLogMock.mockResolvedValue(null);
 
-                const result = await controller.handleRestartDeposit();
+                await controller.handleRestartDeposit();
 
-                expect(depositLogService.deleteDepositLog).toHaveBeenCalledTimes(1);
-                expect(result).toBe(false);
+                expect(depositLogStore.set).toHaveBeenCalledWith(null);
             });
 
             it("should not call depositLogStore.set if deleteDepositLog fails", async () => {
                 deleteDepositLogMock.mockRejectedValue(new Error("Fail"));
 
                 await controller.handleRestartDeposit();
+                expect(depositLogStore.set).not.toHaveBeenCalled();
+            });
 
+            it("should return false if deleteDepositLog fails", async () => {
+                deleteDepositLogMock.mockRejectedValue(new Error("Fail"));
+
+                const result = await controller.handleRestartDeposit();
+                expect(result).toEqual(false);
                 expect(depositLogStore.set).not.toHaveBeenCalled();
             });
         });

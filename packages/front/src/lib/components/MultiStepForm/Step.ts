@@ -1,8 +1,8 @@
-import { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
 export type Step = {
     name: string;
-    component: typeof SvelteComponent;
-    alert: typeof SvelteComponent;
+    component: Component;
+    alert: Component;
     needsValidation: boolean;
 };

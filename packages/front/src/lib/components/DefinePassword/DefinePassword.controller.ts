@@ -1,5 +1,5 @@
 import type { EventDispatcher } from "svelte";
-import _ from "lodash";
+import { debounce } from "lodash-es";
 import { checkPassword } from "$lib/services/validator.service";
 import Store from "$lib/core/Store";
 import Dispatch from "$lib/core/Dispatch";
@@ -23,8 +23,8 @@ export default class DefinePasswordController {
         this.showConfirmError = new Store(false);
         this.dispatch = Dispatch.getDispatcher();
 
-        this.validatePassword = _.debounce(() => this._validatePassword(), 200);
-        this.checkConfirm = _.debounce(() => this._checkConfirm(), 200);
+        this.validatePassword = debounce(() => this._validatePassword(), 200);
+        this.checkConfirm = debounce(() => this._checkConfirm(), 200);
     }
 
     _validatePassword() {

@@ -2,7 +2,7 @@ import Store, { ReadStore } from "$lib/core/Store";
 import { goToUrl } from "$lib/services/router.service";
 import { depositLogStore } from "$lib/store/depositLog.store";
 import type { DepositScdlLogResponseDto } from "dto";
-import type { ComponentType } from "svelte";
+import type { Component } from "svelte";
 import { derived } from "svelte/store";
 
 export class DepositScdlController {
@@ -13,15 +13,15 @@ export class DepositScdlController {
         "Résumé de votre dépôt",
         "Finalisation du dépôt",
     ];
-    public stepComponents: Record<number, ComponentType>;
+    public stepComponents: Record<number, Component>;
     public depositLog = depositLogStore;
     public currentStep: Store<number | null> = new Store(null);
     public currentView: Store<"welcome" | "resume" | "form"> = new Store("welcome");
-    public currentStepComponent: ReadStore<ComponentType>;
+    public currentStepComponent: ReadStore<Component>;
     public currentLoadingMessage: Store<string> = new Store("Chargement en cours...");
     public isLoading: Store<boolean> = new Store(false);
 
-    constructor(stepComponents: Record<number, ComponentType>) {
+    constructor(stepComponents: Record<number, Component>) {
         this.stepComponents = stepComponents;
         this.lastStep = Object.keys(this.stepComponents).length;
         // @ts-expect-error: don't know how to fix that

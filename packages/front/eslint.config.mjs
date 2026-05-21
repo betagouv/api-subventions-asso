@@ -3,7 +3,7 @@ import tseslint from "typescript-eslint";
 import globals from "globals";
 import importPlugin from "eslint-plugin-import";
 import prettier from "eslint-config-prettier";
-import vitest from "eslint-plugin-vitest";
+import vitest from "@vitest/eslint-plugin";
 import svelte from "eslint-plugin-svelte";
 import svelteConfig from "./svelte.config.js";
 
@@ -46,7 +46,10 @@ export default [
     prettier,
 
     // Vitest
-    vitest.configs.recommended,
+    {
+        files: ["**/*.test.ts"],
+        ...vitest.configs.recommended,
+    },
 
     // Global language options
     {

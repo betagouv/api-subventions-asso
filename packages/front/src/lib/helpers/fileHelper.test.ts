@@ -64,8 +64,8 @@ describe("fileHelper", () => {
         it("should not throw for a valid file", async () => {
             const file = createMockFile("test.csv");
 
-            expect(async () => {
-                await fileHelper.validateFile(file, ["csv"], 10);
+            expect(() => {
+                fileHelper.validateFile(file, ["csv"], 10);
             }).not.toThrow();
         });
 
@@ -147,8 +147,8 @@ describe("fileHelper", () => {
         it("should validate text file with valid encoding", async () => {
             const file = createMockFile("test.txt", { type: "text/plain" }, "Hello world");
 
-            expect(async () => {
-                await fileHelper.validateFileEncoding(file);
+            expect(() => {
+                fileHelper.validateFileEncoding(file);
             }).not.toThrow();
         });
 
