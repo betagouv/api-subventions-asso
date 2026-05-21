@@ -57,7 +57,7 @@ describe("GetOsirisDetailsUseCase", () => {
         });
     });
 
-    it("handles actions with missing caracteristiques by returning empty strings", async () => {
+    it("filters out actions without intitulé", async () => {
         const actionWithoutCaracteristiques = {
             dossier: {
                 osirisActionId: "OSIRIS-1",
@@ -72,11 +72,7 @@ describe("GetOsirisDetailsUseCase", () => {
 
         const result = await useCase.execute(OSIRIS_ID);
 
-        expect(result).toEqual({
-            details: {
-                actions: [{ intitule: "", description: "" }],
-            },
-        });
+        expect(result).toEqual({ details: { actions: [] } });
     });
 
     it("calls the adapter with the given osirisId", async () => {
