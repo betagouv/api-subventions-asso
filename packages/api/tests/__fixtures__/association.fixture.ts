@@ -9,12 +9,16 @@ export const RNA_STR = "W000000000";
 export const NAME = "L'Asso Imaginaire";
 export const LONELY_RNA = "W999999999";
 export const RIDET_STR = "1234567891";
+export const OSIRIS_ID_STR = "DD75-24-0001";
+export const COMPTE_ASSO_ID_STR = "21-008391";
 
 const DEFAULT_ASSOCIATION = {
     siren: SIREN_STR,
     siret: SIRET_STR,
     rna: RNA_STR,
     nic: NIC_STR,
+    osirisId: OSIRIS_ID_STR,
+    compteAssoId: COMPTE_ASSO_ID_STR,
     name: "DEFAULT_ASSOCIATION",
 };
 

@@ -41,24 +41,25 @@ describe("Osiris cli", () => {
             expect(OsirisParser.parseRequests).toHaveBeenCalledWith(CONTENT_FILE);
         });
 
-        it("validates all mapped documents", async () => {
+        it("validates all mapped documents with rnaNeeded=true by default", async () => {
             await cli._parseRequest(CONTENT_FILE, YEAR, []);
             expect(osirisService.validateAndComplete).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    dossier: expect.objectContaining({
-                        exerciceBudgetaire: YEAR,
-                        osirisId: "DD75-24-0001",
-                    }),
+                    dossier: expect.objectContaining({ exerciceBudgetaire: YEAR, osirisId: "DD75-24-0001" }),
                 }),
+                true,
             );
             expect(osirisService.validateAndComplete).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    dossier: expect.objectContaining({
-                        exerciceBudgetaire: YEAR,
-                        osirisId: "DD75-24-0002",
-                    }),
+                    dossier: expect.objectContaining({ exerciceBudgetaire: YEAR, osirisId: "DD75-24-0002" }),
                 }),
+                true,
             );
+        });
+
+        it("validates all mapped documents with rnaNeeded=false when WITHOUT-RNA", async () => {
+            await cli._parseRequest(CONTENT_FILE, YEAR, [], false);
+            expect(osirisService.validateAndComplete).toHaveBeenCalledWith(expect.anything(), false);
         });
 
         it("saves validated documents", async () => {
