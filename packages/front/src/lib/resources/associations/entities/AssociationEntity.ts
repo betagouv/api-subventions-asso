@@ -1,9 +1,9 @@
 import type {
     Adresse,
-    BodaccRecordDto,
+    BodaccRecordDtoSnakeCase,
     DemandeSubvention,
     Etablissement,
-    ExtraitRcsDto,
+    ExtraitRcsDtoSnakeCase,
     RnaDto,
     SirenDto,
     SiretDto,
@@ -42,8 +42,8 @@ export default class AssociationEntity {
     volontaires: { nombre: number; ETPT: number };
     payments: Payment[];
     etablissements: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null;
-    extrait_rcs: ExtraitRcsDto;
-    bodacc: BodaccRecordDto;
+    extrait_rcs: ExtraitRcsDtoSnakeCase;
+    bodacc: BodaccRecordDtoSnakeCase;
     rup: boolean;
 
     constructor({

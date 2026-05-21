@@ -5,8 +5,8 @@ import { SirenDto } from "../shared/Siren";
 import { SiretDto } from "../shared/Siret";
 import { DemandeSubvention } from "../demandeSubvention";
 import { Payment } from "../payments/Payment";
-import { ExtraitRcsDto } from "./ExtraitRcsDto";
-import { BodaccRecordDto } from "./BodaccRecordDto";
+import { ExtraitRcsDtoSnakeCase } from "./ExtraitRcs";
+import { BodaccRecordDtoSnakeCase } from "./BodaccRecord";
 import { AssociationNature } from "./AssociationNature";
 import { EstablishmentWithProviderValues } from "../establishments";
 
@@ -58,6 +58,6 @@ export interface AssociationWithProviderValues {
     };
     versements?: Payment[];
     etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & EstablishmentWithProviderValues)[] | null;
-    extrait_rcs?: ProviderValues<ExtraitRcsDto> | null;
-    bodacc?: ProviderValues<BodaccRecordDto[]>;
+    extrait_rcs?: ProviderValues<ExtraitRcsDtoSnakeCase> | null;
+    bodacc?: ProviderValues<BodaccRecordDtoSnakeCase[]>;
 }

@@ -71,7 +71,8 @@ interface PersonnePhysique {
     };
 }
 
-export interface ExtraitRcsDto {
+// legacy type linked to AssociationWithProviderValues
+export interface ExtraitRcsDtoSnakeCase {
     siren: SirenDto;
     date_extrait: string;
     date_immatriculation: string;
@@ -83,4 +84,18 @@ export interface ExtraitRcsDto {
     greffe: Greffe;
     personne_morale: PersonneMorale;
     personne_physique: PersonnePhysique;
+}
+
+export interface ExtraitRcs {
+    siren: SirenDto;
+    dateExtrait: string;
+    dateImmatriculation: string;
+    mandatairesSociaux: MandataireSocial[];
+    observations: Observation[];
+    nomCommercial: string;
+    etablissementPrincipal: EtablissementPrincipal;
+    capital: Capital;
+    greffe: Greffe;
+    personneMorale: PersonneMorale;
+    personnePhysique: PersonnePhysique;
 }
