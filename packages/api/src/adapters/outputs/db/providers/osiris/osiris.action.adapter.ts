@@ -10,12 +10,11 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
     collectionName = "osiris-actions";
 
     async createIndexes() {
-        // TODO: Uncomment after MEPP/MPP + migration
-        // await this.collection.createIndex({ "dossier.uniqueId": 1 }, { unique: true });
-        // await this.collection.createIndex({ "dossier.osirisActionId": 1 });
-        // await this.collection.createIndex({ "dossier.requestUniqueId": 1 });
-        // await this.collection.createIndex({ "dossier.compteAssoId": 1 });
-        // await this.collection.createIndex({ "beneficiaire.siret": 1 });
+        await this.collection.createIndex({ "dossier.uniqueId": 1 }, { unique: true });
+        await this.collection.createIndex({ "dossier.osirisActionId": 1 });
+        await this.collection.createIndex({ "dossier.requestUniqueId": 1 });
+        await this.collection.createIndex({ "dossier.compteAssoId": 1 });
+        await this.collection.createIndex({ "beneficiaire.siret": 1 });
     }
 
     joinIndexes = {
@@ -105,6 +104,12 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
     public async findBySiren(siren: Siren): Promise<OsirisActionEntity[]> {
         return this.collection
             .find({ "beneficiaire.siret": new RegExp(`^${siren.value}\\d{5}`) }, { projection: { _id: 0 } })
+            .toArray();
+    }
+
+    public async findByOsirisId(osirisId: string): Promise<OsirisActionEntity[]> {
+        return this.collection
+            .find({ "dossier.requestUniqueId": new RegExp(`^${osirisId}-\\d+$`) }, { projection: { _id: 0 } }) // regex to match the osirisId with the year
             .toArray();
     }
 }

@@ -1,4 +1,5 @@
 const findOneAndUpdateMock = jest.fn(async () => ({ value: {} }));
+const findMock = jest.fn(() => ({ toArray: jest.fn(async () => []) }));
 
 jest.mock("../../../../../shared/MongoConnection", () => ({
     __esModule: true, // this property makes it work
@@ -6,6 +7,7 @@ jest.mock("../../../../../shared/MongoConnection", () => ({
         collection: () => ({
             insertOne: jest.fn(),
             findOneAndUpdate: findOneAndUpdateMock,
+            find: findMock,
         }),
     },
 }));
@@ -54,6 +56,31 @@ describe("OsirisActionPort", () => {
                 actual = e;
             }
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("findByOsirisId()", () => {
+        const OSIRIS_ID = "DR-CENT-21-0002";
+
+        beforeEach(() => {
+            findMock.mockReturnValue({ toArray: jest.fn(async () => [ENTITY]) });
+        });
+
+        it("queries collection with regex matching osirisId", async () => {
+            await port.findByOsirisId(OSIRIS_ID);
+            const query = findMock.mock.calls[0][0];
+            expect(query["dossier.requestUniqueId"].test(`${OSIRIS_ID}-2023`)).toBe(true);
+        });
+
+        it("does not match a different osirisId that starts the same", async () => {
+            await port.findByOsirisId(OSIRIS_ID);
+            const query = findMock.mock.calls[0][0];
+            expect(query["dossier.requestUniqueId"].test("DR-CENT-21-0002-EXTRA-2023")).toBe(false);
+        });
+
+        it("returns results from collection", async () => {
+            const actual = await port.findByOsirisId(OSIRIS_ID);
+            expect(actual).toEqual([ENTITY]);
         });
     });
 });
