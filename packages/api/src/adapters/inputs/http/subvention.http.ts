@@ -7,11 +7,11 @@ import { getProviderDetailsUseCase } from "../../../modules/grant/use-cases/get-
 @Hidden()
 @Security("jwt")
 @Tags("Subvention Controller")
-export class SubventionDetailsHttp extends Controller {
+export class SubventionHttp extends Controller {
     /**
-     * Récupère les détails d'une demande de subvention auprès de son fournisseur de données.
+     * Permet de récupérer les données spécifiques d'un fournisseur pour une demande de subvention
      *
-     * @summary Détails fournisseur d'une demande de subvention
+     * @summary Récupère les données spécifiques d'un fournisseur pour une demande de subvention
      * @param provider Identifiant du fournisseur (ex: "osiris")
      * @param idSubventionProvider Identifiant de la demande chez le fournisseur
      */
