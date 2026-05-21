@@ -42,7 +42,6 @@
         "url": "https://github.com/betagouv/datasubvention/issues"
     },
     "dependencies": {
-        "@types/node": "24.10.1",
-        "dto": "workspace:0.84.0"
+        "@types/node": "24.10.1"
     }
 }

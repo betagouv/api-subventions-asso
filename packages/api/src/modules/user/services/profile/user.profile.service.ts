@@ -4,13 +4,12 @@ import {
     AgentJobTypeEnum,
     AgentTypeEnum,
     RegistrationSrcTypeEnum,
-    ResetPasswordErrorCodes,
     TerritorialScopeEnum,
     UpdatableUser,
     UserActivationInfoDto,
     UserDto,
 } from "dto";
-import { BadRequestError, UserNotFoundError } from "core";
+import { BadRequestError, ResetPasswordErrorCodes, UserNotFoundError } from "core";
 import { isInObjectValues } from "../../../../shared/Validators";
 import { joinEnum } from "../../../../shared/helpers/ArrayHelper";
 import userCheckService, { UserCheckService } from "../check/user.check.service";

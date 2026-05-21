@@ -8,7 +8,6 @@ import {
     PaymentFlatDto,
     GrantFlatDto,
 } from "dto";
-import { RnaOnlyError } from "core";
 import { providersById } from "../providers/providers.helper";
 import { applicationProviders, paymentProviders } from "../providers";
 import ApplicationProvider from "../subventions/@types/ApplicationProvider";
@@ -198,16 +197,9 @@ export class GrantService {
      * @returns List of grants (application with paiments)
      */
     async getRawGrants(identifier: StructureIdentifier): Promise<JoinedRawGrant[]> {
-        try {
-            const rawApplications = await applicationFlatService.getRawGrants(identifier);
-            const rawPayments = await paymentFlatService.getRawGrants(identifier);
-            return this.joinGrants({ applications: rawApplications, payments: rawPayments });
-        } catch (e) {
-            // IMPROVE: returning empty array does not inform the user that we could not search for grants
-            // it does not mean that the association does not receive any grants
-            if (e instanceof RnaOnlyError) return [] as JoinedRawGrant[];
-            else throw e;
-        }
+        const rawApplications = await applicationFlatService.getRawGrants(identifier);
+        const rawPayments = await paymentFlatService.getRawGrants(identifier);
+        return this.joinGrants({ applications: rawApplications, payments: rawPayments });
     }
 
     /**

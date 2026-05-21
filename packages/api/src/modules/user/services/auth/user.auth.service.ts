@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { LoginDtoErrorCodes, UserDto, UserErrorCodes, UserWithJWTDto } from "dto";
+import { UserDto, UserErrorCodes, UserWithJWTDto } from "dto";
 import {
     BadRequestError,
     ForbiddenError,
@@ -8,6 +8,7 @@ import {
     NotFoundError,
     UnauthorizedError,
     LoginError,
+    LoginErrorCodes,
 } from "core";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../../../configurations/jwt.conf";
@@ -106,11 +107,11 @@ export class UserAuthService {
         if (!user.hashPassword)
             throw new UnauthorizedError(
                 "User has not set a password so they can't login this way",
-                LoginDtoErrorCodes.PASSWORD_UNSET,
+                LoginErrorCodes.PASSWORD_UNSET,
             );
         const validPassword = await bcrypt.compare(password, user.hashPassword);
         if (!validPassword) throw new LoginError();
-        if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
+        if (!user.active) throw new UnauthorizedError("User is not active", LoginErrorCodes.USER_NOT_ACTIVE);
 
         const updatedUser = await this.updateJwt(user);
 

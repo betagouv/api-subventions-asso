@@ -1,4 +1,4 @@
-import { ResetPasswordErrorCodes } from "dto";
+import { ResetPasswordErrorCodes } from "../../../enums/ResetPasswordErrorCodes";
 import { NotFoundError } from "./NotFoundError";
 
 export class UserNotFoundError extends NotFoundError {

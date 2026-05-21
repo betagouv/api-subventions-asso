@@ -4,8 +4,14 @@ import { USER_DBO, USER_SECRETS, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } fr
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
 import { ObjectId, WithId } from "mongodb";
-import { BadRequestError, InternalServerError, NotFoundError, ResetTokenNotFoundError } from "core";
-import { ResetPasswordErrorCodes, TokenValidationDtoPositiveResponse, TokenValidationType, UserDto } from "dto";
+import {
+    BadRequestError,
+    InternalServerError,
+    NotFoundError,
+    ResetPasswordErrorCodes,
+    ResetTokenNotFoundError,
+} from "core";
+import { TokenValidationDtoPositiveResponse, TokenValidationType, UserDto } from "dto";
 
 jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
@@ -175,7 +181,7 @@ describe("user activation service", () => {
 
         it("should call find by token", async () => {
             await userActivationService.validateTokenAndGetType(FAKE_TOKEN);
-            expect(mockedUserResetAdapter.findByToken).toBeCalledWith(FAKE_TOKEN);
+            expect(mockedUserResetAdapter.findByToken).toHaveBeenCalledWith(FAKE_TOKEN);
         });
 
         it("should return true", async () => {
