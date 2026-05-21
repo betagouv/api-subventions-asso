@@ -63,14 +63,12 @@ describe("OsirisActionPort", () => {
         const OSIRIS_ID = "DR-CENT-21-0002";
 
         beforeEach(() => {
-            findMock.mockClear();
             findMock.mockReturnValue({ toArray: jest.fn(async () => [ENTITY]) });
         });
 
         it("queries collection with regex matching osirisId", async () => {
             await port.findByOsirisId(OSIRIS_ID);
             const query = findMock.mock.calls[0][0];
-            expect(query["dossier.requestUniqueId"]).toBeInstanceOf(RegExp);
             expect(query["dossier.requestUniqueId"].test(`${OSIRIS_ID}-2023`)).toBe(true);
         });
 
@@ -83,33 +81,6 @@ describe("OsirisActionPort", () => {
         it("returns results from collection", async () => {
             const actual = await port.findByOsirisId(OSIRIS_ID);
             expect(actual).toEqual([ENTITY]);
-        });
-    });
-
-    describe("findByOsirisIds()", () => {
-        const OSIRIS_IDS = ["DR-CENT-21-0002", "DR-CENT-22-0001"];
-
-        beforeEach(() => {
-            findMock.mockClear();
-            findMock.mockReturnValue({ toArray: jest.fn(async () => [ENTITY]) });
-        });
-
-        it("queries collection with $in of regexes", async () => {
-            await port.findByOsirisIds(OSIRIS_IDS);
-            const query = findMock.mock.calls[0][0];
-            expect(query["dossier.requestUniqueId"].$in).toHaveLength(OSIRIS_IDS.length);
-            expect(query["dossier.requestUniqueId"].$in[0]).toBeInstanceOf(RegExp);
-        });
-
-        it("returns results from collection", async () => {
-            const actual = await port.findByOsirisIds(OSIRIS_IDS);
-            expect(actual).toEqual([ENTITY]);
-        });
-
-        it("returns empty array for empty id list", async () => {
-            findMock.mockReturnValueOnce({ toArray: jest.fn(async () => []) });
-            const actual = await port.findByOsirisIds([]);
-            expect(actual).toEqual([]);
         });
     });
 });

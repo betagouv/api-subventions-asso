@@ -11,5 +11,4 @@ export interface OsirisActionPort {
     findByRequestUniqueId(requestUniqueId: string): Promise<OsirisActionEntity[]>;
     findBySiren(siren: Siren): Promise<OsirisActionEntity[]>;
     findByOsirisId(osirisId: string): Promise<OsirisActionEntity[]>;
-    findByOsirisIds(osirisIds: string[]): Promise<OsirisActionEntity[]>;
 }
