@@ -2,13 +2,15 @@ import { S3StorageService } from "./s3-storage.service";
 import { S3FileData } from "../../@types/S3FileData";
 
 jest.mock("../../adapters/outputs/s3/s3.adapter", () => ({
-    listFiles: jest.fn(),
-    deleteFile: jest.fn(),
-    uploadFile: jest.fn(),
-    getDownloadUrl: jest.fn(),
-    getFile: jest.fn(),
+    scdlS3Adapter: {
+        listFiles: jest.fn(),
+        deleteFile: jest.fn(),
+        uploadFile: jest.fn(),
+        getDownloadUrl: jest.fn(),
+        getFile: jest.fn(),
+    },
 }));
-import s3ClientAdapter from "../../adapters/outputs/s3/s3.adapter";
+import { scdlS3Adapter } from "../../adapters/outputs/s3/s3.adapter";
 
 jest.mock("../../shared/helpers/FileHelper", () => ({
     bufferToMulterFile: jest.fn(),
@@ -16,7 +18,7 @@ jest.mock("../../shared/helpers/FileHelper", () => ({
 import { bufferToMulterFile } from "../../shared/helpers/FileHelper";
 import { NotFoundError } from "core";
 
-const mockS3ClientPort = s3ClientAdapter as jest.Mocked<typeof s3ClientAdapter>;
+const mockS3ClientPort = scdlS3Adapter as jest.Mocked<typeof scdlS3Adapter>;
 
 const createMockFile = (originalname: string, buffer: Buffer = Buffer.from("test")): Express.Multer.File => ({
     fieldname: "file",
@@ -36,11 +38,14 @@ describe("S3FileService", () => {
     let mockFile: Express.Multer.File;
 
     let USER_ID: string;
-    let EXISTING_FILES: string[];
+    let EXISTING_FILES;
     let UPLOAD_KEY: string;
 
     beforeEach(() => {
-        EXISTING_FILES = ["user123/old1.csv", "user123/old2.csv"];
+        EXISTING_FILES = [
+            { path: "user123/old1.csv", importDate: new Date("2026-05-12") },
+            { path: "user123/old2.csv", importDate: new Date("2026-05-20") },
+        ];
         UPLOAD_KEY = "user123/test.csv";
         USER_ID = "user123";
 
