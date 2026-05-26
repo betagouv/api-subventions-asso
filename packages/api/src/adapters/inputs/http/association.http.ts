@@ -336,10 +336,8 @@ export class AssociationHttp extends Controller {
     }
 
     /**
-     * Recherche les documents liés à une association
-     *
-     * @summary Recherche les documents liés à une association
-     * @param identifier Identifiant Siren ou Rna
+     * @summary Liste les documents liés à une association via RNA ou SIREN (tout établissement confondu)
+     * @param identifier RNA ou SIREN de l'association
      * @param req
      */
     @Example<GetDocumentsResponseDto>({
