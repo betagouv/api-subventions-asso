@@ -1,4 +1,4 @@
-import s3ClientAdapter from "../../../adapters/outputs/s3/s3.adapter";
+import { providersS3Adapter, scdlS3Adapter } from "../../../adapters/outputs/s3/s3.adapter";
 import { S3Port } from "../../../adapters/outputs/s3/s3.port";
 
 export class GetFileData {
@@ -9,6 +9,5 @@ export class GetFileData {
     }
 }
 
-const getFileData = new GetFileData(s3ClientAdapter);
-
-export default getFileData;
+export const getScdlFileData = new GetFileData(scdlS3Adapter);
+export const getProvidersFileData = new GetFileData(providersS3Adapter);

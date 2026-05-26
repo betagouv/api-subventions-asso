@@ -10,26 +10,24 @@ import {
     S3ClientConfig,
 } from "@aws-sdk/client-s3";
 
-import { S3_ACCESS_KEY, S3_REGION, S3_BUCKET, S3_ENDPOINT, S3_SECRET_KEY } from "../../../configurations/s3.conf";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3Error } from "./@errors/S3Error";
 import { S3FileData } from "../../../@types/S3FileData";
 import { S3Port } from "./s3.port";
+import {
+    S3_SCDL_BUCKET,
+    S3_ENDPOINT,
+    S3_REGION,
+    S3_ACCESS_KEY,
+    S3_SECRET_KEY,
+    S3_PROVIDERS_BUCKET,
+} from "../../../configurations/s3.conf";
 
 export class S3Adapter implements S3Port {
-    s3Client: S3Client;
-
-    constructor() {
-        this.s3Client = new S3Client({
-            endpoint: S3_ENDPOINT,
-            region: S3_REGION,
-            credentials: {
-                accessKeyId: S3_ACCESS_KEY,
-                secretAccessKey: S3_SECRET_KEY,
-            },
-            forcePathStyle: true,
-        } as S3ClientConfig);
-    }
+    constructor(
+        private s3Client: S3Client,
+        private bucketName: string,
+    ) {}
 
     /**
      *  Uploads a file to S3 bucket.
@@ -40,7 +38,7 @@ export class S3Adapter implements S3Port {
     async uploadFile(file: Express.Multer.File, key: string, tag?: { name: string; value: string }): Promise<string> {
         try {
             const input: PutObjectCommandInput = {
-                Bucket: S3_BUCKET,
+                Bucket: this.bucketName,
                 Key: key,
                 Body: file.buffer,
                 ContentType: file.mimetype,
@@ -68,7 +66,7 @@ export class S3Adapter implements S3Port {
     async getDownloadUrl(key: string, expiresIn: number = 240): Promise<string> {
         try {
             const command = new GetObjectCommand({
-                Bucket: S3_BUCKET,
+                Bucket: this.bucketName,
                 Key: key,
             });
 
@@ -87,7 +85,7 @@ export class S3Adapter implements S3Port {
     async deleteFile(key: string): Promise<void> {
         try {
             const command = new DeleteObjectCommand({
-                Bucket: S3_BUCKET,
+                Bucket: this.bucketName,
                 Key: key,
             });
 
@@ -106,7 +104,7 @@ export class S3Adapter implements S3Port {
     async getFile(key: string): Promise<S3FileData | null> {
         try {
             const command = new GetObjectCommand({
-                Bucket: S3_BUCKET,
+                Bucket: this.bucketName,
                 Key: key,
             });
 
@@ -138,7 +136,7 @@ export class S3Adapter implements S3Port {
     async getFileTags(key: string) {
         try {
             const command = new GetObjectTaggingCommand({
-                Bucket: S3_BUCKET,
+                Bucket: this.bucketName,
                 Key: key,
             });
 
@@ -168,7 +166,7 @@ export class S3Adapter implements S3Port {
     async listFiles(prefix: string) {
         try {
             const command = new ListObjectsV2Command({
-                Bucket: S3_BUCKET,
+                Bucket: this.bucketName,
                 Prefix: prefix,
             });
 
@@ -183,7 +181,7 @@ export class S3Adapter implements S3Port {
     async tagFile(key: string, tag: { name: string; value: string }): Promise<void> {
         try {
             const command = new PutObjectTaggingCommand({
-                Bucket: S3_BUCKET,
+                Bucket: this.bucketName,
                 Key: key,
                 Tagging: { TagSet: [{ Key: tag.name, Value: tag.value }] },
             });
@@ -196,6 +194,16 @@ export class S3Adapter implements S3Port {
     }
 }
 
-const s3ClientAdapter = new S3Adapter();
+const DEFAULT_CLIENT = new S3Client({
+    endpoint: S3_ENDPOINT,
+    region: S3_REGION,
+    credentials: {
+        accessKeyId: S3_ACCESS_KEY,
+        secretAccessKey: S3_SECRET_KEY,
+    },
+    forcePathStyle: true,
+} as S3ClientConfig);
 
-export default s3ClientAdapter;
+export const scdlS3Adapter = new S3Adapter(DEFAULT_CLIENT, S3_SCDL_BUCKET);
+
+export const providersS3Adapter = new S3Adapter(DEFAULT_CLIENT, S3_PROVIDERS_BUCKET);

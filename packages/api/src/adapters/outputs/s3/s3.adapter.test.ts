@@ -9,13 +9,13 @@ import {
     S3Client,
 } from "@aws-sdk/client-s3";
 import { S3Adapter } from "./s3.adapter";
-import { S3_BUCKET } from "../../../configurations/s3.conf";
 import { S3Error } from "./@errors/S3Error";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Readable } from "stream";
 import { FileStatus } from "../../../modules/s3-file/@types/FileStatus";
 
 const s3Mock = mockClient(S3Client);
+const s3Bucket = "S3_BUCKET";
 
 jest.mock("@aws-sdk/s3-request-presigner", () => ({
     getSignedUrl: jest.fn(),
@@ -36,13 +36,7 @@ describe("S3 Port", () => {
 
     beforeEach(() => {
         s3Mock.reset();
-        s3Port = new S3Adapter();
-    });
-
-    describe("constructor", () => {
-        it("calls S3Client with config", () => {
-            expect(s3Port.s3Client).toBeInstanceOf(S3Client);
-        });
+        s3Port = new S3Adapter(s3Mock as unknown as S3Client, s3Bucket);
     });
 
     describe("uploadFile", () => {
@@ -55,7 +49,7 @@ describe("S3 Port", () => {
             expect(result).toEqual(fileKey);
             const putObjectCall = s3Mock.commandCalls(PutObjectCommand)[0];
             expect(putObjectCall.args[0].input).toEqual({
-                Bucket: S3_BUCKET,
+                Bucket: s3Bucket,
                 Key: fileKey,
                 Body: file.buffer,
                 ContentType: file.mimetype,
@@ -87,7 +81,7 @@ describe("S3 Port", () => {
 
             await s3Port.getDownloadUrl(fileKey);
 
-            expect(mockGetSignedUrl).toHaveBeenCalledWith(s3Port.s3Client, expect.any(GetObjectCommand), {
+            expect(mockGetSignedUrl).toHaveBeenCalledWith(s3Mock, expect.any(GetObjectCommand), {
                 expiresIn: 240,
             });
         });
@@ -109,7 +103,7 @@ describe("S3 Port", () => {
 
             const deleteObjectCall = s3Mock.commandCalls(DeleteObjectCommand)[0];
             expect(deleteObjectCall.args[0].input).toEqual({
-                Bucket: S3_BUCKET,
+                Bucket: s3Bucket,
                 Key: fileKey,
             });
         });
@@ -129,7 +123,7 @@ describe("S3 Port", () => {
 
             const getObjectCall = s3Mock.commandCalls(GetObjectCommand)[0];
             expect(getObjectCall.args[0].input).toEqual({
-                Bucket: S3_BUCKET,
+                Bucket: s3Bucket,
                 Key: fileKey,
             });
         });
@@ -181,7 +175,7 @@ describe("S3 Port", () => {
 
             const listObjectCall = s3Mock.commandCalls(ListObjectsV2Command)[0];
             expect(listObjectCall.args[0].input).toEqual({
-                Bucket: S3_BUCKET,
+                Bucket: s3Bucket,
                 Prefix: "prefix",
             });
         });
@@ -226,7 +220,7 @@ describe("S3 Port", () => {
 
             const commandCall = s3Mock.commandCalls(PutObjectTaggingCommand)[0];
             expect(commandCall.args[0].input).toEqual({
-                Bucket: S3_BUCKET,
+                Bucket: s3Bucket,
                 Key: fileKey,
                 Tagging: { TagSet: [{ Key: TAG.name, Value: TAG.value }] },
             });
@@ -248,7 +242,7 @@ describe("S3 Port", () => {
 
             const commandCall = s3Mock.commandCalls(GetObjectTaggingCommand)[0];
             expect(commandCall.args[0].input).toEqual({
-                Bucket: S3_BUCKET,
+                Bucket: s3Bucket,
                 Key: fileKey,
             });
         });
