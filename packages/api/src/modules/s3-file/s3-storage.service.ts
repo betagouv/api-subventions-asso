@@ -9,8 +9,8 @@ export class S3StorageService {
     public async uploadAndReplaceUserFile(file: Express.Multer.File, userId: string): Promise<string> {
         const existingFiles = await s3ClientAdapter.listFiles(userId);
 
-        for (const fileKey of existingFiles) {
-            await s3ClientAdapter.deleteFile(fileKey);
+        for (const file of existingFiles) {
+            await s3ClientAdapter.deleteFile(file.path);
         }
 
         return this.uploadUserFile(file, userId);

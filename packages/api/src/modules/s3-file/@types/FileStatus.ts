@@ -1,4 +1,4 @@
 export enum FileStatus {
-    NOT_IMPORTED = "not imported",
-    IMPORTED = "imported",
+    NOT_IMPORTED = "NOT_IMPORTED",
+    IMPORTED = "IMPORTED",
 }
