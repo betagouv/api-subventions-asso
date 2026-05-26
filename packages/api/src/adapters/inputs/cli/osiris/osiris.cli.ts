@@ -139,7 +139,6 @@ export default class OsirisCli implements ApplicationFlatCli {
                             ? e.validation.message
                             : String(e instanceof Error ? e.message : e);
 
-                        console.log(`\n\nThis request is not registered because: ${message}\n`);
                         logs.push(
                             `\n\nThis request is not registered because: ${message}\n`,
                             JSON.stringify(data, null, "\t"),
