@@ -1,3 +1,4 @@
+import s3ClientAdapter from "../../../adapters/outputs/s3/s3.adapter";
 import { S3Port } from "../../../adapters/outputs/s3/s3.port";
 import { FileStatus } from "../@types/FileStatus";
 
@@ -28,3 +29,7 @@ export class GetNewS3File {
         return newFiles.map(file => ({ path: file.path, importDate: file.importDate }));
     }
 }
+
+const getNewS3File = new GetNewS3File(s3ClientAdapter);
+
+export default getNewS3File;
