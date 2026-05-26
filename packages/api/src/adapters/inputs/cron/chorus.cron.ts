@@ -1,13 +1,14 @@
 import { CronController } from "../../../@types/CronController";
 import { AsyncCron } from "../../../decorators/cron.decorator";
-import getFileData, { GetFileData } from "../../../modules/s3-file/use-cases/get-file-data";
-import getNewS3File, { GetNewS3File } from "../../../modules/s3-file/use-cases/get-new-s3-file";
+import { GetFileData } from "../../../modules/s3-file/use-cases/get-file-data";
+import { GetNewS3File } from "../../../modules/s3-file/use-cases/get-new-s3-file";
+import { providersS3Adapter } from "../../outputs/s3/s3.adapter";
 
 export class ChorusCron implements CronController {
     name = "ChorusCron";
 
     constructor(
-        private getFile: GetNewS3File,
+        private getFiles: GetNewS3File,
         private getFileData: GetFileData,
     ) {}
 
@@ -15,7 +16,7 @@ export class ChorusCron implements CronController {
     @AsyncCron({ cronExpression: "0 14 * * 0" })
     async importNewFile() {
         const year = new Date().getFullYear();
-        const files = await this.getFile.execute(`providers/chorus/${year}`);
+        const files = await this.getFiles.execute(`providers/chorus/${year}`);
         if (!files || files.length === 0) {
             console.log("CHORUS CRON: no file to import");
             return;
@@ -32,5 +33,5 @@ export class ChorusCron implements CronController {
     }
 }
 
-const chorusCron = new ChorusCron(getNewS3File, getFileData);
+const chorusCron = new ChorusCron(new GetNewS3File(providersS3Adapter), new GetFileData(providersS3Adapter));
 export default chorusCron;
