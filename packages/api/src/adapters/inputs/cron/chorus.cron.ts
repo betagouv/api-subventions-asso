@@ -14,8 +14,9 @@ export class ChorusCron implements CronController {
     // every sunday at 2 PM
     @AsyncCron({ cronExpression: "0 14 * * 0" })
     async importNewFile() {
-        const files = await this.getFile.execute("/providers/chorus/");
-        if (!files) {
+        const year = new Date().getFullYear();
+        const files = await this.getFile.execute(`providers/chorus/${year}`);
+        if (!files || files.length === 0) {
             console.log("CHORUS CRON: no file to import");
             return;
         } else {
