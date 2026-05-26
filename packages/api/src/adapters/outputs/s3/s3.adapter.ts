@@ -1,8 +1,11 @@
 import {
     DeleteObjectCommand,
     GetObjectCommand,
+    GetObjectTaggingCommand,
     ListObjectsV2Command,
     PutObjectCommand,
+    PutObjectCommandInput,
+    PutObjectTaggingCommand,
     S3Client,
     S3ClientConfig,
 } from "@aws-sdk/client-s3";
@@ -34,14 +37,19 @@ export class S3Adapter implements S3Port {
      * @param key - Key of the file in S3 bucket (path).
      * @returns Key of the uploaded file.
      * */
-    async uploadFile(file: Express.Multer.File, key: string): Promise<string> {
+    async uploadFile(file: Express.Multer.File, key: string, tag?: { name: string; value: string }): Promise<string> {
         try {
-            const command = new PutObjectCommand({
+            const input: PutObjectCommandInput = {
                 Bucket: S3_BUCKET,
                 Key: key,
                 Body: file.buffer,
                 ContentType: file.mimetype,
-            });
+            };
+
+            if (tag && (!tag.name || !tag?.value)) throw new S3Error("Tag must have a name and value");
+            if (tag && tag.name && tag.value) input.Tagging = `${tag.name}=${tag.value}`;
+
+            const command = new PutObjectCommand(input);
 
             await this.s3Client.send(command);
             return key;
@@ -127,12 +135,37 @@ export class S3Adapter implements S3Port {
         }
     }
 
+    async getFileTags(key: string) {
+        try {
+            const command = new GetObjectTaggingCommand({
+                Bucket: S3_BUCKET,
+                Key: key,
+            });
+
+            const { TagSet } = await this.s3Client.send(command);
+
+            if (!TagSet) return {};
+
+            return TagSet?.reduce(
+                (tags, tag) => {
+                    if (!tag.Key || !tag.Value) return tags;
+                    tags[tag.Key] = tag.Value;
+                    return tags;
+                },
+                {} as Record<string, string>,
+            );
+        } catch (error) {
+            console.log(error);
+            throw new S3Error("Failed to retrieve file tag information");
+        }
+    }
+
     /**
      * Lists all files in S3 bucket with given prefix.
      * @param prefix - Prefix to filter files (folder path).
      * @returns Array of file keys matching the prefix.
      */
-    async listFiles(prefix: string): Promise<string[]> {
+    async listFiles(prefix: string) {
         try {
             const command = new ListObjectsV2Command({
                 Bucket: S3_BUCKET,
@@ -140,10 +173,25 @@ export class S3Adapter implements S3Port {
             });
 
             const response = await this.s3Client.send(command);
-            return response.Contents?.map(obj => obj.Key!) || [];
+            return response.Contents?.map(obj => ({ path: obj.Key!, importDate: obj.LastModified! })) || [];
         } catch (error) {
             console.error(error);
             throw new S3Error("Failed to list files");
+        }
+    }
+
+    async tagFile(key: string, tag: { name: string; value: string }): Promise<void> {
+        try {
+            const command = new PutObjectTaggingCommand({
+                Bucket: S3_BUCKET,
+                Key: key,
+                Tagging: { TagSet: [{ Key: tag.name, Value: tag.value }] },
+            });
+
+            await this.s3Client.send(command);
+        } catch (error) {
+            console.error(error);
+            throw new S3Error("Failed to add tag to file");
         }
     }
 }
