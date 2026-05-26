@@ -17,8 +17,6 @@ const DEFAULT_ASSOCIATION = {
     siret: SIRET_STR,
     rna: RNA_STR,
     nic: NIC_STR,
-    osirisId: OSIRIS_ID_STR,
-    compteAssoId: COMPTE_ASSO_ID_STR,
     name: "DEFAULT_ASSOCIATION",
 };
 

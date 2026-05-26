@@ -1,5 +1,6 @@
 import Rna from "../../../identifier-objects/Rna";
 import Siren from "../../../identifier-objects/Siren";
+import Siret from "../../../identifier-objects/Siret";
 import osirisService, { InvalidOsirisRequestError, VALID_REQUEST_ERROR_CODE } from "./osiris.service";
 import { osirisActionAdapter, osirisRequestAdapter } from "../../../adapters/outputs/db/providers/osiris";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
@@ -9,7 +10,7 @@ import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import { ReadableStream } from "stream/web";
 import { APPLICATION_LINK_TO_CHORUS } from "../../application-flat/__fixtures__/application-flat.fixture";
 import applicationFlatService from "../../application-flat/application-flat.service";
-import { REQUEST_DBO } from "./__fixtures__/osiris.request.fixtures";
+import { OSIRIS_ID, REQUEST_ENTITY, REQUEST_DBO } from "./__fixtures__/osiris.request.fixtures";
 import { ACTION_ENTITY } from "./__fixtures__/osiris.action.fixtures";
 import { cursorToStream } from "../../application-flat/application-flat.helper";
 import osirisJoiner from "../../../adapters/outputs/db/providers/osiris/osiris.joiner";
@@ -22,13 +23,13 @@ jest.mock("../../rna-siren/rna-siren.service");
 jest.mock("../../application-flat/application-flat.service");
 
 const SIREN = new Siren(DEFAULT_ASSOCIATION.siren);
-const SIRET = SIREN.toSiret(DEFAULT_ASSOCIATION.nic);
-const RNA = new Rna(DEFAULT_ASSOCIATION.rna);
+const SIRET = new Siret(REQUEST_ENTITY.association?.siret as string);
+const RNA = new Rna(REQUEST_ENTITY.association?.rna as string);
 
 describe("OsirisService", () => {
     const VALID_SIRET = SIRET.value;
     const VALID_RNA = RNA.value;
-    const VALID_OSIRIS_ID = DEFAULT_ASSOCIATION.osirisId;
+    const VALID_OSIRIS_ID = OSIRIS_ID;
 
     describe.each`
         method           | identifier
@@ -96,8 +97,8 @@ describe("OsirisService", () => {
     });
 
     describe("validRequest", () => {
-        const VALID_CAID = DEFAULT_ASSOCIATION.compteAssoId;
-        const VALID_NAME = DEFAULT_ASSOCIATION.name;
+        const VALID_CAID = REQUEST_ENTITY.dossier.compteAssoId;
+        const VALID_NAME = REQUEST_ENTITY.association!.nom;
 
         const makeRequest = (overrides: { dossier?: object; association?: object } = {}): OsirisRequestEntity =>
             ({
