@@ -3,7 +3,7 @@ import ApiAssoPort from "./api-asso.port";
 import { ProviderRequestService } from "../../../../modules/provider-request/provider-request.service";
 import CacheData from "../../../../shared/Cache";
 import { CACHE_TIMES } from "../../../../shared/helpers/TimeHelper";
-import { API_ASSO_URL } from "../../../../configurations/apis.conf";
+import { API_ASSO_TOKEN, API_ASSO_URL } from "../../../../configurations/apis.conf";
 import StructureDto, { StructureDocumentDto } from "../../../../modules/providers/api-asso/dto/StructureDto";
 import { SirenStructureDto } from "../../../../modules/providers/api-asso/dto/SirenStructureDto";
 import { RequestResponse } from "../../../../modules/provider-request/@types/RequestResponse";
@@ -28,11 +28,18 @@ class ApiAssoAdapter implements ApiAssoPort {
         return null;
     }
 
-    // @TODO: put this route/cache logic inside ProviderRequestService ?
     private send<T>(route: string) {
         const cacheResponse = this.cache.get(route);
         if (cacheResponse) return Promise.resolve(cacheResponse as T);
-        else return this.http.get<T>(route).then(response => this.cacheAndReturn(route, response));
+        else
+            return this.http
+                .get<T>(route, {
+                    headers: {
+                        Accept: "application/json",
+                        "X-Gravitee-Api-Key": API_ASSO_TOKEN as string,
+                    },
+                })
+                .then(response => this.cacheAndReturn(route, response));
     }
 
     getStructure(identifier: Rna | Siren) {
