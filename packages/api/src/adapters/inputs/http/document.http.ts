@@ -49,6 +49,7 @@ export class DocumentHttp extends Controller {
      * @summary Télécharge une sélection de documents (ZIP)
      */
     @Produces("application/zip")
+    @Hidden()
     @Post("/downloads")
     public async downloadRequiredDocuments(
         @Body() requiredDocs: DocumentRequestDto[],

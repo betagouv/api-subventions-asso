@@ -336,7 +336,9 @@ export class AssociationHttp extends Controller {
     }
 
     /**
-     * @summary Liste les documents liés à une association via RNA ou SIREN (tout établissement confondu)
+     * Liste les documents liés à une association via RNA ou SIREN (tout document qui n'est pas lié à un établissement)
+     *
+     * @summary Liste les documents liés à une association via RNA ou SIREN (tout document qui n'est pas lié à un établissement)
      * @param identifier RNA ou SIREN de l'association
      * @param req
      */
