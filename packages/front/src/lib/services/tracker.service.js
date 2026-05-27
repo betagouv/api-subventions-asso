@@ -7,24 +7,26 @@ export class TrackerService {
 
     init(ENV, MATOMO_ENV) {
         console.log(`initializing matomo on ${ENV} environment`);
-        if (ENV.toLowerCase() != "prod") return;
 
+        if (ENV.toLowerCase() != "prod") return;
         if (!MATOMO_ENV.url || !MATOMO_ENV.id) console.warn("Matomo is not configured.");
+
         console.log(`setting url ${MATOMO_ENV.url} for app id ${MATOMO_ENV.id}`);
 
-        this._paq.push(["setTrackerUrl", u + "matomo.php"]);
+        this._paq.push(["setTrackerUrl", `${MATOMO_ENV.url}matomo.php`]);
         this._paq.push(["setSiteId", MATOMO_ENV.id]);
+
+        // tracker methods like "setCustomDimension" should be called before "trackPageView"
         const user = authService.getCurrentUser();
-        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
         if (user && user._id) this._paq.push(["setUserId", user._id]);
         this._paq.push(["enableLinkTracking"]);
         this._paq.push(["trackPageView"]);
-        var u = MATOMO_ENV.url;
-        var d = document,
-            g = d.createElement("script"),
-            s = d.getElementsByTagName("script")[0];
+
+        const g = document.createElement("script");
         g.async = true;
-        g.src = u + "matomo.js";
+        g.src = `${MATOMO_ENV.url}matomo.js`;
+
+        const s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(g, s);
     }
 
