@@ -3,11 +3,25 @@ import OsirisParser from "./osiris.parser";
 import osirisService from "../../../../modules/providers/osiris/osiris.service";
 import OsirisCli from "./osiris.cli";
 import OsirisActionMapper from "./osiris-action.mapper";
+import OsirisRequestMapper from "./osiris-request.mapper";
 import OsirisActionDto, { OsirisActionRawData } from "./osiris-action.dto";
+import OsirisRequestDto from "./osiris-request.dto";
+import {
+    InvalidOsirisRequestError,
+    VALID_REQUEST_ERROR_CODE,
+} from "../../../../modules/providers/osiris/osiris.errors";
 
 jest.mock("./osiris.parser");
 jest.mock("./osiris-action.mapper");
+jest.mock("./osiris-request.mapper");
 jest.mock("../../../../modules/providers/osiris/osiris.service");
+
+const BULK_RESULT = {
+    insertedCount: 0,
+    upsertedCount: 0,
+    modifiedCount: 0,
+    matchedCount: 0,
+};
 
 describe("Osiris cli", () => {
     let cli: OsirisCli;
@@ -20,20 +34,28 @@ describe("Osiris cli", () => {
     describe("parse requests", () => {
         const CONTENT_FILE = Buffer.from("toto");
         const YEAR = 1789;
-        const RAW_ROWS = [
+        const RAW_ROWS = ["raw1", "raw2"];
+        const VALID_DTOS: OsirisRequestDto[] = [
+            { dossier: { osirisId: "DD75-24-0001" }, association: { siret: "12345678900001" } },
+            { dossier: { osirisId: "DD75-24-0002" }, association: { siret: "12345678900002" } },
+        ];
+        const ENTITIES = [
             {
-                Dossier: { "N° Dossier Osiris": "DD75-24-0001" },
-                Association: { "N° Siret": "12345678900001" },
+                dossier: { osirisId: "DD75-24-0001", exerciceBudgetaire: YEAR },
+                association: { siret: "12345678900001" },
             },
             {
-                Dossier: { "N° Dossier Osiris": "DD75-24-0002" },
-                Association: { "N° Siret": "12345678900002" },
+                dossier: { osirisId: "DD75-24-0002", exerciceBudgetaire: YEAR },
+                association: { siret: "12345678900002" },
             },
         ];
 
         beforeEach(() => {
             jest.mocked(OsirisParser.parseRequests).mockReturnValue(RAW_ROWS);
-            jest.mocked(osirisService.validateAndComplete).mockImplementation(r => Promise.resolve(r));
+            jest.mocked(OsirisRequestMapper.toDto).mockImplementation(raw => VALID_DTOS[RAW_ROWS.indexOf(raw)]);
+            jest.mocked(OsirisRequestMapper.toEntity).mockImplementation(dto => ENTITIES[VALID_DTOS.indexOf(dto)]);
+            jest.mocked(osirisService.completeAndValidateRequest).mockImplementation(r => Promise.resolve(r));
+            jest.mocked(osirisService.bulkAddRequest).mockResolvedValue(BULK_RESULT);
         });
 
         it("calls parser with content file", async () => {
@@ -41,40 +63,54 @@ describe("Osiris cli", () => {
             expect(OsirisParser.parseRequests).toHaveBeenCalledWith(CONTENT_FILE);
         });
 
-        it("validates all mapped documents with rnaNeeded=true by default", async () => {
-            await cli._parseRequest(CONTENT_FILE, YEAR, []);
-            expect(osirisService.validateAndComplete).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    dossier: expect.objectContaining({ exerciceBudgetaire: YEAR, osirisId: "DD75-24-0001" }),
-                }),
-                true,
-            );
-            expect(osirisService.validateAndComplete).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    dossier: expect.objectContaining({ exerciceBudgetaire: YEAR, osirisId: "DD75-24-0002" }),
-                }),
-                true,
-            );
+        it("logs invalid siret dto", async () => {
+            const INVALID_DTO: OsirisRequestDto = {
+                dossier: { osirisId: "DD75-24-0001" },
+                association: { siret: "NOT-A-SIRET" },
+            };
+            jest.mocked(OsirisRequestMapper.toDto).mockReturnValueOnce(INVALID_DTO);
+            const logs: unknown[] = [];
+            await cli._parseRequest(CONTENT_FILE, YEAR, logs);
+            expect(logs.join("")).toContain("INVALID SIRET");
         });
 
-        it("validates all mapped documents with rnaNeeded=false when WITHOUT-RNA", async () => {
-            await cli._parseRequest(CONTENT_FILE, YEAR, [], false);
-            expect(osirisService.validateAndComplete).toHaveBeenCalledWith(expect.anything(), false);
+        it("does not validate invalid siret dto via service", async () => {
+            const INVALID_DTO: OsirisRequestDto = {
+                dossier: { osirisId: "DD75-24-0001" },
+                association: { siret: "NOT-A-SIRET" },
+            };
+            jest.mocked(OsirisRequestMapper.toDto).mockReturnValueOnce(INVALID_DTO);
+            await cli._parseRequest(CONTENT_FILE, YEAR, []);
+            expect(jest.mocked(osirisService.completeAndValidateRequest).mock.calls.flat()).not.toContain(ENTITIES[0]);
+        });
+
+        it("rejects dto with missing osirisId and does not send it to service", async () => {
+            const INVALID_DTO: OsirisRequestDto = {
+                dossier: { osirisId: "" },
+                association: { siret: "12345678900001" },
+            };
+            jest.mocked(OsirisRequestMapper.toDto).mockReturnValueOnce(INVALID_DTO);
+            const logs: unknown[] = [];
+            await cli._parseRequest(CONTENT_FILE, YEAR, logs);
+            expect(logs.join("")).toContain("INVALID OSIRIS ID");
+        });
+
+        it("validates all valid dtos via service", async () => {
+            await cli._parseRequest(CONTENT_FILE, YEAR, []);
+            expect(osirisService.completeAndValidateRequest).toHaveBeenCalledTimes(VALID_DTOS.length);
         });
 
         it("saves validated documents", async () => {
-            jest.mocked(osirisService.validateAndComplete).mockRejectedValueOnce({
-                validation: { message: "toto", data: "data" },
-            });
+            jest.mocked(osirisService.completeAndValidateRequest).mockRejectedValueOnce(
+                new InvalidOsirisRequestError({
+                    message: "toto",
+                    data: "data",
+                    code: VALID_REQUEST_ERROR_CODE.NOT_AN_ASSOCIATION,
+                }),
+            );
 
             await cli._parseRequest(CONTENT_FILE, YEAR, []);
-            expect(osirisService.bulkAddRequest).toHaveBeenCalledWith([
-                expect.objectContaining({
-                    dossier: expect.objectContaining({
-                        osirisId: "DD75-24-0002",
-                    }),
-                }),
-            ]);
+            expect(osirisService.bulkAddRequest).toHaveBeenCalledWith([ENTITIES[1]]);
         });
     });
 
@@ -92,6 +128,7 @@ describe("Osiris cli", () => {
             jest.mocked(OsirisParser.parseActions).mockReturnValue(RAW_DATA);
             jest.mocked(OsirisActionMapper.toDto).mockImplementation(raw => DTOS[RAW_DATA.indexOf(raw)]);
             jest.mocked(OsirisActionMapper.toEntity).mockImplementation(dto => DOCS[DTOS.indexOf(dto)]);
+            jest.mocked(osirisService.bulkAddActions).mockResolvedValue(BULK_RESULT);
         });
 
         it("calls parser with content file and year", async () => {
@@ -101,14 +138,15 @@ describe("Osiris cli", () => {
 
         it("maps raw data to DTOs", async () => {
             await cli._parseAction(CONTENT_FILE, YEAR, []);
-            expect(OsirisActionMapper.toDto).toHaveBeenCalledWith(RAW_DATA[0]);
-            expect(OsirisActionMapper.toDto).toHaveBeenCalledWith(RAW_DATA[1]);
+            expect(jest.mocked(OsirisActionMapper.toDto).mock.calls).toEqual([[RAW_DATA[0]], [RAW_DATA[1]]]);
         });
 
         it("maps DTOs to entities with year", async () => {
             await cli._parseAction(CONTENT_FILE, YEAR, []);
-            expect(OsirisActionMapper.toEntity).toHaveBeenCalledWith(DTOS[0], YEAR);
-            expect(OsirisActionMapper.toEntity).toHaveBeenCalledWith(DTOS[1], YEAR);
+            expect(jest.mocked(OsirisActionMapper.toEntity).mock.calls).toEqual([
+                [DTOS[0], YEAR],
+                [DTOS[1], YEAR],
+            ]);
         });
 
         it("bulk saves all valid entities", async () => {

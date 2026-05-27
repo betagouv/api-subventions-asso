@@ -17,24 +17,8 @@ import applicationFlatService from "../../application-flat/application-flat.serv
 import osirisJoiner, { OsirisRequestWithActions } from "../../../adapters/outputs/db/providers/osiris/osiris.joiner";
 import { cursorToStream } from "../../application-flat/application-flat.helper";
 import { BulkUpsertResult } from "../../../adapters/outputs/db/@types/bulk-upsert-result";
-
-export enum VALID_REQUEST_ERROR_CODE {
-    INVALID_SIRET = 1,
-    INVALID_OSIRISID = 2,
-    INVALID_RNA = 3,
-}
-
-type OsirisRequestValidation = {
-    message: string;
-    data: unknown;
-    code: VALID_REQUEST_ERROR_CODE;
-};
-
-export class InvalidOsirisRequestError extends Error {
-    constructor(public validation: OsirisRequestValidation) {
-        super();
-    }
-}
+import { completeOsirisRequestUseCase } from "./use-cases/complete-osiris-request.use-case";
+import { VALID_REQUEST_ERROR_CODE, InvalidOsirisRequestError } from "./osiris.errors";
 
 export class OsirisService extends ProviderCore implements ApplicationFlatProvider {
     constructor() {
@@ -53,7 +37,13 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         for (const request of requests) {
             const rna = request.association?.rna;
             const siret = request.association?.siret;
-            if (rna && siret) rnaSirens.push({ rna: new Rna(rna), siren: new Siret(siret).toSiren() });
+
+            if (Rna.isRna(rna) && Siret.isSiret(siret)) {
+                rnaSirens.push({
+                    rna: new Rna(rna as string),
+                    siren: new Siret(siret as string).toSiren(),
+                });
+            }
         }
 
         const [metadataRequests] = await Promise.all([
@@ -65,12 +55,10 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
     }
 
     /**
-     * Check if SIRET, OSIRIS ID, RNA are valid and return an error if not
-     * If name is not valid, set it to undefined
-     * If compteAssoId is not valid, set it to undefined
-     * If rnaNeeded is false, the request is validated even if the rna is not valid
+     * - RNA is required only if hasValidRna = true
+     * - Missing RNA is accepted only if the SIRET/SIREN match an association from CompleteOsirisRequestUseCase
      */
-    public validRequest(request: OsirisRequestEntity, rnaNeeded = true) {
+    public validateRequestEntity(request: OsirisRequestEntity, hasValidRna = true) {
         const association = request.association || {};
         const siret = association.siret as string;
         const rna = association.rna as string;
@@ -94,7 +82,7 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
             };
         }
 
-        if (rnaNeeded && !Rna.isRna(rna)) {
+        if (hasValidRna && !Rna.isRna(rna)) {
             return {
                 message: `INVALID RNA : ${rna}`,
                 data: { siret, rna, name },
@@ -114,28 +102,13 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         return true;
     }
 
-    /**
-     * Validate the request and complete the association data if needed
-     * If rnaNeeded is false, the request is validated even if the rna is not valid
-     */
-    public async validateAndComplete(osirisRequest: OsirisRequestEntity, rnaNeeded = true) {
-        const siret = osirisRequest.association?.siret as string;
-        const rna = osirisRequest.association?.rna as string;
+    public async completeAndValidateRequest(osirisRequest: OsirisRequestEntity) {
+        await completeOsirisRequestUseCase.execute(osirisRequest);
 
-        if (!Rna.isRna(rna) && Siret.isSiret(siret)) {
-            try {
-                const rnaSirenEntities = await rnaSirenService.find(new Siret(siret).toSiren());
-                if (rnaSirenEntities?.length) {
-                    osirisRequest.association = osirisRequest.association || {};
-                    osirisRequest.association.rna = rnaSirenEntities[0].rna.value;
-                }
-            } catch (e) {
-                console.warn(`RNA lookup failed for siret ${siret}: ${e instanceof Error ? e.message : String(e)}`);
-            }
-        }
+        const hasValidRna = Rna.isRna(osirisRequest.association?.rna);
+        const entityValidation = this.validateRequestEntity(osirisRequest, hasValidRna);
 
-        const validation = this.validRequest(osirisRequest, rnaNeeded);
-        if (validation !== true) throw new InvalidOsirisRequestError(validation);
+        if (entityValidation !== true) throw new InvalidOsirisRequestError(entityValidation);
     }
 
     public bulkAddActions(actions: OsirisActionEntity[]): Promise<void | BulkUpsertResult> {
