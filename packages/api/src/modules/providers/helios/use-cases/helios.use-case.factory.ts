@@ -7,14 +7,13 @@ import SaveHeliosEntitiesToFlatUseCase from "./save-helios-entities-to-flat.use-
 import TransformHeliosEntitiesToFlat from "./transform-helios-entities-to-flat.use-case";
 import ExtractHeliosApplicationFlatSpecificFields from "./extract-helios-application-flat-specific-fields.use-case";
 import ExtractHeliosPaymentFlatSpecificFieldsUseCase from "./extract-helios-payment-flat-specific-fields.use-case";
-import {
-    createCheckIdentifierIsFromAsso,
-    createFindSiretFromAssociationIdentifier,
-} from "../../../associations/use-cases/association.use-case.factory";
-import GetIdentifierFromStringUseCase from "../../../associations/use-cases/get-identifier-from-string.use-case";
+
+import getIdentifierFromString from "../../../associations/use-cases/get-identifier-from-string.use-case";
+import checkIdentifierIsFromAsso from "../../../associations/use-cases/check-identifier-is-from-asso.use-case";
+import findSiretFromAssoIdentifier from "../../../associations/use-cases/find-siret-from-association-identifier.use-case";
 
 export default function createSaveHeliosDataUseCase() {
-    const extractBeneficiaryInfos = new ExtractHeliosBeneficaryInfosUseCase(createFindSiretFromAssociationIdentifier());
+    const extractBeneficiaryInfos = new ExtractHeliosBeneficaryInfosUseCase(findSiretFromAssoIdentifier);
     const extractPaymentSpecifics = new ExtractHeliosPaymentFlatSpecificFieldsUseCase();
     const extractApplicationSpecifics = new ExtractHeliosApplicationFlatSpecificFields();
     const transformToFlatsUseCase = new TransformHeliosEntitiesToFlat(
@@ -29,8 +28,8 @@ export default function createSaveHeliosDataUseCase() {
     );
 
     const saveUseCase = new SaveHeliosDataUseCase(
-        new GetIdentifierFromStringUseCase(),
-        createCheckIdentifierIsFromAsso(),
+        getIdentifierFromString,
+        checkIdentifierIsFromAsso,
         saveFlatUseCase,
         heliosAdapter,
     );

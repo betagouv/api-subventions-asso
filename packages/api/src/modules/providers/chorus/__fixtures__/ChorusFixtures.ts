@@ -1,9 +1,9 @@
 import { ChorusPayment } from "dto";
 import ChorusEntity from "../entities/ChorusEntity";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
-import { ChorusDto } from "../@types/ChorusDto";
 import Siret from "../../../../identifier-objects/Siret";
 import ChorusFseEntity from "../entities/ChorusFseEntity";
+import { ChorusDto } from "../../../../adapters/inputs/pipeline/import/chorus/chorus.dto";
 
 export const HEADERS = [
     "N° EJ",
@@ -178,16 +178,16 @@ export const PARSED_DATA: ChorusDto[] = [
         "Référentiel de programmation CODE": "BG00/077601000201",
         "Référentiel de programmation": "Appels a projet",
         "N° DP": "000195567",
-        "Date de dernière opération sur la DP": "12/07/2023",
+        "Date de dernière opération sur la DP": new Date("2023/07/12"),
         "Centre financier": "AA01/0776-C001-4000",
         "Centre financier CODE": "UO DGER XXXX-C001",
         "Domaine fonctionnel": "1111-01-02",
         "Domaine fonctionnel CODE": "Appels à projet",
         "Montant payé": 89988.3,
         "No TVA 3 (COM-RIDET ou TAHITI)": "#",
-        "Exercice comptable": "2025",
-        "N° poste DP": "23",
-        "N° poste EJ": "2",
+        "Exercice comptable": 2025,
+        "N° poste DP": 23,
+        "N° poste EJ": 2,
         Société: "SOCIETY",
     },
     {
@@ -200,16 +200,16 @@ export const PARSED_DATA: ChorusDto[] = [
         "Référentiel de programmation CODE": "BG00/077601000201",
         "Référentiel de programmation": "Appels a projet",
         "N° DP": "000212692",
-        "Date de dernière opération sur la DP": "21/04/2023",
+        "Date de dernière opération sur la DP": new Date("2023/04/21"),
         "Centre financier": "AA01/0776-C001-4000",
         "Centre financier CODE": "UO DGER",
         "Domaine fonctionnel": "XXXX-C001",
         "Domaine fonctionnel CODE": "1111-01-02",
         "Montant payé": 89931.9,
         "No TVA 3 (COM-RIDET ou TAHITI)": "#",
-        "Exercice comptable": "2025",
-        "N° poste DP": "23",
-        "N° poste EJ": "2",
+        "Exercice comptable": 2025,
+        "N° poste DP": 23,
+        "N° poste EJ": 2,
         Société: "SOCIETY",
     },
     {
@@ -222,16 +222,16 @@ export const PARSED_DATA: ChorusDto[] = [
         "Référentiel de programmation CODE": "BG00/010200002004",
         "Référentiel de programmation": "PIC-Prog nat-Accom",
         "N° DP": "000311141",
-        "Date de dernière opération sur la DP": "05/05/2023",
+        "Date de dernière opération sur la DP": new Date("2023/05/05"),
         "Centre financier": "AA99/0102-DR25-DR25",
         "Centre financier CODE": "UO régionale",
         "Domaine fonctionnel": "1234-03",
         "Domaine fonctionnel CODE": "Plan inv compétences",
         "Montant payé": 62655.2,
         "No TVA 3 (COM-RIDET ou TAHITI)": "#",
-        "Exercice comptable": "2025",
-        "N° poste DP": "23",
-        "N° poste EJ": "2",
+        "Exercice comptable": 2025,
+        "N° poste DP": 23,
+        "N° poste EJ": 2,
         Société: "SOCIETY",
     },
 ];
@@ -312,7 +312,7 @@ export const CHORUS_FSE_ENTITIES: ChorusFseEntity[] = [
         societyCode: "BNOR",
         paymentRequestNum: "500000744",
         budgetaryYear: 2026,
-        paymentRequestPostNum: "2",
+        paymentRequestPostNum: 2,
         amount: 12017.88,
         beneficiaryName: "MAISON EMPLOI FORMAT BASSIN",
         branch: "Associations",

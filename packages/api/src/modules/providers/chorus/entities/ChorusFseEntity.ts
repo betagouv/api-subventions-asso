@@ -4,15 +4,15 @@ import Siret from "../../../../identifier-objects/Siret";
 import Tahitiet from "../../../../identifier-objects/Tahitiet";
 
 export default interface ChorusFseEntity extends ProviderDataEntity {
-    ej: string;
-    ejPostNum: string;
+    ej: "#";
+    ejPostNum: "#";
     identifier: Siret | Ridet | Tahitiet;
     branchCode: string;
     branch: string;
     programRef: string;
     programRefCode: string;
     paymentRequestNum: string;
-    paymentRequestPostNum: string;
+    paymentRequestPostNum: number;
     societyCode: string;
     budgetaryYear: number;
     paidSupplierId: string;

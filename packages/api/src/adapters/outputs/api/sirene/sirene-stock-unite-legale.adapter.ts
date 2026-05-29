@@ -3,7 +3,7 @@ import ProviderRequestFactory, {
 } from "../../../../modules/provider-request/provider-request.service";
 import { SireneStockUniteLegalePort } from "./sirene-stock-unite-legale.port";
 
-export class SireneStockUniteLegaleApiAdapter implements SireneStockUniteLegalePort {
+export class SireneStockUniteLegaleAdapter implements SireneStockUniteLegalePort {
     private URL = "https://object.files.data.gouv.fr/data-pipeline-open/siren/stock/StockUniteLegale_utf8.zip";
 
     private http: ProviderRequestService;
@@ -17,5 +17,5 @@ export class SireneStockUniteLegaleApiAdapter implements SireneStockUniteLegaleP
     }
 }
 
-const sireneStockUniteLegaleAdapter = new SireneStockUniteLegaleApiAdapter();
+const sireneStockUniteLegaleAdapter = new SireneStockUniteLegaleAdapter();
 export default sireneStockUniteLegaleAdapter;

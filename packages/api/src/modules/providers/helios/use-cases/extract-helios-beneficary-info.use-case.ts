@@ -10,7 +10,7 @@ import { IdentifierError } from "../../../association-identifier/IdentifierError
 import HeliosEntity from "../domain/helios.entity";
 import Siren from "../../../../identifier-objects/Siren";
 import Rna from "../../../../identifier-objects/Rna";
-import FindSiretFromAssociationIdentifierUseCase from "../../../associations/use-cases/find-siret-from-association-identifier.use-case";
+import { FindSiretFromAssociationIdentifierUseCase } from "../../../associations/use-cases/find-siret-from-association-identifier.use-case";
 
 export default class ExtractHeliosBeneficaryInfosUseCase {
     constructor(private findSiretFromAssociationIdentifier: FindSiretFromAssociationIdentifierUseCase) {}

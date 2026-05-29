@@ -72,7 +72,7 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusP
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
-        return this.collection.find(query, projection);
+        return this.collection.find(query, { projection });
     }
 
     public cursorFindOnExercise(exerciceBudgetaire: number) {
