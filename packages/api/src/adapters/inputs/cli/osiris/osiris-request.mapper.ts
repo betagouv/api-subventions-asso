@@ -164,19 +164,22 @@ export default class OsirisRequestMapper {
             dto[mapping.key] = target;
         }
 
-        return dto as OsirisRequestDto;
+        return dto as unknown as OsirisRequestDto;
     }
 
     static toEntity(dto: OsirisRequestDto, exerciceBudgetaire: number): OsirisRequestEntity {
-        return {
-            dossier: { ...(dto.dossier || {}), exerciceBudgetaire },
-            ...(dto.association && { association: dto.association }),
-            ...(dto.coordonnees && { coordonnees: dto.coordonnees }),
-            ...(dto.representantLegal && { representantLegal: dto.representantLegal }),
-            ...(dto.montants && { montants: dto.montants }),
-            ...(dto.versements && { versements: dto.versements }),
-            ...(dto.nbActions && { nbActions: dto.nbActions }),
+        const entity: Partial<OsirisRequestEntity> = {
+            dossier: { ...dto.dossier, exerciceBudgetaire },
+            association: dto.association,
             updateDate: new Date(),
-        } as OsirisRequestEntity;
+        };
+
+        if (dto.coordonnees) entity.coordonnees = dto.coordonnees;
+        if (dto.representantLegal) entity.representantLegal = dto.representantLegal;
+        if (dto.montants) entity.montants = dto.montants;
+        if (dto.versements) entity.versements = dto.versements;
+        if (dto.nbActions) entity.nbActions = dto.nbActions;
+
+        return entity as OsirisRequestEntity;
     }
 }

@@ -36,8 +36,14 @@ describe("Osiris cli", () => {
         const YEAR = 1789;
         const RAW_ROWS = ["raw1", "raw2"];
         const VALID_DTOS: OsirisRequestDto[] = [
-            { dossier: { osirisId: "DD75-24-0001" }, association: { siret: "12345678900001" } },
-            { dossier: { osirisId: "DD75-24-0002" }, association: { siret: "12345678900002" } },
+            {
+                dossier: { osirisId: "DD75-24-0001", exerciceBudgetaire: YEAR },
+                association: { siret: "12345678900001" },
+            },
+            {
+                dossier: { osirisId: "DD75-24-0002", exerciceBudgetaire: YEAR },
+                association: { siret: "12345678900002" },
+            },
         ];
         const ENTITIES = [
             {
@@ -54,7 +60,7 @@ describe("Osiris cli", () => {
             jest.mocked(OsirisParser.parseRequests).mockReturnValue(RAW_ROWS);
             jest.mocked(OsirisRequestMapper.toDto).mockImplementation(raw => VALID_DTOS[RAW_ROWS.indexOf(raw)]);
             jest.mocked(OsirisRequestMapper.toEntity).mockImplementation(dto => ENTITIES[VALID_DTOS.indexOf(dto)]);
-            jest.mocked(osirisService.completeAndValidateRequest).mockImplementation(r => Promise.resolve(r));
+            jest.mocked(osirisService.validateRequest).mockImplementation(r => Promise.resolve(r));
             jest.mocked(osirisService.bulkAddRequest).mockResolvedValue(BULK_RESULT);
         });
 
@@ -65,7 +71,7 @@ describe("Osiris cli", () => {
 
         it("logs invalid siret dto", async () => {
             const INVALID_DTO: OsirisRequestDto = {
-                dossier: { osirisId: "DD75-24-0001" },
+                dossier: { osirisId: "DD75-24-0001", exerciceBudgetaire: YEAR },
                 association: { siret: "NOT-A-SIRET" },
             };
             jest.mocked(OsirisRequestMapper.toDto).mockReturnValueOnce(INVALID_DTO);
@@ -76,17 +82,17 @@ describe("Osiris cli", () => {
 
         it("does not validate invalid siret dto via service", async () => {
             const INVALID_DTO: OsirisRequestDto = {
-                dossier: { osirisId: "DD75-24-0001" },
+                dossier: { osirisId: "DD75-24-0001", exerciceBudgetaire: YEAR },
                 association: { siret: "NOT-A-SIRET" },
             };
             jest.mocked(OsirisRequestMapper.toDto).mockReturnValueOnce(INVALID_DTO);
             await cli._parseRequest(CONTENT_FILE, YEAR, []);
-            expect(jest.mocked(osirisService.completeAndValidateRequest).mock.calls.flat()).not.toContain(ENTITIES[0]);
+            expect(jest.mocked(osirisService.validateRequest).mock.calls.flat()).not.toContain(ENTITIES[0]);
         });
 
         it("rejects dto with missing osirisId and does not send it to service", async () => {
             const INVALID_DTO: OsirisRequestDto = {
-                dossier: { osirisId: "" },
+                dossier: { osirisId: "", exerciceBudgetaire: YEAR },
                 association: { siret: "12345678900001" },
             };
             jest.mocked(OsirisRequestMapper.toDto).mockReturnValueOnce(INVALID_DTO);
@@ -97,11 +103,11 @@ describe("Osiris cli", () => {
 
         it("validates all valid dtos via service", async () => {
             await cli._parseRequest(CONTENT_FILE, YEAR, []);
-            expect(osirisService.completeAndValidateRequest).toHaveBeenCalledTimes(VALID_DTOS.length);
+            expect(osirisService.validateRequest).toHaveBeenCalledTimes(VALID_DTOS.length);
         });
 
         it("saves validated documents", async () => {
-            jest.mocked(osirisService.completeAndValidateRequest).mockRejectedValueOnce(
+            jest.mocked(osirisService.validateRequest).mockRejectedValueOnce(
                 new InvalidOsirisRequestError({
                     message: "toto",
                     data: "data",

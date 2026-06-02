@@ -99,6 +99,7 @@ describe("Association Use Cases", () => {
     describe("CheckSirenIsFromAsso", () => {
         const mockSirenePort = { findOneBySiren: jest.fn().mockResolvedValue({}) };
         const mockEntreprisePort = { findOneBySiren: jest.fn().mockResolvedValue({}) };
+        const mockRnaSirenPort = { find: jest.fn().mockResolvedValue([]) };
         const mockApiAssoService = {
             findAssociationBySiren: jest
                 .fn()
@@ -106,7 +107,12 @@ describe("Association Use Cases", () => {
         };
 
         // @ts-expect-error: inject mocks
-        const useCase = new CheckSirenIsFromAssoUseCase(mockSirenePort, mockEntreprisePort, mockApiAssoService);
+        const useCase = new CheckSirenIsFromAssoUseCase(
+            mockSirenePort,
+            mockRnaSirenPort,
+            mockEntreprisePort,
+            mockApiAssoService,
+        );
 
         it("checks in sirene collection", async () => {
             await useCase.execute(SIREN);
@@ -119,8 +125,22 @@ describe("Association Use Cases", () => {
             expect(actual).toEqual(expected);
         });
 
+        it("checks in rna-siren", async () => {
+            mockSirenePort.findOneBySiren.mockResolvedValueOnce(null);
+            await useCase.execute(SIREN);
+            expect(mockRnaSirenPort.find).toHaveBeenCalledWith(SIREN);
+        });
+
+        it("returns true when siren is found from rna-siren", async () => {
+            mockSirenePort.findOneBySiren.mockResolvedValueOnce(null);
+            mockRnaSirenPort.find.mockResolvedValueOnce([{ siren: SIREN, rna: RNA }]);
+            const actual = await useCase.execute(SIREN);
+            expect(actual).toEqual(true);
+        });
+
         it("checks in entreprise collection", async () => {
             mockSirenePort.findOneBySiren.mockResolvedValueOnce(null);
+            mockRnaSirenPort.find.mockResolvedValueOnce([]);
             await useCase.execute(SIREN);
             expect(mockEntreprisePort.findOneBySiren).toHaveBeenCalledWith(SIREN);
         });
@@ -134,6 +154,7 @@ describe("Association Use Cases", () => {
 
         it("fall back to api asso", async () => {
             mockSirenePort.findOneBySiren.mockResolvedValueOnce(null);
+            mockRnaSirenPort.find.mockResolvedValueOnce([]);
             mockEntreprisePort.findOneBySiren.mockResolvedValueOnce(null);
             await useCase.execute(SIREN);
             expect(mockApiAssoService.findAssociationBySiren).toHaveBeenCalledWith(SIREN);
@@ -141,6 +162,7 @@ describe("Association Use Cases", () => {
 
         it("returns true when structure from api asso does not match legal category", async () => {
             mockSirenePort.findOneBySiren.mockResolvedValueOnce(null);
+            mockRnaSirenPort.find.mockResolvedValueOnce([]);
             mockEntreprisePort.findOneBySiren.mockResolvedValueOnce(null);
             const expected = true;
             const actual = await useCase.execute(SIREN);
@@ -149,6 +171,7 @@ describe("Association Use Cases", () => {
 
         it("returns false when structure from api asso does not match expected legal category", async () => {
             mockSirenePort.findOneBySiren.mockResolvedValueOnce(null);
+            mockRnaSirenPort.find.mockResolvedValueOnce([]);
             mockEntreprisePort.findOneBySiren.mockResolvedValueOnce(null);
             mockApiAssoService.findAssociationBySiren.mockResolvedValueOnce({ categorie_juridique: [] });
             const expected = false;

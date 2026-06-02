@@ -148,10 +148,10 @@ export default class OsirisCli implements ApplicationFlatCli {
         try {
             // validate all requests in any order
             await Promise.all(
-                entities.map(r =>
+                entities.map(osirisRequest =>
                     osirisService
-                        .completeAndValidateRequest(r)
-                        .then(() => validated.push(r))
+                        .validateRequest(osirisRequest)
+                        .then(() => validated.push(osirisRequest))
                         .catch((e: unknown) => {
                             if (!(e instanceof InvalidOsirisRequestError)) throw e;
 

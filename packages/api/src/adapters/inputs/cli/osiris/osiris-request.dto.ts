@@ -3,12 +3,12 @@ export type OsirisRequestRawCategory = Record<string, OsirisRequestRawValue>;
 export type OsirisRequestRawData = Record<string, OsirisRequestRawCategory>;
 
 export interface OsirisRequestDossierDto {
-    osirisId?: string;
+    osirisId: string;
     compteAssoId?: string;
     ej?: string;
     dateReception?: number | string | Date;
     dateCommission?: number | string | Date;
-    exerciceBudgetaire?: number;
+    exerciceBudgetaire: number;
     exerciceDebut?: number | Date;
     exerciceFin?: number;
     etatDossier?: string;
@@ -20,7 +20,7 @@ export interface OsirisRequestDossierDto {
 
 export interface OsirisRequestAssociationDto {
     rna?: string;
-    siret?: string;
+    siret: string;
     nom?: string;
     siege?: string | boolean;
     iban?: string;
@@ -62,8 +62,8 @@ export interface OsirisRequestNbActionsDto {
 }
 
 export default interface OsirisRequestDto {
-    dossier?: OsirisRequestDossierDto;
-    association?: OsirisRequestAssociationDto;
+    dossier: OsirisRequestDossierDto;
+    association: OsirisRequestAssociationDto;
     coordonnees?: OsirisRequestCoordonneesDto;
     representantLegal?: OsirisRequestRepresentantLegalDto;
     montants?: OsirisRequestMontantsDto;

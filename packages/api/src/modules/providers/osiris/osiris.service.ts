@@ -1,6 +1,6 @@
 import { AggregationCursor } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { isAssociationName, isCompteAssoId, isOsirisRequestId } from "../../../shared/Validators";
+import { isOsirisRequestId } from "../../../shared/Validators";
 import ProviderCore from "../provider.core";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import Siret from "../../../identifier-objects/Siret";
@@ -17,7 +17,6 @@ import applicationFlatService from "../../application-flat/application-flat.serv
 import osirisJoiner, { OsirisRequestWithActions } from "../../../adapters/outputs/db/providers/osiris/osiris.joiner";
 import { cursorToStream } from "../../application-flat/application-flat.helper";
 import { BulkUpsertResult } from "../../../adapters/outputs/db/@types/bulk-upsert-result";
-import { completeOsirisRequestUseCase } from "./use-cases/complete-osiris-request.use-case";
 import { VALID_REQUEST_ERROR_CODE, InvalidOsirisRequestError } from "./osiris.errors";
 
 export class OsirisService extends ProviderCore implements ApplicationFlatProvider {
@@ -54,61 +53,24 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         return metadataRequests;
     }
 
-    /**
-     * - RNA is required only if hasValidRna = true
-     * - Missing RNA is accepted only if the SIRET/SIREN match an association from CompleteOsirisRequestUseCase
-     */
-    public validateRequestEntity(request: OsirisRequestEntity, hasValidRna = true) {
-        const association = request.association || {};
-        const siret = association.siret as string;
-        const rna = association.rna as string;
-        const name = association.nom as string;
-        const compteAssoId = request.dossier?.compteAssoId as string;
-        const osirisId = request.dossier?.osirisId as string;
-
-        if (!Siret.isSiret(siret)) {
-            return {
-                message: `INVALID SIRET : ${siret}`,
-                data: { siret, rna, name },
+    public async validateRequest(osirisRequest: OsirisRequestEntity) {
+        if (!Siret.isSiret(osirisRequest.association.siret.toString())) {
+            throw new InvalidOsirisRequestError({
+                message: `INVALID SIRET : ${osirisRequest.association.siret.toString()}`,
+                data: osirisRequest.association,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET,
-            };
+            });
         }
 
-        if (!isOsirisRequestId(osirisId)) {
-            return {
-                message: `INVALID OSIRIS ID : ${osirisId}`,
-                data: { compteAssoId, osirisId },
+        if (!isOsirisRequestId(osirisRequest.dossier.osirisId)) {
+            throw new InvalidOsirisRequestError({
+                message: `INVALID OSIRIS ID : ${osirisRequest.dossier.osirisId}`,
+                data: osirisRequest.dossier,
                 code: VALID_REQUEST_ERROR_CODE.INVALID_OSIRISID,
-            };
-        }
-
-        if (hasValidRna && !Rna.isRna(rna)) {
-            return {
-                message: `INVALID RNA : ${rna}`,
-                data: { siret, rna, name },
-                code: VALID_REQUEST_ERROR_CODE.INVALID_RNA,
-            };
-        }
-
-        if (!isAssociationName(name)) {
-            request.association = request.association || {};
-            request.association.nom = undefined;
-        }
-
-        if (compteAssoId && !isCompteAssoId(compteAssoId)) {
-            request.dossier.compteAssoId = undefined;
+            });
         }
 
         return true;
-    }
-
-    public async completeAndValidateRequest(osirisRequest: OsirisRequestEntity) {
-        await completeOsirisRequestUseCase.execute(osirisRequest);
-
-        const hasValidRna = Rna.isRna(osirisRequest.association?.rna);
-        const entityValidation = this.validateRequestEntity(osirisRequest, hasValidRna);
-
-        if (entityValidation !== true) throw new InvalidOsirisRequestError(entityValidation);
     }
 
     public bulkAddActions(actions: OsirisActionEntity[]): Promise<void | BulkUpsertResult> {
