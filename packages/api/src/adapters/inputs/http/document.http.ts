@@ -26,7 +26,8 @@ import associationIdentifierService from "../../../modules/association-identifie
 @Tags("Document Controller")
 export class DocumentHttp extends Controller {
     /**
-     * @summary Télécharge tous les documents d'une structure (ZIP) via son RNA, SIREN ou SIRET
+     * @summary Télécharge tous les documents (zip) d'une structure via RNA, SIREN (tout établissement confondu) ou SIRET
+     * @param identifier RNA, SIREN de l'association ou SIRET de l'établissement
      */
     @Produces("application/zip")
     @Get("/downloads/{identifier}")
@@ -42,9 +43,13 @@ export class DocumentHttp extends Controller {
     }
 
     /**
+     * Chaque objet du tableau doit contenir les champs "nom", "url" et "type"
+     * retournés par exemple via GET /association/{id}/documents
+     *
      * @summary Télécharge une sélection de documents (ZIP)
      */
     @Produces("application/zip")
+    @Hidden()
     @Post("/downloads")
     public async downloadRequiredDocuments(
         @Body() requiredDocs: DocumentRequestDto[],
