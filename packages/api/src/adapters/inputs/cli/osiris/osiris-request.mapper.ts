@@ -167,8 +167,8 @@ export default class OsirisRequestMapper {
         return dto as unknown as OsirisRequestDto;
     }
 
-    static toEntity(dto: OsirisRequestDto, exerciceBudgetaire: number): OsirisRequestEntity {
-        const entity: Partial<OsirisRequestEntity> = {
+    static toEntity(dto: OsirisRequestDto, exerciceBudgetaire: number) {
+        const entity: OsirisRequestEntity = {
             dossier: { ...dto.dossier, exerciceBudgetaire },
             association: dto.association,
             updateDate: new Date(),
@@ -180,6 +180,6 @@ export default class OsirisRequestMapper {
         if (dto.versements) entity.versements = dto.versements;
         if (dto.nbActions) entity.nbActions = dto.nbActions;
 
-        return entity as OsirisRequestEntity;
+        return entity;
     }
 }
