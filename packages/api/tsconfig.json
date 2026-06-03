@@ -13,8 +13,9 @@
         /* Strictness */
         "strict": true,
 
-        // @TODO: enable this
+        // @TODO: enable this 
         // "noUncheckedIndexedAccess": true,
+        // "exactOptionalPropertyTypes": true
 
         /* Transpiling with TypeScript */
         "module": "NodeNext",
