@@ -8,7 +8,7 @@ export const NOTIFICATION_ENV_CONFIG = {
     [NotificationType.BATCH_USERS_DELETED]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.USER_UPDATED]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.USER_ACTIVATED]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
-    [NotificationType.USER_FORGET_PASSWORD]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
+    [NotificationType.USER_FORGET_PASSWORD]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD, EnvironmentEnum.DEV],
     [NotificationType.USER_LOGGED]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.USER_ALREADY_EXIST]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.USER_CONFLICT]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],

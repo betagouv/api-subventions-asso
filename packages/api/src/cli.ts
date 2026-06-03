@@ -26,6 +26,7 @@ import AmountsVsProgramRegionCli from "./adapters/inputs/cli/amounts-vs-program-
 import ScdlBatchCli from "./adapters/inputs/cli/scdl-batch.cli";
 import HeliosCli from "./adapters/inputs/cli/helios/helios.cli";
 import createHeliosCli from "./adapters/inputs/cli/helios/helios.cli.factory";
+import DepositLogCli from "./adapters/inputs/cli/scdl-deposit.cli";
 
 async function main() {
     await connectDB();
@@ -54,6 +55,7 @@ async function main() {
         AmountsVsProgramRegionCli,
         ScdlBatchCli,
         HeliosCli,
+        DepositLogCli,
     ];
 
     const factoryMap = new Map([[HeliosCli.cmdName, { factory: createHeliosCli }]]);
