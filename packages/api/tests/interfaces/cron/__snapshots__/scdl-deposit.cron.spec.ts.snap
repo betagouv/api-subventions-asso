@@ -8,7 +8,6 @@ exports[`ScdlDeposit CRON notifyDepositRenewal notify user 1`] = `
       "name": "Data.Subvention Log",
     },
   ],
-  "params": {},
   "sender": {
     "email": "mail-user@datasubvention",
     "name": "Data.Subvention",
@@ -30,7 +29,6 @@ exports[`ScdlDeposit CRON notifyUsers send mail to users that started deposit 2 
       "name": "Data.Subvention Log",
     },
   ],
-  "params": {},
   "sender": {
     "email": "mail-user@datasubvention",
     "name": "Data.Subvention",

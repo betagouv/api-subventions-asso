@@ -59,7 +59,7 @@ describe("BrevoMailNotify", () => {
             // @ts-expect-error -- test private
             await provider.batchResumeDepositMail({ emails: EMAILS });
             EMAILS.forEach((email, index) => {
-                expect(mockSendMail).toHaveBeenNthCalledWith(index + 1, email, {}, TemplateEnum.resumeDeposit);
+                expect(mockSendMail).toHaveBeenNthCalledWith(index + 1, email, undefined, TemplateEnum.resumeDeposit);
             });
         });
     });
@@ -71,7 +71,7 @@ describe("BrevoMailNotify", () => {
             // @ts-expect-error: test private method
             await provider.batchDepositRenewal({ emails: EMAILS });
             EMAILS.forEach((email, index) => {
-                expect(mockSendMail).toHaveBeenNthCalledWith(index + 1, email, {}, TemplateEnum.depositRenewal);
+                expect(mockSendMail).toHaveBeenNthCalledWith(index + 1, email, undefined, TemplateEnum.depositRenewal);
             });
         });
     });

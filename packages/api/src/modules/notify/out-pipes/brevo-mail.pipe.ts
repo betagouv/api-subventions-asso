@@ -79,12 +79,12 @@ export class BrevoMailPipe implements NotifyOutPipe {
     }
 
     private async batchResumeDepositMail(data: NotificationDataTypes[NotificationType.BATCH_DEPOSIT_RESUME]) {
-        const promises = data.emails.map(email => this.sendMail(email, {}, TemplateEnum.resumeDeposit));
+        const promises = data.emails.map(email => this.sendMail(email, undefined, TemplateEnum.resumeDeposit));
         return (await Promise.all(promises)).every(bool => bool === true); // assert all mails were sent
     }
 
     private async batchDepositRenewal(data: NotificationDataTypes[NotificationType.BATCH_DEPOSIT_RENEWAL]) {
-        const promises = data.emails.map(email => this.sendMail(email, {}, TemplateEnum.depositRenewal));
+        const promises = data.emails.map(email => this.sendMail(email, undefined, TemplateEnum.depositRenewal));
         return (await Promise.all(promises)).every(bool => bool === true); // assert all mails were sent
     }
 
@@ -96,11 +96,11 @@ export class BrevoMailPipe implements NotifyOutPipe {
         return this.sendMail(data.email, data, TemplateEnum.activated);
     }
 
-    async sendMail(email: string, params: Record<string, unknown>, templateId: number): Promise<boolean> {
+    async sendMail(email: string, params: Record<string, unknown> | undefined, templateId: number): Promise<boolean> {
         const sendSmtpEmail = new Brevo.SendSmtpEmail();
         sendSmtpEmail.templateId = templateId;
         sendSmtpEmail.sender = { name: "Data.Subvention", email: MAIL_USER };
-        sendSmtpEmail.params = params;
+        if (params) sendSmtpEmail.params = params;
         sendSmtpEmail.to = [{ email: email }];
         sendSmtpEmail.bcc = [{ name: "Data.Subvention Log", email: LOG_MAIL }];
 
