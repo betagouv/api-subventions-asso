@@ -1,30 +1,36 @@
 import Rna from "../../../identifier-objects/Rna";
 import Siren from "../../../identifier-objects/Siren";
-import osirisService, { InvalidOsirisRequestError, VALID_REQUEST_ERROR_CODE } from "./osiris.service";
+import Siret from "../../../identifier-objects/Siret";
+import { VALID_REQUEST_ERROR_CODE } from "./osiris.errors";
+import osirisService from "./osiris.service";
 import { osirisActionAdapter, osirisRequestAdapter } from "../../../adapters/outputs/db/providers/osiris";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
-import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import { ReadableStream } from "stream/web";
 import { APPLICATION_LINK_TO_CHORUS } from "../../application-flat/__fixtures__/application-flat.fixture";
 import applicationFlatService from "../../application-flat/application-flat.service";
-import { REQUEST_DBO } from "./__fixtures__/osiris.request.fixtures";
+import { OSIRIS_ID, REQUEST_ENTITY, REQUEST_DBO } from "./__fixtures__/osiris.request.fixtures";
 import { ACTION_ENTITY } from "./__fixtures__/osiris.action.fixtures";
 import { cursorToStream } from "../../application-flat/application-flat.helper";
 import osirisJoiner from "../../../adapters/outputs/db/providers/osiris/osiris.joiner";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
+import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
 
 jest.mock("../../application-flat/application-flat.helper");
 jest.mock("../../../adapters/outputs/db/providers/osiris");
 jest.mock("../../rna-siren/rna-siren.service");
 jest.mock("../../application-flat/application-flat.service");
 
-const SIREN = new Siren("123456789");
-const SIRET = SIREN.toSiret("00000");
-const RNA = new Rna("W123456789");
+const SIREN = new Siren(DEFAULT_ASSOCIATION.siren);
+const SIRET = new Siret(REQUEST_ENTITY.association?.siret as string);
+const RNA = new Rna(REQUEST_ENTITY.association?.rna as string);
 
 describe("OsirisService", () => {
+    const VALID_SIRET = SIRET.value;
+    const VALID_RNA = RNA.value;
+    const VALID_OSIRIS_ID = OSIRIS_ID;
+
     describe.each`
         method           | identifier
         ${"findBySiret"} | ${SIRET}
@@ -74,29 +80,10 @@ describe("OsirisService", () => {
 
         it("calls rna siren", async () => {
             await osirisService.bulkAddRequest(REQUESTS);
-            const callArgs = jest.mocked(rnaSirenService.insertMany).mock.calls[0];
-            expect(callArgs).toMatchInlineSnapshot(`
-                [
-                  [
-                    {
-                      "rna": Rna {
-                        "identifier": "W000000001",
-                      },
-                      "siren": Siren {
-                        "identifier": "123456789",
-                      },
-                    },
-                    {
-                      "rna": Rna {
-                        "identifier": "W000000002",
-                      },
-                      "siren": Siren {
-                        "identifier": "123456789",
-                      },
-                    },
-                  ],
-                ]
-            `);
+            expect(rnaSirenService.insertMany).toHaveBeenCalledWith([
+                { rna: new Rna("W000000001"), siren: new Siren("123456789") },
+                { rna: new Rna("W000000002"), siren: new Siren("123456789") },
+            ]);
         });
     });
 
@@ -109,64 +96,39 @@ describe("OsirisService", () => {
         });
     });
 
-    describe("validateAndComplete", () => {
-        const REQUEST = { association: { siret: "12345678900001" } } as unknown as OsirisRequestEntity;
-        let mockValidate: jest.SpyInstance;
+    describe("validateRequest", () => {
+        const VALID_CAID = REQUEST_ENTITY.dossier.compteAssoId;
+        const VALID_NAME = REQUEST_ENTITY.association!.nom;
 
-        beforeAll(() => {
-            mockValidate = jest.spyOn(osirisService, "validRequest").mockReturnValue(true);
-        });
-        afterAll(() => mockValidate.mockRestore());
+        const makeRequest = (overrides: { dossier?: object; association?: object } = {}): OsirisRequestEntity =>
+            ({
+                dossier: {
+                    osirisId: VALID_OSIRIS_ID,
+                    compteAssoId: VALID_CAID,
+                    exerciceBudgetaire: 2024,
+                    ...overrides.dossier,
+                },
+                association: { siret: VALID_SIRET, rna: VALID_RNA, nom: VALID_NAME, ...overrides.association },
+                updateDate: new Date(),
+            }) as unknown as OsirisRequestEntity;
 
-        it("calls pure validation", async () => {
-            await osirisService.validateAndComplete(REQUEST);
-            expect(mockValidate).toHaveBeenCalledWith(REQUEST);
-        });
-
-        describe("if missing rna", () => {
-            beforeEach(() => {
-                mockValidate.mockReturnValueOnce({
-                    message: "tata",
-                    code: VALID_REQUEST_ERROR_CODE.INVALID_RNA,
-                    data: REQUEST,
-                });
-            });
-
-            it("get rna from siret", async () => {
-                await osirisService.validateAndComplete(REQUEST);
-                expect(rnaSirenService.find).toHaveBeenCalledWith(new Siren("123456789"));
-            });
-
-            it("if no found rna, validate ignoring rna", async () => {
-                await osirisService.validateAndComplete(REQUEST);
-                expect(mockValidate).toHaveBeenNthCalledWith(2, REQUEST, false);
-            });
-
-            it("if found rna, validate with found rna", async () => {
-                const RNA = new Rna("W000000002");
-                jest.mocked(rnaSirenService.find).mockResolvedValueOnce([{ rna: RNA }] as unknown as RnaSirenEntity[]);
-                await osirisService.validateAndComplete({ ...REQUEST });
-                const expected = { ...REQUEST };
-                expected.association!.rna = RNA.value;
-                expect(mockValidate).toHaveBeenNthCalledWith(2, expected);
+        it("returns INVALID_SIRET when siret is invalid", async () => {
+            const result = osirisService.validateRequest(makeRequest({ association: { siret: "NOT-AN-SIRET" } }));
+            await expect(result).rejects.toMatchObject({
+                validation: { code: VALID_REQUEST_ERROR_CODE.INVALID_SIRET },
             });
         });
 
-        it("if another error, return validation object", () => {
-            const validationFailed = {
-                message: "tata",
-                code: VALID_REQUEST_ERROR_CODE.INVALID_OSIRISID,
-                data: REQUEST,
-            };
-            mockValidate.mockReturnValueOnce(validationFailed);
-            const test = osirisService.validateAndComplete(REQUEST);
-            expect(test).rejects.toEqual(new InvalidOsirisRequestError(validationFailed));
+        it("returns INVALID_OSIRISID when osirisId is invalid", async () => {
+            const result = osirisService.validateRequest(makeRequest({ dossier: { osirisId: "" } }));
+            await expect(result).rejects.toMatchObject({
+                validation: { code: VALID_REQUEST_ERROR_CODE.INVALID_OSIRISID },
+            });
         });
 
-        it("if validation is ok, calls nothing", async () => {
-            await osirisService.validateAndComplete(REQUEST);
-            expect(mockValidate).toHaveBeenCalledTimes(1);
-            expect(rnaSirenService.find).not.toHaveBeenCalled();
+        it("returns true when all fields are valid", async () => {
+            const result = osirisService.validateRequest(makeRequest());
+            await expect(result).resolves.toBe(true);
         });
     });
 
@@ -193,10 +155,8 @@ describe("OsirisService", () => {
         });
 
         it("returns stream", () => {
-            const expected = STREAM;
             // @ts-expect-error: test private method with mocked cursor
-            const actual = osirisService.createStream(CURSOR);
-            expect(actual).toEqual(expected);
+            expect(osirisService.createStream(CURSOR)).toEqual(STREAM);
         });
     });
 

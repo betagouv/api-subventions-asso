@@ -16,6 +16,11 @@ export function createFindSiretFromAssociationIdentifier() {
 
 export function createCheckIdentifierIsFromAsso() {
     return new CheckIdentifierIsFromAssoUseCase(
-        new CheckSirenIsFromAssoUseCase(sireneStockUniteLegaleAdapter, uniteLegalEntrepriseAdapter, apiAssoService),
+        new CheckSirenIsFromAssoUseCase(
+            sireneStockUniteLegaleAdapter,
+            rnaSirenAdapter,
+            uniteLegalEntrepriseAdapter,
+            apiAssoService,
+        ),
     );
 }

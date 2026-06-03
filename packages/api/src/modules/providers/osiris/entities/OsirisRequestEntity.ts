@@ -19,7 +19,7 @@ export interface OsirisRequestDossier {
 }
 
 export interface OsirisRequestAssociation {
-    siret?: string;
+    siret: string;
     rna?: string;
     nom?: string;
     siege?: boolean | string;
@@ -63,7 +63,7 @@ export interface OsirisRequestNbActions {
 
 export default interface OsirisRequestEntity {
     dossier: OsirisRequestDossier;
-    association?: OsirisRequestAssociation;
+    association: OsirisRequestAssociation;
     coordonnees?: OsirisRequestCoordonnees;
     representantLegal?: OsirisRequestRepresentantLegal;
     montants?: OsirisRequestMontants;

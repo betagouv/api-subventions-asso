@@ -3,7 +3,7 @@ import fs from "fs";
 import { StaticImplements } from "../../../../decorators/static-implements.decorator";
 import { ApplicationFlatCli, CliStaticInterface } from "../../../../@types";
 import OsirisParser from "./osiris.parser";
-import osirisService, { InvalidOsirisRequestError } from "../../../../modules/providers/osiris/osiris.service";
+import osirisService from "../../../../modules/providers/osiris/osiris.service";
 import OsirisRequestEntity from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
 import OsirisRequestDto from "./osiris-request.dto";
 import OsirisRequestMapper from "./osiris-request.mapper";
@@ -13,7 +13,9 @@ import { GenericParser } from "../../../../shared/GenericParser";
 import dataLogService from "../../../../modules/data-log/dataLog.service";
 import OsirisActionDto from "./osiris-action.dto";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
-import { isCompteAssoId, isOsirisActionId } from "../../../../shared/Validators";
+import Siret from "../../../../identifier-objects/Siret";
+import { isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../../shared/Validators";
+import { InvalidOsirisRequestError } from "../../../../modules/providers/osiris/osiris.errors";
 
 @StaticImplements<CliStaticInterface>()
 export default class OsirisCli implements ApplicationFlatCli {
@@ -24,8 +26,22 @@ export default class OsirisCli implements ApplicationFlatCli {
         requests: "./logs/osiris.parse.requests.log.txt",
     };
 
-    private static isCompleteRequestDto(dto: OsirisRequestDto): boolean {
-        return Boolean(dto.dossier?.osirisId);
+    private static validateRequestDto(dto: OsirisRequestDto): { message: string; data: unknown } | true {
+        if (!Siret.isSiret(dto.association?.siret ?? "")) {
+            return {
+                message: `INVALID SIRET (${dto.association?.siret})`,
+                data: dto.association,
+            };
+        }
+
+        if (!isOsirisRequestId(dto.dossier?.osirisId ?? "")) {
+            return {
+                message: `INVALID OSIRIS ID (${dto.dossier?.osirisId}) FOR SIRET ${dto.association?.siret}`,
+                data: dto.dossier,
+            };
+        }
+
+        return true;
     }
 
     private static validateActionDto(dto: OsirisActionDto): { message: string; data: unknown } | true {
@@ -63,7 +79,7 @@ export default class OsirisCli implements ApplicationFlatCli {
         const logs: unknown[] = [];
 
         console.info(`${files.length} files in the parse queue`);
-        console.info(`You can read log in ${this.logFileParsePath}`);
+        console.info(`You can read log in ${this.logFileParsePath[type]}`);
 
         return files
             .reduce((acc, filePath) => {
@@ -101,51 +117,63 @@ export default class OsirisCli implements ApplicationFlatCli {
     }
 
     async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
+        let nbErrors = 0;
         const dtos: OsirisRequestDto[] = OsirisParser.parseRequests(contentFile).map(raw =>
             OsirisRequestMapper.toDto(raw),
         );
-
         const entities: OsirisRequestEntity[] = dtos
-            .filter(dto => OsirisCli.isCompleteRequestDto(dto))
+            .filter(dto => {
+                const dtoValidation = OsirisCli.validateRequestDto(dto);
+                if (dtoValidation === true) return true;
+
+                logs.push(
+                    `\n\nThis request is not registered because: ${dtoValidation.message}\n`,
+                    JSON.stringify(dtoValidation.data, null, "\t"),
+                );
+
+                nbErrors += 1;
+                return false;
+            })
             .map(dto => OsirisRequestMapper.toEntity(dto, year));
 
-        let nbErrors = 0;
         let tictackClock = true;
-
         const ticTacInterval = setInterval(() => {
             tictackClock = !tictackClock;
             console.log(tictackClock ? "TIC" : "TAC");
         }, 100000);
 
         const validated: OsirisRequestEntity[] = [];
+        let result;
 
-        // validate all requests in any order
-        await Promise.all(
-            entities.map(r =>
-                osirisService
-                    .validateAndComplete(r)
-                    .then(() => validated.push(r))
-                    .catch((e: InvalidOsirisRequestError) => {
-                        console.log(`\n\nThis request is not registered because: ${e.validation.message}\n`);
-                        logs.push(
-                            `\n\nThis request is not registered because: ${e.validation.message}\n`,
-                            JSON.stringify(e.validation.data, null, "\t"),
-                        );
-                        nbErrors += 1;
-                    }),
-            ),
-        );
+        try {
+            // validate all requests in any order
+            await Promise.all(
+                entities.map(osirisRequest =>
+                    osirisService
+                        .validateRequest(osirisRequest)
+                        .then(() => validated.push(osirisRequest))
+                        .catch((e: unknown) => {
+                            if (!(e instanceof InvalidOsirisRequestError)) throw e;
 
-        const result = await osirisService.bulkAddRequest(validated);
+                            logs.push(
+                                `\n\nThis request is not registered because: ${e.validation.message}\n`,
+                                JSON.stringify(e.validation.data, null, "\t"),
+                            );
 
-        clearInterval(ticTacInterval);
+                            nbErrors += 1;
+                        }),
+                ),
+            );
 
-        if (!result) return;
+            result = await osirisService.bulkAddRequest(validated);
+        } finally {
+            clearInterval(ticTacInterval);
+        }
 
-        CliHelper.printProgress(validated.length, entities.length);
+        CliHelper.printProgress(validated.length, dtos.length);
 
         console.info(`
-            ${validated.length}/${entities.length}
+            ${validated.length}/${dtos.length}
             ${result.insertedCount + result.upsertedCount} requests created and ${
                 result.modifiedCount + result.matchedCount
             } requests updated
@@ -154,42 +182,40 @@ export default class OsirisCli implements ApplicationFlatCli {
     }
 
     async _parseAction(contentFile: Buffer, year: number, logs: unknown[]) {
+        let nbErrors = 0;
         const dtos: OsirisActionDto[] = OsirisParser.parseActions(contentFile, year).map(raw =>
             OsirisActionMapper.toDto(raw),
         );
+        const entities: OsirisActionEntity[] = dtos
+            .filter(dto => {
+                const dtoValidation = OsirisCli.validateActionDto(dto);
+                if (dtoValidation === true) return true;
 
-        let nbErrors = 0;
-        const validDtos: OsirisActionDto[] = [];
-
-        dtos.forEach(dto => {
-            const validation = OsirisCli.validateActionDto(dto);
-
-            if (validation !== true) {
                 logs.push(
-                    `\n\nThis action is not registered because: ${validation.message}\n`,
-                    JSON.stringify(validation.data, null, "\t"),
+                    `\n\nThis action is not registered because: ${dtoValidation.message}\n`,
+                    JSON.stringify(dtoValidation.data, null, "\t"),
                 );
 
                 nbErrors += 1;
-            } else validDtos.push(dto);
-        });
-
-        const entities: OsirisActionEntity[] = validDtos.map(dto => OsirisActionMapper.toEntity(dto, year));
+                return false;
+            })
+            .map(dto => OsirisActionMapper.toEntity(dto, year));
 
         let tictackClock = true;
-
         const ticTacInterval = setInterval(() => {
             tictackClock = !tictackClock;
             console.log(tictackClock ? "TIC" : "TAC");
         }, 100000);
 
-        const result = await osirisService.bulkAddActions(entities);
+        let result;
 
-        clearInterval(ticTacInterval);
+        try {
+            result = await osirisService.bulkAddActions(entities);
+        } finally {
+            clearInterval(ticTacInterval);
+        }
 
-        if (!result) return;
-
-        CliHelper.printProgress(entities.length, entities.length);
+        CliHelper.printProgress(entities.length, dtos.length);
 
         console.info(`
             ${entities.length}/${dtos.length}
