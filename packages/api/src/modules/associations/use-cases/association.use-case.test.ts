@@ -1,6 +1,6 @@
 import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
 import { RnaSirenPort } from "../../../adapters/outputs/db/rna-siren/rna-siren.port";
-import { SireneStockUniteLegalePort } from "../../../adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.port";
+import { SireneUniteLegalePort } from "../../../adapters/outputs/db/sirene/sirene-unite-legale.port";
 import { UniteLegalEntreprisePort } from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.port";
 import {
     AssociationIdentifier,
@@ -15,13 +15,13 @@ import Siren from "../../../identifier-objects/Siren";
 import Siret from "../../../identifier-objects/Siret";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import { ApiAssoService } from "../../providers/api-asso/api-asso.service";
-import { STOCK_UNITE_LEGALE_ENTITY } from "../../providers/sirene/stock-unite-legale/@types/__fixtures__/sirene-stock-unite-legale.fixture";
-import CheckIdentifierIsFromAssoUseCase from "./check-identifier-is-from-asso.use-case";
-import CheckSirenIsFromAssoUseCase from "./check-siren-is-from-asso.use-case";
-import FindSiretFromAssociationIdentifierUseCase from "./find-siret-from-association-identifier.use-case";
-import FindSiretFromRnaUseCase from "./find-siret-from-rna.use-case";
-import FindSiretFromSirenUseCase from "./find-siret-from-siren.use-case";
-import GetIdentifierFromStringUseCase from "./get-identifier-from-string.use-case";
+import { STOCK_UNITE_LEGALE_ENTITY } from "../../providers/sirene/@types/__fixtures__/sirene-stock-unite-legale.fixture";
+import { CheckIdentifierIsFromAssoUseCase } from "./check-identifier-is-from-asso.use-case";
+import { CheckSirenIsFromAssoUseCase } from "./check-siren-is-from-asso.use-case";
+import { FindSiretFromAssociationIdentifierUseCase } from "./find-siret-from-association-identifier.use-case";
+import { FindSiretFromRnaUseCase } from "./find-siret-from-rna.use-case";
+import { FindSiretFromSirenUseCase } from "./find-siret-from-siren.use-case";
+import { GetIdentifierFromStringUseCase } from "./get-identifier-from-string.use-case";
 
 describe("Association Use Cases", () => {
     const RNA = new Rna(DEFAULT_ASSOCIATION.rna);
@@ -103,7 +103,7 @@ describe("Association Use Cases", () => {
     describe("CheckSirenIsFromAsso", () => {
         const mockSirenePort = {
             findOneBySiren: jest.fn().mockResolvedValue({}),
-        } as unknown as SireneStockUniteLegalePort;
+        } as unknown as SireneUniteLegalePort;
         const mockEntreprisePort = {
             findOneBySiren: jest.fn().mockResolvedValue({}),
         } as unknown as UniteLegalEntreprisePort;

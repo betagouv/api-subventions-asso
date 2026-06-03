@@ -11,7 +11,7 @@ import paymentFlatService from "./payment-flat.service";
 
 // TODO: this was only created to extract chorus dependent process from paymentFlatService
 // This should be better thought and refactored
-class PaymentFlatChorusService implements PaymentFlatProvider {
+export class PaymentFlatChorusService implements PaymentFlatProvider {
     // init chorus data in paymentFlat (all exercises since 2017)
     public async init() {
         const { programs, ministries, fonctionalDomains, programsRef } = await dataBretagneService.getAllDataRecords();

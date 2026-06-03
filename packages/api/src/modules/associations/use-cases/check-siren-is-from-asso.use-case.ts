@@ -1,13 +1,16 @@
-import { SireneStockUniteLegalePort } from "../../../adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.port";
+import sireneUniteLegaleAdapter from "../../../adapters/outputs/db/sirene/sirene-unite-legale.adapter";
+import { SireneUniteLegalePort } from "../../../adapters/outputs/db/sirene/sirene-unite-legale.port";
+import uniteLegalEntrepriseAdapter from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 import { UniteLegalEntreprisePort } from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.port";
 import { RnaSirenPort } from "../../../adapters/outputs/db/rna-siren/rna-siren.port";
 import { Siren } from "../../../identifier-objects";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
-import { ApiAssoService } from "../../providers/api-asso/api-asso.service";
+import apiAssoService, { ApiAssoService } from "../../providers/api-asso/api-asso.service";
+import rnaSirenAdapter from "../../../adapters/outputs/db/rna-siren/rna-siren.adapter";
 
-export default class CheckSirenIsFromAssoUseCase {
+export class CheckSirenIsFromAssoUseCase {
     constructor(
-        private sirenePort: SireneStockUniteLegalePort,
+        private sirenePort: SireneUniteLegalePort,
         private rnaSirenPort: RnaSirenPort,
         private entreprisePort: UniteLegalEntreprisePort,
         // @TODO: make this a use case
@@ -29,3 +32,12 @@ export default class CheckSirenIsFromAssoUseCase {
         return LEGAL_CATEGORIES_ACCEPTED.includes(category);
     }
 }
+
+const checkSirenIsFromAsso = new CheckSirenIsFromAssoUseCase(
+    sireneUniteLegaleAdapter,
+    rnaSirenAdapter,
+    uniteLegalEntrepriseAdapter,
+    apiAssoService,
+);
+
+export default checkSirenIsFromAsso;

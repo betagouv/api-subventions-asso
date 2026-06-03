@@ -1,7 +1,7 @@
 import HeliosPort from "../../../../adapters/outputs/db/providers/helios/helios.port";
 import { asyncFilter } from "../../../../shared/helpers/ArrayHelper";
-import CheckIdentifierIsFromAssoUseCase from "../../../associations/use-cases/check-identifier-is-from-asso.use-case";
-import GetIdentifierFromStringUseCase from "../../../associations/use-cases/get-identifier-from-string.use-case";
+import { CheckIdentifierIsFromAssoUseCase } from "../../../associations/use-cases/check-identifier-is-from-asso.use-case";
+import { GetIdentifierFromStringUseCase } from "../../../associations/use-cases/get-identifier-from-string.use-case";
 import SaveHeliosEntitiesToFlatUseCase from "./save-helios-entities-to-flat.use-case";
 import HeliosEntity from "../domain/helios.entity";
 

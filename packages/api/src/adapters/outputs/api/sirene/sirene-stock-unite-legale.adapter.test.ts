@@ -1,4 +1,5 @@
 import ProviderRequestFactory from "../../../../modules/provider-request/provider-request.service";
+import { SireneStockUniteLegaleAdapter } from "./sirene-stock-unite-legale.adapter";
 jest.mock("../../../../modules/provider-request/provider-request.service", () => ({
     __esModule: true,
     default: jest.fn(() => {
@@ -7,13 +8,12 @@ jest.mock("../../../../modules/provider-request/provider-request.service", () =>
         })();
     }),
 }));
-import { SireneStockUniteLegaleApiAdapter } from "./sirene-stock-unite-legale.adapter";
 
 describe("SireneStockUniteLegalePort", () => {
     let port;
 
     beforeEach(() => {
-        port = new SireneStockUniteLegaleApiAdapter();
+        port = new SireneStockUniteLegaleAdapter();
     });
     describe("constructor", () => {
         it("should call ProviderRequestFactory", async () => {

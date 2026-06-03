@@ -19,14 +19,14 @@ import paymentFlatAdapter from "./payment-flat/payment-flat.adapter";
 import { osirisActionAdapter, osirisRequestAdapter } from "./providers/osiris";
 import miscScdlGrantAdapter from "./providers/scdl/misc-scdl-grant.adapter";
 import miscScdlProducersAdapter from "./providers/scdl/misc-scdl-producers.adapter";
-import sireneStockUniteLegaleAdapter from "./sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
 import amountsVsProgramRegionAdapter from "./dataviz/amount-vs-program-region/amounts-vs-program-region.adapter";
 import dataLogAdapter from "./data-log/data-log.adapter";
 import applicationFlatAdapter from "./application-flat/application-flat.adapter";
 import gisproAdapter from "./providers/gispro.adapter";
 import depositLogAdapter from "./deposit-log/deposit-log.adapter";
-import chorusFseAdapter from "./providers/chorus/chorus.fse.adapter";
+import chorusFseAdapter from "./providers/chorus/chorus-fse.adapter";
 import chorusAdapter from "./providers/chorus/chorus.adapter";
+import sireneUniteLegaleAdapter from "./sirene/sirene-unite-legale.adapter";
 
 export const adaptersWithIndexes = [
     // TODO: handle adapter initialization from within and remove this file
@@ -54,7 +54,7 @@ export const adaptersWithIndexes = [
     uniteLegalEntrepriseAdapter,
     uniteLegalNameAdapter,
     paymentFlatAdapter,
-    sireneStockUniteLegaleAdapter,
+    sireneUniteLegaleAdapter,
     amountsVsProgramRegionAdapter,
     dataLogAdapter,
     applicationFlatAdapter,
