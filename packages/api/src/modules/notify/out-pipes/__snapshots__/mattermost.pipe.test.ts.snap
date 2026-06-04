@@ -26,7 +26,15 @@ exports[`MattermostPipe dataImportSuccess sends message 1`] = `
 {
   "channel": "datasubvention---produit",
   "icon_emoji": "white_check_mark",
-  "text": "Import de données réussi pour le fournisseur **Ville de Rennes** (SIRET : \`12345678900012\`) avec une date d'export au **2025-09-03**.",
+  "text": "Import de données réussi pour le fournisseur **Ville de Rennes** (SIRET : \`12345678900012\`) avec une date d'export au **2025-09-03**.
+
+**Fichier** : \`SCDL.csv\`
+**Durée** : 1s
+
+**Counts**
+- Lignes parsées : 100
+- Données importées : 99
+- Erreurs : 1",
   "username": "Import de données",
 }
 `;

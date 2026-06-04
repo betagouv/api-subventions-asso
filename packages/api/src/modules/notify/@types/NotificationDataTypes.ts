@@ -78,6 +78,13 @@ export interface NotificationDataTypes {
         providerName: string;
         providerSiret?: string;
         exportDate?: Date;
+        details: {
+            fileName: string;
+            parsedCount: number;
+            importedCount: number;
+            errorCount: number;
+            durationMs: number;
+        };
     };
     [NotificationType.DEPOSIT_SCDL_SUCCESS]: {
         providerName: string;

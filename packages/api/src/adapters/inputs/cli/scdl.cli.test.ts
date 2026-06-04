@@ -149,6 +149,13 @@ describe("ScdlCli", () => {
                 errors: ERRORS,
                 producer: PRODUCER_ENTITY,
                 exportDate: EXPORT_DATE_STR,
+                details: {
+                    fileName: FILE_PATH,
+                    parsedCount: STORABLE_DATA_ARRAY.length + ERRORS.length,
+                    importedCount: STORABLE_DATA_ARRAY.length,
+                    errorCount: ERRORS.length,
+                    durationMs: expect.any(Number),
+                },
             });
         });
 

@@ -16,6 +16,7 @@ import applicationFlatService from "../../../modules/application-flat/applicatio
 import MiscScdlProducerEntity from "../../../modules/providers/scdl/entities/MiscScdlProducerEntity";
 import notifyService from "../../../modules/notify/notify.service";
 import { NotificationType } from "../../../modules/notify/@types/NotificationType";
+import { NotificationDataTypes } from "../../../modules/notify/@types/NotificationDataTypes";
 
 export default class ScdlCli {
     static cmdName = "scdl";
@@ -37,6 +38,7 @@ export default class ScdlCli {
         rowOffset: number | string = 0,
         processedExercices: string | undefined = undefined,
     ) {
+        const startAt = Date.now();
         const exercices = processedExercices ? (JSON.parse(processedExercices) as number[]) : undefined;
         const siret = new Siret(allocatorSiret);
         const producer = await scdlService.getProducer(siret);
@@ -55,8 +57,17 @@ export default class ScdlCli {
 
         // persist data
         await scdlService.persist(producer as MiscScdlProducerEntity, entities);
+
+        const details: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]["details"] = {
+            fileName: path.basename(filePath),
+            parsedCount: entities.length + errors.length,
+            importedCount: entities.length,
+            errorCount: errors.length,
+            durationMs: Date.now() - startAt,
+        };
+
         // execute end of import methods
-        await this.end({ file: filePath, producer: producer as MiscScdlProducerEntity, exportDate, errors });
+        await this.end({ file: filePath, producer: producer as MiscScdlProducerEntity, exportDate, errors, details });
     }
 
     /**
@@ -76,6 +87,7 @@ export default class ScdlCli {
         quote = '"',
         concernedExercices: string | undefined = undefined,
     ) {
+        const startAt = Date.now();
         const exercices = concernedExercices ? (JSON.parse(concernedExercices) as number[]) : undefined;
         const siret = new Siret(allocatorSiret);
         const producer = await scdlService.getProducer(siret);
@@ -89,8 +101,17 @@ export default class ScdlCli {
 
         // persist data
         await scdlService.persist(producer as MiscScdlProducerEntity, entities);
+
+        const details: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]["details"] = {
+            fileName: path.basename(filePath),
+            parsedCount: entities.length + errors.length,
+            importedCount: entities.length,
+            errorCount: errors.length,
+            durationMs: Date.now() - startAt,
+        };
+
         // execute end of import methods
-        await this.end({ file: filePath, producer: producer as MiscScdlProducerEntity, exportDate, errors });
+        await this.end({ file: filePath, producer: producer as MiscScdlProducerEntity, exportDate, errors, details });
     }
 
     /**
@@ -103,14 +124,16 @@ export default class ScdlCli {
         errors: MixedParsedError[];
         producer: MiscScdlProducerEntity;
         exportDate: string | undefined;
+        details: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]["details"];
     }) {
-        const { file, errors, producer, exportDate: dateStr } = params;
+        const { file, errors, producer, exportDate: dateStr, details } = params;
         const exportDate = dateStr ? new Date(dateStr) : undefined;
 
         await notifyService.notify(NotificationType.DATA_IMPORT_SUCCESS, {
             providerName: producer.name,
             providerSiret: producer.siret,
             exportDate,
+            details,
         });
 
         await Promise.all([

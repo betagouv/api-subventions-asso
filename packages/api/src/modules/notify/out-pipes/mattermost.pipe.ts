@@ -58,9 +58,22 @@ export class MattermostPipe implements NotifyOutPipe {
     }
 
     private dataImportSuccess(data: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]) {
+        const details = [
+            `**Fichier** : \`${data.details.fileName}\``,
+            `**Durée** : ${Math.round(data.details.durationMs / 1000)}s`,
+            "",
+            "**Counts**",
+            `- Lignes parsées : ${data.details.parsedCount}`,
+            `- Données importées : ${data.details.importedCount}`,
+            `- Erreurs : ${data.details.errorCount}`,
+        ];
+
         const message = dedent`Import de données réussi pour le fournisseur **${data.providerName}**${
             data.providerSiret ? ` (SIRET : \`${data.providerSiret}\`)` : ""
-        }${data.exportDate ? ` avec une date d'export au **${data.exportDate.toISOString().split("T")[0]}**` : ""}.`;
+        }${data.exportDate ? ` avec une date d'export au **${data.exportDate.toISOString().split("T")[0]}**` : ""}.
+
+        ${details.join("\n")}`;
+
         return this.sendMessage({
             text: message,
             channel: MattermostChannels.PRODUCT,

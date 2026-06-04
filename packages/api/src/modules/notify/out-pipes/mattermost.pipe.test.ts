@@ -153,6 +153,13 @@ describe("MattermostPipe", () => {
                 providerName: "Ville de Rennes",
                 providerSiret: "12345678900012",
                 exportDate: new Date("2025-09-03"),
+                details: {
+                    fileName: "SCDL.csv",
+                    parsedCount: 100,
+                    importedCount: 99,
+                    errorCount: 1,
+                    durationMs: 1234,
+                },
             });
             const actual = sendMessageSpy.mock.calls[0][0];
             expect(actual).toMatchSnapshot();
