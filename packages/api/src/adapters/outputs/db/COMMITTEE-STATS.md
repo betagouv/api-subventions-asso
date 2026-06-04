@@ -59,30 +59,6 @@ Montants des collectivités SCDL excluant les opérateurs
           "18002002600019",
           "13002591900015"
         ]
-      },
-      fournisseur: {
-        $regex: /^scdl-/,
-        $nin: [
-          "scdl-38529030900454",
-          "scdl-13002233800011",
-          "scdl-19754686400012",
-          "scdl-13003019000016",
-          "scdl-13000548113153",
-          "scdl-13000548121040",
-          "scdl-13000548112007",
-          "scdl-13000548116917",
-          "scdl-13000548121115",
-          "scdl-13000548118277",
-          "scdl-13000548117501",
-          "scdl-13000548119044",
-          "scdl-13000548117345",
-          "scdl-13000548119424",
-          "scdl-13000548119820",
-          "scdl-13000548100010",
-          "scdl-13001184400011",
-          "scdl-18002002600019",
-          "scdl-13002591900015"
-        ]
       }
     }
   },
@@ -118,7 +94,8 @@ Montants des collectivités SCDL excluant les opérateurs
       grants_count: 1,
       scdl_sources_count: { $size: "$scdl_sources" }
     }
-  }
+  },
+  { $sort: { year: 1 } }
 ]
 ```
 
@@ -136,29 +113,6 @@ Une ligne par année et par opérateur
       statutLabel: "Accordé",
       $or: [
         {
-          fournisseur: {
-            $in: [
-              "scdl-38529030900454",
-              "scdl-13002233800011",
-              "scdl-19754686400012",
-              "scdl-13003019000016",
-              "scdl-13000548113153",
-              "scdl-13000548121040",
-              "scdl-13000548112007",
-              "scdl-13000548116917",
-              "scdl-13000548121115",
-              "scdl-13000548118277",
-              "scdl-13000548117501",
-              "scdl-13000548119044",
-              "scdl-13000548117345",
-              "scdl-13000548119424",
-              "scdl-13000548119820",
-              "scdl-13000548100010",
-              "scdl-13001184400011",
-              "scdl-18002002600019",
-              "scdl-13002591900015"
-            ]
-          },
           idAttribuant: {
             $in: [
               "38529030900454",
@@ -297,7 +251,8 @@ Une ligne par année et par opérateur
       amount_eur: 1,
       grants_count: 1
     }
-  }
+  },
+  { $sort: { year: 1, operator_type: 1, operator_name: 1 } }
 ]
 ```
 
@@ -318,7 +273,8 @@ Pour obtenir les sous-totaux par année, remplacer la partie finale à partir du
     amount_eur: 1,
     grants_count: 1
   }
-}
+},
+{ $sort: { year: 1 } }
 ```
 
 ## Sources de données
@@ -348,7 +304,8 @@ Compte les fournisseurs distincts qui ont des subventions sur chaque exercice, c
       year: "$_id",
       sources_count: { $size: "$sources" }
     }
-  }
+  },
+  { $sort: { year: 1 } }
 ]
 ```
 
@@ -394,7 +351,8 @@ Compte les imports dont `providerId` est un SIRET, par année d'intégration
       imports_count: 1,
       scdl_sources_count: { $size: "$scdl_sources" }
     }
-  }
+  },
+  { $sort: { year: 1 } }
 ]
 ```
 
