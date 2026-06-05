@@ -1,1 +1,2 @@
-web: /bin/sh -c 'set -e; if [ "$PACKAGE" = "api" ]; then pnpm --filter api migration:apply; fi; pnpm --filter "$PACKAGE" start' 
+web: pnpm start --scope $PACKAGE
+postdeploy: /bin/sh -c 'echo $PACKAGE; if [ $PACKAGE = "api" ]; then pnpm migration:apply; fi'
