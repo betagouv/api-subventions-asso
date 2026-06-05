@@ -82,8 +82,8 @@ describe("scdl mapper", () => {
     describe("amount adapter", () => {
         const adapter = (SCDL_MAPPER.amount as ParserInfo).adapter as (v: unknown) => unknown;
 
-        it("only keeps numbers from string", () => {
-            const actual = adapter("2 098.56");
+        it.each(["2 098.56", "2,098.56", "2 098,56"])("transform %s into 2098,56", amount => {
+            const actual = adapter(amount);
             expect(actual).toBe(2098.56);
         });
     });
