@@ -22,7 +22,7 @@ export function parseAmount(raw) {
     if (typeof raw === "number") return raw;
 
     if (typeof raw === "string") {
-        const sanitizedRaw = raw.replace(" ", ""); // 1 000,50 => 1000,50
+        const sanitizedRaw = raw.replaceAll(" ", ""); // 1 000,50 => 1000,50
 
         // Both separators present
         if (sanitizedRaw.includes(",") && sanitizedRaw.includes(".")) {
