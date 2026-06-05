@@ -3,6 +3,7 @@ import { GenericParser } from "../../../shared/GenericParser";
 import { BeforeAdaptation } from "../../../@types";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
 import { capitalizeFirstLetter } from "../../../shared/helpers/StringHelper";
+import { parseAmount } from "../../../shared/helpers/NumberHelper";
 
 const OFFICIAL_MAPPER = {
     allocatorName: "nomAttribuant",
@@ -242,7 +243,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             ],
         ],
         officialName: "montant",
-        adapter: value => (value && typeof value === "string" ? parseFloat(value.replace(/[^0-9.]/, "")) : value),
+        adapter: parseAmount,
     },
     paymentNature: {
         path: [
