@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.84.7](https://github.com/betagouv/api-subventions-asso/compare/v0.84.6...v0.84.7) (2026-06-05)
+
+### Bug Fixes
+
+- **api:** remove all white space in scdl amount ([46a294e](https://github.com/betagouv/api-subventions-asso/commit/46a294ea2cba4c2ad35aa5a642e314559697e21a))
+
+## [0.84.6](https://github.com/betagouv/api-subventions-asso/compare/v0.84.5...v0.84.6) (2026-06-05)
+
+### Bug Fixes
+
+- **api:** [#3955](https://github.com/betagouv/api-subventions-asso/issues/3955) handle european float format with comma as decimal separator ([#3956](https://github.com/betagouv/api-subventions-asso/issues/3956)) ([60d38fe](https://github.com/betagouv/api-subventions-asso/commit/60d38fe4ddce8ae9cdfa3ffacf967a69f2c4c664))
+
 ## [0.84.5](https://github.com/betagouv/api-subventions-asso/compare/v0.84.4...v0.84.5) (2026-05-06)
 
 ### Bug Fixes
