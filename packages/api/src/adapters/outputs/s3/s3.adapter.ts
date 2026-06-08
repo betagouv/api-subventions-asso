@@ -1,32 +1,33 @@
 import {
     DeleteObjectCommand,
     GetObjectCommand,
+    GetObjectTaggingCommand,
     ListObjectsV2Command,
     PutObjectCommand,
+    PutObjectCommandInput,
+    PutObjectTaggingCommand,
     S3Client,
     S3ClientConfig,
 } from "@aws-sdk/client-s3";
 
-import { S3_ACCESS_KEY, S3_REGION, S3_BUCKET, S3_ENDPOINT, S3_SECRET_KEY } from "../../../configurations/s3.conf";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3Error } from "./@errors/S3Error";
 import { S3FileData } from "../../../@types/S3FileData";
 import { S3Port } from "./s3.port";
+import {
+    S3_SCDL_BUCKET,
+    S3_ENDPOINT,
+    S3_REGION,
+    S3_ACCESS_KEY,
+    S3_SECRET_KEY,
+    S3_PROVIDERS_BUCKET,
+} from "../../../configurations/s3.conf";
 
 export class S3Adapter implements S3Port {
-    s3Client: S3Client;
-
-    constructor() {
-        this.s3Client = new S3Client({
-            endpoint: S3_ENDPOINT,
-            region: S3_REGION,
-            credentials: {
-                accessKeyId: S3_ACCESS_KEY,
-                secretAccessKey: S3_SECRET_KEY,
-            },
-            forcePathStyle: true,
-        } as S3ClientConfig);
-    }
+    constructor(
+        private s3Client: S3Client,
+        private bucketName: string,
+    ) {}
 
     /**
      *  Uploads a file to S3 bucket.
@@ -34,14 +35,19 @@ export class S3Adapter implements S3Port {
      * @param key - Key of the file in S3 bucket (path).
      * @returns Key of the uploaded file.
      * */
-    async uploadFile(file: Express.Multer.File, key: string): Promise<string> {
+    async uploadFile(file: Express.Multer.File, key: string, tag?: { name: string; value: string }): Promise<string> {
         try {
-            const command = new PutObjectCommand({
-                Bucket: S3_BUCKET,
+            const input: PutObjectCommandInput = {
+                Bucket: this.bucketName,
                 Key: key,
                 Body: file.buffer,
                 ContentType: file.mimetype,
-            });
+            };
+
+            if (tag && (!tag.name || !tag?.value)) throw new S3Error("Tag must have a name and value");
+            if (tag && tag.name && tag.value) input.Tagging = `${tag.name}=${tag.value}`;
+
+            const command = new PutObjectCommand(input);
 
             await this.s3Client.send(command);
             return key;
@@ -60,7 +66,7 @@ export class S3Adapter implements S3Port {
     async getDownloadUrl(key: string, expiresIn: number = 240): Promise<string> {
         try {
             const command = new GetObjectCommand({
-                Bucket: S3_BUCKET,
+                Bucket: this.bucketName,
                 Key: key,
             });
 
@@ -79,7 +85,7 @@ export class S3Adapter implements S3Port {
     async deleteFile(key: string): Promise<void> {
         try {
             const command = new DeleteObjectCommand({
-                Bucket: S3_BUCKET,
+                Bucket: this.bucketName,
                 Key: key,
             });
 
@@ -98,7 +104,7 @@ export class S3Adapter implements S3Port {
     async getFile(key: string): Promise<S3FileData | null> {
         try {
             const command = new GetObjectCommand({
-                Bucket: S3_BUCKET,
+                Bucket: this.bucketName,
                 Key: key,
             });
 
@@ -127,27 +133,77 @@ export class S3Adapter implements S3Port {
         }
     }
 
+    async getFileTags(key: string) {
+        try {
+            const command = new GetObjectTaggingCommand({
+                Bucket: this.bucketName,
+                Key: key,
+            });
+
+            const { TagSet } = await this.s3Client.send(command);
+
+            if (!TagSet) return {};
+
+            return TagSet?.reduce(
+                (tags, tag) => {
+                    if (!tag.Key || !tag.Value) return tags;
+                    tags[tag.Key] = tag.Value;
+                    return tags;
+                },
+                {} as Record<string, string>,
+            );
+        } catch (error) {
+            console.log(error);
+            throw new S3Error("Failed to retrieve file tag information");
+        }
+    }
+
     /**
      * Lists all files in S3 bucket with given prefix.
      * @param prefix - Prefix to filter files (folder path).
      * @returns Array of file keys matching the prefix.
      */
-    async listFiles(prefix: string): Promise<string[]> {
+    async listFiles(prefix: string) {
         try {
             const command = new ListObjectsV2Command({
-                Bucket: S3_BUCKET,
+                Bucket: this.bucketName,
                 Prefix: prefix,
             });
 
             const response = await this.s3Client.send(command);
-            return response.Contents?.map(obj => obj.Key!) || [];
+            return response.Contents?.map(obj => ({ path: obj.Key!, importDate: obj.LastModified! })) || [];
         } catch (error) {
             console.error(error);
             throw new S3Error("Failed to list files");
         }
     }
+
+    async tagFile(key: string, tag: { name: string; value: string }): Promise<void> {
+        try {
+            const command = new PutObjectTaggingCommand({
+                Bucket: this.bucketName,
+                Key: key,
+                Tagging: { TagSet: [{ Key: tag.name, Value: tag.value }] },
+            });
+
+            await this.s3Client.send(command);
+        } catch (error) {
+            console.error(error);
+            throw new S3Error("Failed to add tag to file");
+        }
+    }
 }
 
-const s3ClientAdapter = new S3Adapter();
+const DEFAULT_CLIENT = new S3Client({
+    endpoint: S3_ENDPOINT,
+    region: S3_REGION,
+    credentials: {
+        accessKeyId: S3_ACCESS_KEY,
+        secretAccessKey: S3_SECRET_KEY,
+    },
+    forcePathStyle: true,
+} as S3ClientConfig);
 
-export default s3ClientAdapter;
+export const scdlS3Adapter = new S3Adapter(DEFAULT_CLIENT, S3_SCDL_BUCKET);
+
+export const providersS3Adapter = new S3Adapter(DEFAULT_CLIENT, S3_PROVIDERS_BUCKET);

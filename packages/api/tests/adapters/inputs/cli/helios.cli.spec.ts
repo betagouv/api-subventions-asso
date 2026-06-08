@@ -5,8 +5,8 @@ import paymentFlatAdapter from "../../../../src/adapters/outputs/db/payment-flat
 import { expectAnyUpdateDate } from "../../../__helpers__/expect-any.helper";
 import uniteLegalEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 import { Siren } from "../../../../src/identifier-objects";
-import sireneStockUniteLegaleAdapter from "../../../../src/adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
-import { ENTITIES } from "../../../../src/modules/providers/sirene/__fixtures__/sirene-stock-unite-legale.fixture";
+import sireneUniteLegaleAdapter from "../../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
+import { ENTITIES } from "../../../../src/modules/providers/sirene/__fixtures__/sirene-unite-legale.fixture";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../src/shared/LegalCategoriesAccepted";
@@ -25,7 +25,7 @@ describe("Helios CLI", () => {
      */
     describe("parse", () => {
         beforeEach(async () => {
-            await sireneStockUniteLegaleAdapter.insertOne({
+            await sireneUniteLegaleAdapter.insertOne({
                 ...ENTITIES[0],
                 siren: new Siren(DEFAULT_ASSOCIATION.siren),
             });

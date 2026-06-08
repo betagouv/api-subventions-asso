@@ -5,5 +5,7 @@ export interface S3Port {
     getDownloadUrl(key: string, expiresIn): Promise<string>;
     deleteFile(key: string): Promise<void>;
     getFile(key: string): Promise<S3FileData | null>;
-    listFiles(prefix: string): Promise<string[]>;
+    listFiles(prefix: string): Promise<{ path: string; importDate: Date }[]>;
+    tagFile(key: string, tag: { name: string; value: string }): Promise<void>;
+    getFileTags(key: string): Promise<Record<string, string>>;
 }

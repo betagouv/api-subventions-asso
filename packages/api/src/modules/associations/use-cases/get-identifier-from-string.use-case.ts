@@ -1,6 +1,6 @@
 import { AssociationIdentifier, EstablishmentIdentifier } from "../../../identifier-objects";
 
-export default class GetIdentifierFromStringUseCase {
+export class GetIdentifierFromStringUseCase {
     /**
      *  Order matters as it give priority to SIREN over RIDET
      *  RIDET and SIREN share a common format.
@@ -17,3 +17,6 @@ export default class GetIdentifierFromStringUseCase {
         );
     }
 }
+
+const getIdentifierFromString = new GetIdentifierFromStringUseCase();
+export default getIdentifierFromString;
