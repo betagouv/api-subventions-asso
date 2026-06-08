@@ -107,6 +107,18 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
      * |-------------------------|
      */
 
+    async initAllForms() {
+        const formsIds = await demarchesSimplifieesSchemaAdapter.getAcceptedDemarcheIds();
+        if (!formsIds) {
+            throw new Error("DS is not configured on this env, please add schema");
+        }
+
+        const persisted = await Promise.all(formsIds.map(formId => this.updateDataByFormId(formId, { force: true })));
+        if (persisted.length > 0) {
+            await configurationsService.setLastDsUpdate(new Date());
+        }
+    }
+
     async updateAllForms() {
         const formsIds = await demarchesSimplifieesSchemaAdapter.getAcceptedDemarcheIds();
         const beginUpdating = new Date();
@@ -120,7 +132,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
         await configurationsService.setLastDsUpdate(beginUpdating);
     }
 
-    async updateDataByFormId(formId: number) {
+    async updateDataByFormId(formId: number, options?: { force?: boolean }) {
         console.log(`Syncing demarche ${formId}`);
 
         const schema = await demarchesSimplifieesSchemaAdapter.findById(formId);
@@ -141,14 +153,25 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
         const MAX_BULK = 1000;
         do {
             result = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId, after: nextCursor });
-            if (result.data.demarche.state != "publiee") {
-                console.log(`demarche ${formId} has status '${result.data.demarche.state}'. skipping`);
-                return;
+
+            let entities: DemarchesSimplifieesDataEntity[] = [];
+            if (options?.force) {
+                if (!["publiee", "close"].includes(result.data.demarche.state)) {
+                    console.log(`demarche ${formId} has status '${result.data.demarche.state}'. skipping`);
+                    return;
+                }
+                entities = DemarchesSimplifieesDtoMapper.toEntities(result, formId);
+            } else {
+                if (result.data.demarche.state != "publiee") {
+                    console.log(`demarche ${formId} has status '${result.data.demarche.state}'. skipping`);
+                    return;
+                }
+
+                entities = DemarchesSimplifieesDtoMapper.toEntities(result, formId).filter(
+                    entity => new Date(entity.demande.dateDerniereModification) > this.lastModified,
+                );
             }
 
-            const entities = DemarchesSimplifieesDtoMapper.toEntities(result, formId).filter(
-                entity => new Date(entity.demande.dateDerniereModification) > this.lastModified,
-            );
             bulk.push(...entities);
             if (bulk.length >= MAX_BULK) {
                 await upsertRawAndFlat(bulk, schema);

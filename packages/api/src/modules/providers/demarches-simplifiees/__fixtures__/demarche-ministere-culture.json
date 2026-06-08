@@ -1,0 +1,424 @@
+{
+    "demarcheId": 62744,
+    "siret": "83279644500019",
+    "demande": {
+        "id": "RG9zc2llci0xNDgyOTU4Ng==",
+        "demandeur": {
+            "siret": "83279644500019",
+            "association": null
+        },
+        "demarche": {
+            "title": "Aide au projet ou au fonctionnement – Création artistique (2023)"
+        },
+        "groupeInstructeur": {
+            "label": "Auvergne-Rhône-Alpes"
+        },
+        "motivation": "Bonjour,\r\n \r\nVotre subvention 2023 a été mise en paiement le 06/11. Veuillez trouver, ci-joint, une copie de l'acte attributif de subvention. Cet envoi constitue la notification officielle.\r\n \r\nCordialement\r\n",
+        "state": "accepte",
+        "dateDepot": "2023-11-02T12:04:02+01:00",
+        "datePassageEnInstruction": "2023-11-03T13:47:53+01:00",
+        "dateDerniereModification": "2023-11-10T08:16:41+01:00",
+        "dateTraitement": "2023-11-10T08:16:40+01:00",
+        "pdf": {
+            "url": "https://www.demarches-simplifiees.fr/api/v2/dossiers/pdf/eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3Rwcy9Eb3NzaWVyLzE0ODI5NTg2P2V4cGlyZXNfaW49MzYwMCIsImV4cCI6IjIwMjYtMDYtMDVUMTM6NTQ6MTMuMzE3WiIsInB1ciI6ImFwaV92MiJ9fQ==--14df6b81b2bf40d23d11bfe3ee1e953f3112d496",
+            "filename": "dossier-14829586.pdf",
+            "contentType": "application/pdf"
+        },
+        "champs": {
+            "Q2hhbXAtMzM0OTAxNg==": {
+                "value": "Auvergne-Rhône-Alpes",
+                "label": "Votre région d'intervention"
+            },
+            "Q2hhbXAtMjc1MTY4Ng==": {
+                "value": "Théâtre et arts associés",
+                "label": "Domaine(s) culturel(s) et artistique(s)"
+            },
+            "Q2hhbXAtMjEyNjc5OA==": {
+                "value": "",
+                "label": "Informations préliminaires : données personnelles"
+            },
+            "Q2hhbXAtMjA5NDAyOA==": {
+                "value": "",
+                "label": "Recueil des données personnelles"
+            },
+            "Q2hhbXAtMjM2MzcyOQ==": {
+                "value": "",
+                "label": "Formulaire de demande"
+            },
+            "Q2hhbXAtMjcwODg3MA==": {
+                "value": "Une association",
+                "label": "Vous êtes"
+            },
+            "Q2hhbXAtMjUwMjU1MA==": {
+                "value": "true",
+                "label": "Avez-vous été subventionné(e) par le ministère de la Culture l’année dernière ?"
+            },
+            "Q2hhbXAtMjY0MzkzMA==": {
+                "value": "Auvergne-Rhône-Alpes",
+                "label": "Par quel(s) service(s) ?"
+            },
+            "Q2hhbXAtMjUwMjU1MQ==": {
+                "value": "false",
+                "label": "La présente demande concerne-t-elle un projet identique à celui subventionné l’année dernière ?"
+            },
+            "Q2hhbXAtMjM2MzczMQ==": {
+                "value": "Projet / action",
+                "label": "Objet de la subvention"
+            },
+            "Q2hhbXAtMjQ4NzkwOQ==": {
+                "value": "false",
+                "label": "Avez-vous sollicité un autre financeur public ?"
+            },
+            "Q2hhbXAtMjc3NTI1Mg==": {
+                "value": "true",
+                "label": "Votre structure bénéficie-t-elle d’une licence d’entrepreneurs du spectacle ?"
+            },
+            "Q2hhbXAtMjc3NTI1Mw==": {
+                "value": "L-R-21-1353 ",
+                "label": "Indiquez votre ou vos numéro(s) de licence d’entrepreneurs du spectacle"
+            },
+            "Q2hhbXAtMjc3ODUyMA==": {
+                "value": "false",
+                "label": "L'association est-elle affiliée à un réseau, une union ou une fédération ?"
+            },
+            "Q2hhbXAtMjI4OTkyNw==": {
+                "value": "",
+                "label": "1. Identité du demandeur"
+            },
+            "Q2hhbXAtMjQxOTI4NA==": {
+                "value": "",
+                "label": "Précision"
+            },
+            "Q2hhbXAtMjcwODg3Mg==": {
+                "value": "L'adresse du siège social",
+                "label": "L'adresse de correspondance est"
+            },
+            "Q2hhbXAtMjcwODg3Mw==": {
+                "value": "",
+                "label": "Représentant légal de la structure"
+            },
+            "Q2hhbXAtMjUwNTg2OA==": {
+                "value": "Géraldine",
+                "label": "Prénom"
+            },
+            "Q2hhbXAtMjMzNzU1Mw==": {
+                "value": "Granjon",
+                "label": "Nom"
+            },
+            "Q2hhbXAtMjM2MzM2NQ==": {
+                "value": "présidente",
+                "label": "Fonction"
+            },
+            "Q2hhbXAtMjM2MzM2Nw==": {
+                "value": "06 63 96 61 73",
+                "label": "Numéro de téléphone"
+            },
+            "Q2hhbXAtMjMzNzMwNA==": {
+                "value": "administration@balletcosmique.com",
+                "label": "Adresse mail"
+            },
+            "Q2hhbXAtMjcwODg3NA==": {
+                "value": "",
+                "label": "Personne chargée du suivi du présent dossier"
+            },
+            "Q2hhbXAtMjcwODg3NQ==": {
+                "value": "Une autre personne",
+                "label": "La personne en charge du suivi du dossier est"
+            },
+            "Q2hhbXAtMjUwNTg2OQ==": {
+                "value": "Nicolas",
+                "label": "Prénom"
+            },
+            "Q2hhbXAtMjMzNzU1NQ==": {
+                "value": "Ligeon",
+                "label": "Nom"
+            },
+            "Q2hhbXAtMjM2MzM3Ng==": {
+                "value": "administrateur de production",
+                "label": "Fonction"
+            },
+            "Q2hhbXAtMjM2MzM3NQ==": {
+                "value": "06 63 96 61 73",
+                "label": "Numéro de téléphone"
+            },
+            "Q2hhbXAtMjMzNzU1Ng==": {
+                "value": "administration@balletcosmique.com",
+                "label": "Adresse mail"
+            },
+            "Q2hhbXAtMjMzOTQ4NA==": {
+                "value": "",
+                "label": "2.1. Présentation du projet"
+            },
+            "Q2hhbXAtMjM2MzQwMg==": {
+                "value": "Reprise La Crèche",
+                "label": "Intitulé du projet"
+            },
+            "Q2hhbXAtMjM2MzQwNA==": {
+                "value": "Reprise du spectacle La Crèche",
+                "label": "Objectifs du projet"
+            },
+            "Q2hhbXAtMjM0MDQ2Mw==": {
+                "value": "Retravailler la création du spectacle La Crèche",
+                "label": "Description du projet"
+            },
+            "Q2hhbXAtMjQxOTY3OA==": {
+                "value": "Les bénéficiaires sont les publics pouvant assister aux représentation.",
+                "label": "Informations sur les bénéficiaires du projet"
+            },
+            "Q2hhbXAtMjYzMzkwMQ==": {
+                "value": "Nationale",
+                "label": "Echelle de territoire du projet"
+            },
+            "Q2hhbXAtMjYzMzkwMg==": {
+                "value": "69 - Rhône",
+                "label": "Département(s) concerné(s) par le projet"
+            },
+            "Q2hhbXAtMjQxOTY4MQ==": {
+                "value": "",
+                "label": "Informations complémentaires sur le territoire du projet"
+            },
+            "Q2hhbXAtMjM2MzUxNg==": {
+                "value": "Fréquentation/ retour qualitatif des spectateurices.",
+                "label": "Indicateurs et méthodes d'évaluation"
+            },
+            "Q2hhbXAtMjM2MzQ5NQ==": {
+                "value": "01 janvier 2023",
+                "label": "Date de début du projet"
+            },
+            "Q2hhbXAtMjM2MzQ5Ng==": {
+                "value": "21 janvier 2023",
+                "label": "Date de fin du projet"
+            },
+            "Q2hhbXAtMjUwNjcxOQ==": {
+                "value": "",
+                "label": "Documents complémentaires relatifs au projet"
+            },
+            "Q2hhbXAtMjc3NTAyMQ==": {
+                "value": "",
+                "label": "Précisions complémentaires"
+            },
+            "Q2hhbXAtMjcxNTYyOQ==": {
+                "value": "",
+                "label": "2.2. Moyens humains affectés au projet"
+            },
+            "Q2hhbXAtMjcxNTYzMg==": {
+                "value": "",
+                "label": "Personnels participant activement au projet"
+            },
+            "Q2hhbXAtMjcxNTY0Nw==": {
+                "value": "0",
+                "label": "Nombre de bénévoles"
+            },
+            "Q2hhbXAtMjcxNTY0NQ==": {
+                "value": "8",
+                "label": "Nombre de salariés"
+            },
+            "Q2hhbXAtMjcxNTY0NA==": {
+                "value": "0.08",
+                "label": "Nombre de salariés (ETPT)"
+            },
+            "Q2hhbXAtMjcxNTY0Mw==": {
+                "value": "0",
+                "label": "... dont salariés en CDI"
+            },
+            "Q2hhbXAtMjcxNTY0MQ==": {
+                "value": "8",
+                "label": "... dont salariés en CDD"
+            },
+            "Q2hhbXAtMjcxNTY0MA==": {
+                "value": "0.08",
+                "label": "... dont salariés en CDD (ETPT)"
+            },
+            "Q2hhbXAtMjcxNTYzOQ==": {
+                "value": "0",
+                "label": "... dont emplois aidés"
+            },
+            "Q2hhbXAtMjcxNTYzNw==": {
+                "value": "0",
+                "label": "Nombre de volontaires (services civiques, ...)"
+            },
+            "Q2hhbXAtMjcxNTYzNQ==": {
+                "value": "",
+                "label": "Informations complémentaires"
+            },
+            "Q2hhbXAtMjcxNTYzNA==": {
+                "value": "true",
+                "label": "Est-il envisagé de procéder à un (ou des) recrutement(s) pour la mise en œuvre du projet ?"
+            },
+            "Q2hhbXAtMjcxNTYzMw==": {
+                "value": "0.08",
+                "label": "Combien ?"
+            },
+            "Q2hhbXAtMjcxNTYzMA==": {
+                "value": "",
+                "label": "Commentaire éventuel sur les moyens matériels et humains"
+            },
+            "Q2hhbXAtMjM2MzUxOQ==": {
+                "value": "",
+                "label": "3. Attestations"
+            },
+            "Q2hhbXAtMjM2MzcxMQ==": {
+                "value": "Géraldine Granjon",
+                "label": "Je soussigné(e)"
+            },
+            "Q2hhbXAtMjM2MzcxMg==": {
+                "value": "",
+                "label": "...représentant(e) légal(e) de la structure (ou personne dûment habilitée), déclare"
+            },
+            "Q2hhbXAtMjM2MzcxMw==": {
+                "value": "true",
+                "label": "... que la structure est à jour de ses obligations administratives, comptables, sociales et fiscales (déclarations et paiements correspondants)"
+            },
+            "Q2hhbXAtMjcwOTE5NQ==": {
+                "value": "true",
+                "label": "... exactes et sincères les informations du présent formulaire, notamment relatives aux demandes de subventions déposées auprès d'autres financeurs publics"
+            },
+            "Q2hhbXAtMjcwOTE5Ng==": {
+                "value": "true",
+                "label": "... que l'association respecte les principes et valeurs de la Charte des engagements réciproques conclue le 14 février 2014 entre l'État, les associations d'élus territoriaux et le Mouvement associatif, ainsi que les déclinaisons de cette charte"
+            },
+            "Q2hhbXAtMjcwOTE5NA==": {
+                "value": "true",
+                "label": "... que l’association souscrit au contrat d’engagement républicain annexé au décret pris pour l’application de l’article 10-1 de la loi n° 2000-321 du 12 avril 2000 relative aux droits des citoyens dans leurs relations avec les administrations"
+            },
+            "Q2hhbXAtMjM2MzcxNg==": {
+                "value": "Inférieur ou égal à 500.000 €",
+                "label": "... que la structure a perçu un montant total et cumulé d'aides publiques (subventions financières - ou en numéraire - et en nature) sur les trois dernières années (dont l'exercice en cours)"
+            },
+            "Q2hhbXAtMjUwNjg0MA==": {
+                "value": "10000",
+                "label": "... demander une subvention de"
+            },
+            "Q2hhbXAtMjUzNDAzOQ==": {
+                "value": "140000",
+                "label": "... que le montant total du budget prévisionnel de la demande s'élève à"
+            },
+            "Q2hhbXAtMjQxOTcxMQ==": {
+                "value": "true",
+                "label": "... que cette subvention, si elle est accordée, sera versée sur le compte bancaire de la structure"
+            },
+            "Q2hhbXAtMjM2MzcxOA==": {
+                "value": "",
+                "label": "4. Pièces justificatives à joindre au dossier"
+            },
+            "Q2hhbXAtMjM2MzcxNw==": {
+                "value": null,
+                "label": "RIB"
+            },
+            "Q2hhbXAtMjUwNjk5NA==": {
+                "value": "HT",
+                "label": "Les montants du budget sont exprimés en"
+            },
+            "Q2hhbXAtMjM2MzUxNw==": {
+                "value": null,
+                "label": "Budget du projet"
+            },
+            "Q2hhbXAtMjM0MDQ2Mg==": {
+                "value": null,
+                "label": "Budget de l'association"
+            },
+            "Q2hhbXAtMjc3MTc3Ng==": {
+                "value": null,
+                "label": "Moyens humains et financiers au 31 décembre de l'année écoulée"
+            },
+            "Q2hhbXAtMjU3MDA3NA==": {
+                "value": null,
+                "label": "Compte annuel clos ou état financier approuvé du dernier exercice clos"
+            },
+            "Q2hhbXAtMjc4NzY5MA==": {
+                "value": "",
+                "label": "Pouvoir du mandataire"
+            },
+            "Q2hhbXAtMjc3ODUyNA==": {
+                "value": "false",
+                "label": "L'association a-t-elle perçu, au cours des trois derniers exercices, des subventions au titre d'un texte relevant de la réglementation européenne des aides d'État ?"
+            },
+            "Q2hhbXAtMjY0MzM1Mw==": {
+                "value": "14835851 ",
+                "label": "Numéro de dossier de \"lutte contre les VHSS\""
+            },
+            "Q2hhbXAtMjEyNjgwMg==": {
+                "value": "",
+                "label": "Information finale"
+            },
+            "Q2hhbXAtMjcwOTI4Mw==": {
+                "value": "",
+                "label": "Compte-rendu de l'action subventionnée"
+            },
+            "Q2hhbXAtMjA5NDAzMw==": {
+                "value": "",
+                "label": "Information importante"
+            }
+        },
+        "annotations": {
+            "Q2hhbXAtMjk0MzIwOA==": {
+                "value": "",
+                "label": "Mode d'emploi"
+            },
+            "Q2hhbXAtMjUzNTQzOA==": {
+                "value": "",
+                "label": "Instruction administrative"
+            },
+            "Q2hhbXAtMjUzNTQ0OA==": {
+                "value": "",
+                "label": "Le dossier est-il complet ?"
+            },
+            "Q2hhbXAtMjUzODAwOQ==": {
+                "value": "",
+                "label": "Si non, quelles sont les pièces jointes manquantes ?"
+            },
+            "Q2hhbXAtMjUzODA4Ng==": {
+                "value": "",
+                "label": "Historique des échanges avec l'usager"
+            },
+            "Q2hhbXAtMjUzOTE0NQ==": {
+                "value": "",
+                "label": "CPO"
+            },
+            "Q2hhbXAtMjUzOTE0Ng==": {
+                "value": "",
+                "label": "Le bilan N-2 a-t-il été reçu ?"
+            },
+            "Q2hhbXAtMjUzOTE0Nw==": {
+                "value": "",
+                "label": "Si oui, quel est l'avis sur le bilan ?"
+            },
+            "Q2hhbXAtMjUzOTE1MA==": {
+                "value": "",
+                "label": "Si non, à quelle date la relance a-t-elle été réalisée ?"
+            },
+            "Q2hhbXAtMjY1NjI2Nw==": {
+                "value": "",
+                "label": "Le bilan N-1 a-t-il été reçu ?"
+            },
+            "Q2hhbXAtMjUzOTE1Mw==": {
+                "value": "",
+                "label": "Instruction métier et financière"
+            },
+            "Q2hhbXAtMjY1NjI3MQ==": {
+                "value": "",
+                "label": "Avis sur le dossier"
+            },
+            "Q2hhbXAtMjUzOTE1NA==": {
+                "value": "",
+                "label": "Eligibilité de la structure"
+            },
+            "Q2hhbXAtMjUzOTE1NQ==": {
+                "value": "",
+                "label": "Appréciation du projet artistique et culturel"
+            },
+            "Q2hhbXAtMjUzOTE1Ng==": {
+                "value": "",
+                "label": "Montant de la subvention proposé"
+            },
+            "Q2hhbXAtMjUzOTIyMA==": {
+                "value": "",
+                "label": "Montant de la subvention accordé"
+            }
+        }
+    },
+    "service": {
+        "nom": "--",
+        "organisme": "Ministère de la Culture"
+    }
+}
