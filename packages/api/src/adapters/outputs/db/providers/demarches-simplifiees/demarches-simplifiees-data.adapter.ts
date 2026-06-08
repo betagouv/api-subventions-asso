@@ -3,7 +3,7 @@ import Siren from "../../../../../identifier-objects/Siren";
 import Siret from "../../../../../identifier-objects/Siret";
 import DemarchesSimplifieesDataEntity from "../../../../../modules/providers/demarches-simplifiees/entities/DemarchesSimplifieesDataEntity";
 import { DemarchesSimplifieesDataProviderPort } from "./demarches-simplifiee-data.port";
-
+import fs from "fs";
 export class DemarchesSimplifieesDataAdapter
     extends MongoAdapter<DemarchesSimplifieesDataEntity>
     implements DemarchesSimplifieesDataProviderPort
@@ -36,6 +36,8 @@ export class DemarchesSimplifieesDataAdapter
     }
 
     async bulkUpsert(entities: DemarchesSimplifieesDataEntity[]): Promise<void> {
+        fs.writeFileSync("dn-fixture.json", JSON.stringify(entities, null, 2), "utf-8");
+        console.log(entities[0]);
         const bulk = entities.map(entity => {
             return {
                 updateOne: {
@@ -50,7 +52,7 @@ export class DemarchesSimplifieesDataAdapter
     }
 
     findAllCursor() {
-        return this.collection.find({});
+        return this.collection.find({}, { projection: { _id: 0 } });
     }
 }
 
