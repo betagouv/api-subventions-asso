@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.84.8](https://github.com/betagouv/api-subventions-asso/compare/v0.84.7...v0.84.8) (2026-06-05)
+
+
+### Features
+
+* **api, dto:** [#3913](https://github.com/betagouv/api-subventions-asso/issues/3913) new association dto ([#3921](https://github.com/betagouv/api-subventions-asso/issues/3921)) ([705e3db](https://github.com/betagouv/api-subventions-asso/commit/705e3db7946c6b520c310f866ec2a9f8b285c484))
+* **api:** [#3840](https://github.com/betagouv/api-subventions-asso/issues/3840) add findByOsirisId and findByOsirisIds in adapter/port ([924d69e](https://github.com/betagouv/api-subventions-asso/commit/924d69ed3ee81c43468a84d0bce3bb067edebbdd))
+* **api:** [#3840](https://github.com/betagouv/api-subventions-asso/issues/3840) add hidden route subvention and osiris + grant use case to get details ([625810d](https://github.com/betagouv/api-subventions-asso/commit/625810d4f76d42d525bf559544bf0edc37fc77ea))
+* **api:** [#3840](https://github.com/betagouv/api-subventions-asso/issues/3840) add test for new use case and adapter ([9052527](https://github.com/betagouv/api-subventions-asso/commit/90525274e8e8930961ac17b2bd1a24f69862d9dc))
+* **api:** [#3840](https://github.com/betagouv/api-subventions-asso/issues/3840) filters out actions without intitulé ([#3926](https://github.com/betagouv/api-subventions-asso/issues/3926)) ([128b2c3](https://github.com/betagouv/api-subventions-asso/commit/128b2c3bf81126ff24f1e78885a83dc41c1af50b))
+* **api:** [#3840](https://github.com/betagouv/api-subventions-asso/issues/3840) fix SubventionsDetailsHttp to SubventionDetailsHttp ([bcfdb52](https://github.com/betagouv/api-subventions-asso/commit/bcfdb5273161f8c1f768ca366021f97ac238d213))
+* **api:** [#3840](https://github.com/betagouv/api-subventions-asso/issues/3840) remove unused findByOsirisIds ([#3926](https://github.com/betagouv/api-subventions-asso/issues/3926)) ([27de248](https://github.com/betagouv/api-subventions-asso/commit/27de2484dc30e7cdaaf968784005f19a4b79a446))
+* **api:** [#3840](https://github.com/betagouv/api-subventions-asso/issues/3840) rename SubventionDetailsHttp to SubventionHttp ([#3926](https://github.com/betagouv/api-subventions-asso/issues/3926)) ([59aff9a](https://github.com/betagouv/api-subventions-asso/commit/59aff9aa1d4a05adc17140d270d55793cc8d2716))
+* **api:** [#3908](https://github.com/betagouv/api-subventions-asso/issues/3908) create provider and osiris detail dto ([#3909](https://github.com/betagouv/api-subventions-asso/issues/3909)) ([91fc7f3](https://github.com/betagouv/api-subventions-asso/commit/91fc7f32b54903472472582581697891cd0f14d9))
+* **api:** [#3911](https://github.com/betagouv/api-subventions-asso/issues/3911) deprecate provider value routes ([#3912](https://github.com/betagouv/api-subventions-asso/issues/3912)) ([6c8d86e](https://github.com/betagouv/api-subventions-asso/commit/6c8d86e7c7a4fa7eeaa45ff7a85aad5141f59079))
+* **front:** [#3840](https://github.com/betagouv/api-subventions-asso/issues/3840) remove old mock and replace route name /grants by /subvention ([a825a69](https://github.com/betagouv/api-subventions-asso/commit/a825a696d0aa2ac28d8297aec99a44931c59bbc0))
+* **front:** [#3841](https://github.com/betagouv/api-subventions-asso/issues/3841) display osiris actions in modal ([#3910](https://github.com/betagouv/api-subventions-asso/issues/3910)) ([16eded2](https://github.com/betagouv/api-subventions-asso/commit/16eded2265a14893bdc65af1394a1e2d1f43347b))
+* **tools:** [#3919](https://github.com/betagouv/api-subventions-asso/issues/3919) create script to remove empty files from osiris downloads ([#3920](https://github.com/betagouv/api-subventions-asso/issues/3920)) ([323c00b](https://github.com/betagouv/api-subventions-asso/commit/323c00beaef0ed0b6dd282c039fdad8686da0dd8))
+
+
+### Bug Fixes
+
+* **api,front:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) add .versionrc.json ([fbd75db](https://github.com/betagouv/api-subventions-asso/commit/fbd75db1e9e9c60f961b2a8fdb0b00890de31245))
+* **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) edit Procfile ([83a537a](https://github.com/betagouv/api-subventions-asso/commit/83a537ab87a70be3177f00eee0b3c97ed6658eb8))
+* **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) tmp disable osiris-request and osiris-action indexes ([6d8ebb7](https://github.com/betagouv/api-subventions-asso/commit/6d8ebb7b6ddf83fb31575873d82e9c832ce50f5d))
+* **api:** [#3822](https://github.com/betagouv/api-subventions-asso/issues/3822) do not send empty params to brevo transcation api ([#3951](https://github.com/betagouv/api-subventions-asso/issues/3951)) ([ef1d030](https://github.com/betagouv/api-subventions-asso/commit/ef1d0305b4ee95766ca307f3b3ba93b707c3f15d))
+* **api:** [#3904](https://github.com/betagouv/api-subventions-asso/issues/3904) tmp disable createIndexes of osiris actions ([397b03e](https://github.com/betagouv/api-subventions-asso/commit/397b03efdda8ba20439996b1c810e4bb89e85359))
+* **api:** [#3940](https://github.com/betagouv/api-subventions-asso/issues/3940) use api asso token in adapter ([#3941](https://github.com/betagouv/api-subventions-asso/issues/3941)) ([aee1b16](https://github.com/betagouv/api-subventions-asso/commit/aee1b16b10d56c7eec3ac9a39dacc8730c65efda))
+* **api:** tmp disable createIndexes of osiris requests ([d0ee453](https://github.com/betagouv/api-subventions-asso/commit/d0ee453105e5fbab283390b475099985d3261803))
+* **front:** [#3825](https://github.com/betagouv/api-subventions-asso/issues/3825) fix setTrackerUrl ([f1d7516](https://github.com/betagouv/api-subventions-asso/commit/f1d751608e7b8b532d1b2d30af107cb843c72057))
+* **front:** [#3825](https://github.com/betagouv/api-subventions-asso/issues/3825) fix setTrackerUrl ([#3936](https://github.com/betagouv/api-subventions-asso/issues/3936)) ([af8d3fe](https://github.com/betagouv/api-subventions-asso/commit/af8d3feb3b11a3499f386c1360c2ff0704d9fdc6))
+
 ## [0.84.7](https://github.com/betagouv/api-subventions-asso/compare/v0.84.6...v0.84.7) (2026-06-05)
 
 ### Bug Fixes
