@@ -1,0 +1,49 @@
+[
+  {
+    "demarcheId": 42,
+    "siret": "10000000000001",
+    "demande": {
+      "annotations": {
+        "Q2hhbXAtMjUzOTIyMA==": {
+          "value": "",
+          "label": "Montant de la subvention accordé"
+        }
+      },
+      "champs": {
+        "Q2hhbXAtMjUwNjg0MA==": {
+          "value": "5000",
+          "label": "... demander une subvention de"
+        },
+        "Q2hhbXAtMjM2MzQwMg==": {
+          "value": "Journée d'étude des conseillers VPAH à Vannes",
+          "label": "Intitulé du projet"
+        }
+      },
+      "dateDepot": "2012-12-12",
+      "dateDerniereModification": "2022-12-22",
+      "datePassageEnInstruction": "2018-12-18",
+      "dateTraitement": "2020-12-20",
+      "demandeur": {
+        "siret": "10000000000001"
+      },
+      "id": "some-long-id",
+      "demarche": {
+        "title": "Démarches fixture title"
+      },
+      "groupeInstructeur": {
+        "label": "Instructeur de fixture"
+      },
+      "motivation": null,
+      "state": "accepte",
+      "pdf": {
+        "url": "",
+        "filename": "",
+        "contentType": ""
+      }
+    },
+    "service": {
+      "nom": "Service de fixture",
+      "organisme": "Organisme du service de fixture"
+    }
+  }
+]

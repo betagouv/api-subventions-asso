@@ -13,7 +13,7 @@ export const SCHEMA: DemarchesSimplifieesSchema = {
     flatSchema: [
         {
             value: "Direction instructrice",
-            to: "service_instructeur",
+            to: "instructiveDepartmentName",
         },
         {
             from: "siret",
