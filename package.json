@@ -9,7 +9,7 @@
     "pnpm": "11.x",
     "node": "22.x"
   },
-  "packageManager": "pnpm@11.5.2+sha512.ccYx44IGbvwlYl1c8CkHXeB7YbN/bic1D72Esb2lhkyMGWetwoB3a0XDCnFcA1mjvgj+9C1bsJ4rmQKZeWkpFg==",
+  "packageManager": "pnpm@11.5.2",
   "scripts": {
     "prepare": "husky",
     "preinstall": "npx only-allow pnpm",
