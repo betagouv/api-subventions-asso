@@ -76,7 +76,7 @@ Montants des collectivités SCDL excluant les opérateurs
     }
   },
   {
-    $unset: "__association_match"
+    $project: { __association_match: 0 }
   },
   {
     $group: {
@@ -156,7 +156,7 @@ Une ligne par année et par opérateur
     }
   },
   {
-    $unset: "__association_match"
+    $project: { __association_match: 0 }
   },
   {
     $addFields: {
@@ -168,7 +168,7 @@ Une ligne par année et par opérateur
               case: {
                 $and: [
                   { $eq: ["$fournisseur", "osiris"] },
-                  { $regexMatch: { input: "$dispositif", regex: /^ANS/i } }
+                  { $eq: [{ $toUpper: { $substrCP: [{ $ifNull: ["$dispositif", ""] }, 0, 3] } }, "ANS"] }
                 ]
               },
               then: "ANS"
