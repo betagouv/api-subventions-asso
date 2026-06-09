@@ -44,11 +44,16 @@ export default class ChorusCli extends CliController {
             withoutEuropeanData: !withEuropeanData,
         });
 
-        const promises = [this.persistChorusEntities(national, logger)];
+        const [persistResult] = await Promise.all([
+            this.persistChorusEntities(national, logger),
+            withEuropeanData ? this.persistChorusFseEntities(european!) : Promise.resolve(),
+        ]);
 
-        if (withEuropeanData) promises.push(this.persistChorusFseEntities(european!));
-
-        await Promise.all(promises);
+        return {
+            parsedCount: national.length,
+            importedCount: persistResult.created,
+            errorCount: persistResult.rejected,
+        };
     }
 
     private async persistChorusEntities(entities: ChorusEntity[], logger) {
@@ -88,7 +93,7 @@ export default class ChorusCli extends CliController {
             encoding: "utf-8",
         });
 
-        return;
+        return finalResult;
     }
 
     private persistChorusFseEntities(entities: ChorusFseEntity[]) {

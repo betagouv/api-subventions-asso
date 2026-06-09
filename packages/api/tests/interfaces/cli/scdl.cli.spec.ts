@@ -167,6 +167,7 @@ describe("SCDL CLI", () => {
                         importedCount: 4,
                         errorCount: 1,
                         durationMs: expect.any(Number),
+                        fileCount: 1,
                     },
                 });
             });

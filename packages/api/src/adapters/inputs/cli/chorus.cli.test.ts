@@ -12,6 +12,8 @@ jest.mock("../../../shared/helpers/CliHelper");
 jest.mock("../../../modules/providers/chorus/chorus.service");
 const mockedService = jest.mocked(chorusService);
 jest.mock("../../../modules/payment-flat/payment-flat.chorus.service");
+jest.mock("../../../modules/notify/notify.service", () => ({ notify: jest.fn().mockResolvedValue(true) }));
+jest.mock("../../../modules/data-log/dataLog.service", () => ({ addFromFile: jest.fn().mockResolvedValue(undefined) }));
 
 describe("Chorus CLI", () => {
     const LOGGER = { push: jest.fn(), join: jest.fn() };
@@ -60,10 +62,13 @@ describe("Chorus CLI", () => {
     describe("_parse()", () => {
         let mockPersistChorusEntities: jest.SpyInstance;
         let mockPersistChorusFseEntities: jest.SpyInstance;
+        const PERSIST_RESULT = { created: 80, rejected: 20 };
 
         beforeEach(() => {
             // @ts-expect-error: mock private method
-            mockPersistChorusEntities = jest.spyOn(controller, "persistChorusEntities").mockResolvedValue();
+            mockPersistChorusEntities = jest
+                .spyOn(controller, "persistChorusEntities")
+                .mockResolvedValue(PERSIST_RESULT);
             // @ts-expect-error: mock private method
             mockPersistChorusFseEntities = jest.spyOn(controller, "persistChorusFseEntities").mockResolvedValue();
         });
@@ -105,6 +110,16 @@ describe("Chorus CLI", () => {
             // @ts-expect-error: test protected method
             await controller._parse(FILE_PATH, LOGGER, "--no-fse");
             expect(mockPersistChorusFseEntities).not.toHaveBeenCalled();
+        });
+
+        it("returns FileImportResult with counts from persistChorusEntities", async () => {
+            // @ts-expect-error: test protected method
+            const result = await controller._parse(FILE_PATH, LOGGER);
+            expect(result).toEqual({
+                parsedCount: NATIONAL_CHORUS_ENTITIES.length,
+                importedCount: PERSIST_RESULT.created,
+                errorCount: PERSIST_RESULT.rejected,
+            });
         });
     });
 

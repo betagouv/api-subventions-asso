@@ -5,6 +5,8 @@ jest.mock("csv-stringify/sync", () => ({
 }));
 jest.mock("fs");
 jest.mock("../../../modules/providers/subventia/subventia.service");
+jest.mock("../../../modules/notify/notify.service", () => ({ notify: jest.fn().mockResolvedValue(true) }));
+jest.mock("../../../modules/data-log/dataLog.service", () => ({ addFromFile: jest.fn().mockResolvedValue(undefined) }));
 import * as CliHelper from "../../../shared/helpers/CliHelper";
 import { SubventiaDbo } from "../../../modules/providers/subventia/@types/subventia.entity";
 import { ApplicationStatus } from "dto";
@@ -159,6 +161,16 @@ describe("SubventiaCli", () => {
             //@ts-expect-error: mock
             await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
             expect(mockExportErrors).toHaveBeenCalledWith([], mockFile);
+        });
+
+        it("returns FileImportResult with correct counts", async () => {
+            //@ts-expect-error: mock
+            const result = await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
+            expect(result).toEqual({
+                parsedCount: MOCK_ENTITIES.length,
+                importedCount: MOCK_ENTITIES.length,
+                errorCount: 0,
+            });
         });
     });
 

@@ -26,6 +26,8 @@ import scdlGrantService from "../../../modules/providers/scdl/scdl.grant.service
 import applicationFlatService from "../../../modules/application-flat/application-flat.service";
 import { ScdlParsedInfos } from "../../../modules/providers/scdl/@types/ScdlParsedInfos";
 import Siret from "../../../identifier-objects/Siret";
+import notifyService from "../../../modules/notify/notify.service";
+import { NotificationType } from "../../../modules/notify/@types/NotificationType";
 jest.mock("../../../modules/providers/scdl/scdl.grant.service");
 jest.mock("../../../modules/application-flat/application-flat.service");
 jest.mock("../../../modules/notify/notify.service", () => ({ notify: jest.fn() }));
@@ -149,13 +151,12 @@ describe("ScdlCli", () => {
                 errors: ERRORS,
                 producer: PRODUCER_ENTITY,
                 exportDate: EXPORT_DATE_STR,
-                details: {
-                    fileName: FILE_PATH,
+                importResult: {
                     parsedCount: STORABLE_DATA_ARRAY.length + ERRORS.length,
                     importedCount: STORABLE_DATA_ARRAY.length,
                     errorCount: ERRORS.length,
-                    durationMs: expect.any(Number),
                 },
+                durationMs: expect.any(Number),
             });
         });
 
@@ -173,6 +174,28 @@ describe("ScdlCli", () => {
             });
 
             await expect(test()).rejects.toThrow("mandatory header is missing");
+        });
+
+        it("notifies failure when an error is thrown", async () => {
+            jest.mocked(scdlService.persist).mockRejectedValueOnce(new Error("persist failed"));
+            await test().catch(() => undefined);
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.DATA_IMPORT_FAILURE, expect.anything());
+        });
+
+        it("does not notify success when an error is thrown", async () => {
+            jest.mocked(notifyService.notify).mockClear();
+            jest.mocked(scdlService.persist).mockRejectedValueOnce(new Error("persist failed"));
+            await test().catch(() => undefined);
+            expect(notifyService.notify).not.toHaveBeenCalledWith(
+                NotificationType.DATA_IMPORT_SUCCESS,
+                expect.anything(),
+            );
+        });
+
+        it("rethrows the error after failure notification", async () => {
+            const error = new Error("persist failed");
+            jest.mocked(scdlService.persist).mockRejectedValueOnce(error);
+            await expect(test()).rejects.toThrow(error);
         });
     });
 
@@ -213,6 +236,32 @@ describe("ScdlCli", () => {
                 fileName: FILE_PATH,
                 editionDate: new Date(EXPORT_DATE_STR),
             });
+        });
+
+        it("notifies when importResult is provided", async () => {
+            const importResult = { parsedCount: 10, importedCount: 9, errorCount: 1 };
+            // @ts-expect-error: test private method
+            await cli.end({
+                file: FILE_PATH,
+                errors: ERRORS,
+                producer: PRODUCER_ENTITY,
+                exportDate: EXPORT_DATE_STR,
+                importResult,
+                durationMs: 100,
+            });
+            expect(jest.mocked(notifyService.notify)).toHaveBeenCalled();
+        });
+
+        it("does not notify when importResult is not provided", async () => {
+            jest.mocked(notifyService.notify).mockClear();
+            // @ts-expect-error: test private method
+            await cli.end({
+                file: FILE_PATH,
+                errors: ERRORS,
+                producer: PRODUCER_ENTITY,
+                exportDate: EXPORT_DATE_STR,
+            });
+            expect(jest.mocked(notifyService.notify)).not.toHaveBeenCalled();
         });
     });
 

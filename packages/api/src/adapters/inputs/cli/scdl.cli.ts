@@ -14,9 +14,8 @@ import { detectAndEncode, validateDate } from "../../../shared/helpers/CliHelper
 import scdlGrantService from "../../../modules/providers/scdl/scdl.grant.service";
 import applicationFlatService from "../../../modules/application-flat/application-flat.service";
 import MiscScdlProducerEntity from "../../../modules/providers/scdl/entities/MiscScdlProducerEntity";
-import notifyService from "../../../modules/notify/notify.service";
-import { NotificationType } from "../../../modules/notify/@types/NotificationType";
-import { NotificationDataTypes } from "../../../modules/notify/@types/NotificationDataTypes";
+import { notifyImportFailure, notifyImportSuccess } from "../../../shared/helpers/ImportNotification.helper";
+import { FileImportResult } from "../../../@types/FileImportResult";
 
 export default class ScdlCli {
     static cmdName = "scdl";
@@ -39,35 +38,53 @@ export default class ScdlCli {
         processedExercices: string | undefined = undefined,
     ) {
         const startAt = Date.now();
-        const exercices = processedExercices ? (JSON.parse(processedExercices) as number[]) : undefined;
-        const siret = new Siret(allocatorSiret);
-        const producer = await scdlService.getProducer(siret);
-        await this.validateGenericInput(producer, exportDate);
-        const fileContent = detectAndEncode(filePath);
+        let producer: MiscScdlProducerEntity | null = null;
+        let importResult: FileImportResult | undefined;
 
-        const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
-        const { entities, errors, parsedInfos } = scdlService.parseXls(
-            fileContent,
-            pageName,
-            parsedRowOffset,
-            exercices,
-        );
+        try {
+            const exercices = processedExercices ? (JSON.parse(processedExercices) as number[]) : undefined;
+            const siret = new Siret(allocatorSiret);
 
-        scdlService.validateHeaders(parsedInfos, path.basename(filePath));
+            producer = await scdlService.getProducer(siret);
 
-        // persist data
-        await scdlService.persist(producer as MiscScdlProducerEntity, entities);
+            await this.validateGenericInput(producer, exportDate);
+            const fileContent = detectAndEncode(filePath);
+            const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
+            const { entities, errors, parsedInfos } = scdlService.parseXls(
+                fileContent,
+                pageName,
+                parsedRowOffset,
+                exercices,
+            );
 
-        const details: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]["details"] = {
-            fileName: path.basename(filePath),
-            parsedCount: entities.length + errors.length,
-            importedCount: entities.length,
-            errorCount: errors.length,
-            durationMs: Date.now() - startAt,
-        };
+            scdlService.validateHeaders(parsedInfos, path.basename(filePath));
 
-        // execute end of import methods
-        await this.end({ file: filePath, producer: producer as MiscScdlProducerEntity, exportDate, errors, details });
+            importResult = {
+                parsedCount: entities.length + errors.length,
+                importedCount: entities.length,
+                errorCount: errors.length,
+            };
+
+            // persist data
+            await scdlService.persist(producer as MiscScdlProducerEntity, entities);
+
+            // execute end of import methods
+            await this.end({
+                file: filePath,
+                producer: producer as MiscScdlProducerEntity,
+                exportDate,
+                errors,
+                importResult,
+                durationMs: Date.now() - startAt,
+            });
+        } catch (error) {
+            await notifyImportFailure(producer?.name ?? allocatorSiret, error as Error, {
+                durationMs: Date.now() - startAt,
+                fileName: path.basename(filePath),
+                result: importResult,
+            });
+            throw error;
+        }
     }
 
     /**
@@ -88,30 +105,51 @@ export default class ScdlCli {
         concernedExercices: string | undefined = undefined,
     ) {
         const startAt = Date.now();
-        const exercices = concernedExercices ? (JSON.parse(concernedExercices) as number[]) : undefined;
-        const siret = new Siret(allocatorSiret);
-        const producer = await scdlService.getProducer(siret);
-        await this.validateGenericInput(producer, exportDate);
-        const fileContent = detectAndEncode(filePath);
+        let producer: MiscScdlProducerEntity | null = null;
+        let importResult: FileImportResult | undefined;
+        try {
+            const exercices = concernedExercices ? (JSON.parse(concernedExercices) as number[]) : undefined;
+            const siret = new Siret(allocatorSiret);
+            producer = await scdlService.getProducer(siret);
+            await this.validateGenericInput(producer, exportDate);
+            const fileContent = detectAndEncode(filePath);
 
-        const parsedQuote = quote === "false" ? false : quote;
-        const { entities, errors, parsedInfos } = scdlService.parseCsv(fileContent, delimiter, parsedQuote, exercices);
+            const parsedQuote = quote === "false" ? false : quote;
+            const { entities, errors, parsedInfos } = scdlService.parseCsv(
+                fileContent,
+                delimiter,
+                parsedQuote,
+                exercices,
+            );
 
-        scdlService.validateHeaders(parsedInfos, path.basename(filePath));
+            scdlService.validateHeaders(parsedInfos, path.basename(filePath));
 
-        // persist data
-        await scdlService.persist(producer as MiscScdlProducerEntity, entities);
+            importResult = {
+                parsedCount: entities.length + errors.length,
+                importedCount: entities.length,
+                errorCount: errors.length,
+            };
 
-        const details: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]["details"] = {
-            fileName: path.basename(filePath),
-            parsedCount: entities.length + errors.length,
-            importedCount: entities.length,
-            errorCount: errors.length,
-            durationMs: Date.now() - startAt,
-        };
+            // persist data
+            await scdlService.persist(producer as MiscScdlProducerEntity, entities);
 
-        // execute end of import methods
-        await this.end({ file: filePath, producer: producer as MiscScdlProducerEntity, exportDate, errors, details });
+            // execute end of import methods
+            await this.end({
+                file: filePath,
+                producer: producer as MiscScdlProducerEntity,
+                exportDate,
+                errors,
+                importResult,
+                durationMs: Date.now() - startAt,
+            });
+        } catch (error) {
+            await notifyImportFailure(producer?.name ?? allocatorSiret, error as Error, {
+                durationMs: Date.now() - startAt,
+                fileName: path.basename(filePath),
+                result: importResult,
+            });
+            throw error;
+        }
     }
 
     /**
@@ -124,17 +162,11 @@ export default class ScdlCli {
         errors: MixedParsedError[];
         producer: MiscScdlProducerEntity;
         exportDate: string | undefined;
-        details: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]["details"];
+        importResult?: FileImportResult;
+        durationMs?: number;
     }) {
-        const { file, errors, producer, exportDate: dateStr, details } = params;
+        const { file, errors, producer, exportDate: dateStr, importResult, durationMs } = params;
         const exportDate = dateStr ? new Date(dateStr) : undefined;
-
-        await notifyService.notify(NotificationType.DATA_IMPORT_SUCCESS, {
-            providerName: producer.name,
-            providerSiret: producer.siret,
-            exportDate,
-            details,
-        });
 
         await Promise.all([
             this.exportErrors(errors, file),
@@ -145,6 +177,14 @@ export default class ScdlCli {
                 editionDate: exportDate,
             }),
         ]);
+
+        if (importResult) {
+            await notifyImportSuccess(producer.name, file, importResult, durationMs ?? 0, {
+                providerSiret: producer.siret,
+                exportDate,
+                fileCount: 1,
+            });
+        }
     }
 
     private async validateGenericInput(producer: MiscScdlProducerEntity | null, exportDateStr?: string) {

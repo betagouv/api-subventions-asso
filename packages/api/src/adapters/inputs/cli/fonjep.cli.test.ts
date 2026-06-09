@@ -75,5 +75,21 @@ describe("FonjepCli", () => {
             await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
             expect(fonjepService.applyTemporyCollection).toHaveBeenCalled();
         });
+
+        it("returns FileImportResult with total entity counts", async () => {
+            const expectedTotal =
+                ENTITIES.tierEntities.length +
+                ENTITIES.posteEntities.length +
+                ENTITIES.versementEntities.length +
+                ENTITIES.typePosteEntities.length +
+                ENTITIES.dispositifEntities.length;
+            // @ts-expect-error: test private method
+            const result = await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
+            expect(result).toEqual({
+                parsedCount: expectedTotal,
+                importedCount: expectedTotal,
+                errorCount: 0,
+            });
+        });
     });
 });

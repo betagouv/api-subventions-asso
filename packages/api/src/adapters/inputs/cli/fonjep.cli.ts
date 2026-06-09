@@ -27,6 +27,13 @@ export default class FonjepCli extends CliController {
         const { tierEntities, posteEntities, versementEntities, typePosteEntities, dispositifEntities } =
             fonjepService.fromFileToEntities(file, exportDate);
 
+        const totalEntities =
+            tierEntities.length +
+            posteEntities.length +
+            versementEntities.length +
+            typePosteEntities.length +
+            dispositifEntities.length;
+
         fonjepService.useTemporyCollection(true);
 
         this.logger.logIC("Start register in database ...");
@@ -57,6 +64,12 @@ export default class FonjepCli extends CliController {
         await fonjepService.applyTemporyCollection();
 
         this.logger.logIC("Fonjep collections created or updated");
+
+        return {
+            parsedCount: totalEntities,
+            importedCount: totalEntities,
+            errorCount: 0,
+        };
     }
 
     // ONLY USED FOR TEST / CLEAN PURPOSE AFTER BUG DETECTION TO AVOID REIMPORTING FONJEP DATA

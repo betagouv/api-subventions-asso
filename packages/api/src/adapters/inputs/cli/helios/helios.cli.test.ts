@@ -4,9 +4,13 @@ import { HELIOS_DTO } from "../../../outputs/db/providers/helios/__fixtures__/he
 import HeliosCli from "./helios.cli";
 import HeliosMapper from "./helios.mapper";
 import HeliosParser from "./helios.parser";
+import notifyService from "../../../../modules/notify/notify.service";
+import { NotificationType } from "../../../../modules/notify/@types/NotificationType";
 
 jest.mock("./helios.parser");
 jest.mock("./helios.mapper");
+jest.mock("../../../../modules/notify/notify.service", () => ({ notify: jest.fn().mockResolvedValue(true) }));
+jest.mock("../../../../modules/data-log/dataLog.service", () => ({ addFromFile: jest.fn() }));
 
 describe("Helios CLI", () => {
     let cli: HeliosCli;
@@ -35,6 +39,21 @@ describe("Helios CLI", () => {
         it("persists data", async () => {
             await cli.parse(FILE_PATH);
             expect(mockSaveData.execute).toHaveBeenCalledWith([HELIOS_ENTITY]);
+        });
+
+        it("notifies Mattermost after import", async () => {
+            await cli.parse(FILE_PATH);
+            expect(notifyService.notify).toHaveBeenCalledWith(
+                NotificationType.DATA_IMPORT_SUCCESS,
+                expect.objectContaining({
+                    providerName: "Helios",
+                    details: expect.objectContaining({
+                        fileName: "file",
+                        parsedCount: 1,
+                        importedCount: 1,
+                    }),
+                }),
+            );
         });
     });
 });
