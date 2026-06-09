@@ -3,6 +3,10 @@ shamefullyHoist: true
 # Allow exotic dependencies (file:) in subdependencies for xlsx vendor
 blockExoticSubdeps: false
 
+# Force node-xlsx to use local xlsx instead of CDN version
+overrides:
+  'node-xlsx>xlsx': 'file:./vendor/xlsx-0.20.3.tgz'
+
 packages:
   - "packages/*"
 
