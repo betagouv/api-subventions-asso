@@ -42,6 +42,7 @@ export class ChorusImport {
             })
             ?.map(dto => ChorusMapper.toEntity(dto));
         if (entities) {
+            console.log(entities);
             const assoEntities = await this.filterAsso.execute(entities);
             await this.saveEntities.execute(assoEntities);
             const exercicesSet = assoEntities.reduce((set, entity) => set.add(entity.exercice), new Set<number>());
@@ -73,7 +74,7 @@ export class ChorusImport {
 
     async run(buffer: Buffer) {
         const { national: nationalDtos, european: europeanDtos } = ChorusParser.fromBuffer(buffer);
-        await Promise.all([this.save(nationalDtos ?? []), this.saveFse(europeanDtos ?? [])]);
+        return Promise.all([this.save(nationalDtos ?? []), this.saveFse(europeanDtos ?? [])]);
     }
 }
 

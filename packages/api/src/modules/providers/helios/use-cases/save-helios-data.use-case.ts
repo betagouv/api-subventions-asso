@@ -2,7 +2,7 @@ import HeliosPort from "../../../../adapters/outputs/db/providers/helios/helios.
 import { asyncFilter } from "../../../../shared/helpers/ArrayHelper";
 import { CheckIdentifierIsFromAssoUseCase } from "../../../associations/use-cases/check-identifier-is-from-asso.use-case";
 import { GetIdentifierFromStringUseCase } from "../../../associations/use-cases/get-identifier-from-string.use-case";
-import SaveHeliosEntitiesToFlatUseCase from "./save-helios-entities-to-flat.use-case";
+import { SaveHeliosEntitiesToFlatUseCase } from "./save-helios-entities-to-flat.use-case";
 import HeliosEntity from "../domain/helios.entity";
 
 export default class SaveHeliosDataUseCase {
@@ -24,10 +24,6 @@ export default class SaveHeliosDataUseCase {
             if (isFromAsso) return true;
             else return false;
         });
-
-        console.warn(
-            `${entities.length - acceptedEntities.length} entities over ${entities.length} where filtered out as belonging to companies`,
-        );
 
         // process in order to avoid populate flats if raw persistence fails
         console.info("persist data in collection...");

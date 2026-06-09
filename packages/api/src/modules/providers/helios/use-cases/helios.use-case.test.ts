@@ -3,12 +3,12 @@ import ExtractHeliosApplicationFlatSpecificFields from "./extract-helios-applica
 import ExtractHeliosBeneficaryInfosUseCase from "./extract-helios-beneficary-info.use-case";
 import ExtractHeliosPaymentFlatSpecificFieldsUseCase from "./extract-helios-payment-flat-specific-fields.use-case";
 import { HELIOS_ENTITY } from "../__fixtures__/helios.fixture";
-import TransformHeliosEntitiesToFlat from "./transform-helios-entities-to-flat.use-case";
+import { TransformHeliosEntitiesToFlat } from "./transform-helios-entities-to-flat.use-case";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 import Siret from "../../../../identifier-objects/Siret";
 import Siren from "../../../../identifier-objects/Siren";
 import { ApplicationStatus } from "dto";
-import SaveHeliosEntitiesToFlatUseCase from "./save-helios-entities-to-flat.use-case";
+import { SaveHeliosEntitiesToFlatUseCase } from "./save-helios-entities-to-flat.use-case";
 import { ApplicationFlatService } from "../../../application-flat/application-flat.service";
 import { PaymentFlatService } from "../../../payment-flat/payment-flat.service";
 import SaveHeliosDataUseCase from "./save-helios-data.use-case";

@@ -1,5 +1,6 @@
 import { GetFileData } from "../../../modules/s3-file/use-cases/get-file-data";
 import { GetNewS3File } from "../../../modules/s3-file/use-cases/get-new-s3-file";
+import { ChorusImport } from "../pipeline/import/chorus/chorus.import";
 import { ChorusCron } from "./chorus.cron";
 
 describe("Chorus CRON", () => {
@@ -11,8 +12,10 @@ describe("Chorus CRON", () => {
                 { path: FILES_PATH[1], importDate: new Date("2026-04-20") },
             ]),
         } as unknown as GetNewS3File;
-        const mockGetFileData = { execute: jest.fn() } as unknown as GetFileData;
-        const cron = new ChorusCron(mockGetFiles, mockGetFileData);
+        const mockGetFileData = { execute: jest.fn().mockResolvedValue(Buffer.from([])) } as unknown as GetFileData;
+        const mockChorusImport = { run: jest.fn() } as unknown as ChorusImport;
+
+        const cron = new ChorusCron(mockGetFiles, mockGetFileData, mockChorusImport);
 
         beforeAll(() => {
             jest.useFakeTimers().setSystemTime(new Date("2026-05-20"));

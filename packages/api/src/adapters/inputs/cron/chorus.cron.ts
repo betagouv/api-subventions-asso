@@ -2,7 +2,9 @@ import { CronController } from "../../../@types/CronController";
 import { AsyncCron } from "../../../decorators/cron.decorator";
 import { GetFileData } from "../../../modules/s3-file/use-cases/get-file-data";
 import { GetNewS3File } from "../../../modules/s3-file/use-cases/get-new-s3-file";
+import { S3Error } from "../../outputs/s3/@errors/S3Error";
 import { providersS3Adapter } from "../../outputs/s3/s3.adapter";
+import chorusImport, { ChorusImport } from "../pipeline/import/chorus/chorus.import";
 
 export class ChorusCron implements CronController {
     name = "ChorusCron";
@@ -10,6 +12,7 @@ export class ChorusCron implements CronController {
     constructor(
         private getFiles: GetNewS3File,
         private getFileData: GetFileData,
+        private chorusImport: ChorusImport,
     ) {}
 
     // every sunday at 2 PM
@@ -25,13 +28,19 @@ export class ChorusCron implements CronController {
                 file.importDate > latest.importDate ? file : latest,
             );
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const fileData = await this.getFileData.execute(mostRecentFile.path);
-
-            // @TODO: create and call ImportChorusFile Use Case
+            if (fileData?.buffer) {
+                return this.chorusImport.run(fileData?.buffer);
+            } else {
+                throw new S3Error("Undefined Buffer");
+            }
         }
     }
 }
 
-const chorusCron = new ChorusCron(new GetNewS3File(providersS3Adapter), new GetFileData(providersS3Adapter));
+const chorusCron = new ChorusCron(
+    new GetNewS3File(providersS3Adapter),
+    new GetFileData(providersS3Adapter),
+    chorusImport,
+);
 export default chorusCron;

@@ -3,7 +3,7 @@ import path from "path";
 import chorusAdapter from "../../../src/adapters/outputs/db/providers/chorus/chorus.adapter";
 import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
 import uniteLegalEntrepriseAdapter from "../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
-import sireneUniteLegaleDbAdapter from "../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
+import sireneUniteLegaleAdapter from "../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import apiAssoService from "../../../src/modules/providers/api-asso/api-asso.service";
 import { AssociationWithProviderValues } from "dto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../src/shared/LegalCategoriesAccepted";
@@ -38,7 +38,7 @@ describe("ChorusCli", () => {
         await Promise.all([
             stateBudgetProgramAdapter.replace(PROGRAMS),
             // make siren 100000000 belong to asso
-            sireneUniteLegaleDbAdapter.insertOne({ siren: new Siren("100000000") } as SireneUniteLegaleEntity),
+            sireneUniteLegaleAdapter.insertOne({ siren: new Siren("100000000") } as SireneUniteLegaleEntity),
             // make siren 30000000 belong to an entreprise
             uniteLegalEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
         ]);

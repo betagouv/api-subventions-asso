@@ -14,11 +14,13 @@ export class FilterChorusEntities {
             if (!BRANCHE_ACCEPTED[entity.codeBranche]) return false;
             try {
                 if (entity.siret === "#" && entity.ridetOrTahitiet === "#") return false;
-                if (entity.siret === "#")
+                if (entity.siret === "#") {
                     return this.checkIsAsso.execute(
                         EstablishmentIdentifier.buildIdentifierFromString(entity.ridetOrTahitiet)!,
                     );
-                else return this.checkIsAsso.execute(new Siret(entity.siret));
+                } else {
+                    return this.checkIsAsso.execute(new Siret(entity.siret));
+                }
             } catch (e) {
                 // filter entities with wrong identifiers format
                 // @TODO: make entity validates identifiers
