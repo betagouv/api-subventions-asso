@@ -1,15 +1,24 @@
-shamefully-hoist: true
+shamefullyHoist: true
+
+# Allow exotic dependencies (file:) in subdependencies for xlsx vendor
+blockExoticSubdeps: false
 
 packages:
-    - "packages/*"
+  - "packages/*"
 
 # Security window: block packages < 7 days old
-minimumReleaseAge: 10080  # 7 days in minutes (7 * 24 * 60)
+minimumReleaseAge: 10080 # 7 days in minutes (7 * 24 * 60)
 
 # only accept versions within minor semver range
-savePrefix: '~' 
-
-onlyBuiltDependencies:
-  - bcrypt
-  - tsc  
-        
+savePrefix: '~'
+packageConfigs: {}
+allowBuilds:
+  '@scarf/scarf': false # Analytics, not required
+  '@sentry/cli': true # Required for Sentry error tracking
+  bcrypt: true
+  es5-ext: false # Polyfill, not critical
+  esbuild: true # Required for build
+  mongodb-memory-server: true # Required for tests
+  puppeteer: true # Required for scraping in tools
+  tsc: true
+  unrs-resolver: false # Not critical
