@@ -1,21 +1,18 @@
 shamefullyHoist: true
 
-# Allow exotic dependencies (file:) in subdependencies for xlsx vendor
-blockExoticSubdeps: false
-
-# Force node-xlsx to use local xlsx instead of CDN version
+# Force node-xlsx to use the same vendored xlsx tarball as workspace packages
 overrides:
   'node-xlsx>xlsx': 'file:./vendor/xlsx-0.20.3.tgz'
 
 packages:
   - "packages/*"
 
-# Security window: block packages < 7 days old
-minimumReleaseAge: 10080 # 7 days in minutes (7 * 24 * 60)
+# Security window: block packages < 30 days old
+minimumReleaseAge: 43200 # 30 days in minutes (30 * 24 * 60)
 
 # only accept versions within minor semver range
 savePrefix: '~'
-packageConfigs: {}
+
 allowBuilds:
   '@scarf/scarf': false # Analytics, not required
   '@sentry/cli': true # Required for Sentry error tracking
@@ -26,3 +23,7 @@ allowBuilds:
   puppeteer: true # Required for scraping in tools
   tsc: true
   unrs-resolver: false # Not critical
+
+# Exclude packages from the security window (updated on pnpm install)
+minimumReleaseAgeExclude:
+  - prettier-plugin-svelte@3.5.2
