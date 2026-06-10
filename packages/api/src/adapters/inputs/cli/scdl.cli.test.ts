@@ -151,7 +151,7 @@ describe("ScdlCli", () => {
                 errors: ERRORS,
                 producer: PRODUCER_ENTITY,
                 exportDate: EXPORT_DATE_STR,
-                importResult: {
+                importReport: {
                     parsedCount: STORABLE_DATA_ARRAY.length + ERRORS.length,
                     importedCount: STORABLE_DATA_ARRAY.length,
                     errorCount: ERRORS.length,
@@ -238,21 +238,21 @@ describe("ScdlCli", () => {
             });
         });
 
-        it("notifies when importResult is provided", async () => {
-            const importResult = { parsedCount: 10, importedCount: 9, errorCount: 1 };
+        it("notifies when importReport is provided", async () => {
+            const importReport = { parsedCount: 10, importedCount: 9, errorCount: 1 };
             // @ts-expect-error: test private method
             await cli.end({
                 file: FILE_PATH,
                 errors: ERRORS,
                 producer: PRODUCER_ENTITY,
                 exportDate: EXPORT_DATE_STR,
-                importResult,
+                importReport,
                 durationMs: 100,
             });
             expect(jest.mocked(notifyService.notify)).toHaveBeenCalled();
         });
 
-        it("does not notify when importResult is not provided", async () => {
+        it("does not notify when importReport is not provided", async () => {
             jest.mocked(notifyService.notify).mockClear();
             // @ts-expect-error: test private method
             await cli.end({

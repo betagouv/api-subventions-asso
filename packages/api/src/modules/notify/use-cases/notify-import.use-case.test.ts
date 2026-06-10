@@ -1,26 +1,27 @@
-import { notifyImportFailure, notifyImportSuccess } from "./ImportNotification.helper";
-import notifyService from "../../modules/notify/notify.service";
-import { NotificationType } from "../../modules/notify/@types/NotificationType";
-import { FileImportResult } from "../../@types/FileImportResult";
+import { ImportReport } from "../../../@types/ImportReport";
+import { NotificationType } from "../@types/NotificationType";
+import notifyService from "../notify.service";
+import { notifyImportFailureUseCase } from "./notify-import-failure.use-case";
+import { notifyImportSuccessUseCase } from "./notify-import-success.use-case";
 
-jest.mock("../../modules/notify/notify.service", () => ({ notify: jest.fn().mockResolvedValue(true) }));
+jest.mock("../notify.service", () => ({ notify: jest.fn().mockResolvedValue(true) }));
 
 const PROVIDER_NAME = "TestProvider";
 const FILE_PATH = "some/path/data.csv";
-const RESULT: FileImportResult = { parsedCount: 100, importedCount: 90, errorCount: 10 };
+const RESULT: ImportReport = { parsedCount: 100, importedCount: 90, errorCount: 10 };
 const DURATION_MS = 1500;
 const BASE_OPTIONS = { fileCount: 1 };
 
-describe("notifyImportSuccess", () => {
+describe("NotifyImportSuccessUseCase", () => {
     beforeEach(() => jest.clearAllMocks());
 
     it("calls notifyService.notify with DATA_IMPORT_SUCCESS type", async () => {
-        await notifyImportSuccess(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, BASE_OPTIONS);
+        await notifyImportSuccessUseCase.execute(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, BASE_OPTIONS);
         expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.DATA_IMPORT_SUCCESS, expect.anything());
     });
 
     it("passes providerName from argument", async () => {
-        await notifyImportSuccess(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, BASE_OPTIONS);
+        await notifyImportSuccessUseCase.execute(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, BASE_OPTIONS);
         expect(notifyService.notify).toHaveBeenCalledWith(
             NotificationType.DATA_IMPORT_SUCCESS,
             expect.objectContaining({ providerName: PROVIDER_NAME }),
@@ -28,14 +29,14 @@ describe("notifyImportSuccess", () => {
     });
 
     it("uses basename of file path for details.fileName", async () => {
-        await notifyImportSuccess(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, BASE_OPTIONS);
+        await notifyImportSuccessUseCase.execute(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, BASE_OPTIONS);
         const callArgs = jest.mocked(notifyService.notify).mock.calls[0];
         // @ts-expect-error -- details not on all union members
         expect(callArgs[1].details.fileName).toBe("data.csv");
     });
 
     it("sets all counts and durationMs in details", async () => {
-        await notifyImportSuccess(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, BASE_OPTIONS);
+        await notifyImportSuccessUseCase.execute(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, BASE_OPTIONS);
         const callArgs = jest.mocked(notifyService.notify).mock.calls[0];
         // @ts-expect-error -- details not on all union members
         expect(callArgs[1].details).toMatchObject({
@@ -48,7 +49,7 @@ describe("notifyImportSuccess", () => {
 
     it("passes optional providerSiret and exportDate from options", async () => {
         const exportDate = new Date("2025-01-01");
-        await notifyImportSuccess(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, {
+        await notifyImportSuccessUseCase.execute(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, {
             fileCount: 1,
             providerSiret: "12345678900001",
             exportDate,
@@ -60,33 +61,33 @@ describe("notifyImportSuccess", () => {
     });
 
     it("passes fileCount into details", async () => {
-        await notifyImportSuccess(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, { fileCount: 7 });
+        await notifyImportSuccessUseCase.execute(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, { fileCount: 7 });
         const callArgs = jest.mocked(notifyService.notify).mock.calls[0];
         // @ts-expect-error -- details not on all union members
         expect(callArgs[1].details.fileCount).toBe(7);
     });
 
     it("sets fileCount to 1 for single-file imports", async () => {
-        await notifyImportSuccess(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, { fileCount: 1 });
+        await notifyImportSuccessUseCase.execute(PROVIDER_NAME, FILE_PATH, RESULT, DURATION_MS, { fileCount: 1 });
         const callArgs = jest.mocked(notifyService.notify).mock.calls[0];
         // @ts-expect-error -- details not on all union members
         expect(callArgs[1].details.fileCount).toBe(1);
     });
 });
 
-describe("notifyImportFailure", () => {
+describe("NotifyImportFailureUseCase", () => {
     const ERROR = new Error("Something went wrong");
     const FILE_NAME = "data.csv";
 
     beforeEach(() => jest.clearAllMocks());
 
     it("calls notifyService.notify with DATA_IMPORT_FAILURE type", async () => {
-        await notifyImportFailure(PROVIDER_NAME, ERROR, { fileName: FILE_NAME });
+        await notifyImportFailureUseCase.execute(PROVIDER_NAME, ERROR, { fileName: FILE_NAME });
         expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.DATA_IMPORT_FAILURE, expect.anything());
     });
 
     it("passes providerName from argument", async () => {
-        await notifyImportFailure(PROVIDER_NAME, ERROR, { fileName: FILE_NAME });
+        await notifyImportFailureUseCase.execute(PROVIDER_NAME, ERROR, { fileName: FILE_NAME });
         expect(notifyService.notify).toHaveBeenCalledWith(
             NotificationType.DATA_IMPORT_FAILURE,
             expect.objectContaining({ providerName: PROVIDER_NAME }),
@@ -94,35 +95,38 @@ describe("notifyImportFailure", () => {
     });
 
     it("passes error.message when given an Error instance", async () => {
-        await notifyImportFailure(PROVIDER_NAME, ERROR, { fileName: FILE_NAME });
+        await notifyImportFailureUseCase.execute(PROVIDER_NAME, ERROR, { fileName: FILE_NAME });
         const callArgs = jest.mocked(notifyService.notify).mock.calls[0];
         // @ts-expect-error -- error not on all union members
         expect(callArgs[1].error).toBe(ERROR.message);
     });
 
     it("passes the string directly when given a string error", async () => {
-        await notifyImportFailure(PROVIDER_NAME, "raw error string", { fileName: FILE_NAME });
+        await notifyImportFailureUseCase.execute(PROVIDER_NAME, "raw error string", { fileName: FILE_NAME });
         const callArgs = jest.mocked(notifyService.notify).mock.calls[0];
         // @ts-expect-error -- error not on all union members
         expect(callArgs[1].error).toBe("raw error string");
     });
 
     it("passes fileName into details", async () => {
-        await notifyImportFailure(PROVIDER_NAME, ERROR, { fileName: FILE_NAME });
+        await notifyImportFailureUseCase.execute(PROVIDER_NAME, ERROR, { fileName: FILE_NAME });
         const callArgs = jest.mocked(notifyService.notify).mock.calls[0];
         // @ts-expect-error -- details not on all union members
         expect(callArgs[1].details.fileName).toBe(FILE_NAME);
     });
 
     it("passes durationMs into details when provided in options", async () => {
-        await notifyImportFailure(PROVIDER_NAME, ERROR, { fileName: FILE_NAME, durationMs: 1234 });
+        await notifyImportFailureUseCase.execute(PROVIDER_NAME, ERROR, { fileName: FILE_NAME, durationMs: 1234 });
         const callArgs = jest.mocked(notifyService.notify).mock.calls[0];
         // @ts-expect-error -- details not on all union members
         expect(callArgs[1].details.durationMs).toBe(1234);
     });
 
     it("passes optional providerSiret when provided", async () => {
-        await notifyImportFailure(PROVIDER_NAME, ERROR, { fileName: FILE_NAME, providerSiret: "12345678900001" });
+        await notifyImportFailureUseCase.execute(PROVIDER_NAME, ERROR, {
+            fileName: FILE_NAME,
+            providerSiret: "12345678900001",
+        });
         expect(notifyService.notify).toHaveBeenCalledWith(
             NotificationType.DATA_IMPORT_FAILURE,
             expect.objectContaining({ providerSiret: "12345678900001" }),
@@ -131,16 +135,16 @@ describe("notifyImportFailure", () => {
 
     it("passes optional exportDate when provided", async () => {
         const exportDate = new Date("2025-01-01");
-        await notifyImportFailure(PROVIDER_NAME, ERROR, { fileName: FILE_NAME, exportDate });
+        await notifyImportFailureUseCase.execute(PROVIDER_NAME, ERROR, { fileName: FILE_NAME, exportDate });
         expect(notifyService.notify).toHaveBeenCalledWith(
             NotificationType.DATA_IMPORT_FAILURE,
             expect.objectContaining({ exportDate }),
         );
     });
 
-    it("passes result counts into details when result is provided", async () => {
-        const result = { parsedCount: 5, importedCount: 3, errorCount: 2 };
-        await notifyImportFailure(PROVIDER_NAME, ERROR, { fileName: FILE_NAME, result });
+    it("passes report counts into details when report is provided", async () => {
+        const report = { parsedCount: 5, importedCount: 3, errorCount: 2 };
+        await notifyImportFailureUseCase.execute(PROVIDER_NAME, ERROR, { fileName: FILE_NAME, report });
         const callArgs = jest.mocked(notifyService.notify).mock.calls[0];
         // @ts-expect-error -- details not on all union members
         expect(callArgs[1].details).toMatchObject({
@@ -150,15 +154,15 @@ describe("notifyImportFailure", () => {
         });
     });
 
-    it("omits count fields from details when result is not provided", async () => {
-        await notifyImportFailure(PROVIDER_NAME, ERROR, { fileName: FILE_NAME });
+    it("omits count fields from details when report is not provided", async () => {
+        await notifyImportFailureUseCase.execute(PROVIDER_NAME, ERROR, { fileName: FILE_NAME });
         const callArgs = jest.mocked(notifyService.notify).mock.calls[0];
         // @ts-expect-error -- details not on all union members
         expect(callArgs[1].details).toEqual({ fileName: FILE_NAME });
     });
 
     it("sets details to undefined when no options fields are provided", async () => {
-        await notifyImportFailure(PROVIDER_NAME, ERROR, {});
+        await notifyImportFailureUseCase.execute(PROVIDER_NAME, ERROR, {});
         const callArgs = jest.mocked(notifyService.notify).mock.calls[0];
         // @ts-expect-error -- details not on all union members
         expect(callArgs[1].details).toBeUndefined();

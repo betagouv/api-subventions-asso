@@ -304,13 +304,13 @@ describe("CliController", () => {
             expect(callArgs[1].details.fileName).toBe("data.csv");
         });
 
-        it("forwards partial counts into details when partialResult is provided", async () => {
+        it("forwards partial counts into details when partialReport is provided", async () => {
             const ctrl = new CliController();
             // @ts-expect-error -- test protected value
             ctrl._serviceMeta = SERVICE_META;
-            const partialResult = { parsedCount: 3, importedCount: 2, errorCount: 1 };
+            const partialReport = { parsedCount: 3, importedCount: 2, errorCount: 1 };
             // @ts-expect-error -- test protected method
-            await ctrl._notifyImportFailure(FILENAME, ERROR, EXPORT_DATE_OBJ, 1234, partialResult);
+            await ctrl._notifyImportFailure(FILENAME, ERROR, EXPORT_DATE_OBJ, 1234, partialReport);
             const callArgs = jest.mocked(notifyService.notify).mock.calls.at(-1)!;
             // @ts-expect-error -- details not on all union members
             expect(callArgs[1].details).toMatchObject({
@@ -320,7 +320,7 @@ describe("CliController", () => {
             });
         });
 
-        it("omits count fields from details when partialResult is not provided", async () => {
+        it("omits count fields from details when partialReport is not provided", async () => {
             const ctrl = new CliController();
             // @ts-expect-error -- test protected value
             ctrl._serviceMeta = SERVICE_META;

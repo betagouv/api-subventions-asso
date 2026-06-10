@@ -4,8 +4,9 @@ import dataLogService from "../modules/data-log/dataLog.service";
 import CliLogger from "./CliLogger";
 import { GenericParser } from "./GenericParser";
 import { validateDate } from "./helpers/CliHelper";
-import { FileImportResult } from "../@types/FileImportResult";
-import { notifyImportFailure, notifyImportSuccess } from "./helpers/ImportNotification.helper";
+import { ImportReport } from "../@types/ImportReport";
+import { notifyImportFailureUseCase } from "../modules/notify/use-cases/notify-import-failure.use-case";
+import { notifyImportSuccessUseCase } from "../modules/notify/use-cases/notify-import-success.use-case";
 
 export default class CliController {
     protected logFileParsePath = "";
@@ -43,16 +44,16 @@ export default class CliController {
         this.logger.logIC(`${files.length} files in the parse queue`);
         this.logger.logIC(`You can read log in ${this.logFileParsePath}`);
 
-        const fileResults: { result: FileImportResult | void; duration: number }[] = [];
+        const fileReports: { report: ImportReport | void; duration: number }[] = [];
         const startAt = Date.now();
 
         try {
             await files.reduce((acc, filePath) => {
                 return acc.then(async () => {
                     const fileStartAt = Date.now();
-                    const result = await this._parse(filePath, logs, exportDate, ...args);
+                    const report = await this._parse(filePath, logs, exportDate, ...args);
                     const duration = Date.now() - fileStartAt;
-                    fileResults.push({ result, duration });
+                    fileReports.push({ report, duration });
                 });
             }, Promise.resolve());
 
@@ -63,37 +64,32 @@ export default class CliController {
             });
             await this._logImportSuccess(exportDate, file);
 
-            const resultsWithCounts = fileResults
-                .map(({ result }) => result)
-                .filter((result): result is FileImportResult => !!result);
+            const reportsWithCounts = fileReports
+                .map(({ report }) => report)
+                .filter((report): report is ImportReport => !!report);
 
-            if (resultsWithCounts.length > 0) {
-                const aggregated: FileImportResult = {
-                    parsedCount: resultsWithCounts.reduce((sum, r) => sum + r.parsedCount, 0),
-                    importedCount: resultsWithCounts.reduce((sum, r) => sum + r.importedCount, 0),
-                    errorCount: resultsWithCounts.reduce((sum, r) => sum + r.errorCount, 0),
+            if (reportsWithCounts.length > 0) {
+                const aggregated: ImportReport = {
+                    parsedCount: reportsWithCounts.reduce((sum, r) => sum + r.parsedCount, 0),
+                    importedCount: reportsWithCounts.reduce((sum, r) => sum + r.importedCount, 0),
+                    errorCount: reportsWithCounts.reduce((sum, r) => sum + r.errorCount, 0),
                 };
-                const totalDuration = fileResults.reduce((sum, { duration }) => sum + duration, 0);
+                const totalDuration = fileReports.reduce((sum, { duration }) => sum + duration, 0);
                 await this._notifyImportSuccess(file, exportDate, aggregated, totalDuration, files.length);
             }
         } catch (error) {
-            const partialResult: FileImportResult = {
-                parsedCount: fileResults.reduce((sum, { result }) => sum + (result?.parsedCount ?? 0), 0),
-                importedCount: fileResults.reduce((sum, { result }) => sum + (result?.importedCount ?? 0), 0),
-                errorCount: fileResults.reduce((sum, { result }) => sum + (result?.errorCount ?? 0), 0),
+            const partialReport: ImportReport = {
+                parsedCount: fileReports.reduce((sum, { report }) => sum + (report?.parsedCount ?? 0), 0),
+                importedCount: fileReports.reduce((sum, { report }) => sum + (report?.importedCount ?? 0), 0),
+                errorCount: fileReports.reduce((sum, { report }) => sum + (report?.errorCount ?? 0), 0),
             };
-            await this._notifyImportFailure(file, error as Error, exportDate, Date.now() - startAt, partialResult);
+            await this._notifyImportFailure(file, error as Error, exportDate, Date.now() - startAt, partialReport);
             throw error;
         }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async _parse(
-        _file: string,
-        _logs: unknown[],
-        _exportDate: Date,
-        ..._args
-    ): Promise<FileImportResult | void> {
+    protected async _parse(_file: string, _logs: unknown[], _exportDate: Date, ..._args): Promise<ImportReport | void> {
         throw new Error("_parse() need to be implemented by the child class");
     }
 
@@ -124,11 +120,11 @@ export default class CliController {
     protected async _notifyImportSuccess(
         file: string,
         exportDate: Date,
-        result: FileImportResult,
+        report: ImportReport,
         durationMs: number,
         fileCount: number,
     ): Promise<void> {
-        return notifyImportSuccess(this._serviceMeta.name, file, result, durationMs, {
+        return notifyImportSuccessUseCase.execute(this._serviceMeta.name, file, report, durationMs, {
             exportDate,
             fileCount,
         });
@@ -139,13 +135,13 @@ export default class CliController {
         error: Error,
         exportDate: Date,
         durationMs: number,
-        partialResult?: FileImportResult,
+        partialReport?: ImportReport,
     ): Promise<void> {
-        return notifyImportFailure(this._serviceMeta.name, error, {
+        return notifyImportFailureUseCase.execute(this._serviceMeta.name, error, {
             exportDate,
             durationMs,
             fileName: path.basename(file),
-            result: partialResult,
+            report: partialReport,
         });
     }
 }

@@ -17,8 +17,9 @@ import OsirisActionEntity from "../../../../modules/providers/osiris/entities/Os
 import Siret from "../../../../identifier-objects/Siret";
 import { isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../../shared/Validators";
 import { InvalidOsirisRequestError } from "../../../../modules/providers/osiris/osiris.errors";
-import { notifyImportFailure, notifyImportSuccess } from "../../../../shared/helpers/ImportNotification.helper";
-import { FileImportResult } from "../../../../@types/FileImportResult";
+import { ImportReport } from "../../../../@types/ImportReport";
+import { notifyImportFailureUseCase } from "../../../../modules/notify/use-cases/notify-import-failure.use-case";
+import { notifyImportSuccessUseCase } from "../../../../modules/notify/use-cases/notify-import-success.use-case";
 
 @StaticImplements<CliStaticInterface>()
 export default class OsirisCli implements ApplicationFlatCli {
@@ -86,14 +87,14 @@ export default class OsirisCli implements ApplicationFlatCli {
         console.info(`You can read log in ${this.logFileParsePath[type]}`);
 
         const startAt = Date.now();
-        const fileResults: FileImportResult[] = [];
+        const fileReports: ImportReport[] = [];
 
         try {
             await files
                 .reduce((acc, filePath) => {
                     return acc.then(async () => {
                         const result = await this._parse(type, filePath, year, logs);
-                        if (result) fileResults.push(result);
+                        if (result) fileReports.push(result);
                     });
                 }, Promise.resolve())
                 .then(() =>
@@ -103,28 +104,28 @@ export default class OsirisCli implements ApplicationFlatCli {
                     }),
                 );
         } catch (error) {
-            const partialResult: FileImportResult = {
-                parsedCount: fileResults.reduce((sum, r) => sum + r.parsedCount, 0),
-                importedCount: fileResults.reduce((sum, r) => sum + r.importedCount, 0),
-                errorCount: fileResults.reduce((sum, r) => sum + r.errorCount, 0),
+            const partialReport: ImportReport = {
+                parsedCount: fileReports.reduce((sum, r) => sum + r.parsedCount, 0),
+                importedCount: fileReports.reduce((sum, r) => sum + r.importedCount, 0),
+                errorCount: fileReports.reduce((sum, r) => sum + r.errorCount, 0),
             };
-            await notifyImportFailure(osirisService.meta.name, error as Error, {
+            await notifyImportFailureUseCase.execute(osirisService.meta.name, error as Error, {
                 durationMs: Date.now() - startAt,
                 fileName: path.basename(file),
                 exerciseYear: year,
                 fileCount: files.length,
-                result: partialResult,
+                report: partialReport,
             });
             throw error;
         }
 
-        if (fileResults.length > 0) {
-            const aggregated: FileImportResult = {
-                parsedCount: fileResults.reduce((sum, r) => sum + r.parsedCount, 0),
-                importedCount: fileResults.reduce((sum, r) => sum + r.importedCount, 0),
-                errorCount: fileResults.reduce((sum, r) => sum + r.errorCount, 0),
+        if (fileReports.length > 0) {
+            const aggregated: ImportReport = {
+                parsedCount: fileReports.reduce((sum, r) => sum + r.parsedCount, 0),
+                importedCount: fileReports.reduce((sum, r) => sum + r.importedCount, 0),
+                errorCount: fileReports.reduce((sum, r) => sum + r.errorCount, 0),
             };
-            await notifyImportSuccess(osirisService.meta.name, file, aggregated, Date.now() - startAt, {
+            await notifyImportSuccessUseCase.execute(osirisService.meta.name, file, aggregated, Date.now() - startAt, {
                 fileCount: files.length,
                 exerciseYear: year,
             });
@@ -137,12 +138,12 @@ export default class OsirisCli implements ApplicationFlatCli {
 
         const fileContent = fs.readFileSync(file);
 
-        let importResult: FileImportResult;
+        let importReport: ImportReport;
 
         if (type === "requests") {
-            importResult = await this._parseRequest(fileContent, year, logs);
+            importReport = await this._parseRequest(fileContent, year, logs);
         } else if (type === "actions") {
-            importResult = await this._parseAction(fileContent, year, logs);
+            importReport = await this._parseAction(fileContent, year, logs);
         } else {
             throw new Error(`The type ${type} is not taken into account`);
         }
@@ -155,7 +156,7 @@ export default class OsirisCli implements ApplicationFlatCli {
             editionDate: new Date(),
         });
 
-        return importResult;
+        return importReport;
     }
 
     async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {

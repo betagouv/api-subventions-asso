@@ -76,7 +76,7 @@ describe("FonjepCli", () => {
             expect(fonjepService.applyTemporyCollection).toHaveBeenCalled();
         });
 
-        it("returns FileImportResult with total entity counts", async () => {
+        it("returns ImportReport with total entity counts", async () => {
             const expectedTotal =
                 ENTITIES.tierEntities.length +
                 ENTITIES.posteEntities.length +

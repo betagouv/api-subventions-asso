@@ -112,7 +112,7 @@ describe("Chorus CLI", () => {
             expect(mockPersistChorusFseEntities).not.toHaveBeenCalled();
         });
 
-        it("returns FileImportResult with counts from persistChorusEntities", async () => {
+        it("returns ImportReport with counts from persistChorusEntities", async () => {
             // @ts-expect-error: test protected method
             const result = await controller._parse(FILE_PATH, LOGGER);
             expect(result).toEqual({

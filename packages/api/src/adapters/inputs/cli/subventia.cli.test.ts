@@ -163,7 +163,7 @@ describe("SubventiaCli", () => {
             expect(mockExportErrors).toHaveBeenCalledWith([], mockFile);
         });
 
-        it("returns FileImportResult with correct counts", async () => {
+        it("returns ImportReport with correct counts", async () => {
             //@ts-expect-error: mock
             const result = await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
             expect(result).toEqual({
