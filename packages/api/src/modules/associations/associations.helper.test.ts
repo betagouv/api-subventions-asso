@@ -59,7 +59,7 @@ describe("associationHelper", () => {
             expect(actual).toBeTruthy();
         });
 
-        it("should return false when siren is in uniteLegalEntreprises", async () => {
+        it("should return false when siren is in uniteLegaleEntreprises", async () => {
             // @ts-expect-error: mock
             jest.mocked(sireneUniteLegaleService.findOneBySiren).mockResolvedValueOnce(false);
             // @ts-expect-error: mock

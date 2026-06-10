@@ -1,7 +1,7 @@
 import Siren from "../../../../identifier-objects/Siren";
 import { UniteLegaleEntrepriseEntity } from "../../../../entities/UniteLegaleEntrepriseEntity";
 
-export interface UniteLegalEntreprisePort {
+export interface UniteLegaleEntreprisePort {
     createIndexes(): Promise<void>;
 
     findOneBySiren(siren: Siren): Promise<UniteLegaleEntrepriseEntity | null>;

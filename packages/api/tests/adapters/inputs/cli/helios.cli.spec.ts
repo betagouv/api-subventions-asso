@@ -2,7 +2,7 @@ import path from "path";
 import heliosAdapter from "../../../../src/adapters/outputs/db/providers/helios/helios.adapter";
 import paymentFlatAdapter from "../../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
 import { expectAnyUpdateDate } from "../../../__helpers__/expect-any.helper";
-import uniteLegalEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
+import uniteLegaleEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 import { Siren } from "../../../../src/identifier-objects";
 import sireneUniteLegaleAdapter from "../../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import { ENTITIES } from "../../../../src/modules/providers/sirene/__fixtures__/sirene-unite-legale.fixture";
@@ -36,7 +36,7 @@ describe("Helios CLI", () => {
                 ...ENTITIES[0],
                 siren: new Siren(DEFAULT_ASSOCIATION.siren),
             });
-            await uniteLegalEntrepriseAdapter.insertMany([{ siren: new Siren("900000000") }]);
+            await uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("900000000") }]);
             jest.spyOn(apiAssoService, "findAssociationBySiren").mockResolvedValue({
                 categorie_juridique: [],
             });
@@ -52,7 +52,7 @@ describe("Helios CLI", () => {
                         new CheckSirenIsFromAssoUseCase(
                             sireneUniteLegaleAdapter,
                             rnaSirenAdapter,
-                            uniteLegalEntrepriseAdapter,
+                            uniteLegaleEntrepriseAdapter,
                             apiAssoService,
                         ),
                     ),

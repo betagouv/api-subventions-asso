@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 
-export interface UniteLegalEntrepriseDbo {
+export interface UniteLegaleEntrepriseDbo {
     siren: string;
     _id: ObjectId;
 }

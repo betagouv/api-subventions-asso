@@ -2,7 +2,7 @@ import ChorusCli from "../../../src/adapters/inputs/cli/chorus.cli";
 import path from "path";
 import chorusAdapter from "../../../src/adapters/outputs/db/providers/chorus/chorus.adapter";
 import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
-import uniteLegalEntrepriseAdapter from "../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
+import uniteLegaleEntrepriseAdapter from "../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 import sireneUniteLegaleAdapter from "../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import apiAssoService from "../../../src/modules/providers/api-asso/api-asso.service";
 import { AssociationWithProviderValues } from "dto";
@@ -40,7 +40,7 @@ describe("ChorusCli", () => {
             // make siren 100000000 belong to asso
             sireneUniteLegaleAdapter.insertOne({ siren: new Siren("100000000") } as SireneUniteLegaleEntity),
             // make siren 30000000 belong to an entreprise
-            uniteLegalEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
+            uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
         ]);
     });
 

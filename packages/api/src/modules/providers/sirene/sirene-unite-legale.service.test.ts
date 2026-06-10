@@ -9,7 +9,7 @@ import Siren from "../../../identifier-objects/Siren";
 import sireneUniteLegaleAdapter from "../../../adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import sireneUniteLegaleService from "./sirene-unite-legale.service";
 
-const mockUniteLegalEntrepriseConstructor = jest.fn();
+const mockUniteLegaleEntrepriseConstructor = jest.fn();
 
 jest.mock("../../../adapters/outputs/db/sirene/sirene-unite-legale.adapter");
 jest.mock("./mappers/sirene-unite-legale.mapper");
@@ -18,7 +18,7 @@ jest.mock("../unite-legale-name/unite-legale.name.service");
 jest.mock("../../../entities/UniteLegaleEntrepriseEntity", () => ({
     UniteLegaleEntrepriseEntity: class Mock {
         constructor(public i) {
-            mockUniteLegalEntrepriseConstructor(i);
+            mockUniteLegaleEntrepriseConstructor(i);
         }
     },
 }));
@@ -108,8 +108,8 @@ describe("SireneUniteLegaleService", () => {
 
         it("adapt to entreprise entity", async () => {
             await sireneUniteLegaleService._saveBatchNonAssoData(BATCH);
-            expect(mockUniteLegalEntrepriseConstructor).toHaveBeenCalledWith(2);
-            expect(mockUniteLegalEntrepriseConstructor).toHaveBeenCalledWith(1);
+            expect(mockUniteLegaleEntrepriseConstructor).toHaveBeenCalledWith(2);
+            expect(mockUniteLegaleEntrepriseConstructor).toHaveBeenCalledWith(1);
         });
 
         it("save entreprise entity", async () => {
