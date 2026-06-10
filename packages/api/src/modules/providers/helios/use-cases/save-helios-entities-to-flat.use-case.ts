@@ -1,10 +1,11 @@
-import { ApplicationFlatService } from "../../../application-flat/application-flat.service";
-import { PaymentFlatService } from "../../../payment-flat/payment-flat.service";
+import applicationFlatService, { ApplicationFlatService } from "../../../application-flat/application-flat.service";
+import paymentFlatService, { PaymentFlatService } from "../../../payment-flat/payment-flat.service";
 import HeliosEntity from "../domain/helios.entity";
-import TransformHeliosEntitiesToFlat from "./transform-helios-entities-to-flat.use-case";
+import transformHeliosEntityToFlat from "./transform-helios-entities-to-flat.use-case";
+import { TransformHeliosEntitiesToFlat } from "./transform-helios-entities-to-flat.use-case";
 import { ReadableStream } from "node:stream/web";
 
-export default class SaveHeliosEntitiesToFlatUseCase {
+export class SaveHeliosEntitiesToFlatUseCase {
     constructor(
         private transformEntitiesToFlat: TransformHeliosEntitiesToFlat,
         private applicationFlatService: ApplicationFlatService,
@@ -21,3 +22,10 @@ export default class SaveHeliosEntitiesToFlatUseCase {
         ]);
     }
 }
+
+const saveHeliosToFlat = new SaveHeliosEntitiesToFlatUseCase(
+    transformHeliosEntityToFlat,
+    applicationFlatService,
+    paymentFlatService,
+);
+export default saveHeliosToFlat;

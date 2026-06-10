@@ -73,7 +73,7 @@ export class ChorusImport {
 
     async run(buffer: Buffer) {
         const { national: nationalDtos, european: europeanDtos } = ChorusParser.fromBuffer(buffer);
-        await Promise.all([this.save(nationalDtos ?? []), this.saveFse(europeanDtos ?? [])]);
+        return Promise.all([this.save(nationalDtos ?? []), this.saveFse(europeanDtos ?? [])]);
     }
 }
 

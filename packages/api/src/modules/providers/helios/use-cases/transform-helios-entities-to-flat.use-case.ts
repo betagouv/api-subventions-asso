@@ -5,8 +5,9 @@ import HeliosEntity from "../domain/helios.entity";
 import ExtractBeneficaryInfosUseCase from "./extract-helios-beneficary-info.use-case";
 import ExtractHeliosApplicationFlatSpecificFields from "./extract-helios-application-flat-specific-fields.use-case";
 import ExtractHeliosPaymentFlatSpecificFieldsUseCase from "./extract-helios-payment-flat-specific-fields.use-case";
+import findSiretFromAssoIdentifier from "../../../associations/use-cases/find-siret-from-association-identifier.use-case";
 
-export default class TransformHeliosEntitiesToFlat {
+export class TransformHeliosEntitiesToFlat {
     constructor(
         private extractBeneficiaryInfos: ExtractBeneficaryInfosUseCase,
         private extractPaymentSpecifics: ExtractHeliosPaymentFlatSpecificFieldsUseCase,
@@ -47,3 +48,11 @@ export default class TransformHeliosEntitiesToFlat {
         return promise;
     }
 }
+
+const transformHeliosEntityToFlat = new TransformHeliosEntitiesToFlat(
+    new ExtractBeneficaryInfosUseCase(findSiretFromAssoIdentifier),
+    new ExtractHeliosPaymentFlatSpecificFieldsUseCase(),
+    new ExtractHeliosApplicationFlatSpecificFields(),
+);
+
+export default transformHeliosEntityToFlat;

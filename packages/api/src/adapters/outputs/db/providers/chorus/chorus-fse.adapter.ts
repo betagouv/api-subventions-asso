@@ -44,6 +44,14 @@ export class ChorusFseAdapter extends MongoAdapter<ChorusFseDbo> implements Chor
         );
     }
 
+    // only for integ tests
+    public findAll() {
+        return this.collection
+            .find({})
+            .map(dbo => this.toEntity(dbo))
+            .toArray();
+    }
+
     public getIterableFindAll() {
         return this.collection.find({}).map(dbo => this.toEntity(dbo)) as AsyncIterable<ChorusFseEntity>;
     }

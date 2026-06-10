@@ -22,6 +22,7 @@ import {
     S3_SECRET_KEY,
     S3_PROVIDERS_BUCKET,
 } from "../../../configurations/s3.conf";
+import FileTags from "../../../modules/s3-file/@types/FileTags";
 
 export class S3Adapter implements S3Port {
     constructor(
@@ -178,7 +179,7 @@ export class S3Adapter implements S3Port {
         }
     }
 
-    async tagFile(key: string, tag: { name: string; value: string }): Promise<void> {
+    async tagFile(key: string, tag: { name: string; value: FileTags }): Promise<void> {
         try {
             const command = new PutObjectTaggingCommand({
                 Bucket: this.bucketName,

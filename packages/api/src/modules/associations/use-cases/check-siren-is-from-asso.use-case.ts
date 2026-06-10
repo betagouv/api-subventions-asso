@@ -24,9 +24,9 @@ export class CheckSirenIsFromAssoUseCase {
         if ((await this.rnaSirenPort.find(siren))?.length) return true;
         // entreprise collection stores only entreprise siren
         if (await this.entreprisePort.findOneBySiren(siren)) return false;
+
         // backup solution
         const asso = await this.apiAssoService.findAssociationBySiren(siren);
-
         const category = asso?.categorie_juridique?.[0]?.value;
         if (!category) return false;
         return LEGAL_CATEGORIES_ACCEPTED.includes(category);
