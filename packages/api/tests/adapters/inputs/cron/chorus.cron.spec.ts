@@ -29,6 +29,7 @@ import chorusService from "../../../../src/modules/providers/chorus/chorus.servi
 import saveChorusEntities from "../../../../src/modules/providers/chorus/use-cases/save-entities";
 import saveChorusFseEntities from "../../../../src/modules/providers/chorus/use-cases/save-fse-entities";
 import updateFlatByExercise from "../../../../src/modules/providers/chorus/use-cases/update-flat-by-exercise";
+import { TagImportedFile } from "../../../../src/modules/s3-file/use-cases/tag-imported-file";
 
 jest.mock("../../../../src/modules/providers/api-asso/api-asso.service");
 
@@ -47,9 +48,9 @@ describe("Chorus CRON", () => {
         ]),
     } as unknown as GetNewS3File;
     const mockGetFileData = { execute: jest.fn().mockResolvedValue({ buffer: fileBuffer }) } as unknown as GetFileData;
+    const mockTagImportedFile = { execute: jest.fn() } as unknown as TagImportedFile;
 
     jest.spyOn(apiAssoService, "findAssociationBySiren").mockImplementation((siren: Siren) => {
-        console.log("coucou mock api asso");
         if (["200000000"].includes(siren.value))
             // one for chorus and chorus FSE
             return Promise.resolve({
@@ -84,6 +85,7 @@ describe("Chorus CRON", () => {
             chorusService,
             updateFlatByExercise,
         ),
+        mockTagImportedFile,
     );
 
     beforeAll(() => {
@@ -105,7 +107,6 @@ describe("Chorus CRON", () => {
         });
 
         jest.spyOn(apiAssoService, "findAssociationBySiren").mockImplementation((siren: Siren) => {
-            console.log("coucou mock api asso");
             if (["200000000"].includes(siren.value))
                 // one for chorus and chorus FSE
                 return Promise.resolve({
@@ -128,7 +129,7 @@ describe("Chorus CRON", () => {
         ]);
     });
 
-    it.only("imports chorus data", async () => {
+    it("imports chorus data", async () => {
         await cron.importNewFile();
         expect(
             (await chorusAdapter.cursorFind({}, { _id: 0 }).toArray()).map(data => ({
@@ -150,5 +151,10 @@ describe("Chorus CRON", () => {
         expect(
             (await paymentFlatAdapter.findAll()).map(flat => ({ ...flat, updateDate: expect.any(Date) })),
         ).toMatchSnapshot();
+    });
+
+    it("tag file as imported", async () => {
+        await cron.importNewFile();
+        expect(mockTagImportedFile.execute).toHaveBeenCalledWith(PATH);
     });
 });
