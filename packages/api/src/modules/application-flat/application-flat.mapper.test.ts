@@ -5,8 +5,6 @@ import {
     APPLICATION_FLAT_DBOS,
 } from "./__fixtures__/application-flat.fixture";
 import ApplicationFlatMapper from "./application-flat.mapper";
-import applicationFlatService from "./application-flat.service";
-import Siret from "../../identifier-objects/Siret";
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 
 jest.mock("../../identifier-objects/EstablishmentIdentifier");
@@ -32,20 +30,6 @@ describe("ApplicationFlatAdapter", () => {
             });
             expect(actual).toBe(expected);
             toDemandeSubvSpy.mockReset();
-        });
-    });
-
-    describe("toDemandeSubvention", () => {
-        it("returns null if no siret", () => {
-            jest.mocked(applicationFlatService.getSiret).mockReturnValueOnce(undefined);
-            const actual = ApplicationFlatMapper.toDemandeSubvention(APPLICATION_LINK_TO_CHORUS);
-            expect(actual).toBeNull();
-        });
-
-        it("adapts properly", () => {
-            jest.mocked(applicationFlatService.getSiret).mockReturnValueOnce(new Siret("12345678901234"));
-            const actual = ApplicationFlatMapper.toDemandeSubvention(APPLICATION_LINK_TO_CHORUS);
-            expect(actual).toMatchSnapshot();
         });
     });
 

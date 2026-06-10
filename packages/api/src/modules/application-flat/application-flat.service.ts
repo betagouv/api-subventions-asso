@@ -14,12 +14,15 @@ import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { StructureProvider } from "../StructureProvider";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
+import transformToDemandeSubvention, {
+    TransformToDemandeSubvention,
+} from "./use-cases/transform-to-demande-subvention";
 
 export class ApplicationFlatService
     extends ProviderCore
     implements GrantProvider, ApplicationProvider, StructureProvider
 {
-    constructor() {
+    constructor(private transformToDemandeSubvention: TransformToDemandeSubvention) {
         super({
             name: "Application Flat",
             type: ProviderEnum.technical,
@@ -54,7 +57,7 @@ export class ApplicationFlatService
     async getApplication(identifier: StructureIdentifier): Promise<DemandeSubvention[]> {
         const requests = await this.getEntitiesByIdentifier(identifier);
         return requests
-            .map(document => ApplicationFlatMapper.toDemandeSubvention(document))
+            .map(document => this.transformToDemandeSubvention.execute(document))
             .filter(demande => !!demande) as DemandeSubvention[];
     }
 
@@ -116,6 +119,6 @@ export class ApplicationFlatService
     }
 }
 
-const applicationFlatService = new ApplicationFlatService();
+const applicationFlatService = new ApplicationFlatService(transformToDemandeSubvention);
 
 export default applicationFlatService;

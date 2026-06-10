@@ -1,7 +1,7 @@
 import Siren from "../../identifier-objects/Siren";
 
 import applicationFlatAdapter from "../../adapters/outputs/db/application-flat/application-flat.adapter";
-import applicationFlatService from "./application-flat.service";
+import applicationFlatService, { ApplicationFlatService } from "./application-flat.service";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import ApplicationFlatMapper from "./application-flat.mapper";
 import { ApplicationFlatDto, DemandeSubvention } from "dto";
@@ -12,7 +12,7 @@ import Siret from "../../identifier-objects/Siret";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
-import { APPLICATION_LINK_TO_CHORUS, DBO as APPLICATION_FLAT_DBO } from "./__fixtures__/application-flat.fixture";
+import { APPLICATION_LINK_TO_CHORUS, APPLICATION_FLAT_DBOS } from "./__fixtures__/application-flat.fixture";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
 
 jest.mock("../../adapters/outputs/db/application-flat/application-flat.adapter");
@@ -72,7 +72,9 @@ describe("ApplicationFlatService", () => {
             mockGetEntitiesByIdentifier = jest
                 .spyOn(applicationFlatService, "getEntitiesByIdentifier")
                 .mockResolvedValue(APPLICATIONS);
-            jest.mocked(ApplicationFlatMapper.toDto).mockReturnValue(APPLICATION_FLAT_DBO as ApplicationFlatDto); // dbo is the same as dto
+            jest.mocked(ApplicationFlatMapper.toDto).mockReturnValue(
+                APPLICATION_FLAT_DBOS[0] as unknown as ApplicationFlatDto,
+            );
         });
 
         afterAll(() => {
@@ -90,7 +92,7 @@ describe("ApplicationFlatService", () => {
         });
 
         it("returns applications", async () => {
-            const expected = [APPLICATION_FLAT_DBO, APPLICATION_FLAT_DBO];
+            const expected = [APPLICATION_FLAT_DBOS[0], APPLICATION_FLAT_DBOS[0]];
             const actual = await applicationFlatService.getApplicationsDto(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
@@ -197,33 +199,34 @@ describe("ApplicationFlatService", () => {
         describe("getApplication", () => {
             let getEntitiesSpy;
             const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
+            const mockTransform = { execute: jest.fn().mockReturnValue("DEMANDE_SUBVENTION") };
+            const service = new ApplicationFlatService(mockTransform);
 
             beforeAll(() => {
-                getEntitiesSpy = jest
-                    .spyOn(applicationFlatService, "getEntitiesByIdentifier")
-                    .mockResolvedValue(APPLICATIONS);
+                getEntitiesSpy = jest.spyOn(service, "getEntitiesByIdentifier").mockResolvedValue(APPLICATIONS);
             });
+
             afterAll(() => {
                 getEntitiesSpy.mockRestore();
             });
 
             it("gets entities", async () => {
-                await applicationFlatService.getApplication(IDENTIFIER);
+                await service.getApplication(IDENTIFIER);
                 expect(getEntitiesSpy).toHaveBeenCalledWith(IDENTIFIER);
             });
 
             it("adapts all applications", async () => {
-                await applicationFlatService.getApplication(IDENTIFIER);
-                expect(ApplicationFlatMapper.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
-                expect(ApplicationFlatMapper.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
+                await service.getApplication(IDENTIFIER);
+                expect(mockTransform.execute).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
+                expect(mockTransform.execute).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
             });
 
             it("returns non-null adapted applications", async () => {
                 const A2 = "adapted 2" as unknown as DemandeSubvention;
-                jest.mocked(ApplicationFlatMapper.toDemandeSubvention).mockReturnValueOnce(null);
-                jest.mocked(ApplicationFlatMapper.toDemandeSubvention).mockReturnValue(A2);
+                jest.mocked(mockTransform.execute).mockReturnValueOnce(null);
+                jest.mocked(mockTransform.execute).mockReturnValue(A2);
                 const expected = [A2];
-                const actual = await applicationFlatService.getApplication(IDENTIFIER);
+                const actual = await service.getApplication(IDENTIFIER);
                 expect(actual).toEqual(expected);
             });
         });
