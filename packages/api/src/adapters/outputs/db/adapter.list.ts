@@ -1,5 +1,5 @@
 import rnaSirenAdapter from "./rna-siren/rna-siren.adapter";
-import uniteLegalEntrepriseAdapter from "./unite-legale-entreprise/unite-legale-entreprise.adapter";
+import uniteLegaleEntrepriseAdapter from "./unite-legale-entreprise/unite-legale-entreprise.adapter";
 import uniteLegalNameAdapter from "./unite-legale-name/unite-legale-name.adapter";
 import configurationsAdapter from "./configurations/configurations.adapter";
 import logsAdapter from "./stats/logs.adapter";
@@ -51,7 +51,7 @@ export const adaptersWithIndexes = [
     demarchesSimplifieesSchemaAdapter,
     statsAssociationsVisitAdapter,
     rnaSirenAdapter,
-    uniteLegalEntrepriseAdapter,
+    uniteLegaleEntrepriseAdapter,
     uniteLegalNameAdapter,
     paymentFlatAdapter,
     sireneUniteLegaleAdapter,

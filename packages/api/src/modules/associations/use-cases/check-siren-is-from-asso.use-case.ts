@@ -1,7 +1,7 @@
 import sireneUniteLegaleAdapter from "../../../adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import { SireneUniteLegalePort } from "../../../adapters/outputs/db/sirene/sirene-unite-legale.port";
-import uniteLegalEntrepriseAdapter from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
-import { UniteLegalEntreprisePort } from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.port";
+import uniteLegaleEntrepriseAdapter from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
+import { UniteLegaleEntreprisePort } from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.port";
 import { RnaSirenPort } from "../../../adapters/outputs/db/rna-siren/rna-siren.port";
 import { Siren } from "../../../identifier-objects";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
@@ -12,7 +12,7 @@ export class CheckSirenIsFromAssoUseCase {
     constructor(
         private sirenePort: SireneUniteLegalePort,
         private rnaSirenPort: RnaSirenPort,
-        private entreprisePort: UniteLegalEntreprisePort,
+        private entreprisePort: UniteLegaleEntreprisePort,
         // @TODO: make this a use case
         private apiAssoService: ApiAssoService,
     ) {}
@@ -36,7 +36,7 @@ export class CheckSirenIsFromAssoUseCase {
 const checkSirenIsFromAsso = new CheckSirenIsFromAssoUseCase(
     sireneUniteLegaleAdapter,
     rnaSirenAdapter,
-    uniteLegalEntrepriseAdapter,
+    uniteLegaleEntrepriseAdapter,
     apiAssoService,
 );
 

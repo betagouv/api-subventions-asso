@@ -2,13 +2,13 @@ import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../sha
 import MongoAdapter from "../MongoAdapter";
 import { UniteLegaleEntrepriseEntity } from "../../../../entities/UniteLegaleEntrepriseEntity";
 import Siren from "../../../../identifier-objects/Siren";
-import { UniteLegalEntreprisePort } from "./unite-legale-entreprise.port";
-import { UniteLegalEntrepriseMapper } from "./unite-legale-entreprise.mapper";
-import { UniteLegalEntrepriseDbo } from "./@types/UniteLegalEntrepriseDbo";
+import { UniteLegaleEntreprisePort } from "./unite-legale-entreprise.port";
+import { UniteLegaleEntrepriseMapper } from "./unite-legale-entreprise.mapper";
+import { UniteLegaleEntrepriseDbo } from "./@types/UniteLegaleEntrepriseDbo";
 
-export class UniteLegalEntrepriseAdapter
-    extends MongoAdapter<UniteLegalEntrepriseDbo>
-    implements UniteLegalEntreprisePort
+export class UniteLegaleEntrepriseAdapter
+    extends MongoAdapter<UniteLegaleEntrepriseDbo>
+    implements UniteLegaleEntreprisePort
 {
     collectionName = "unite-legal-entreprise";
 
@@ -20,22 +20,22 @@ export class UniteLegalEntrepriseAdapter
         const dbo = await this.collection.findOne({ siren: siren.value });
         if (!dbo) return null;
 
-        return UniteLegalEntrepriseMapper.toEntity(dbo);
+        return UniteLegaleEntrepriseMapper.toEntity(dbo);
     }
 
     async insertMany(entities: UniteLegaleEntrepriseEntity[]): Promise<void> {
         try {
-            const dbos = entities.map(entity => UniteLegalEntrepriseMapper.toDbo(entity));
+            const dbos = entities.map(entity => UniteLegaleEntrepriseMapper.toDbo(entity));
             await this.collection.insertMany(dbos, { ordered: false });
         } catch (e: unknown) {
             if (isMongoDuplicateError(e)) {
                 // One or many entities already exist in database but other entities have been saved
-                throw buildDuplicateIndexError<UniteLegalEntrepriseDbo[]>(e);
+                throw buildDuplicateIndexError<UniteLegaleEntrepriseDbo[]>(e);
             }
             throw e;
         }
     }
 }
 
-const uniteLegalEntrepriseAdapter = new UniteLegalEntrepriseAdapter();
-export default uniteLegalEntrepriseAdapter;
+const uniteLegaleEntrepriseAdapter = new UniteLegaleEntrepriseAdapter();
+export default uniteLegaleEntrepriseAdapter;

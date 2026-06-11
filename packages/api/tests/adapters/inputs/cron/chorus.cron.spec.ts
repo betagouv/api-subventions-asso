@@ -11,7 +11,7 @@ import { ChorusImport } from "../../../../src/adapters/inputs/pipeline/import/ch
 import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
 import stateBudgetProgramAdapter from "../../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
 import sireneUniteLegaleAdapter from "../../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
-import uniteLegalEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
+import uniteLegaleEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 import { SireneUniteLegaleEntity } from "../../../../src/entities/SireneUniteLegaleEntity";
 import { Siren } from "../../../../src/identifier-objects";
 import { PROGRAMS } from "../../../__fixtures__/paymentsFlat.fixture";
@@ -66,7 +66,7 @@ describe("Chorus CRON", () => {
         new CheckSirenIsFromAssoUseCase(
             sireneUniteLegaleAdapter,
             rnaSirenAdapter,
-            uniteLegalEntrepriseAdapter,
+            uniteLegaleEntrepriseAdapter,
             apiAssoService,
         ),
     );
@@ -125,7 +125,7 @@ describe("Chorus CRON", () => {
             // make siren 100000000 belong to asso
             sireneUniteLegaleAdapter.insertOne({ siren: new Siren("100000000") } as SireneUniteLegaleEntity),
             // make siren 30000000 belong to an entreprise
-            uniteLegalEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
+            uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
         ]);
     });
 

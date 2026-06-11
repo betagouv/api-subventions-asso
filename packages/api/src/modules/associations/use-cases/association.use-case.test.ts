@@ -1,7 +1,7 @@
 import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
 import { RnaSirenPort } from "../../../adapters/outputs/db/rna-siren/rna-siren.port";
 import { SireneUniteLegalePort } from "../../../adapters/outputs/db/sirene/sirene-unite-legale.port";
-import { UniteLegalEntreprisePort } from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.port";
+import { UniteLegaleEntreprisePort } from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.port";
 import {
     AssociationIdentifier,
     EstablishmentIdentifier,
@@ -106,7 +106,7 @@ describe("Association Use Cases", () => {
         } as unknown as SireneUniteLegalePort;
         const mockEntreprisePort = {
             findOneBySiren: jest.fn().mockResolvedValue({}),
-        } as unknown as UniteLegalEntreprisePort;
+        } as unknown as UniteLegaleEntreprisePort;
         const mockRnaSirenPort = { find: jest.fn().mockResolvedValue([]) } as unknown as RnaSirenPort;
         const mockApiAssoService = {
             findAssociationBySiren: jest
