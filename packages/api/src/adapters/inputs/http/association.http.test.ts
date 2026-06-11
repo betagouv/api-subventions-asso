@@ -31,19 +31,19 @@ describe("AssociationHttp", () => {
     });
 
     describe("getDemandeSubventions", () => {
-        const getSubventionsSpy = jest.spyOn(associationsService, "getSubventions");
+        const getDemandesSpy = jest.spyOn(associationsService, "getDemandes");
         it("should call service with args", async () => {
             const subventions = [{}] as DemandeSubvention[];
             // @ts-expect-error: mock
-            getSubventionsSpy.mockReturnValueOnce(subventions);
+            getDemandesSpy.mockReturnValueOnce(subventions);
             await controller.getDemandeSubventions(IDENTIFIER.value, REQ);
-            expect(getSubventionsSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
+            expect(getDemandesSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
 
         it("should return a grant requests", async () => {
             const subventions = [{}] as DemandeSubvention[];
             // @ts-expect-error: mock
-            getSubventionsSpy.mockReturnValueOnce(subventions);
+            getDemandesSpy.mockReturnValueOnce(subventions);
             const expected = { subventions };
             const promise = controller.getDemandeSubventions(IDENTIFIER.value, REQ);
             expect(await promise).toEqual(expected);
@@ -81,16 +81,16 @@ describe("AssociationHttp", () => {
     });
 
     describe("getPayments", () => {
-        const getSubventionsSpy = jest.spyOn(associationsService, "getPayments");
+        const getDemandesSpy = jest.spyOn(associationsService, "getPayments");
         it("should call service with args", async () => {
-            getSubventionsSpy.mockImplementationOnce(jest.fn());
+            getDemandesSpy.mockImplementationOnce(jest.fn());
             await controller.getPayments(IDENTIFIER.value, REQ);
-            expect(getSubventionsSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
+            expect(getDemandesSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
 
         it("should return payments", async () => {
             // @ts-expect-error: mock
-            getSubventionsSpy.mockImplementationOnce(() => payments);
+            getDemandesSpy.mockImplementationOnce(() => payments);
             const payments = [{}];
             const expected = { versements: payments };
             const actual = await controller.getPayments(IDENTIFIER.value, REQ);
@@ -118,7 +118,7 @@ describe("AssociationHttp", () => {
         it("should throw error", async () => {
             const ERROR_MESSAGE = "Error";
             getDocumentsSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            expect(() => controller.getDocuments(IDENTIFIER.value, REQ)).rejects.toThrowError(ERROR_MESSAGE);
+            expect(() => controller.getDocuments(IDENTIFIER.value, REQ)).rejects.toThrow(ERROR_MESSAGE);
         });
     });
 
@@ -142,7 +142,7 @@ describe("AssociationHttp", () => {
         it("should return an error message", async () => {
             const ERROR_MESSAGE = "Error";
             getAssociationSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            expect(() => controller.getAssociation(IDENTIFIER.value, REQ)).rejects.toThrowError(ERROR_MESSAGE);
+            expect(() => controller.getAssociation(IDENTIFIER.value, REQ)).rejects.toThrow(ERROR_MESSAGE);
         });
     });
 

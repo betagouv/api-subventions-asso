@@ -10,7 +10,6 @@ import {
 } from "dto";
 import { RnaOnlyError } from "core";
 import paymentService from "../payments/payments.service";
-import subventionsService from "../subventions/subventions.service";
 import {
     JoinedRawGrant,
     RawApplication,
@@ -30,10 +29,14 @@ import PaymentFlatMapper from "../payment-flat/payment-flat.mapper";
 import transformToDemandeSubvention, {
     TransformToDemandeSubvention,
 } from "../application-flat/use-cases/transform-to-demande-subvention";
+import getApplications, { GetApplications } from "../application-flat/use-cases/get-applications";
 
 export class GrantService {
     // Done in constructor to avoid circular dependency issue
-    constructor(private transformToDemandeSubvention: TransformToDemandeSubvention) {}
+    constructor(
+        private transformToDemandeSubvention: TransformToDemandeSubvention,
+        private getApplications: GetApplications,
+    ) {}
 
     adaptRawGrant(rawGrant: AnyRawGrant) {
         switch (rawGrant.type) {
@@ -88,9 +91,8 @@ export class GrantService {
             if (grant?.payments?.length) {
                 exercise = paymentService.getPaymentExercise(grant.payments[0]);
             } else {
-                exercise = subventionsService.getSubventionExercise(
-                    grant.application as DemandeSubvention, // ts should know that we have application defined
-                );
+                console.log(grant.application);
+                exercise = grant.application?.annee_demande?.value;
 
                 // not sure if possible but because DemandeSubventionDTO as annee_demande as optionnal it could occur
                 // prevent lonely application grant without annee_demande
@@ -143,7 +145,7 @@ export class GrantService {
     }
 
     async getGrants(identifier: StructureIdentifier): Promise<GrantFlatEntity[]> {
-        const applications = await applicationFlatService.getEntitiesByIdentifier(identifier);
+        const applications = await this.getApplications.execute(identifier);
         const payments = await paymentFlatService.getEntitiesByIdentifier(identifier);
 
         // init with applications
@@ -293,8 +295,7 @@ export class GrantService {
         const byYear: Record<number, Grant> = {};
         const NO_YEAR = 0;
 
-        if (application)
-            byYear[subventionsService.getSubventionExercise(application) ?? NO_YEAR] = { application, payments: [] };
+        if (application) byYear[application?.annee_demande?.value ?? NO_YEAR] = { application, payments: [] };
 
         let year: number;
         for (const payment of payments ?? []) {
@@ -313,6 +314,6 @@ export class GrantService {
     }
 }
 
-const grantService = new GrantService(transformToDemandeSubvention);
+const grantService = new GrantService(transformToDemandeSubvention, getApplications);
 
 export default grantService;

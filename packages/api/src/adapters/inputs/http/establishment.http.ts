@@ -193,7 +193,7 @@ export class EstablishmentHttp extends Controller {
     ): Promise<GetSubventionsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
 
-        const subventions = await establishmentService.getSubventions(estabIdentifier);
+        const subventions = await establishmentService.getDemandes(estabIdentifier);
         return { subventions };
     }
 

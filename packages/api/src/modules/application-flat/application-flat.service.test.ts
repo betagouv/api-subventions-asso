@@ -4,15 +4,15 @@ import applicationFlatAdapter from "../../adapters/outputs/db/application-flat/a
 import { ApplicationFlatService } from "./application-flat.service";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import ApplicationFlatMapper from "./application-flat.mapper";
-import { ApplicationFlatDto, DemandeSubvention } from "dto";
+import { ApplicationFlatDto } from "dto";
 import { ReadableStream } from "node:stream/web";
 
 import Siret from "../../identifier-objects/Siret";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import { APPLICATION_LINK_TO_CHORUS, APPLICATION_FLAT_DBOS } from "./__fixtures__/application-flat.fixture";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
+import { GetApplications } from "./use-cases/get-applications";
 
 jest.mock("../../adapters/outputs/db/application-flat/application-flat.adapter");
 jest.mock("./application-flat.mapper");
@@ -22,33 +22,10 @@ jest.mock("../../shared/helpers/MongoHelper");
 describe("ApplicationFlatService", () => {
     const APPLICATIONS = [APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_CHORUS];
 
-    const DEMANDE_SUBVENTION = "DEMANDE_SUBVENTION" as unknown as DemandeSubvention; // mock
-    const mockTransform = { execute: jest.fn().mockReturnValue(DEMANDE_SUBVENTION) };
-    const service = new ApplicationFlatService(mockTransform);
-
-    describe.each`
-        identifierType | rawIdentifier                  | findMethod                            | identifierConstructor
-        ${"siret"}     | ${new Siret("12345678901234")} | ${applicationFlatAdapter.findBySiret} | ${EstablishmentIdentifier.fromSiret}
-        ${"siren"}     | ${new Siren("123456789")}      | ${applicationFlatAdapter.findBySiren} | ${AssociationIdentifier.fromSiren}
-    `("getEntitiesByIdentifier", ({ rawIdentifier, identifierConstructor, findMethod }) => {
-        beforeAll(() => {
-            findMethod.mockResolvedValue(APPLICATIONS);
-        });
-        afterAll(() => {
-            findMethod.mockRestore();
-        });
-
-        it("if identifier is $identifierType, call proper port method", async () => {
-            await service.getEntitiesByIdentifier(identifierConstructor(rawIdentifier));
-            expect(findMethod).toHaveBeenCalledWith(rawIdentifier);
-        });
-
-        it("returns entities", async () => {
-            const expected = APPLICATIONS;
-            const actual = await service.getEntitiesByIdentifier(identifierConstructor(rawIdentifier));
-            expect(actual).toEqual(expected);
-        });
-    });
+    const mockGetApplications = {
+        execute: jest.fn().mockReturnValue(APPLICATIONS),
+    } as unknown as GetApplications;
+    const service = new ApplicationFlatService(mockGetApplications);
 
     describe("saveFromStream", () => {
         const STREAM = {} as unknown as ReadableStream;
@@ -69,24 +46,15 @@ describe("ApplicationFlatService", () => {
     describe("getApplicationDto", () => {
         const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren(DEFAULT_ASSOCIATION.siren));
 
-        let mockGetEntitiesByIdentifier;
-
         beforeEach(() => {
-            mockGetEntitiesByIdentifier = jest
-                .spyOn(service, "getEntitiesByIdentifier")
-                .mockResolvedValue(APPLICATIONS);
             jest.mocked(ApplicationFlatMapper.toDto).mockReturnValue(
                 APPLICATION_FLAT_DBOS[0] as unknown as ApplicationFlatDto,
             );
         });
 
-        afterAll(() => {
-            mockGetEntitiesByIdentifier.mockRestore();
-        });
-
         it("fetches applications flat ", async () => {
             await service.getApplicationsDto(IDENTIFIER);
-            expect(mockGetEntitiesByIdentifier).toHaveBeenCalledWith(IDENTIFIER);
+            expect(mockGetApplications.execute).toHaveBeenCalledWith(IDENTIFIER);
         });
 
         it("adapts entities to dtos", async () => {
@@ -176,61 +144,13 @@ describe("ApplicationFlatService", () => {
         });
     });
 
-    // DemandeSubvention DTO
-    describe("old application part", () => {
-        describe("getApplication", () => {
-            let getEntitiesSpy;
-            const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
-
-            beforeAll(() => {
-                getEntitiesSpy = jest.spyOn(service, "getEntitiesByIdentifier").mockResolvedValue(APPLICATIONS);
-            });
-
-            afterAll(() => {
-                getEntitiesSpy.mockRestore();
-            });
-
-            it("gets entities", async () => {
-                await service.getApplication(IDENTIFIER);
-                expect(getEntitiesSpy).toHaveBeenCalledWith(IDENTIFIER);
-            });
-
-            it("adapts all applications", async () => {
-                await service.getApplication(IDENTIFIER);
-                expect(mockTransform.execute).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
-                expect(mockTransform.execute).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
-            });
-
-            it("returns non-null adapted applications", async () => {
-                const A2 = "adapted 2" as unknown as DemandeSubvention;
-                jest.mocked(mockTransform.execute).mockReturnValueOnce(null);
-                jest.mocked(mockTransform.execute).mockReturnValue(A2);
-                const expected = [A2];
-                const actual = await service.getApplication(IDENTIFIER);
-                expect(actual).toEqual(expected);
-            });
-        });
-    });
-
     describe("grant part", () => {
         describe("getRawGrants", () => {
-            let getEntitiesSpy;
-            const APPLICATIONS = [
-                { provider: "fonjep", paymentId: "poste1" },
-                { provider: "autre", paymentId: "ej2" },
-            ] as unknown as ApplicationFlatEntity[];
             const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
-
-            beforeAll(() => {
-                getEntitiesSpy = jest.spyOn(service, "getEntitiesByIdentifier").mockResolvedValue(APPLICATIONS);
-            });
-            afterAll(() => {
-                getEntitiesSpy.mockRestore();
-            });
 
             it("gets entities", async () => {
                 await service.getRawGrants(IDENTIFIER);
-                expect(getEntitiesSpy).toHaveBeenCalledWith(IDENTIFIER);
+                expect(mockGetApplications.execute).toHaveBeenCalledWith(IDENTIFIER);
             });
 
             it("converts found methods", async () => {

@@ -9,10 +9,9 @@ import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import PaymentFlatMapper from "./payment-flat.mapper";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 import GrantProvider from "../grant/@types/GrantProvider";
-import { StructureProvider } from "../StructureProvider";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 
-export class PaymentFlatService extends ProviderCore implements GrantProvider, StructureProvider {
+export class PaymentFlatService extends ProviderCore implements GrantProvider {
     constructor() {
         super({
             name: "Payment Flat",

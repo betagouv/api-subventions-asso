@@ -151,7 +151,7 @@ export class AssociationHttp extends Controller {
         @Request() req,
     ): Promise<GetSubventionsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
-        const subventions = await associationService.getSubventions(associationIdentifiers);
+        const subventions = await associationService.getDemandes(associationIdentifiers);
         return { subventions };
     }
 

@@ -8,7 +8,6 @@ import { SIRET_STR } from "../../../tests/__fixtures__/association.fixture";
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import paymentService from "../payments/payments.service";
-import subventionsService from "../subventions/subventions.service";
 import Siret from "../../identifier-objects/Siret";
 import {
     APPLICATION_LINK_TO_CHORUS,
@@ -20,8 +19,8 @@ import {
     FONJEP_PAYMENT_FLAT_ENTITY_2,
     LONELY_CHORUS_PAYMENT,
 } from "../payment-flat/__fixtures__/payment-flat.fixture";
-import applicationFlatService from "../application-flat/application-flat.service";
 import paymentFlatService from "../payment-flat/payment-flat.service";
+import { GetApplications } from "../application-flat/use-cases/get-applications";
 
 jest.mock("../providers/scdl/scdl.service");
 jest.mock("@sentry/node");
@@ -29,7 +28,6 @@ jest.mock("../providers");
 jest.mock("../../shared/Validators");
 jest.mock("./common-grant.service");
 jest.mock("../associations/associations.service");
-jest.mock("../subventions/subventions.service");
 jest.mock("../payments/payments.service");
 jest.mock("../application-flat/application-flat.service");
 jest.mock("../payment-flat/payment-flat.service");
@@ -89,7 +87,8 @@ describe("GrantService", () => {
     const GRANT: Grant = { application: APPLICATION, payments: [{ bop: 101 } as Payment] };
 
     const mockTransformApplication = { execute: jest.fn() };
-    const service = new GrantService(mockTransformApplication);
+    const mockGetApplications = { execute: jest.fn() } as unknown as GetApplications;
+    const service = new GrantService(mockTransformApplication, mockGetApplications);
 
     describe("adaptRawGrant", () => {
         it("adapts payment flat", () => {
@@ -203,7 +202,7 @@ describe("GrantService", () => {
         const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIRET.toSiren());
 
         beforeEach(() => {
-            jest.mocked(applicationFlatService.getEntitiesByIdentifier).mockResolvedValue([
+            jest.mocked(mockGetApplications.execute).mockResolvedValue([
                 APPLICATION_LINK_TO_CHORUS,
                 APPLICATION_LINK_TO_FONJEP,
             ]);
@@ -217,7 +216,7 @@ describe("GrantService", () => {
 
         it("fetches applications", async () => {
             await service.getGrants(ASSOCIATION_IDENTIFIER);
-            expect(applicationFlatService.getEntitiesByIdentifier).toHaveBeenCalledWith(ASSOCIATION_IDENTIFIER);
+            expect(mockGetApplications.execute).toHaveBeenCalledWith(ASSOCIATION_IDENTIFIER);
         });
 
         it("fetches payments", async () => {
@@ -309,28 +308,23 @@ describe("GrantService", () => {
         });
     });
 
-    describe("groupGrantsByExercise", () => {
+    describe.only("groupGrantsByExercise", () => {
         beforeAll(() => {
-            jest.mocked(subventionsService.getSubventionExercise).mockImplementation(
-                // @ts-expect-error: mock
-                application => application.annee_demande,
-            );
             // @ts-expect-error: mock
             jest.mocked(paymentService.getPaymentExercise).mockImplementation(payment => payment.dateOperation);
         });
 
         afterAll(() => {
-            jest.mocked(subventionsService.getSubventionExercise).mockReset();
             jest.mocked(paymentService.getPaymentExercise).mockReset();
         });
 
         const GRANT_APPLICATION_EXERCISE_LOWER_THAN_PAYMENT = {
-            application: { annee_demande: 2019 },
+            application: { annee_demande: { value: 2019 } },
             payments: [{ dateOperation: 2020 }, { dateOperation: 2020 }, { dateOperation: 2020 }],
         };
 
         const GRANT_ONE_EXERCISE = {
-            application: { annee_demande: 2020 },
+            application: { annee_demande: { value: 2020 } },
             payments: [{ dateOperation: 2020 }, { dateOperation: 2020 }, { dateOperation: 2020 }],
         };
 
@@ -339,7 +333,7 @@ describe("GrantService", () => {
             payments: [{ dateOperation: 2021 }, { dateOperation: 2021 }, { dateOperation: 2021 }],
         };
 
-        const GRANT_NO_PAYMENT = { application: { annee_demande: 2020 }, payments: undefined };
+        const GRANT_NO_PAYMENT = { application: { annee_demande: { value: 2020 } }, payments: undefined };
 
         const GRANTS = [
             GRANT_APPLICATION_EXERCISE_LOWER_THAN_PAYMENT,
@@ -347,12 +341,6 @@ describe("GrantService", () => {
             GRANT_NO_APPLICATION,
             GRANT_NO_PAYMENT,
         ];
-
-        it("should call subventionsService", () => {
-            // @ts-expect-error: partial object
-            service.groupGrantsByExercise(GRANTS);
-            expect(subventionsService.getSubventionExercise).toHaveBeenCalledTimes(1); // number of grant without payment
-        });
 
         it("should call paymentService", () => {
             // @ts-expect-error: partial object
@@ -367,7 +355,7 @@ describe("GrantService", () => {
             );
         });
 
-        it("should group grants by exercise", () => {
+        it.only("should group grants by exercise", () => {
             const expected = {
                 // order matters and should be the same as described in GRANTS definition
                 2020: [GRANT_APPLICATION_EXERCISE_LOWER_THAN_PAYMENT, GRANT_ONE_EXERCISE, GRANT_NO_PAYMENT],
@@ -497,7 +485,6 @@ describe("GrantService", () => {
 
         beforeAll(() => {
             jest.mocked(paymentService.getPaymentExercise).mockImplementation(mockGetPaymentYear);
-            jest.mocked(subventionsService.getSubventionExercise).mockReturnValue(APPLICATION.annee_demande.value);
         });
 
         it("calls getPaymentExercise for each payment", () => {

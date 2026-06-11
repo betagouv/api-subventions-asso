@@ -1,7 +1,5 @@
-import type { ApplicationFlatDto, DemandeSubvention } from "dto";
+import type { ApplicationFlatDto } from "dto";
 import applicationFlatAdapter from "../../adapters/outputs/db/application-flat/application-flat.adapter";
-import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import { RawApplication } from "../grant/@types/RawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/provider.core";
@@ -11,38 +9,17 @@ import { StructureIdentifier } from "../../identifier-objects/@types/StructureId
 import { ReadableStream } from "node:stream/web";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import GrantProvider from "../grant/@types/GrantProvider";
-import { StructureProvider } from "../StructureProvider";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
-import transformToDemandeSubvention, {
-    TransformToDemandeSubvention,
-} from "./use-cases/transform-to-demande-subvention";
+import getApplications, { GetApplications } from "./use-cases/get-applications";
 
-export class ApplicationFlatService extends ProviderCore implements GrantProvider, StructureProvider {
-    constructor(private transformToDemandeSubvention: TransformToDemandeSubvention) {
+export class ApplicationFlatService extends ProviderCore implements GrantProvider {
+    constructor(private getApplications: GetApplications) {
         super({
             name: "Application Flat",
             type: ProviderEnum.technical,
             description: "ApplicationFlat",
             id: "application-flat",
         });
-    }
-
-    async getEntitiesByIdentifier(identifier: StructureIdentifier) {
-        const requests: ApplicationFlatEntity[] = [];
-
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            requests.push(...(await applicationFlatAdapter.findBySiret(identifier.siret)));
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            requests.push(...(await applicationFlatAdapter.findBySiren(identifier.siren)));
-        }
-        return requests;
-    }
-
-    async getApplication(identifier: StructureIdentifier): Promise<DemandeSubvention[]> {
-        const requests = await this.getEntitiesByIdentifier(identifier);
-        return requests
-            .map(document => this.transformToDemandeSubvention.execute(document))
-            .filter(demande => !!demande) as DemandeSubvention[];
     }
 
     /**
@@ -54,7 +31,7 @@ export class ApplicationFlatService extends ProviderCore implements GrantProvide
     isGrantProvider = true;
 
     async getRawGrants(identifier: StructureIdentifier): Promise<RawApplication[]> {
-        const entities = await this.getEntitiesByIdentifier(identifier);
+        const entities = await this.getApplications.execute(identifier);
         return entities.map(grant => ({
             provider: "application-flat",
             type: "application",
@@ -98,11 +75,11 @@ export class ApplicationFlatService extends ProviderCore implements GrantProvide
     }
 
     async getApplicationsDto(identifier: StructureIdentifier): Promise<ApplicationFlatDto[]> {
-        const applications = await this.getEntitiesByIdentifier(identifier);
+        const applications = await this.getApplications.execute(identifier);
         return applications.map(entity => ApplicationFlatMapper.toDto(entity));
     }
 }
 
-const applicationFlatService = new ApplicationFlatService(transformToDemandeSubvention);
+const applicationFlatService = new ApplicationFlatService(getApplications);
 
 export default applicationFlatService;

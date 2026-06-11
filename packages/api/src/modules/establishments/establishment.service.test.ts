@@ -1,8 +1,7 @@
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import documentsService from "../documents/documents.service";
-import subventionsService from "../subventions/subventions.service";
 import paymentService from "../payments/payments.service";
-import establishmentService from "./establishment.service";
+import { EstablishmentService } from "./establishment.service";
 import { NotFoundError } from "core";
 import grantService from "../grant/grant.service";
 import Siren from "../../identifier-objects/Siren";
@@ -10,6 +9,7 @@ import Siret from "../../identifier-objects/Siret";
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import { DemandeSubvention } from "dto";
+import { GetSubventionsByIdentifier } from "../application-flat/use-cases/get-subventions-by-identifier";
 jest.mock("../grant/grant.service");
 
 type asyncPrivateMock<T> = jest.SpyInstance<Promise<T>>;
@@ -20,17 +20,18 @@ const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
 const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
 
 describe("EstablishmentService", () => {
-    //@ts-expect-error: mock private method
-    const aggregateMock = jest.spyOn(establishmentService, "aggregate") as asyncPrivateMock<Establishment>;
-
-    (
-        jest
-            //@ts-expect-error: mock private method
-            .spyOn(establishmentService, "scoreEstablishment") as asyncPrivateMock<number>
-    ).mockResolvedValue(1);
-
     // @ts-expect-error because formatHelper does black magic
     jest.spyOn(FormaterHelper, "formatData").mockImplementation(data => data);
+
+    const mockGetSubventions = { execute: jest.fn() } as unknown as GetSubventionsByIdentifier;
+    const service = new EstablishmentService(mockGetSubventions);
+    //@ts-expect-error: mock private method
+    const aggregateMock = jest.spyOn(service, "aggregate") as asyncPrivateMock<Establishment>;
+
+    //@ts-expect-error: mock private method
+    jest.spyOn(service, "scoreEstablishment")
+        // @ts-expect-error: mock return value
+        .mockResolvedValue(1);
 
     describe("getEstablishment()", () => {
         it("should throw NotFoundError", async () => {
@@ -38,7 +39,7 @@ describe("EstablishmentService", () => {
             const expected = new NotFoundError("Establishment not found");
             aggregateMock.mockImplementationOnce(async () => ({ data: [] }));
             try {
-                actual = await establishmentService.getEstablishment(ESTABLISHMENT_ID);
+                actual = await service.getEstablishment(ESTABLISHMENT_ID);
             } catch (e) {
                 actual = e;
             }
@@ -48,7 +49,7 @@ describe("EstablishmentService", () => {
 
     describe("getOldGrants", () => {
         it("should call grantService.getOldGrants()", () => {
-            establishmentService.getOldGrants(ESTABLISHMENT_ID);
+            service.getOldGrants(ESTABLISHMENT_ID);
             expect(grantService.getOldGrants).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
     });
@@ -59,20 +60,18 @@ describe("EstablishmentService", () => {
         it("should call payment service", async () => {
             getPaymentsBySiretMock.mockImplementation(async () => []);
 
-            await establishmentService.getPayments(ESTABLISHMENT_ID);
+            await service.getPayments(ESTABLISHMENT_ID);
 
             expect(getPaymentsBySiretMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
     });
 
-    describe("getSubventions()", () => {
-        const getDemandesByEstablishmentMock = jest.spyOn(subventionsService, "getDemandes");
-
+    describe("getDemandes()", () => {
         it("should call DemandeSubventionService.getByAssociation()", async () => {
             // @ts-expect-error: mock resolved value
-            getDemandesByEstablishmentMock.mockResolvedValueOnce([{} as DemandeSubvention]);
-            establishmentService.getSubventions(ESTABLISHMENT_ID);
-            expect(getDemandesByEstablishmentMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
+            mockGetSubventions.execute.mockResolvedValueOnce([{} as DemandeSubvention]);
+            service.getDemandes(ESTABLISHMENT_ID);
+            expect(mockGetSubventions.execute).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
     });
 
@@ -82,7 +81,7 @@ describe("EstablishmentService", () => {
         it("should call subventions service", async () => {
             getDocumentBySiretMock.mockImplementation(async () => []);
 
-            await establishmentService.getDocuments(ESTABLISHMENT_ID);
+            await service.getDocuments(ESTABLISHMENT_ID);
 
             expect(getDocumentBySiretMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
@@ -94,7 +93,7 @@ describe("EstablishmentService", () => {
         it("should call subventions service", async () => {
             getRibsBySiretMock.mockImplementation(async () => []);
 
-            await establishmentService.getRibs(ESTABLISHMENT_ID);
+            await service.getRibs(ESTABLISHMENT_ID);
 
             expect(getRibsBySiretMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
