@@ -19,7 +19,7 @@ describe("associationsService", () => {
     const RNA = new Rna("W000000001");
     const SIREN = new Siren("100000001");
     const IDENTIFIER = AssociationIdentifier.fromSirenAndRna(SIREN, RNA);
-    const getPaymentsByAssociationMock = jest.spyOn(paymentService, "getPayments");
+    const getPaymentsByAssociationMock = jest.spyOn(paymentService, "getPaiements");
     const getDocumentMock = jest.spyOn(documentsService, "getDocuments");
     const getEstablishmentsMock = jest.spyOn(establishmentService, "getEstablishments");
 
@@ -105,10 +105,10 @@ describe("associationsService", () => {
         });
     });
 
-    describe("getPayments()", () => {
+    describe("getPaiements()", () => {
         it("should call DemandeSubventionService.getByAssociation()", async () => {
             getPaymentsByAssociationMock.mockImplementationOnce(() => Promise.resolve([{}] as Payment[]));
-            await service.getPayments(IDENTIFIER);
+            await service.getPaiements(IDENTIFIER);
             expect(getPaymentsByAssociationMock).toHaveBeenCalledWith(IDENTIFIER);
         });
     });

@@ -1,7 +1,5 @@
 import { Payment, PaymentFlatDto } from "dto";
 import paymentFlatAdapter from "../../adapters/outputs/db/payment-flat/payment-flat.adapter";
-import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import { RawPayment } from "../grant/@types/RawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/provider.core";
@@ -10,9 +8,10 @@ import PaymentFlatMapper from "./payment-flat.mapper";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
+import getPayments, { GetPayments } from "./use-cases/get-payments";
 
 export class PaymentFlatService extends ProviderCore implements GrantProvider {
-    constructor() {
+    constructor(private getPayments: GetPayments) {
         super({
             name: "Payment Flat",
             type: ProviderEnum.technical,
@@ -39,24 +38,13 @@ export class PaymentFlatService extends ProviderCore implements GrantProvider {
         return PaymentFlatMapper.rawToPayment(rawGrant);
     }
 
-    async getEntitiesByIdentifier(identifier: StructureIdentifier): Promise<PaymentFlatEntity[]> {
-        const payments: PaymentFlatEntity[] = [];
-
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            payments.push(...(await paymentFlatAdapter.findBySiret(identifier.siret)));
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            payments.push(...(await paymentFlatAdapter.findBySiren(identifier.siren)));
-        }
-        return payments;
-    }
-
-    async getPayments(identifier: StructureIdentifier): Promise<Payment[]> {
-        const payments = await this.getEntitiesByIdentifier(identifier);
+    async getPaiements(identifier: StructureIdentifier): Promise<Payment[]> {
+        const payments = await this.getPayments.execute(identifier);
         return this.toPaymentArray(payments);
     }
 
     async getPaymentsDto(identifier: StructureIdentifier): Promise<PaymentFlatDto[]> {
-        const payments: PaymentFlatEntity[] = await this.getEntitiesByIdentifier(identifier);
+        const payments: PaymentFlatEntity[] = await this.getPayments.execute(identifier);
         return payments.map(entity => PaymentFlatMapper.toDto(entity));
     }
 
@@ -75,12 +63,7 @@ export class PaymentFlatService extends ProviderCore implements GrantProvider {
     isGrantProvider = true;
 
     async getRawGrants(identifier: StructureIdentifier): Promise<RawPayment[]> {
-        let entities: PaymentFlatEntity[] = [];
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            entities = await paymentFlatAdapter.findBySiret(identifier.siret);
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            entities = await paymentFlatAdapter.findBySiren(identifier.siren);
-        }
+        const entities = await this.getPayments.execute(identifier);
 
         return entities.map(grant => ({
             provider: "payment-flat",
@@ -95,6 +78,6 @@ export class PaymentFlatService extends ProviderCore implements GrantProvider {
     }
 }
 
-const paymentFlatService = new PaymentFlatService();
+const paymentFlatService = new PaymentFlatService(getPayments);
 
 export default paymentFlatService;

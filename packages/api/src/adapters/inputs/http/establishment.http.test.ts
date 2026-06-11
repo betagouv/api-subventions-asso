@@ -55,17 +55,17 @@ describe("EstablishmentHttp", () => {
         });
     });
 
-    describe("getPayments", () => {
-        const getDemandesSpy = jest.spyOn(establishmentService, "getPayments");
+    describe("getPaiements", () => {
+        const getPaiementsSpy = jest.spyOn(establishmentService, "getPaiements");
         it("should call service with args", async () => {
-            getDemandesSpy.mockImplementationOnce(jest.fn());
+            getPaiementsSpy.mockImplementationOnce(jest.fn());
             await controller.getPaymentsEstablishement(SIRET.value, REQ);
-            expect(getDemandesSpy).toHaveBeenCalledWith(ESTABLISHMENT_ID);
+            expect(getPaiementsSpy).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
 
         it("should return payments", async () => {
             // @ts-expect-error: mock
-            getDemandesSpy.mockImplementationOnce(() => payments);
+            getPaiementsSpy.mockImplementationOnce(() => payments);
             const payments = [{}];
             const expected = { versements: payments };
             const actual = await controller.getPaymentsEstablishement(SIRET.value, REQ);

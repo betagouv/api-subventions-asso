@@ -21,6 +21,7 @@ import {
 } from "../payment-flat/__fixtures__/payment-flat.fixture";
 import paymentFlatService from "../payment-flat/payment-flat.service";
 import { GetApplications } from "../application-flat/use-cases/get-applications";
+import { GetPayments } from "../payment-flat/use-cases/get-payments";
 
 jest.mock("../providers/scdl/scdl.service");
 jest.mock("@sentry/node");
@@ -88,7 +89,8 @@ describe("GrantService", () => {
 
     const mockTransformApplication = { execute: jest.fn() };
     const mockGetApplications = { execute: jest.fn() } as unknown as GetApplications;
-    const service = new GrantService(mockTransformApplication, mockGetApplications);
+    const mockGetPayments = { execute: jest.fn() } as unknown as GetPayments;
+    const service = new GrantService(mockTransformApplication, mockGetApplications, mockGetPayments);
 
     describe("adaptRawGrant", () => {
         it("adapts payment flat", () => {
@@ -206,7 +208,7 @@ describe("GrantService", () => {
                 APPLICATION_LINK_TO_CHORUS,
                 APPLICATION_LINK_TO_FONJEP,
             ]);
-            jest.mocked(paymentFlatService.getEntitiesByIdentifier).mockResolvedValue([
+            jest.mocked(mockGetPayments.execute).mockResolvedValue([
                 CHORUS_PAYMENT_FLAT_ENTITY,
                 LONELY_CHORUS_PAYMENT,
                 FONJEP_PAYMENT_FLAT_ENTITY,
@@ -221,7 +223,7 @@ describe("GrantService", () => {
 
         it("fetches payments", async () => {
             await service.getGrants(ASSOCIATION_IDENTIFIER);
-            expect(paymentFlatService.getEntitiesByIdentifier).toHaveBeenCalledWith(ASSOCIATION_IDENTIFIER);
+            expect(mockGetPayments.execute).toHaveBeenCalledWith(ASSOCIATION_IDENTIFIER);
         });
 
         it("return grants", async () => {
@@ -308,7 +310,7 @@ describe("GrantService", () => {
         });
     });
 
-    describe.only("groupGrantsByExercise", () => {
+    describe("groupGrantsByExercise", () => {
         beforeAll(() => {
             // @ts-expect-error: mock
             jest.mocked(paymentService.getPaymentExercise).mockImplementation(payment => payment.dateOperation);
@@ -355,7 +357,7 @@ describe("GrantService", () => {
             );
         });
 
-        it.only("should group grants by exercise", () => {
+        it("should group grants by exercise", () => {
             const expected = {
                 // order matters and should be the same as described in GRANTS definition
                 2020: [GRANT_APPLICATION_EXERCISE_LOWER_THAN_PAYMENT, GRANT_ONE_EXERCISE, GRANT_NO_PAYMENT],

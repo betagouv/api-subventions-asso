@@ -30,12 +30,14 @@ import transformToDemandeSubvention, {
     TransformToDemandeSubvention,
 } from "../application-flat/use-cases/transform-to-demande-subvention";
 import getApplications, { GetApplications } from "../application-flat/use-cases/get-applications";
+import getPayments, { GetPayments } from "../payment-flat/use-cases/get-payments";
 
 export class GrantService {
     // Done in constructor to avoid circular dependency issue
     constructor(
         private transformToDemandeSubvention: TransformToDemandeSubvention,
         private getApplications: GetApplications,
+        private getPayments: GetPayments,
     ) {}
 
     adaptRawGrant(rawGrant: AnyRawGrant) {
@@ -146,7 +148,7 @@ export class GrantService {
 
     async getGrants(identifier: StructureIdentifier): Promise<GrantFlatEntity[]> {
         const applications = await this.getApplications.execute(identifier);
-        const payments = await paymentFlatService.getEntitiesByIdentifier(identifier);
+        const payments = await this.getPayments.execute(identifier);
 
         // init with applications
         const grants: GrantFlatEntity[] = applications.map(application => ({
@@ -314,6 +316,6 @@ export class GrantService {
     }
 }
 
-const grantService = new GrantService(transformToDemandeSubvention, getApplications);
+const grantService = new GrantService(transformToDemandeSubvention, getApplications, getPayments);
 
 export default grantService;

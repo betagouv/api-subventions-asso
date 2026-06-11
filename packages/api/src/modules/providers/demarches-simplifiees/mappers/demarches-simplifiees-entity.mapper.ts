@@ -109,8 +109,6 @@ export class DemarchesSimplifieesEntityMapper {
             ...DemarchesSimplifieesEntityMapper.mapSchema(entity, schema, "flatSchema"),
         };
 
-        console.log(entity, applicationFromSchema);
-
         const application: Partial<ApplicationFlatEntity> = {};
 
         application.statusLabel = toStatusFactory(DemarchesSimplifieesEntityMapper._statusConversionArray)(

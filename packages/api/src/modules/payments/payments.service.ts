@@ -3,8 +3,8 @@ import { StructureIdentifier } from "../../identifier-objects/@types/StructureId
 import paymentFlatService from "../payment-flat/payment-flat.service";
 
 export class PaymentsService {
-    async getPayments(identifier: StructureIdentifier) {
-        return paymentFlatService.getPayments(identifier);
+    async getPaiements(identifier: StructureIdentifier) {
+        return paymentFlatService.getPaiements(identifier);
     }
 
     /**

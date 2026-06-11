@@ -54,13 +54,13 @@ describe("EstablishmentService", () => {
         });
     });
 
-    describe("getPayments", () => {
-        const getPaymentsBySiretMock = jest.spyOn(paymentService, "getPayments");
+    describe("getPaiements", () => {
+        const getPaymentsBySiretMock = jest.spyOn(paymentService, "getPaiements");
 
         it("should call payment service", async () => {
             getPaymentsBySiretMock.mockImplementation(async () => []);
 
-            await service.getPayments(ESTABLISHMENT_ID);
+            await service.getPaiements(ESTABLISHMENT_ID);
 
             expect(getPaymentsBySiretMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });

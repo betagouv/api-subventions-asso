@@ -213,7 +213,7 @@ export class EstablishmentHttp extends Controller {
         @Request() req,
     ): Promise<GetPaymentsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
-        const payments = await establishmentService.getPayments(estabIdentifier);
+        const payments = await establishmentService.getPaiements(estabIdentifier);
         return { versements: payments };
     }
 

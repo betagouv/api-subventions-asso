@@ -86,8 +86,8 @@ export class EstablishmentService {
         return this.getSubventions.execute(id);
     }
 
-    async getPayments(id: EstablishmentIdentifier) {
-        return await paymentService.getPayments(id);
+    async getPaiements(id: EstablishmentIdentifier) {
+        return await paymentService.getPaiements(id);
     }
 
     async getDocuments(id: EstablishmentIdentifier) {

@@ -80,11 +80,11 @@ describe("AssociationHttp", () => {
         });
     });
 
-    describe("getPayments", () => {
-        const getDemandesSpy = jest.spyOn(associationsService, "getPayments");
+    describe("getPaiements", () => {
+        const getDemandesSpy = jest.spyOn(associationsService, "getPaiements");
         it("should call service with args", async () => {
             getDemandesSpy.mockImplementationOnce(jest.fn());
-            await controller.getPayments(IDENTIFIER.value, REQ);
+            await controller.getPaiements(IDENTIFIER.value, REQ);
             expect(getDemandesSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
 
@@ -93,7 +93,7 @@ describe("AssociationHttp", () => {
             getDemandesSpy.mockImplementationOnce(() => payments);
             const payments = [{}];
             const expected = { versements: payments };
-            const actual = await controller.getPayments(IDENTIFIER.value, REQ);
+            const actual = await controller.getPaiements(IDENTIFIER.value, REQ);
             expect(actual).toEqual(expected);
         });
     });

@@ -167,13 +167,13 @@ export class AssociationHttp extends Controller {
     })
     @Deprecated()
     @Get("/versements")
-    public async getPayments(
+    public async getPaiements(
         @Path() identifier: AssociationIdentifierDto,
         @Request() req,
     ): Promise<GetPaymentsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
 
-        const payments = await associationService.getPayments(associationIdentifiers);
+        const payments = await associationService.getPaiements(associationIdentifiers);
         return { versements: payments };
     }
 

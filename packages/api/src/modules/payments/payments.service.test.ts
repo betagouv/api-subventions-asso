@@ -8,14 +8,14 @@ jest.mock("../payment-flat/payment-flat.service");
 
 describe("PaymentsService", () => {
     const PAYMENT_KEY = "J00034";
-    describe("getPayments", () => {
+    describe("getPaiements", () => {
         it("should call getPaymentsBySiren", async () => {
             const SIREN = new Siren("000000000");
             const expected = AssociationIdentifier.fromSiren(SIREN);
 
-            await paymentsService.getPayments(expected);
+            await paymentsService.getPaiements(expected);
 
-            expect(paymentFlatService.getPayments).toHaveBeenCalledWith(expected);
+            expect(paymentFlatService.getPaiements).toHaveBeenCalledWith(expected);
         });
     });
 

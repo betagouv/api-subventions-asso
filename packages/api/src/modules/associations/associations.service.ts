@@ -76,8 +76,8 @@ export class AssociationsService {
         return this.getSubventions.execute(identifier);
     }
 
-    getPayments(identifier: AssociationIdentifier) {
-        return paymentService.getPayments(identifier);
+    getPaiements(identifier: AssociationIdentifier) {
+        return paymentService.getPaiements(identifier);
     }
 
     /**
