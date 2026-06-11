@@ -8,7 +8,6 @@ import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import providers from "../providers";
 import FonjepEntityMapper from "../providers/fonjep/mappers/fonjep-entity.mapper";
 import ApiAssoDtoMapper from "../providers/api-asso/mappers/api-asso.dto.mapper";
-import grantService from "../grant/grant.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseMapper from "../providers/api-entreprise/mappers/api-entreprise.mapper";
@@ -20,6 +19,7 @@ import { StructureIdentifier } from "../../identifier-objects/@types/StructureId
 import getSubventionsByIdentifier, {
     GetSubventionsByIdentifier,
 } from "../application-flat/use-cases/get-subventions-by-identifier";
+import rawGrantService from "../grant/raw-grant.service";
 
 export class EstablishmentService {
     constructor(private getSubventions: GetSubventionsByIdentifier) {}
@@ -79,7 +79,7 @@ export class EstablishmentService {
     }
 
     getOldGrants(id: EstablishmentIdentifier) {
-        return grantService.getOldGrants(id);
+        return rawGrantService.getOldGrants(id);
     }
 
     async getDemandes(id: EstablishmentIdentifier) {

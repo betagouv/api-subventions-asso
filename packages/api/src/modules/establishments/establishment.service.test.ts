@@ -3,14 +3,14 @@ import documentsService from "../documents/documents.service";
 import paymentService from "../payments/payments.service";
 import { EstablishmentService } from "./establishment.service";
 import { NotFoundError } from "core";
-import grantService from "../grant/grant.service";
 import Siren from "../../identifier-objects/Siren";
 import Siret from "../../identifier-objects/Siret";
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import { DemandeSubvention } from "dto";
 import { GetSubventionsByIdentifier } from "../application-flat/use-cases/get-subventions-by-identifier";
-jest.mock("../grant/grant.service");
+import rawGrantService from "../grant/raw-grant.service";
+jest.mock("../grant/raw-grant.service");
 
 type asyncPrivateMock<T> = jest.SpyInstance<Promise<T>>;
 
@@ -48,9 +48,9 @@ describe("EstablishmentService", () => {
     });
 
     describe("getOldGrants", () => {
-        it("should call grantService.getOldGrants()", () => {
+        it("fetches grants to old format", () => {
             service.getOldGrants(ESTABLISHMENT_ID);
-            expect(grantService.getOldGrants).toHaveBeenCalledWith(ESTABLISHMENT_ID);
+            expect(rawGrantService.getOldGrants).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
     });
 

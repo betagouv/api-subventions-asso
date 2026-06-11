@@ -9,8 +9,10 @@ import Siren from "../../../identifier-objects/Siren";
 import grantExtractService from "../../../modules/grant/grant-extract.service";
 import { errorHandler } from "../../../middlewares/error.middleware";
 import associationHelper from "../../../modules/associations/associations.helper";
+import rawGrantService from "../../../modules/grant/raw-grant.service";
 
 jest.mock("../../../modules/grant/grant.service");
+jest.mock("../../../modules/grant/raw-grant.service");
 jest.mock("../../../modules/grant/grant-extract.service");
 jest.mock("../../../modules/association-identifier/association-identifier.service");
 jest.mock("../../../middlewares/error.middleware");
@@ -52,12 +54,12 @@ describe("AssociationHttp", () => {
 
     describe("getOldGrants", () => {
         beforeAll(() => {
-            jest.mocked(grantService.getOldGrants).mockResolvedValue([]);
+            jest.mocked(rawGrantService.getOldGrants).mockResolvedValue([]);
         });
 
         it("should call grantService.getOldGrants()", async () => {
             await controller.getOldGrants(IDENTIFIER.value, REQ);
-            expect(grantService.getOldGrants).toHaveBeenCalledWith(ASSOCIATION_ID);
+            expect(rawGrantService.getOldGrants).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
     });
 
