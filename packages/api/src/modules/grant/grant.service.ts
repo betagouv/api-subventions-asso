@@ -31,13 +31,16 @@ import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import ApplicationFlatMapper from "../application-flat/application-flat.mapper";
 import PaymentFlatMapper from "../payment-flat/payment-flat.mapper";
+import transformToDemandeSubvention, {
+    TransformToDemandeSubvention,
+} from "../application-flat/use-cases/transform-to-demande-subvention";
 
 export class GrantService {
     applicationProvidersById: Record<string, ApplicationProvider>;
     paymentProvidersById: Record<string, PaymentProvider>;
 
     // Done in constructor to avoid circular dependency issue
-    constructor() {
+    constructor(private transformToDemandeSubvention: TransformToDemandeSubvention) {
         this.applicationProvidersById = providersById(applicationProviders);
         this.paymentProvidersById = providersById(paymentProviders);
     }
@@ -45,7 +48,7 @@ export class GrantService {
     adaptRawGrant(rawGrant: AnyRawGrant) {
         switch (rawGrant.type) {
             case "application": {
-                return applicationFlatService.rawToApplication(rawGrant as RawApplication);
+                return this.transformToDemandeSubvention.execute(rawGrant.data);
             }
             case "payment":
                 return paymentFlatService.rawToPayment(rawGrant as RawPayment);
@@ -320,6 +323,6 @@ export class GrantService {
     }
 }
 
-const grantService = new GrantService();
+const grantService = new GrantService(transformToDemandeSubvention);
 
 export default grantService;

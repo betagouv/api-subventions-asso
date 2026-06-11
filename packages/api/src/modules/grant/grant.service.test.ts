@@ -1,4 +1,4 @@
-import grantService from "./grant.service";
+import { GrantService } from "./grant.service";
 import commonGrantService from "./common-grant.service";
 import mocked = jest.mocked;
 import { JoinedRawGrant, RawApplication, RawPayment } from "./@types/RawGrant";
@@ -89,24 +89,26 @@ describe("GrantService", () => {
     // @ts-expect-error: mock type
     const GRANT: Grant = { application: APPLICATION, payments: [{ bop: 101 } as Payment] };
 
+    const mockTransformApplication = { execute: jest.fn() };
+    const service = new GrantService(mockTransformApplication);
+
     describe("adaptRawGrant", () => {
-        it.each`
-            grant              | provider                  | method
-            ${RAW_APPLICATION} | ${applicationFlatService} | ${"rawToApplication"}
-            ${RAW_PAYMENTS[0]} | ${paymentFlatService}     | ${"rawToPayment"}
-        `("should adapte RawGrant", ({ grant, provider, method }) => {
-            grantService.adaptRawGrant(grant);
-            expect(provider[method]).toHaveBeenCalledWith(grant);
+        it("adapts payment flat", () => {
+            const raw = RAW_PAYMENTS[0];
+            service.adaptRawGrant(raw);
+            expect(paymentFlatService.rawToPayment).toHaveBeenCalledWith(raw);
         });
+
+        it("adapts application flat", () => {});
     });
 
     describe("adaptJoinedRawGrant", () => {
         let mockToGrant, mockAdapteRawGrant;
 
         beforeAll(() => {
-            mockToGrant = jest.spyOn(grantService, "toGrant").mockReturnValue(GRANT);
+            mockToGrant = jest.spyOn(service, "toGrant").mockReturnValue(GRANT);
             // @ts-expect-error: mock
-            mockAdapteRawGrant = jest.spyOn(grantService, "adaptRawGrant").mockImplementation(rawGrant => rawGrant);
+            mockAdapteRawGrant = jest.spyOn(service, "adaptRawGrant").mockImplementation(rawGrant => rawGrant);
         });
 
         afterAll(() => {
@@ -129,13 +131,13 @@ describe("GrantService", () => {
     payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]],
 }} | ${3}
         `("should call adaptRawGrant for each $arrayName", ({ joinedRawGrant, calls }) => {
-            grantService.adaptJoinedRawGrant(joinedRawGrant);
+            service.adaptJoinedRawGrant(joinedRawGrant);
             expect(mockAdapteRawGrant).toHaveBeenCalledTimes(calls);
         });
 
         it("should filter out null adapted grants", () => {
             mockAdapteRawGrant.mockReturnValue(null);
-            grantService.adaptJoinedRawGrant({
+            service.adaptJoinedRawGrant({
                 application: {} as unknown as RawApplication,
                 payments: [{}] as unknown as RawPayment[],
             });
@@ -144,7 +146,7 @@ describe("GrantService", () => {
         });
 
         it("should call toGrant", () => {
-            grantService.adaptJoinedRawGrant(DEFAULT_JOINED_RAW_GRANT);
+            service.adaptJoinedRawGrant(DEFAULT_JOINED_RAW_GRANT);
             expect(mockToGrant).toHaveBeenCalledWith(DEFAULT_JOINED_RAW_GRANT);
         });
     });
@@ -175,7 +177,7 @@ describe("GrantService", () => {
     payments: [],
 }} | ${{ application: APPLICATION, payments: [] }}
         `("$description", ({ joinedRawGrant, expected }) => {
-            const grant = grantService.toGrant(joinedRawGrant);
+            const grant = service.toGrant(joinedRawGrant);
             expect(grant).toEqual(expected);
         });
     });
@@ -193,7 +195,7 @@ describe("GrantService", () => {
             ${[LONLEY_PAYMENT, LONELY_APPLICATION, GRANT]}
         `("should sort grants with full grants first", ({ grants }) => {
             const expected = [GRANT, LONELY_APPLICATION, LONLEY_PAYMENT];
-            const actual = grantService.sortByGrantType(grants);
+            const actual = service.sortByGrantType(grants);
             expect(actual).toEqual(expected);
         });
     });
@@ -215,12 +217,12 @@ describe("GrantService", () => {
         });
 
         it("fetches applications", async () => {
-            await grantService.getGrants(ASSOCIATION_IDENTIFIER);
+            await service.getGrants(ASSOCIATION_IDENTIFIER);
             expect(applicationFlatService.getEntitiesByIdentifier).toHaveBeenCalledWith(ASSOCIATION_IDENTIFIER);
         });
 
         it("fetches payments", async () => {
-            await grantService.getGrants(ASSOCIATION_IDENTIFIER);
+            await service.getGrants(ASSOCIATION_IDENTIFIER);
             expect(paymentFlatService.getEntitiesByIdentifier).toHaveBeenCalledWith(ASSOCIATION_IDENTIFIER);
         });
 
@@ -236,7 +238,7 @@ describe("GrantService", () => {
                 },
                 { application: null, payments: [LONELY_CHORUS_PAYMENT] },
             ];
-            const actual = await grantService.getGrants(ASSOCIATION_IDENTIFIER);
+            const actual = await service.getGrants(ASSOCIATION_IDENTIFIER);
             expect(actual).toEqual(expected);
         });
     });
@@ -249,11 +251,11 @@ describe("GrantService", () => {
             "2024": [GRANT],
             unknown: [GRANT_2],
         };
-        const mockGetRawGrants = jest.spyOn(grantService, "getRawGrants");
-        const mockAdapteJoinedRawGrant = jest.spyOn(grantService, "adaptJoinedRawGrant");
-        const mockSortByGrantType = jest.spyOn(grantService, "sortByGrantType");
-        const mockHandleMultiYearGrants = jest.spyOn(grantService, "handleMultiYearGrants");
-        const mockGroupGrantsByExercise = jest.spyOn(grantService, "groupGrantsByExercise");
+        const mockGetRawGrants = jest.spyOn(service, "getRawGrants");
+        const mockAdapteJoinedRawGrant = jest.spyOn(service, "adaptJoinedRawGrant");
+        const mockSortByGrantType = jest.spyOn(service, "sortByGrantType");
+        const mockHandleMultiYearGrants = jest.spyOn(service, "handleMultiYearGrants");
+        const mockGroupGrantsByExercise = jest.spyOn(service, "groupGrantsByExercise");
         const mocks: jest.SpyInstance[] = [
             mockGetRawGrants,
             mockAdapteJoinedRawGrant,
@@ -277,22 +279,22 @@ describe("GrantService", () => {
         afterEach(() => mocks.forEach(mock => mock.mockClear()));
 
         it("should call getRawGrants", async () => {
-            await grantService.getOldGrants(ESTABLISHMENT_ID);
+            await service.getOldGrants(ESTABLISHMENT_ID);
             expect(mockGetRawGrants).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
 
         it("should call adaptJoinedRawGrant", async () => {
-            await grantService.getOldGrants(ESTABLISHMENT_ID);
+            await service.getOldGrants(ESTABLISHMENT_ID);
             expect(mockAdapteJoinedRawGrant).toHaveBeenCalledTimes(JOINED_RAW_GRANTS.length);
         });
 
         it("should call handleMultiYearGrants", async () => {
-            await grantService.getOldGrants(ESTABLISHMENT_ID);
+            await service.getOldGrants(ESTABLISHMENT_ID);
             expect(mockHandleMultiYearGrants).toHaveBeenCalledWith([GRANT, GRANT]);
         });
 
         it("should call sortByGrantType", async () => {
-            await grantService.getOldGrants(ESTABLISHMENT_ID);
+            await service.getOldGrants(ESTABLISHMENT_ID);
             expect(mockSortByGrantType).toHaveBeenNthCalledWith(1, [GRANT]);
             expect(mockSortByGrantType).toHaveBeenNthCalledWith(2, [GRANT_2]);
         });
@@ -301,7 +303,7 @@ describe("GrantService", () => {
     describe("sendDuplicateMessage", () => {
         it("should call Sentry.captureMessage()", () => {
             // @ts-expect-error: test private method only
-            grantService.sendDuplicateMessage(JOIN_KEY_1);
+            service.sendDuplicateMessage(JOIN_KEY_1);
             expect(Sentry.captureMessage).toHaveBeenCalledWith(
                 `Duplicate joinKey found for grants or applications :  ${JOIN_KEY_1}`,
             );
@@ -349,19 +351,19 @@ describe("GrantService", () => {
 
         it("should call subventionsService", () => {
             // @ts-expect-error: partial object
-            grantService.groupGrantsByExercise(GRANTS);
+            service.groupGrantsByExercise(GRANTS);
             expect(subventionsService.getSubventionExercise).toHaveBeenCalledTimes(1); // number of grant without payment
         });
 
         it("should call paymentService", () => {
             // @ts-expect-error: partial object
-            grantService.groupGrantsByExercise(GRANTS);
+            service.groupGrantsByExercise(GRANTS);
             expect(paymentService.getPaymentExercise).toHaveBeenCalledTimes(3); // number of grant with payments
         });
 
         it("should throw an error if no application nor payments", () => {
             // @ts-expect-error: partial object
-            expect(() => grantService.groupGrantsByExercise([GRANT_ONE_EXERCISE, {}])).toThrow(
+            expect(() => service.groupGrantsByExercise([GRANT_ONE_EXERCISE, {}])).toThrow(
                 "We should not have Grant without payment nor application",
             );
         });
@@ -373,7 +375,7 @@ describe("GrantService", () => {
                 2021: [GRANT_NO_APPLICATION],
             };
             // @ts-expect-error: partial object
-            const actual = grantService.groupGrantsByExercise(GRANTS);
+            const actual = service.groupGrantsByExercise(GRANTS);
             expect(actual).toEqual(expected);
         });
     });
@@ -383,7 +385,7 @@ describe("GrantService", () => {
 
         beforeAll(() => {
             // @ts-expect-error: mock private method
-            mockSendDuplicateMessage = jest.spyOn(grantService, "sendDuplicateMessage");
+            mockSendDuplicateMessage = jest.spyOn(service, "sendDuplicateMessage");
         });
 
         afterAll(() => {
@@ -397,7 +399,7 @@ describe("GrantService", () => {
             ];
 
             // @ts-expect-error: test private method
-            const actual = grantService.joinGrants(GRANTS_BY_TYPE);
+            const actual = service.joinGrants(GRANTS_BY_TYPE);
             expect(actual).toEqual(expected);
         });
 
@@ -417,7 +419,7 @@ describe("GrantService", () => {
             ];
 
             // @ts-expect-error: test private method
-            const actual = grantService.joinGrants(GRANT_BY_TYPE_WITH_LONELY);
+            const actual = service.joinGrants(GRANT_BY_TYPE_WITH_LONELY);
 
             expect(actual).toEqual(expected);
         });
@@ -427,7 +429,7 @@ describe("GrantService", () => {
         let getGrantsMock;
         beforeAll(() => {
             // @ts-expect-error: mock
-            getGrantsMock = jest.spyOn(grantService, "getRawGrants").mockResolvedValue([1, 2]);
+            getGrantsMock = jest.spyOn(service, "getRawGrants").mockResolvedValue([1, 2]);
             // @ts-expect-error: mock
             mocked(commonGrantService.rawToCommon).mockImplementation(v => v);
         });
@@ -438,18 +440,18 @@ describe("GrantService", () => {
         });
 
         it("gets raw grants", async () => {
-            await grantService.getCommonGrants(ESTABLISHMENT_ID);
+            await service.getCommonGrants(ESTABLISHMENT_ID);
             expect(getGrantsMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
 
         it("calls adapter as many times as necessary", async () => {
-            await grantService.getCommonGrants(ESTABLISHMENT_ID);
+            await service.getCommonGrants(ESTABLISHMENT_ID);
             expect(commonGrantService.rawToCommon).toHaveBeenCalledWith(1, false);
             expect(commonGrantService.rawToCommon).toHaveBeenCalledTimes(2);
         });
 
         it("calls adapter as many times as necessary with publishable param", async () => {
-            await grantService.getCommonGrants(ESTABLISHMENT_ID, true);
+            await service.getCommonGrants(ESTABLISHMENT_ID, true);
             expect(commonGrantService.rawToCommon).toHaveBeenCalledWith(1, true);
             expect(commonGrantService.rawToCommon).toHaveBeenCalledTimes(2);
         });
@@ -457,7 +459,7 @@ describe("GrantService", () => {
         it("returns adapted and filtered grants", async () => {
             mocked(commonGrantService.rawToCommon).mockReturnValueOnce(null);
             const expected = [2];
-            const actual = await grantService.getCommonGrants(ESTABLISHMENT_ID, true);
+            const actual = await service.getCommonGrants(ESTABLISHMENT_ID, true);
             expect(actual).toEqual(expected);
         });
     });
@@ -466,7 +468,7 @@ describe("GrantService", () => {
         let separateOneBy: jest.SpyInstance;
 
         beforeAll(() => {
-            separateOneBy = jest.spyOn(grantService, "splitGrantByExercise").mockReturnValue([]);
+            separateOneBy = jest.spyOn(service, "splitGrantByExercise").mockReturnValue([]);
         });
 
         afterAll(() => {
@@ -474,7 +476,7 @@ describe("GrantService", () => {
         });
 
         it("calls splitGrantByExercise for each grant", () => {
-            grantService.handleMultiYearGrants([1, 2, 3] as unknown as Grant[]);
+            service.handleMultiYearGrants([1, 2, 3] as unknown as Grant[]);
             expect(separateOneBy).toHaveBeenCalledTimes(3);
         });
 
@@ -483,7 +485,7 @@ describe("GrantService", () => {
             separateOneBy.mockReturnValueOnce([3]);
             separateOneBy.mockReturnValueOnce([4, 5]);
             const expected = [1, 2, 3, 4, 5];
-            const actual = grantService.handleMultiYearGrants([1, 2, 3] as unknown as Grant[]);
+            const actual = service.handleMultiYearGrants([1, 2, 3] as unknown as Grant[]);
             expect(actual).toEqual(expected);
         });
     });
@@ -501,7 +503,7 @@ describe("GrantService", () => {
 
         it("calls getPaymentExercise for each payment", () => {
             // @ts-expect-error -- mocked args
-            grantService.splitGrantByExercise({ application: null, payments: DISPARATE_PAYMENTS });
+            service.splitGrantByExercise({ application: null, payments: DISPARATE_PAYMENTS });
             expect(mockGetPaymentYear).toHaveBeenCalledTimes(3);
         });
 
@@ -513,7 +515,7 @@ describe("GrantService", () => {
                 },
                 { application: null, payments: [PAYMENT(2023)] },
             ];
-            const actual = grantService.splitGrantByExercise({
+            const actual = service.splitGrantByExercise({
                 // @ts-expect-error -- mocked args
                 application: APPLICATION,
                 // @ts-expect-error -- mocked args

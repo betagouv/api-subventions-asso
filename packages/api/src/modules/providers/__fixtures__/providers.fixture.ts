@@ -5,7 +5,6 @@ import ApplicationProvider from "../../subventions/@types/ApplicationProvider";
 const mockApplicationProvider = service => ({
     ...service,
     isApplicationProvider: true,
-    rawToApplication: jest.fn(),
     getApplication: jest.fn().mockResolvedValue([]),
 });
 

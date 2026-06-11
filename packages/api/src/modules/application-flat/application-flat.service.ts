@@ -50,10 +50,6 @@ export class ApplicationFlatService
 
     isApplicationProvider = true;
 
-    public rawToApplication(rawGrant: RawApplication) {
-        return this.transformToDemandeSubvention.execute(rawGrant.data);
-    }
-
     async getApplication(identifier: StructureIdentifier): Promise<DemandeSubvention[]> {
         const requests = await this.getEntitiesByIdentifier(identifier);
         return requests

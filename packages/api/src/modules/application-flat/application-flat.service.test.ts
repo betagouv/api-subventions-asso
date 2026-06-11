@@ -5,7 +5,6 @@ import { ApplicationFlatService } from "./application-flat.service";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import ApplicationFlatMapper from "./application-flat.mapper";
 import { ApplicationFlatDto, DemandeSubvention } from "dto";
-import { RawApplication } from "../grant/@types/RawGrant";
 import { ReadableStream } from "node:stream/web";
 
 import Siret from "../../identifier-objects/Siret";
@@ -179,26 +178,6 @@ describe("ApplicationFlatService", () => {
 
     // DemandeSubvention DTO
     describe("old application part", () => {
-        describe("rawToApplication", () => {
-            const RAW_GRANT = {
-                type: "application",
-                provider: "some",
-                data: APPLICATION_LINK_TO_CHORUS,
-                joinKey: "ej",
-            } as RawApplication;
-
-            it("transform to DemandeSubvention", () => {
-                service.rawToApplication(RAW_GRANT);
-                expect(mockTransform.execute).toHaveBeenCalledWith(RAW_GRANT.data);
-            });
-
-            it("returns adapter's result", () => {
-                const expected = DEMANDE_SUBVENTION;
-                const actual = service.rawToApplication(RAW_GRANT);
-                expect(actual).toEqual(expected);
-            });
-        });
-
         describe("getApplication", () => {
             let getEntitiesSpy;
             const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));

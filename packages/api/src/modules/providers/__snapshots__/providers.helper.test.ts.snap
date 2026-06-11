@@ -11,7 +11,7 @@ exports[`Providers Helper providersById should return providers by id 1`] = `
       "name": "PROVIDER_APPLICATION_1",
       "type": "API",
     },
-    "rawToApplication": [MockFunction],
+    
   },
   "provider-application-2": {
     "getApplication": [MockFunction],
@@ -22,7 +22,6 @@ exports[`Providers Helper providersById should return providers by id 1`] = `
       "name": "PROVIDER_APPLICATION_2",
       "type": "RAW",
     },
-    "rawToApplication": [MockFunction],
   },
 }
 `;
