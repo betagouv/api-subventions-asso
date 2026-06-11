@@ -226,7 +226,7 @@ export class EstablishmentHttp extends Controller {
      */
     @Example<PaymentFlatDto[]>([PAYMENT_DTO_EXAMPLE])
     @Get("/paiements")
-    public async getEntitiesByIdentifier(
+    public async getPaymentsFlatByIdentifier(
         identifier: EstablishmentIdentifierDto,
         @Request() req,
     ): Promise<PaymentFlatDto[]> {

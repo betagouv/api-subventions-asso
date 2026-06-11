@@ -1,23 +1,17 @@
 import { ApplicationFlatDto } from "dto";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
-import { RawApplication } from "../grant/@types/RawGrant";
 import { ApplicationFlatDbo } from "../../adapters/outputs/db/application-flat/@types/ApplicationFlatDbo";
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import Siret from "../../identifier-objects/Siret";
 import Ridet from "../../identifier-objects/Ridet";
 import Tahitiet from "../../identifier-objects/Tahitiet";
 import { optionalDateToDto } from "../../shared/helpers/DateHelper";
-import { TransformToDemandeSubvention } from "./use-cases/transform-to-demande-subvention";
 
 // entities and draft are almost equal but we want ids to be built in constructor
 // and we want to be able to build with a properly types object
 type ApplicationFlatEntityDraft = Omit<ApplicationFlatEntity, "uniqueId" | "applicationId">;
 
 export default class ApplicationFlatMapper {
-    public static rawToApplication(rawApplication: RawApplication) {
-        return new TransformToDemandeSubvention().execute(rawApplication.data);
-    }
-
     public static buildEntity(draft: ApplicationFlatEntityDraft): ApplicationFlatEntity {
         return {
             ...draft,

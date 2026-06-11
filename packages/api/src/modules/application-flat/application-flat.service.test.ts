@@ -1,7 +1,7 @@
 import Siren from "../../identifier-objects/Siren";
 
 import applicationFlatAdapter from "../../adapters/outputs/db/application-flat/application-flat.adapter";
-import applicationFlatService, { ApplicationFlatService } from "./application-flat.service";
+import { ApplicationFlatService } from "./application-flat.service";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import ApplicationFlatMapper from "./application-flat.mapper";
 import { ApplicationFlatDto, DemandeSubvention } from "dto";
@@ -23,6 +23,10 @@ jest.mock("../../shared/helpers/MongoHelper");
 describe("ApplicationFlatService", () => {
     const APPLICATIONS = [APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_CHORUS];
 
+    const DEMANDE_SUBVENTION = "DEMANDE_SUBVENTION" as unknown as DemandeSubvention; // mock
+    const mockTransform = { execute: jest.fn().mockReturnValue(DEMANDE_SUBVENTION) };
+    const service = new ApplicationFlatService(mockTransform);
+
     describe.each`
         identifierType | rawIdentifier                  | findMethod                            | identifierConstructor
         ${"siret"}     | ${new Siret("12345678901234")} | ${applicationFlatAdapter.findBySiret} | ${EstablishmentIdentifier.fromSiret}
@@ -36,13 +40,13 @@ describe("ApplicationFlatService", () => {
         });
 
         it("if identifier is $identifierType, call proper port method", async () => {
-            await applicationFlatService.getEntitiesByIdentifier(identifierConstructor(rawIdentifier));
+            await service.getEntitiesByIdentifier(identifierConstructor(rawIdentifier));
             expect(findMethod).toHaveBeenCalledWith(rawIdentifier);
         });
 
         it("returns entities", async () => {
             const expected = APPLICATIONS;
-            const actual = await applicationFlatService.getEntitiesByIdentifier(identifierConstructor(rawIdentifier));
+            const actual = await service.getEntitiesByIdentifier(identifierConstructor(rawIdentifier));
             expect(actual).toEqual(expected);
         });
     });
@@ -51,12 +55,12 @@ describe("ApplicationFlatService", () => {
         const STREAM = {} as unknown as ReadableStream;
 
         it("calls mongo helper", async () => {
-            await applicationFlatService.saveFromStream(STREAM);
+            await service.saveFromStream(STREAM);
             expect(insertStreamByBatch).toHaveBeenCalledWith(STREAM, expect.anything(), 10000);
         });
 
         it("calls mongo helper with flat upsert", async () => {
-            await applicationFlatService.saveFromStream(STREAM);
+            await service.saveFromStream(STREAM);
             const methodCalledByHelper = jest.mocked(insertStreamByBatch).mock.calls[0][1];
             await methodCalledByHelper([]);
             expect(applicationFlatAdapter.upsertMany).toHaveBeenCalled();
@@ -70,7 +74,7 @@ describe("ApplicationFlatService", () => {
 
         beforeEach(() => {
             mockGetEntitiesByIdentifier = jest
-                .spyOn(applicationFlatService, "getEntitiesByIdentifier")
+                .spyOn(service, "getEntitiesByIdentifier")
                 .mockResolvedValue(APPLICATIONS);
             jest.mocked(ApplicationFlatMapper.toDto).mockReturnValue(
                 APPLICATION_FLAT_DBOS[0] as unknown as ApplicationFlatDto,
@@ -82,25 +86,25 @@ describe("ApplicationFlatService", () => {
         });
 
         it("fetches applications flat ", async () => {
-            await applicationFlatService.getApplicationsDto(IDENTIFIER);
+            await service.getApplicationsDto(IDENTIFIER);
             expect(mockGetEntitiesByIdentifier).toHaveBeenCalledWith(IDENTIFIER);
         });
 
         it("adapts entities to dtos", async () => {
-            await applicationFlatService.getApplicationsDto(IDENTIFIER);
+            await service.getApplicationsDto(IDENTIFIER);
             expect(ApplicationFlatMapper.toDto).toHaveBeenCalledTimes(APPLICATIONS.length);
         });
 
         it("returns applications", async () => {
             const expected = [APPLICATION_FLAT_DBOS[0], APPLICATION_FLAT_DBOS[0]];
-            const actual = await applicationFlatService.getApplicationsDto(IDENTIFIER);
+            const actual = await service.getApplicationsDto(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("isCollectionInitialized", () => {
         it("calls check in port", () => {
-            applicationFlatService.isCollectionInitialized();
+            service.isCollectionInitialized();
             expect(applicationFlatAdapter.hasBeenInitialized).toHaveBeenCalled();
         });
     });
@@ -115,18 +119,18 @@ describe("ApplicationFlatService", () => {
 
         const ENTITY = { idBeneficiaire: "123456789", typeIdBeneficiaire: "siret" } as unknown as ApplicationFlatEntity;
         it("returns undefined if typeIdBeneficiaire is not siret", () => {
-            const actual = applicationFlatService.getSiret(ENTITY);
+            const actual = service.getSiret(ENTITY);
             expect(actual).toBeUndefined();
         });
 
         it("returns undefined if not siret", () => {
             jest.mocked(Siret.isSiret).mockReturnValueOnce(false);
-            const actual = applicationFlatService.getSiret(ENTITY);
+            const actual = service.getSiret(ENTITY);
             expect(actual).toBeUndefined();
         });
 
         it("returns valueObject from entity", () => {
-            const actual = applicationFlatService.getSiret(ENTITY);
+            const actual = service.getSiret(ENTITY);
             expect(actual).toMatchInlineSnapshot(`undefined`);
         });
     });
@@ -152,14 +156,14 @@ describe("ApplicationFlatService", () => {
         it("gets cursor", async () => {
             mockCursorFind.mockReturnValue(createAsyncIterable([]));
 
-            await applicationFlatService.containsDataFromProvider(PROVIDER);
+            await service.containsDataFromProvider(PROVIDER);
             expect(applicationFlatAdapter.cursorFind({ provider: PROVIDER }));
         });
 
         it("returns true when iterable contains at least one item", async () => {
             mockCursorFind.mockReturnValue(createAsyncIterable([{} as ApplicationFlatEntity]));
 
-            const actual = await applicationFlatService.containsDataFromProvider(PROVIDER);
+            const actual = await service.containsDataFromProvider(PROVIDER);
 
             expect(actual).toBe(true);
         });
@@ -167,7 +171,7 @@ describe("ApplicationFlatService", () => {
         it("returns false when iterable is empty", async () => {
             mockCursorFind.mockReturnValue(createAsyncIterable([]));
 
-            const actual = await applicationFlatService.containsDataFromProvider(PROVIDER);
+            const actual = await service.containsDataFromProvider(PROVIDER);
 
             expect(actual).toBe(false);
         });
@@ -183,24 +187,21 @@ describe("ApplicationFlatService", () => {
                 joinKey: "ej",
             } as RawApplication;
 
-            it("calls adapter", () => {
-                applicationFlatService.rawToApplication(RAW_GRANT);
-                expect(ApplicationFlatMapper.rawToApplication).toHaveBeenCalledWith(RAW_GRANT);
+            it("transform to DemandeSubvention", () => {
+                service.rawToApplication(RAW_GRANT);
+                expect(mockTransform.execute).toHaveBeenCalledWith(RAW_GRANT.data);
             });
 
             it("returns adapter's result", () => {
-                const expected = "adapted" as unknown as DemandeSubvention;
-                jest.mocked(ApplicationFlatMapper.rawToApplication).mockReturnValueOnce(expected);
-                const actual = applicationFlatService.rawToApplication(RAW_GRANT);
-                expect(actual).toBe(expected);
+                const expected = DEMANDE_SUBVENTION;
+                const actual = service.rawToApplication(RAW_GRANT);
+                expect(actual).toEqual(expected);
             });
         });
 
         describe("getApplication", () => {
             let getEntitiesSpy;
             const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
-            const mockTransform = { execute: jest.fn().mockReturnValue("DEMANDE_SUBVENTION") };
-            const service = new ApplicationFlatService(mockTransform);
 
             beforeAll(() => {
                 getEntitiesSpy = jest.spyOn(service, "getEntitiesByIdentifier").mockResolvedValue(APPLICATIONS);
@@ -242,21 +243,19 @@ describe("ApplicationFlatService", () => {
             const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
 
             beforeAll(() => {
-                getEntitiesSpy = jest
-                    .spyOn(applicationFlatService, "getEntitiesByIdentifier")
-                    .mockResolvedValue(APPLICATIONS);
+                getEntitiesSpy = jest.spyOn(service, "getEntitiesByIdentifier").mockResolvedValue(APPLICATIONS);
             });
             afterAll(() => {
                 getEntitiesSpy.mockRestore();
             });
 
             it("gets entities", async () => {
-                await applicationFlatService.getRawGrants(IDENTIFIER);
+                await service.getRawGrants(IDENTIFIER);
                 expect(getEntitiesSpy).toHaveBeenCalledWith(IDENTIFIER);
             });
 
             it("converts found methods", async () => {
-                const actual = await applicationFlatService.getRawGrants(IDENTIFIER);
+                const actual = await service.getRawGrants(IDENTIFIER);
                 expect(actual).toMatchSnapshot();
             });
         });

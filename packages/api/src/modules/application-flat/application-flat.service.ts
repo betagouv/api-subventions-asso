@@ -51,7 +51,7 @@ export class ApplicationFlatService
     isApplicationProvider = true;
 
     public rawToApplication(rawGrant: RawApplication) {
-        return ApplicationFlatMapper.rawToApplication(rawGrant);
+        return this.transformToDemandeSubvention.execute(rawGrant.data);
     }
 
     async getApplication(identifier: StructureIdentifier): Promise<DemandeSubvention[]> {

@@ -1,4 +1,3 @@
-import { DemandeSubvention } from "dto";
 import {
     DRAFT_ENTITY,
     APPLICATION_LINK_TO_CHORUS,
@@ -15,22 +14,6 @@ describe("ApplicationFlatAdapter", () => {
         jest.spyOn(EstablishmentIdentifier, "buildIdentifierFromString").mockReturnValue(
             APPLICATION_LINK_TO_CHORUS.beneficiaryEstablishmentId,
         );
-    });
-
-    describe("rawToApplication", () => {
-        const expected = "adapted" as unknown as DemandeSubvention;
-        it("returns res from toDemandeSubvention", () => {
-            const toDemandeSubvSpy = jest
-                .spyOn(ApplicationFlatMapper, "rawToApplication")
-                .mockReturnValueOnce(expected);
-            const actual = ApplicationFlatMapper.rawToApplication({
-                provider: "",
-                type: "application",
-                data: APPLICATION_LINK_TO_CHORUS,
-            });
-            expect(actual).toBe(expected);
-            toDemandeSubvSpy.mockReset();
-        });
     });
 
     describe("buildEntity", () => {
