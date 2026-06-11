@@ -6,11 +6,10 @@ import ProviderCore from "../providers/provider.core";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import PaymentFlatMapper from "./payment-flat.mapper";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
-import GrantProvider from "../grant/@types/GrantProvider";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import getPayments, { GetPayments } from "./use-cases/get-payments";
 
-export class PaymentFlatService extends ProviderCore implements GrantProvider {
+export class PaymentFlatService extends ProviderCore {
     constructor(private getPayments: GetPayments) {
         super({
             name: "Payment Flat",
@@ -53,14 +52,6 @@ export class PaymentFlatService extends ProviderCore implements GrantProvider {
             return PaymentFlatMapper.toPayment(document);
         });
     }
-
-    /**
-     * |-------------------------|
-     * |   Grant Provider Part   |
-     * |-------------------------|
-     */
-
-    isGrantProvider = true;
 
     async getRawGrants(identifier: StructureIdentifier): Promise<RawPayment[]> {
         const entities = await this.getPayments.execute(identifier);

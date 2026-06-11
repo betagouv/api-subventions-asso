@@ -8,11 +8,10 @@ import ApplicationFlatMapper from "./application-flat.mapper";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 import { ReadableStream } from "node:stream/web";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
-import GrantProvider from "../grant/@types/GrantProvider";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import getApplications, { GetApplications } from "./use-cases/get-applications";
 
-export class ApplicationFlatService extends ProviderCore implements GrantProvider {
+export class ApplicationFlatService extends ProviderCore {
     constructor(private getApplications: GetApplications) {
         super({
             name: "Application Flat",
@@ -21,14 +20,6 @@ export class ApplicationFlatService extends ProviderCore implements GrantProvide
             id: "application-flat",
         });
     }
-
-    /**
-     * |-------------------------|
-     * |   Grant Part            |
-     * |-------------------------|
-     */
-
-    isGrantProvider = true;
 
     async getRawGrants(identifier: StructureIdentifier): Promise<RawApplication[]> {
         const entities = await this.getApplications.execute(identifier);
