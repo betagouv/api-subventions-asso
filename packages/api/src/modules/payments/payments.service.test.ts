@@ -1,16 +1,10 @@
-const getPaymentsMock = jest.fn();
-jest.mock("../providers", () => ({
-    paymentProviders: [
-        {
-            getPayments: getPaymentsMock,
-        },
-    ],
-}));
-
 import Siren from "../../identifier-objects/Siren";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import { Payment } from "dto";
 import paymentsService from "./payments.service";
+import paymentFlatService from "../payment-flat/payment-flat.service";
+
+jest.mock("../payment-flat/payment-flat.service");
 
 describe("PaymentsService", () => {
     const PAYMENT_KEY = "J00034";
@@ -21,7 +15,7 @@ describe("PaymentsService", () => {
 
             await paymentsService.getPayments(expected);
 
-            expect(getPaymentsMock).toHaveBeenCalledWith(expected);
+            expect(paymentFlatService.getPayments).toHaveBeenCalledWith(expected);
         });
     });
 

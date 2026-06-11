@@ -3,7 +3,6 @@ import commonGrantService from "./common-grant.service";
 import mocked = jest.mocked;
 import { JoinedRawGrant, RawApplication, RawPayment } from "./@types/RawGrant";
 import * as Sentry from "@sentry/node";
-import { applicationProvidersFixtures, paymentProvidersFixtures } from "../providers/__fixtures__/providers.fixture";
 import { DemandeSubvention, Grant, Payment } from "dto";
 import { SIRET_STR } from "../../../tests/__fixtures__/association.fixture";
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
@@ -42,32 +41,32 @@ describe("GrantService", () => {
     const JOIN_KEY_1 = "JOIN_KEY_1";
     const JOIN_KEY_2 = "JOIN_KEY_2";
     const RAW_APPLICATION: RawApplication = {
-        provider: applicationProvidersFixtures[0].meta.id,
+        provider: "application-flat",
         data: APPLICATION_LINK_TO_CHORUS,
         type: "application",
         joinKey: JOIN_KEY_2,
     };
     const RAW_PAYMENTS: RawPayment[] = [
         {
-            provider: paymentProvidersFixtures[0].meta.id,
+            provider: "payment-flat",
             data: CHORUS_PAYMENT_FLAT_ENTITY,
             type: "payment",
             joinKey: JOIN_KEY_1,
         },
         {
-            provider: paymentProvidersFixtures[0].meta.id,
+            provider: "payment-flat",
             data: CHORUS_PAYMENT_FLAT_ENTITY,
             type: "payment",
             joinKey: JOIN_KEY_1,
         },
         {
-            provider: paymentProvidersFixtures[0].meta.id,
+            provider: "payment-flat",
             data: CHORUS_PAYMENT_FLAT_ENTITY,
             type: "payment",
             joinKey: JOIN_KEY_2,
         },
         {
-            provider: paymentProvidersFixtures[0].meta.id,
+            provider: "payment-flat",
             data: CHORUS_PAYMENT_FLAT_ENTITY,
             type: "payment",
             joinKey: JOIN_KEY_2,

@@ -9,10 +9,6 @@ import {
     GrantFlatDto,
 } from "dto";
 import { RnaOnlyError } from "core";
-import { providersById } from "../providers/providers.helper";
-import { applicationProviders, paymentProviders } from "../providers";
-import ApplicationProvider from "../subventions/@types/ApplicationProvider";
-import PaymentProvider from "../payments/@types/PaymentProvider";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import {
@@ -36,14 +32,8 @@ import transformToDemandeSubvention, {
 } from "../application-flat/use-cases/transform-to-demande-subvention";
 
 export class GrantService {
-    applicationProvidersById: Record<string, ApplicationProvider>;
-    paymentProvidersById: Record<string, PaymentProvider>;
-
     // Done in constructor to avoid circular dependency issue
-    constructor(private transformToDemandeSubvention: TransformToDemandeSubvention) {
-        this.applicationProvidersById = providersById(applicationProviders);
-        this.paymentProvidersById = providersById(paymentProviders);
-    }
+    constructor(private transformToDemandeSubvention: TransformToDemandeSubvention) {}
 
     adaptRawGrant(rawGrant: AnyRawGrant) {
         switch (rawGrant.type) {

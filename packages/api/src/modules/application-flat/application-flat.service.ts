@@ -5,7 +5,6 @@ import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdent
 import { RawApplication } from "../grant/@types/RawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/provider.core";
-import ApplicationProvider from "../subventions/@types/ApplicationProvider";
 import Siret from "../../identifier-objects/Siret";
 import ApplicationFlatMapper from "./application-flat.mapper";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
@@ -18,10 +17,7 @@ import transformToDemandeSubvention, {
     TransformToDemandeSubvention,
 } from "./use-cases/transform-to-demande-subvention";
 
-export class ApplicationFlatService
-    extends ProviderCore
-    implements GrantProvider, ApplicationProvider, StructureProvider
-{
+export class ApplicationFlatService extends ProviderCore implements GrantProvider, StructureProvider {
     constructor(private transformToDemandeSubvention: TransformToDemandeSubvention) {
         super({
             name: "Application Flat",
@@ -41,14 +37,6 @@ export class ApplicationFlatService
         }
         return requests;
     }
-
-    /**
-     * |-------------------------|
-     * |    Application Part     |
-     * |-------------------------|
-     */
-
-    isApplicationProvider = true;
 
     async getApplication(identifier: StructureIdentifier): Promise<DemandeSubvention[]> {
         const requests = await this.getEntitiesByIdentifier(identifier);

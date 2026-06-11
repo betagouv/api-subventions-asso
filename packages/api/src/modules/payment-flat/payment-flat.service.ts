@@ -1,6 +1,5 @@
 import { Payment, PaymentFlatDto } from "dto";
 import paymentFlatAdapter from "../../adapters/outputs/db/payment-flat/payment-flat.adapter";
-import PaymentProvider from "../payments/@types/PaymentProvider";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import { RawPayment } from "../grant/@types/RawGrant";
@@ -13,7 +12,7 @@ import GrantProvider from "../grant/@types/GrantProvider";
 import { StructureProvider } from "../StructureProvider";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 
-export class PaymentFlatService extends ProviderCore implements PaymentProvider, GrantProvider, StructureProvider {
+export class PaymentFlatService extends ProviderCore implements GrantProvider, StructureProvider {
     constructor() {
         super({
             name: "Payment Flat",
@@ -36,14 +35,6 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
     public upsertMany(entities: PaymentFlatEntity[]) {
         return paymentFlatAdapter.upsertMany(entities);
     }
-
-    /**
-     * |--------------------------|
-     * |   Payment Provider Part  |
-     * |--------------------------|
-     */
-
-    isPaymentProvider = true;
 
     public rawToPayment(rawGrant: RawPayment) {
         return PaymentFlatMapper.rawToPayment(rawGrant);

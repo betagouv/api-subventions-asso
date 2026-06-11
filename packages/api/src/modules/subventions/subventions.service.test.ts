@@ -1,43 +1,26 @@
 import subventionsService from "./subventions.service";
-import * as providers from "../providers";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import Rna from "../../identifier-objects/Rna";
-jest.mock("../providers/index");
+import applicationFlatService from "../application-flat/application-flat.service";
+import { DemandeSubvention } from "dto";
 
-const DEMANDES_SUBVENTIONS_PROVIDERS = providers.applicationProviders;
+jest.mock("../application-flat/application-flat.service");
 
 const IDENTIFIER = AssociationIdentifier.fromRna(new Rna("W123456789"));
 
 describe("SubventionsService", () => {
-    const spy = jest.fn().mockResolvedValue([]);
-    beforeEach(() => {
-        // @ts-expect-error: mock
-        providers.applicationProviders = [
-            {
-                getApplication: spy,
-                provider: {
-                    name: "provider",
-                },
-            },
-        ];
-    });
-
-    afterEach(() => {
-        // @ts-expect-error: mock
-
-        providers.applicationProviders = DEMANDES_SUBVENTIONS_PROVIDERS;
-    });
-
     describe("getDemandes()", () => {
-        it("should call getApplication of providers", async () => {
+        it("get demandes subvention", async () => {
             await subventionsService.getDemandes(IDENTIFIER);
-            expect(spy).toHaveBeenCalledWith(IDENTIFIER);
+            expect(applicationFlatService.getApplication).toHaveBeenCalledWith(IDENTIFIER);
         });
 
         it("should return subventions", async () => {
-            spy.mockResolvedValueOnce([{ id: "1" }]);
+            jest.spyOn(applicationFlatService, "getApplication").mockResolvedValue([
+                { id: "1" },
+            ] as unknown as DemandeSubvention[]);
             const result = await subventionsService.getDemandes(IDENTIFIER);
-            expect(result).toEqual([[{ id: "1" }]]);
+            expect(result).toEqual([{ id: "1" }]);
         });
     });
 });

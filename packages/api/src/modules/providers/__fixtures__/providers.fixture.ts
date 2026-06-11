@@ -1,25 +1,4 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import PaymentProvider from "../../payments/@types/PaymentProvider";
-import ApplicationProvider from "../../subventions/@types/ApplicationProvider";
-
-const mockApplicationProvider = service => ({
-    ...service,
-    isApplicationProvider: true,
-    getApplication: jest.fn().mockResolvedValue([]),
-});
-
-const mockPaymentProvider = service => ({
-    ...service,
-    isPaymentProvider: true,
-    rawToPayment: jest.fn(),
-    getPayments: jest.fn().mockResolvedValue([]),
-});
-
-const mockGrantProvider = provider => ({
-    provider,
-    isGrantProvider: true,
-    getRawGrants: jest.fn().mockResolvedValue([]),
-});
 
 export const API_PROVIDER = {
     meta: {
@@ -38,31 +17,3 @@ export const RAW_PROVIDER = {
         type: ProviderEnum.raw,
     },
 };
-
-export const applicationProvidersFixtures: ApplicationProvider[] = [
-    mockApplicationProvider(API_PROVIDER),
-    mockApplicationProvider(RAW_PROVIDER),
-];
-
-export const paymentProvidersFixtures: PaymentProvider[] = [
-    mockPaymentProvider({
-        meta: {
-            id: "provider-payment-1",
-            name: "PROVIDER_PAYMENT_1",
-            description: "RAW PROVIDER",
-            type: ProviderEnum.raw,
-        },
-    }),
-    mockPaymentProvider({
-        meta: {
-            id: "provider-payment-2",
-            name: "PROVIDER_PAYMENT_2",
-            description: "RAW PROVIDER",
-            type: ProviderEnum.raw,
-        },
-    }),
-];
-
-export const grantProvidersFixtures = [...applicationProvidersFixtures, ...paymentProvidersFixtures].map(
-    mockGrantProvider,
-);

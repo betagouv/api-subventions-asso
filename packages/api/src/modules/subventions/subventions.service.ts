@@ -1,19 +1,10 @@
 import { DemandeSubvention } from "dto";
-import { applicationProviders } from "../providers";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
+import applicationFlatService from "../application-flat/application-flat.service";
 
 export class SubventionsService {
     getDemandes(id: StructureIdentifier) {
-        const providers = applicationProviders;
-        return Promise.all(
-            providers.reduce(
-                (promises, provider) => {
-                    promises.push(provider.getApplication(id));
-                    return promises;
-                },
-                [] as Promise<DemandeSubvention[]>[],
-            ),
-        );
+        return applicationFlatService.getApplication(id);
     }
 
     getSubventionExercise(application: DemandeSubvention) {
