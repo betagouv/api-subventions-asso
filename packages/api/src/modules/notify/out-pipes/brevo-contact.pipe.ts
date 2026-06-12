@@ -59,7 +59,7 @@ export class BrevoContactPipe implements NotifyOutPipe {
             LIEN_ACTIVATION: data.url,
             PRENOM: data.firstname,
             NOM: data.lastname,
-            IS_AGENT_CONNECT: data.isAgentConnect,
+            IS_PRO_CONNECT: data.isProConnect,
         };
 
         const payload = {

@@ -18,13 +18,13 @@ import type { IdentifiedRequest, LoginRequest } from "../../../@types";
 
 import { DEV } from "../../../configurations/env.conf";
 import { DOMAIN } from "../../../configurations/domain.conf";
-import { AGENT_CONNECT_ENABLED } from "../../../configurations/pro-connect.conf";
+import { PRO_CONNECT_ENABLED } from "../../../configurations/pro-connect.conf";
 import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, Example } from "tsoa";
 import { BadRequestError, InternalServerError } from "core";
 import userAuthService from "../../../modules/user/services/auth/user.auth.service";
 import userProfileService from "../../../modules/user/services/profile/user.profile.service";
 import userActivationService from "../../../modules/user/services/activation/user.activation.service";
-import userAgentConnectService from "../../../modules/user/services/agentConnect/user.agentConnect.service";
+import userProConnectService from "../../../modules/user/services/pro-connect/user.pro-connect.service";
 import { USER_DTO_DEFAULT, USER_DTO_LOGGED, USER_DTO_SIGNIN } from "./examples/Users";
 
 @Route("/auth")
@@ -100,14 +100,14 @@ export class AuthentificationHttp extends Controller {
     }
 
     /**
-     * @summary Authentification via ProConnect (ex AgentConnect)
+     * @summary Authentification via ProConnect (ex ProConnect)
      */
     @Example<LoginDtoResponse>({
         user: USER_DTO_LOGGED,
     })
     @Get("/ac/login")
     @SuccessResponse("200", "Login successfully")
-    public agentConnectLogin(@Request() req: Request): LoginDtoResponse {
+    public proConnectLogin(@Request() req: Request): LoginDtoResponse {
         // If you change the route please change in express.auth.hooks.ts
         return this._login(req);
     }
@@ -153,7 +153,7 @@ export class AuthentificationHttp extends Controller {
     public async logout(@Request() req: IdentifiedRequest): Promise<string | null> {
         let url: null | string = null;
         if (!req.user) throw new BadRequestError();
-        if (AGENT_CONNECT_ENABLED) url = await userAgentConnectService.getLogoutUrl(req.user);
+        if (PRO_CONNECT_ENABLED) url = await userProConnectService.getLogoutUrl(req.user);
         await userAuthService.logout(req.user);
         return url;
     }

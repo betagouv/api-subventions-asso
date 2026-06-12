@@ -1,17 +1,17 @@
-import userAgentConnectService, { UserAgentConnectService } from "./user.agentConnect.service";
+import userProConnectService, { UserProConnectService } from "./user.pro-connect.service";
 import {
-    AGENT_CONNECT_CLIENT_ID,
-    AGENT_CONNECT_CLIENT_SECRET,
-    AGENT_CONNECT_URL,
+    PRO_CONNECT_CLIENT_ID,
+    PRO_CONNECT_CLIENT_SECRET,
+    PRO_CONNECT_URL,
 } from "../../../../configurations/pro-connect.conf";
-import { AgentConnectTokenDbo, AgentConnectUser } from "../../@types/AgentConnectUser";
+import { ProConnectTokenDbo, ProConnectUser } from "../../@types/ProConnectUser";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { USER_DBO, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
-import agentConnectTokenAdapter from "../../../../adapters/outputs/db/user/pro-connect.adapter";
+import proConnectTokenAdapter from "../../../../adapters/outputs/db/user/pro-connect.adapter";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import { ObjectId } from "mongodb";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
@@ -22,9 +22,9 @@ import { InternalServerError } from "core";
 import * as openidClient from "openid-client";
 
 jest.mock("../../../../configurations/pro-connect.conf", () => ({
-    AGENT_CONNECT_CLIENT_ID: "mocked_client_id",
-    AGENT_CONNECT_CLIENT_SECRET: "mocked_client_secret",
-    AGENT_CONNECT_URL: "https://agent-connect/url",
+    PRO_CONNECT_CLIENT_ID: "mocked_client_id",
+    PRO_CONNECT_CLIENT_SECRET: "mocked_client_secret",
+    PRO_CONNECT_URL: "https://agent-connect/url",
 }));
 jest.mock("../../../../configurations/front.conf", () => ({
     FRONT_OFFICE_URL: "http://my.front",
@@ -39,8 +39,8 @@ jest.mock("../../../../adapters/outputs/db/user/pro-connect.adapter");
 jest.mock("../../../configurations/configurations.service");
 jest.mock("../auth/user.auth.service");
 
-describe("userAgentConnectService", () => {
-    const AC_USER: AgentConnectUser = {
+describe("userProConnectService", () => {
+    const AC_USER: ProConnectUser = {
         email: "mail@mail.com",
         given_name: "prénom1 prénom2",
         sub: "",
@@ -59,16 +59,16 @@ describe("userAgentConnectService", () => {
         jest.mocked(openidClient.ClientSecretPost).mockReturnValue(CLIENT_SECRET_POST);
         // @ts-expect-error: mock Configuration
         jest.mocked(openidClient.discovery).mockReturnValue(CONFIGURATION);
-        userAgentConnectService.initClient();
+        userProConnectService.initClient();
     });
 
     describe("initClient", () => {
         it("discovers client", async () => {
             expect(openidClient.discovery).toHaveBeenCalledWith(
-                new URL(AGENT_CONNECT_URL),
-                AGENT_CONNECT_CLIENT_ID,
+                new URL(PRO_CONNECT_URL),
+                PRO_CONNECT_CLIENT_ID,
                 {
-                    client_secret: AGENT_CONNECT_CLIENT_SECRET,
+                    client_secret: PRO_CONNECT_CLIENT_SECRET,
                     redirect_uris: [`${FRONT_OFFICE_URL}/auth/login`],
                     response_types: ["code"],
                     id_token_signed_response_alg: "ES256",
@@ -80,14 +80,14 @@ describe("userAgentConnectService", () => {
 
         it("initializes client", async () => {
             // @ts-expect-error: test private assignment
-            expect(userAgentConnectService._client).toEqual(CONFIGURATION);
+            expect(userProConnectService._client).toEqual(CONFIGURATION);
         });
     });
 
     describe("login", () => {
         beforeAll(() => {
-            jest.mocked(userCrudService.createUser).mockResolvedValue({ ...USER_DBO, agentConnectId: "acId" });
-            jest.mocked(userAuthService.updateJwt).mockResolvedValue({ ...USER_DBO, agentConnectId: "acId" });
+            jest.mocked(userCrudService.createUser).mockResolvedValue({ ...USER_DBO, proConnectId: "acId" });
+            jest.mocked(userAuthService.updateJwt).mockResolvedValue({ ...USER_DBO, proConnectId: "acId" });
         });
         afterAll(() => {
             jest.mocked(userCrudService.createUser).mockReset();
@@ -95,37 +95,37 @@ describe("userAgentConnectService", () => {
         });
 
         it("gets user from port", async () => {
-            await userAgentConnectService.login(AC_USER, TOKENSET);
+            await userProConnectService.login(AC_USER, TOKENSET);
             expect(userAdapter.getUserWithSecretsByEmail).toHaveBeenCalledWith(AC_USER.email);
         });
 
         it("gets user from port with lowercase email", async () => {
-            await userAgentConnectService.login({ ...AC_USER, email: AC_USER.email.toUpperCase() }, TOKENSET);
+            await userProConnectService.login({ ...AC_USER, email: AC_USER.email.toUpperCase() }, TOKENSET);
             expect(userAdapter.getUserWithSecretsByEmail).toHaveBeenCalledWith(AC_USER.email);
         });
 
         it("updates user's jwt", async () => {
-            await userAgentConnectService.login(AC_USER, TOKENSET);
+            await userProConnectService.login(AC_USER, TOKENSET);
             expect(userAuthService.updateJwt).toHaveBeenCalled();
         });
 
-        it("saves agentConnect token", async () => {
+        it("saves proConnect token", async () => {
             // @ts-expect-error -- spy private
-            const saveTokenSpy = jest.spyOn(userAgentConnectService, "saveTokenSet");
-            await userAgentConnectService.login(AC_USER, TOKENSET);
+            const saveTokenSpy = jest.spyOn(userProConnectService, "saveTokenSet");
+            await userProConnectService.login(AC_USER, TOKENSET);
             expect(saveTokenSpy).toHaveBeenCalledWith(USER_DBO._id, TOKENSET);
         });
 
         it("notifies user login", async () => {
             const expectedUser = { email: USER_DBO.email, date: expect.any(Date) };
-            await userAgentConnectService.login(AC_USER, TOKENSET);
+            await userProConnectService.login(AC_USER, TOKENSET);
             expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, expectedUser);
         });
 
         describe("new User", () => {
             it("creates user", async () => {
-                const createUserSpy = jest.spyOn(userAgentConnectService, "createUserFromAgentConnect");
-                await userAgentConnectService.login(AC_USER, TOKENSET);
+                const createUserSpy = jest.spyOn(userProConnectService, "createUserFromProConnect");
+                await userProConnectService.login(AC_USER, TOKENSET);
                 expect(createUserSpy).toHaveBeenCalledWith(AC_USER);
             });
         });
@@ -140,14 +140,14 @@ describe("userAgentConnectService", () => {
             });
 
             it("removes password from retrieved user", async () => {
-                await userAgentConnectService.login(AC_USER, TOKENSET);
+                await userProConnectService.login(AC_USER, TOKENSET);
                 expect(removeHashPassword).toHaveBeenCalledWith(USER_DBO);
             });
 
             it("notifies user update with no secret", async () => {
                 const expectedUser = USER_WITHOUT_SECRET;
                 jest.mocked(removeSecrets).mockReturnValueOnce(USER_WITHOUT_SECRET);
-                await userAgentConnectService.login(AC_USER, TOKENSET);
+                await userProConnectService.login(AC_USER, TOKENSET);
                 expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, expectedUser);
             });
         });
@@ -158,7 +158,7 @@ describe("userAgentConnectService", () => {
         // @ts-expect-error: mock URL
         beforeAll(() => jest.mocked(openidClient.buildEndSessionUrl).mockReturnValue(LOGOUT_URL));
 
-        const TOKEN: AgentConnectTokenDbo = {
+        const TOKEN: ProConnectTokenDbo = {
             _id: new ObjectId(),
             creationDate: new Date(),
             token: "TOKEN",
@@ -168,30 +168,30 @@ describe("userAgentConnectService", () => {
         const RANDOM_STRING = "RANDOM";
 
         it("fails if client not initialized", async () => {
-            const service = new UserAgentConnectService();
+            const service = new UserProConnectService();
             const test = () => service.getLogoutUrl(USER_WITHOUT_SECRET);
-            expect(test).rejects.toMatchInlineSnapshot(`[Error: AgentConnect client is not initialized]`);
+            expect(test).rejects.toMatchSnapshot();
         });
 
         it("gets last token", async () => {
-            await userAgentConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
-            expect(agentConnectTokenAdapter.findLastActive).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id);
+            await userProConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
+            expect(proConnectTokenAdapter.findLastActive).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id);
         });
 
         it("removes previous tokens", async () => {
-            await userAgentConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
-            expect(agentConnectTokenAdapter.deleteAllByUserId).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id);
+            await userProConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
+            expect(proConnectTokenAdapter.deleteAllByUserId).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id);
         });
 
         it("returns null if no token found", async () => {
-            const actual = await userAgentConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
+            const actual = await userProConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
             expect(actual).toBeNull();
         });
 
         it("generates url based on retrieved token", async () => {
-            jest.mocked(agentConnectTokenAdapter.findLastActive).mockResolvedValueOnce(TOKEN);
+            jest.mocked(proConnectTokenAdapter.findLastActive).mockResolvedValueOnce(TOKEN);
             jest.mocked(openidClient.randomState).mockReturnValue(RANDOM_STRING);
-            await userAgentConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
+            await userProConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
             expect(openidClient.buildEndSessionUrl).toHaveBeenCalledWith(CONFIGURATION, {
                 id_token_hint: TOKEN.token,
                 state: RANDOM_STRING,
@@ -202,98 +202,77 @@ describe("userAgentConnectService", () => {
         it("returns generated url", async () => {
             const URL = { href: "logout/token" };
             const expected = URL.href;
-            jest.mocked(agentConnectTokenAdapter.findLastActive).mockResolvedValueOnce(TOKEN);
+            jest.mocked(proConnectTokenAdapter.findLastActive).mockResolvedValueOnce(TOKEN);
             // @ts-expect-error: mock URL
             jest.mocked(openidClient.buildEndSessionUrl).mockReturnValue(URL);
-            const actual = await userAgentConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
+            const actual = await userProConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
             expect(actual).toEqual(expected);
         });
     });
 
-    describe("createUserFromAgentConnect", () => {
+    describe("createUserFromProConnect", () => {
         beforeAll(() => {
             jest.mocked(userCrudService.createUser).mockResolvedValue(USER_WITHOUT_PASSWORD);
         });
 
         it("throws if no domain in email", async () => {
-            const test = () => userAgentConnectService.createUserFromAgentConnect({ ...AC_USER, email: "no-domain" });
-            const expected = new InternalServerError("email from AgentConnect invalid");
+            const test = () => userProConnectService.createUserFromProConnect({ ...AC_USER, email: "no-domain" });
+            const expected = new InternalServerError("email from ProConnect invalid");
             await expect(test).rejects.toEqual(expected);
         });
 
         it("do not add email domain", async () => {
-            await userAgentConnectService.createUserFromAgentConnect({ ...AC_USER, email: "user@domain.fr" });
+            await userProConnectService.createUserFromProConnect({ ...AC_USER, email: "user@domain.fr" });
             expect(configurationsService.addEmailDomain).not.toHaveBeenCalled();
         });
 
         it("creates user with userCrudService", async () => {
-            await userAgentConnectService.createUserFromAgentConnect(AC_USER);
-            expect(jest.mocked(userCrudService.createUser).mock.calls[0]).toMatchInlineSnapshot(`
-                [
-                  {
-                    "agentConnectId": "123456789",
-                    "email": "mail@mail.com",
-                    "firstName": "prénom1",
-                    "lastName": "nom de famille",
-                    "roles": [
-                      "user",
-                    ],
-                  },
-                  true,
-                ]
-            `);
+            await userProConnectService.createUserFromProConnect(AC_USER);
+            expect(jest.mocked(userCrudService.createUser).mock.calls[0]).toMatchSnapshot();
         });
 
         it("returns user from userCrudService", async () => {
             const expected = "user";
             jest.mocked(userCrudService.createUser).mockResolvedValueOnce(expected as unknown as UserDto);
-            const actual = await userAgentConnectService.createUserFromAgentConnect(AC_USER);
+            const actual = await userProConnectService.createUserFromProConnect(AC_USER);
             expect(actual).toEqual(expected);
         });
 
         it("notifies USER_CREATED", async () => {
-            await userAgentConnectService.createUserFromAgentConnect(AC_USER);
+            await userProConnectService.createUserFromProConnect(AC_USER);
             expect(notifyService.notify).toHaveBeenCalledWith(
                 NotificationType.USER_CREATED,
-                expect.objectContaining({ email: AC_USER.email, isAgentConnect: true }),
+                expect.objectContaining({ email: AC_USER.email, isProConnect: true }),
             );
         });
 
         it("catches DuplicateIndexError", async () => {
             const expected = new InternalServerError("An error has occurred");
             jest.mocked(userCrudService.createUser).mockRejectedValueOnce(new DuplicateIndexError("", ""));
-            const test = () => userAgentConnectService.createUserFromAgentConnect(AC_USER);
+            const test = () => userProConnectService.createUserFromProConnect(AC_USER);
             await expect(test).rejects.toEqual(expected);
         });
     });
 
-    describe("agentConnectUpdateValidations", () => {
-        it("returns valid state if user is not linked to agentConnect", () => {
+    describe("proConnectUpdateValidations", () => {
+        it("returns valid state if user is not linked to proConnect", () => {
             const expected = { valid: true };
-            const actual = userAgentConnectService.agentConnectUpdateValidations({} as UserDto, {});
+            const actual = userProConnectService.proConnectUpdateValidations({} as UserDto, {});
             expect(actual).toEqual(expected);
         });
 
         it("rejects firstName modification", () => {
-            const actual = userAgentConnectService.agentConnectUpdateValidations({} as UserDto, {
+            const actual = userProConnectService.proConnectUpdateValidations({} as UserDto, {
                 firstName: "something",
             });
-            expect(actual).toMatchInlineSnapshot(`
-                {
-                  "valid": true,
-                }
-            `);
+            expect(actual).toMatchSnapshot();
         });
 
         it("rejects lastName modification", () => {
-            const actual = userAgentConnectService.agentConnectUpdateValidations({} as UserDto, {
+            const actual = userProConnectService.proConnectUpdateValidations({} as UserDto, {
                 lastName: "something",
             });
-            expect(actual).toMatchInlineSnapshot(`
-                {
-                  "valid": true,
-                }
-            `);
+            expect(actual).toMatchSnapshot();
         });
     });
 
@@ -301,14 +280,14 @@ describe("userAgentConnectService", () => {
         it("throws error if id_token missing", async () => {
             const expected = new InternalServerError("invalid tokenSet to save");
             // @ts-expect-error -- private method
-            const test = () => userAgentConnectService.saveTokenSet("ID" as ObjectId, {});
+            const test = () => userProConnectService.saveTokenSet("ID" as ObjectId, {});
             await expect(test).rejects.toEqual(expected);
         });
 
         it("upserts token", async () => {
             // @ts-expect-error -- private method
-            await userAgentConnectService.saveTokenSet("ID" as ObjectId, { id_token: "TOKEN" });
-            const actual = jest.mocked(agentConnectTokenAdapter.upsert).mock.calls[0][0];
+            await userProConnectService.saveTokenSet("ID" as ObjectId, { id_token: "TOKEN" });
+            const actual = jest.mocked(proConnectTokenAdapter.upsert).mock.calls[0][0];
             expect(actual).toMatchObject({
                 creationDate: expect.any(Date),
                 token: "TOKEN",

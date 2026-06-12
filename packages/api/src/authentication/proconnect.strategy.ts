@@ -12,7 +12,7 @@ import passport from "passport";
 import { Request } from "express";
 import { FRONT_OFFICE_URL } from "../configurations/front.conf";
 
-export class AgentConnectStrategy extends passport.Strategy {
+export class ProConnectStrategy extends passport.Strategy {
     name = "oidc";
     private _client: Configuration;
     private _verify: (

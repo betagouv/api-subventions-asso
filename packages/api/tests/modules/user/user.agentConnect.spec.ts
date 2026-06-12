@@ -8,13 +8,13 @@ import { App } from "supertest/types";
 const g = global as unknown as { app: App };
 
 describe("UserController, /user", () => {
-    it("can update agentConnect user repeating name", async () => {
+    it("can update proConnect user repeating name", async () => {
         const user = await userCrudService.createUser({
             roles: ["user"],
             email: USER_EMAIL,
             firstName: "firstName",
             lastName: "lastName",
-            agentConnectId: "something",
+            proConnectId: "something",
         });
         const token = await getTokenByUser(user);
         const response = await request(g.app)
@@ -42,7 +42,7 @@ describe("UserController, /user", () => {
             email: USER_EMAIL,
             firstName: "firstName",
             lastName: "lastName",
-            agentConnectId: "something",
+            proConnectId: "something",
         });
         await userCrudService.update({ ...user });
         const token = await getTokenByUser(user);
@@ -65,15 +65,15 @@ describe("UserController, /user", () => {
 
     it.each`
         property       | errorMsg
-        ${"firstName"} | ${"Un utilisateur lié à AgentConnect ne peut pas changer de prénom sur l'application"}
-        ${"lastName"}  | ${"Un utilisateur lié à AgentConnect ne peut pas changer de nom de famille sur l'application"}
+        ${"firstName"} | ${"Un utilisateur lié à ProConnect ne peut pas changer de prénom sur l'application"}
+        ${"lastName"}  | ${"Un utilisateur lié à ProConnect ne peut pas changer de nom de famille sur l'application"}
     `("fails on trying to update $property", async ({ property, errorMsg }) => {
         const user = await userCrudService.createUser({
             roles: ["user"],
             email: USER_EMAIL,
             firstName: "initialFirstName",
             lastName: "initialLastName",
-            agentConnectId: "something",
+            proConnectId: "something",
         });
         await userCrudService.update({ ...user });
         const token = await getTokenByUser(user);

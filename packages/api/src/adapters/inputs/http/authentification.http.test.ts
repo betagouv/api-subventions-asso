@@ -1,10 +1,10 @@
 import { AuthentificationHttp } from "./authentification.http";
 import { IdentifiedRequest } from "../../../@types";
-import userAgentConnectService from "../../../modules/user/services/agentConnect/user.agentConnect.service";
+import userProConnectService from "../../../modules/user/services/pro-connect/user.pro-connect.service";
 import userAuthService from "../../../modules/user/services/auth/user.auth.service";
 import { BadRequestError } from "core";
 
-jest.mock("../../../modules/user/services/agentConnect/user.agentConnect.service");
+jest.mock("../../../modules/user/services/pro-connect/user.pro-connect.service");
 jest.mock("../../../modules/user/services/auth/user.auth.service");
 
 describe("Authentication http", () => {
@@ -18,15 +18,15 @@ describe("Authentication http", () => {
         // @ts-expect-error -- force typing for test
         const REQUEST = { user: "someone" } as IdentifiedRequest;
 
-        it("call agentConnect logout", async () => {
+        it("call proConnect logout", async () => {
             await ctrl.logout(REQUEST);
-            expect(userAgentConnectService.getLogoutUrl).toHaveBeenCalledWith(REQUEST.user);
+            expect(userProConnectService.getLogoutUrl).toHaveBeenCalledWith(REQUEST.user);
         });
 
-        it("return url from agentConnect logout", async () => {
+        it("return url from proConnect logout", async () => {
             const URL = "some.where";
             const expected = URL;
-            jest.mocked(userAgentConnectService.getLogoutUrl).mockResolvedValueOnce(URL);
+            jest.mocked(userProConnectService.getLogoutUrl).mockResolvedValueOnce(URL);
             const actual = await ctrl.logout(REQUEST);
             expect(actual).toBe(expected);
         });
@@ -37,7 +37,7 @@ describe("Authentication http", () => {
             beforeAll(async () => {
                 jest.resetModules();
                 jest.doMock("../../../configurations/pro-connect.conf", () => ({
-                    AGENT_CONNECT_ENABLED: false,
+                    PRO_CONNECT_ENABLED: false,
                     __esModule: true,
                 }));
                 const { AuthentificationHttp: NoAcController } = await import("./authentification.http");
@@ -47,12 +47,12 @@ describe("Authentication http", () => {
                 jest.resetModules();
             });
 
-            it("does not call agentConnect logout because env var is off", async () => {
+            it("does not call proConnect logout because env var is off", async () => {
                 await noAcCtrl.logout(REQUEST);
-                expect(userAgentConnectService.getLogoutUrl).not.toHaveBeenCalled();
+                expect(userProConnectService.getLogoutUrl).not.toHaveBeenCalled();
             });
 
-            it("return null url if agentConnect is disabled", async () => {
+            it("return null url if proConnect is disabled", async () => {
                 const actual = await noAcCtrl.logout(REQUEST);
                 expect(actual).toBeNull();
             });

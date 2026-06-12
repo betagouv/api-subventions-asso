@@ -131,7 +131,7 @@ describe("user check service", () => {
         });
 
         it("validates email only if agent connect id is present", async () => {
-            await userCheckService.validateSanitizeUser({ email: USER_EMAIL, agentConnectId: "some-id" });
+            await userCheckService.validateSanitizeUser({ email: USER_EMAIL, proConnectId: "some-id" });
             expect(mockValidateEmailOnly).toHaveBeenCalledWith(USER_EMAIL);
         });
 

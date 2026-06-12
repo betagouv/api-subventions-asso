@@ -45,9 +45,9 @@ describe("BrevoMailNotify", () => {
         });
 
         it("should call sendMail with templateId", async () => {
-            const expected = [EMAIL, expect.any(Object), TemplateEnum.creationAgentConnect];
+            const expected = [EMAIL, expect.any(Object), TemplateEnum.creationProConnect];
             // @ts-expect-error -- test private
-            await provider.sendCreationMail({ email: EMAIL, isAgentConnect: true });
+            await provider.sendCreationMail({ email: EMAIL, isProConnect: true });
             expect(mockSendMail).toHaveBeenCalledWith(...expected);
         });
     });

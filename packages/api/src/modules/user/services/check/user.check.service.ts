@@ -39,7 +39,7 @@ export class UserCheckService {
      */
     async validateSanitizeUser(user: FutureUserDto) {
         try {
-            if (user.agentConnectId) userCheckService.validateOnlyEmail(user.email);
+            if (user.proConnectId) userCheckService.validateOnlyEmail(user.email);
             else await userCheckService.validateEmailAndDomain(user.email);
         } catch (e) {
             if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV) {

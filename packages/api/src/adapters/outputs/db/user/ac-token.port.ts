@@ -1,10 +1,10 @@
 import { ObjectId } from "mongodb";
-import { AgentConnectTokenDbo } from "../../../../modules/user/@types/AgentConnectUser";
+import { ProConnectTokenDbo } from "../../../../modules/user/@types/ProConnectUser";
 
 export interface AcTokenPort {
     createIndexes(): Promise<void>;
 
-    findLastActive(userId: ObjectId): Promise<AgentConnectTokenDbo | null>;
-    upsert(entity: Omit<AgentConnectTokenDbo, "_id">): Promise<boolean>;
+    findLastActive(userId: ObjectId): Promise<ProConnectTokenDbo | null>;
+    upsert(entity: Omit<ProConnectTokenDbo, "_id">): Promise<boolean>;
     deleteAllByUserId(userId: string | ObjectId): Promise<boolean>;
 }
