@@ -7,10 +7,9 @@ import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
 import { JWT_SECRET } from "../configurations/jwt.conf";
 import { getJtwTokenFromRequest } from "../shared/helpers/HttpHelper";
 import userAuthService from "../modules/user/services/auth/user.auth.service";
-import { PRO_CONNECT_ENABLED } from "../configurations/pro-connect.conf";
 import userProConnectService from "../modules/user/services/pro-connect/user.pro-connect.service";
 import { ProConnectUser } from "../modules/user/@types/ProConnectUser";
-import { ProConnectStrategy } from "./proconnect.strategy";
+import { ProConnectStrategy } from "./pro-connect.strategy";
 import userCrudService from "../modules/user/services/crud/user.crud.service";
 
 export async function registerAuthMiddlewares(app: Express) {
@@ -67,24 +66,22 @@ export async function registerAuthMiddlewares(app: Express) {
         ),
     );
 
-    if (PRO_CONNECT_ENABLED) {
-        await userProConnectService.initClient();
+    await userProConnectService.initClient();
 
-        passport.use(
-            "oidc",
-            new ProConnectStrategy(
-                userProConnectService.client as Configuration, // the Configuration object from discovery()
-                async (req: Request, tokenSet: TokenEndpointResponse, profile: ProConnectUser, done) => {
-                    try {
-                        const user = await userProConnectService.login(profile, tokenSet);
-                        return done(null, user, { idToken: tokenSet.id_token });
-                    } catch (e) {
-                        return done(e as Error);
-                    }
-                },
-            ),
-        );
-    }
+    passport.use(
+        "oidc",
+        new ProConnectStrategy(
+            userProConnectService.client as Configuration, // the Configuration object from discovery()
+            async (req: Request, tokenSet: TokenEndpointResponse, profile: ProConnectUser, done) => {
+                try {
+                    const user = await userProConnectService.login(profile, tokenSet);
+                    return done(null, user, { idToken: tokenSet.id_token });
+                } catch (e) {
+                    return done(e as Error);
+                }
+            },
+        ),
+    );
 
     app.post("/auth/login", (req, res, next) => {
         passport.authenticate("login", (error, user, info: IVerifyOptions) => {

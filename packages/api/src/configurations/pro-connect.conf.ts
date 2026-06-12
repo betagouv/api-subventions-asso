@@ -1,4 +1,3 @@
-export const PRO_CONNECT_ENABLED = process.env.PRO_CONNECT_ENABLED === "true" || false;
 export const PRO_CONNECT_CLIENT_SECRET = process.env.PRO_CONNECT_CLIENT_SECRET || "";
 export const PRO_CONNECT_CLIENT_ID = process.env.PRO_CONNECT_CLIENT_ID || "";
 export const PRO_CONNECT_URL = process.env.PRO_CONNECT_URL || "";

@@ -18,7 +18,6 @@ import type { IdentifiedRequest, LoginRequest } from "../../../@types";
 
 import { DEV } from "../../../configurations/env.conf";
 import { DOMAIN } from "../../../configurations/domain.conf";
-import { PRO_CONNECT_ENABLED } from "../../../configurations/pro-connect.conf";
 import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, Example } from "tsoa";
 import { BadRequestError, InternalServerError } from "core";
 import userAuthService from "../../../modules/user/services/auth/user.auth.service";
@@ -153,7 +152,7 @@ export class AuthentificationHttp extends Controller {
     public async logout(@Request() req: IdentifiedRequest): Promise<string | null> {
         let url: null | string = null;
         if (!req.user) throw new BadRequestError();
-        if (PRO_CONNECT_ENABLED) url = await userProConnectService.getLogoutUrl(req.user);
+        url = await userProConnectService.getLogoutUrl(req.user);
         await userAuthService.logout(req.user);
         return url;
     }

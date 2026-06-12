@@ -36,10 +36,6 @@ describe("Authentication http", () => {
 
             beforeAll(async () => {
                 jest.resetModules();
-                jest.doMock("../../../configurations/pro-connect.conf", () => ({
-                    PRO_CONNECT_ENABLED: false,
-                    __esModule: true,
-                }));
                 const { AuthentificationHttp: NoAcController } = await import("./authentification.http");
                 noAcCtrl = new NoAcController();
             });
