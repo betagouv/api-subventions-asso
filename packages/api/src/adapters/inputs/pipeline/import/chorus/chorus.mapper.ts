@@ -9,7 +9,7 @@ export class ChorusMapper {
         const partial = {
             ej: dto["N° EJ"],
             numPosteEJ: dto["N° poste EJ"],
-            siret: dto["Code taxe 1"],
+            siret: dto["Code taxe 1"] === "#" ? undefined : new Siret(dto["Code taxe 1"]),
             ridetOrTahitiet: dto["No TVA 3 (COM-RIDET ou TAHITI)"],
             codeBranche: dto["Branche CODE"],
             branche: dto["Branche"],

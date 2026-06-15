@@ -1,5 +1,6 @@
 import ChorusEntity from "../../src/modules/providers/chorus/entities/ChorusEntity";
 import { CHORUS_ENTITIES } from "../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
+import Siret from "../../src/identifier-objects/Siret";
 export const CHORUS_LAST_UPDATE = new Date("2022-03-12");
 
 export const MOCK_DOCUMENTS: ChorusEntity[] = [
@@ -7,7 +8,7 @@ export const MOCK_DOCUMENTS: ChorusEntity[] = [
     // je change l'exercice du première document pour qu'il ne soit pas enregistré lors de resyncExercice (2023)
     {
         ...CHORUS_ENTITIES[0],
-        siret: "12345678901313",
+        siret: new Siret("12345678901313"),
         exercice: 2022,
     },
     // je mets des entités avec le même paymentFlat uniqueId pour tester le groupement
@@ -17,7 +18,7 @@ export const MOCK_DOCUMENTS: ChorusEntity[] = [
         ej: "EJ_egale",
         codeDomaineFonctionnel: "0143-03-01",
         codeActivitee: "014303000102",
-        siret: "12345678901212",
+        siret: new Siret("12345678901212"),
     },
     {
         ...CHORUS_ENTITIES[2],
@@ -25,14 +26,14 @@ export const MOCK_DOCUMENTS: ChorusEntity[] = [
         ej: "EJ_egale",
         codeDomaineFonctionnel: "0143-03-01",
         codeActivitee: "014303000102",
-        siret: "12345678901212",
+        siret: new Siret("12345678901212"),
         dateOperation: new Date("2023-12-12"),
         codeCentreFinancier: "AA01/0776-C001-4000",
     },
     {
         ...CHORUS_ENTITIES[2],
         uniqueId: "newUniqueId",
-        siret: "12345678901414",
+        siret: new Siret("12345678901414"),
     },
 ];
 

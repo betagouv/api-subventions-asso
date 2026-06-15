@@ -41,9 +41,9 @@ describe("Chorus Use Cases", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("filters entity when siret and ridetOrTahitiet equals #", async () => {
+        it("filters entity when siret is undefined and ridetOrTahitiet equals #", async () => {
             const expected = [];
-            const actual = await useCase.execute([{ ...ENTITY, siret: "#", ridetOrTahitiet: "#" }]);
+            const actual = await useCase.execute([{ ...ENTITY, siret: undefined, ridetOrTahitiet: "#" }]);
             expect(actual).toEqual(expected);
         });
 
@@ -58,7 +58,7 @@ describe("Chorus Use Cases", () => {
             jest.mocked(mockCheckIsAsso.execute).mockResolvedValue(false);
             const expected = [];
             const actual = await useCase.execute([
-                { ...ENTITY[0], siret: "#", ridetOrTahitiet: DEFAULT_ASSOCIATION.ridet },
+                { ...ENTITY, siret: undefined, ridetOrTahitiet: DEFAULT_ASSOCIATION.ridet },
             ]);
             expect(actual).toEqual(expected);
         });
@@ -66,7 +66,7 @@ describe("Chorus Use Cases", () => {
         it("filters entity when idenfiers are not well formated", async () => {
             jest.mocked(mockCheckIsAsso.execute).mockResolvedValue(false);
             const expected = [];
-            const actual = await useCase.execute([{ ...ENTITY, siret: "#", ridetOrTahitiet: "not-a-ridet" }]);
+            const actual = await useCase.execute([{ ...ENTITY, siret: undefined, ridetOrTahitiet: "not-a-ridet" }]);
             expect(actual).toEqual(expected);
         });
 

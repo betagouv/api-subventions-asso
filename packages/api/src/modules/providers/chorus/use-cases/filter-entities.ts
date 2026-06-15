@@ -1,4 +1,4 @@
-import { EstablishmentIdentifier, Siret } from "../../../../identifier-objects";
+import { EstablishmentIdentifier } from "../../../../identifier-objects";
 import { BRANCHE_ACCEPTED } from "../../../../shared/ChorusBrancheAccepted";
 import { asyncFilter } from "../../../../shared/helpers/ArrayHelper";
 import checkIdentifierIsFromAsso, {
@@ -13,13 +13,13 @@ export class FilterChorusEntities {
         return asyncFilter(entities, async entity => {
             if (!BRANCHE_ACCEPTED[entity.codeBranche]) return false;
             try {
-                if (entity.siret === "#" && entity.ridetOrTahitiet === "#") return false;
-                if (entity.siret === "#") {
+                if (!entity.siret && entity.ridetOrTahitiet === "#") return false;
+                if (!entity.siret) {
                     return this.checkIsAsso.execute(
                         EstablishmentIdentifier.buildIdentifierFromString(entity.ridetOrTahitiet)!,
                     );
                 } else {
-                    return this.checkIsAsso.execute(new Siret(entity.siret));
+                    return this.checkIsAsso.execute(entity.siret);
                 }
             } catch (e) {
                 // filter entities with wrong identifiers format

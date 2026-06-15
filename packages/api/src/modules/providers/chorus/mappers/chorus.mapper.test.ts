@@ -368,23 +368,24 @@ describe("ChorusMapper", () => {
     describe("getEstablishmentValueObject", () => {
         const mockIsRidet = jest.fn().mockReturnValue(true);
         const mockIsTahitiet = jest.fn().mockReturnValue(true);
-        const mockIsSiret = jest.fn().mockReturnValue(true);
 
-        // Only mock isRidet, isTahitiet and isSiret
+        // Only mock isRidet and isTahitiet
         // If we wanted to be 100% unit testing we should create a mock in __mocks__ folder
         beforeAll(() => {
             Ridet.isRidet = mockIsRidet;
-            Siret.isSiret = mockIsSiret;
             Tahitiet.isTahitiet = mockIsTahitiet;
         });
 
         it("throws error if no SIRET or RIDET or TAHITI defined", () => {
-            mockIsSiret.mockReturnValueOnce(false);
             mockIsRidet.mockReturnValueOnce(false);
             mockIsTahitiet.mockReturnValueOnce(false);
             expect(() =>
                 // @ts-expect-error: private method
-                ChorusMapper.getEstablishmentValueObject({ ...CHORUS_ENTITIES[0], siret: "#", ridetOrTahitiet: "#" }),
+                ChorusMapper.getEstablishmentValueObject({
+                    ...CHORUS_ENTITIES[0],
+                    siret: undefined,
+                    ridetOrTahitiet: "#",
+                }),
             ).toThrow(
                 `Not able to retrieve an establishment identifier for chorus entity with EJ ${CHORUS_ENTITIES[0].ej} for exercice ${CHORUS_ENTITIES[0].exercice}`,
             );
@@ -393,25 +394,29 @@ describe("ChorusMapper", () => {
         it("returns Siret", () => {
             // @ts-expect-error: test private methode
             const actual = ChorusMapper.getEstablishmentValueObject({ ...CHORUS_ENTITIES[0] });
-            expect(actual).toEqual(new Siret(CHORUS_ENTITIES[0].siret));
+            expect(actual).toEqual(CHORUS_ENTITIES[0].siret);
         });
+
         it("returns Ridet", () => {
             const RIDET = "123456789";
-            mockIsSiret.mockReturnValueOnce(false);
             // @ts-expect-error: test private methode
-            const actual = ChorusMapper.getEstablishmentValueObject({ ...CHORUS_ENTITIES[0], ridetOrTahitiet: RIDET });
-            expect(actual).toEqual(new Ridet(RIDET));
+            const actual = ChorusMapper.getEstablishmentValueObject({
+                ...CHORUS_ENTITIES[0],
+                siret: undefined,
+                ridetOrTahitiet: RIDET,
+            });
+            expect({ value: actual.value, name: actual.name }).toEqual({ value: RIDET, name: "ridet" });
         });
         it("returns Tahitied", () => {
             const TAHITIET = "A12345678";
-            mockIsSiret.mockReturnValueOnce(false);
             mockIsRidet.mockReturnValueOnce(false);
             // @ts-expect-error: test private methode
             const actual = ChorusMapper.getEstablishmentValueObject({
                 ...CHORUS_ENTITIES[0],
+                siret: undefined,
                 ridetOrTahitiet: TAHITIET,
             });
-            expect(actual).toEqual(new Siret(TAHITIET));
+            expect({ value: actual.value, name: actual.name }).toEqual({ value: TAHITIET, name: "tahitiet" });
         });
     });
 });

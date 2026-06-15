@@ -28,13 +28,12 @@ export default class ChorusMapper {
     }
 
     private static getEstablishmentValueObject(entity: ChorusEntity): EstablishmentIdType {
-        if (Siret.isSiret(entity.siret)) return new Siret(entity.siret);
+        if (entity.siret) return entity.siret;
         if (Ridet.isRidet(entity.ridetOrTahitiet)) return new Ridet(entity.ridetOrTahitiet);
         if (Tahitiet.isTahitiet(entity.ridetOrTahitiet)) return new Tahitiet(entity.ridetOrTahitiet);
-        else
-            throw new Error(
-                `Not able to retrieve an establishment identifier for chorus entity with EJ ${entity.ej} for exercice ${entity.exercice}`,
-            );
+        throw new Error(
+            `Not able to retrieve an establishment identifier for chorus entity with EJ ${entity.ej} for exercice ${entity.exercice}`,
+        );
     }
 
     private static getCompanyId(estabId: EstablishmentIdType) {

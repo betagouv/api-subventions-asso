@@ -3,32 +3,46 @@ import Siret from "../../../../../identifier-objects/Siret";
 import Siren from "../../../../../identifier-objects/Siren";
 import { DefaultObject } from "../../../../../@types";
 import MongoAdapter from "../../MongoAdapter";
-import ChorusEntity from "../../../../../modules/providers/chorus/entities/ChorusEntity";
+import ChorusEntity, { ChorusDbo } from "../../../../../modules/providers/chorus/entities/ChorusEntity";
 import { ChorusPort } from "./chorus.port";
 
-export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusPort {
+export class ChorusAdapter extends MongoAdapter<ChorusDbo> implements ChorusPort {
     readonly collectionName = "chorus";
 
+    private toMongoEntity(entity: ChorusEntity): ChorusDbo {
+        const { siret, ...mongoEntity } = entity;
+        return siret ? { ...mongoEntity, siret: siret.value } : mongoEntity;
+    }
+
+    private toEntity(dbo: ChorusDbo): ChorusEntity {
+        const { siret, ...entity } = dbo;
+        return siret ? { ...entity, siret: new Siret(siret) } : entity;
+    }
+
     public async findOneByEJ(ej: string) {
-        return this.collection.findOne({ ej: ej }, { projection: { _id: 0 } });
+        const dbo = await this.collection.findOne({ ej: ej }, { projection: { _id: 0 } });
+        return dbo && this.toEntity(dbo);
     }
 
     public async findOneBySiret(siret: Siret) {
-        return this.collection.findOne({ siret: siret.value });
+        const dbo = await this.collection.findOne({ siret: siret.value });
+        return dbo && this.toEntity(dbo);
     }
 
     public async findOneBySiren(siren: Siren) {
-        return this.collection.findOne({
+        const dbo = await this.collection.findOne({
             siret: new RegExp(`^${siren.value}\\d{5}`),
         });
+        return dbo && this.toEntity(dbo);
     }
 
     public async findOneByUniqueId(uniqueId: string) {
-        return this.collection.findOne({ uniqueId: uniqueId }, { projection: { _id: 0 } });
+        const dbo = await this.collection.findOne({ uniqueId: uniqueId }, { projection: { _id: 0 } });
+        return dbo && this.toEntity(dbo);
     }
 
     public async create(entity: ChorusEntity) {
-        await this.collection.insertOne(entity);
+        await this.collection.insertOne(this.toMongoEntity(entity));
     }
 
     public async upsertMany(entities: ChorusEntity[]) {
@@ -37,42 +51,44 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusP
                 ({
                     updateOne: {
                         filter: { uniqueId: e.uniqueId },
-                        update: { $set: e },
+                        update: { $set: this.toMongoEntity(e) },
                         upsert: true,
                     },
-                }) as AnyBulkWriteOperation<ChorusEntity>,
+                }) as AnyBulkWriteOperation<ChorusDbo>,
         );
         await this.collection.bulkWrite(operations);
         return;
     }
 
     public async update(entity: ChorusEntity) {
-        await this.collection.updateOne({ uniqueId: entity.uniqueId }, { $set: entity });
+        await this.collection.updateOne({ uniqueId: entity.uniqueId }, { $set: this.toMongoEntity(entity) });
         await this.collection.findOne({ uniqueId: entity.uniqueId }, { projection: { _id: 0 } });
         return;
     }
 
     public async findBySiret(siret: Siret) {
-        return this.collection.find({ siret: siret.value }, { projection: { _id: 0 } }).toArray();
+        return this.collection
+            .find({ siret: siret.value }, { projection: { _id: 0 } })
+            .map(dbo => this.toEntity(dbo))
+            .toArray();
     }
 
     public async findByEJ(ej: string) {
-        return this.collection.find({ ej: ej }, { projection: { _id: 0 } }).toArray();
+        return this.collection
+            .find({ ej: ej }, { projection: { _id: 0 } })
+            .map(dbo => this.toEntity(dbo))
+            .toArray();
     }
 
     public async findBySiren(siren: Siren) {
         return this.collection
-            .find(
-                {
-                    siret: new RegExp(`^${siren.value}\\d{5}`),
-                },
-                { projection: { _id: 0 } },
-            )
+            .find({ siret: new RegExp(`^${siren.value}\\d{5}`) }, { projection: { _id: 0 } })
+            .map(dbo => this.toEntity(dbo))
             .toArray();
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
-        return this.collection.find(query, { projection });
+        return this.collection.find(query, { projection }).map(dbo => this.toEntity(dbo));
     }
 
     public cursorFindOnExercise(exerciceBudgetaire: number) {

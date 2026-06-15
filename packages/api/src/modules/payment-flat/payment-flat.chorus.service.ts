@@ -1,6 +1,6 @@
 import paymentFlatAdapter from "../../adapters/outputs/db/payment-flat/payment-flat.adapter";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
-import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
+import Siret from "../../identifier-objects/Siret";
 import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymentFlat";
 import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
 import chorusService from "../providers/chorus/chorus.service";
@@ -64,11 +64,9 @@ export class PaymentFlatChorusService implements PaymentFlatProvider {
         while (await chorusCursor.hasNext()) {
             const document = (await chorusCursor.next()) as ChorusEntity;
 
-            // @TODO: remove this ? Chorus Entity persistance already check identifier
-            // throught Siret.isSiret, Ridet.isRidet, Tahitiet.isTahitiet
-            // filter chorus documents with wrong or weird establishment identifier
-            // that will make payment-flat adaptation fails
-            if (!EstablishmentIdentifier.getIdentifierType(document.siret)) {
+            // Payment-flat Chorus supports only documents with a valid SIRET.
+            // Documents without SIRET are set aside even if ridetOrTahitiet is present.
+            if (!(document.siret?.value && Siret.isSiret(document.siret.value))) {
                 invalidDocuments.push(document);
                 continue;
             }
@@ -102,7 +100,7 @@ export class PaymentFlatChorusService implements PaymentFlatProvider {
         console.log(
             `Here are some of them : \n${invalidDocuments
                 .splice(0, 5)
-                .map(document => `- ${document.siret} \n`)
+                .map(document => `- ${document.siret?.value} \n`)
                 .reduce((acc, str) => (acc += str), "")}`,
         );
 

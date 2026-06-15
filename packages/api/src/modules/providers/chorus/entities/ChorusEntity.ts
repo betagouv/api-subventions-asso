@@ -1,11 +1,11 @@
 import { ProviderDataEntity } from "../../../../@types/ProviderData";
+import Siret from "../../../../identifier-objects/Siret";
 
 export default interface ChorusEntity extends ProviderDataEntity {
     uniqueId: string;
     ej: string;
     numPosteEJ: number;
-    // @TODO: make it a Siret
-    siret: string;
+    siret?: Siret;
     ridetOrTahitiet: string;
     codeBranche: string;
     branche: string;
@@ -24,3 +24,5 @@ export default interface ChorusEntity extends ProviderDataEntity {
     amount: number;
     dateOperation: Date;
 }
+
+export type ChorusDbo = Omit<ChorusEntity, "siret"> & { siret?: string };

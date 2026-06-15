@@ -62,7 +62,7 @@ describe("ChorusService", () => {
         beforeAll(() => {
             jest.mocked(associationHelper.isIdentifierFromAsso).mockReturnValue(SOME_PROMISE);
         });
-        const SIREN = new Siret(CHORUS_ENTITIES[0].siret).toSiren();
+        const SIREN = CHORUS_ENTITIES[0].siret!.toSiren();
 
         it("calls associationService test with valueObject association identifier", async () => {
             service.sirenBelongAsso(SIREN);

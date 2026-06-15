@@ -1,6 +1,7 @@
 import MongoAdapter from "../../MongoAdapter";
 import chorusAdapter from "./chorus.adapter";
-import ChorusEntity from "../../../../../modules/providers/chorus/entities/ChorusEntity";
+import Siret from "../../../../../identifier-objects/Siret";
+import { CHORUS_ENTITIES } from "../../../../../modules/providers/chorus/__fixtures__/ChorusFixtures";
 
 describe("chorusPort", () => {
     const mockBulkWrite = jest.fn();
@@ -17,38 +18,31 @@ describe("chorusPort", () => {
 
     describe("upsertMany", () => {
         it("calls bulkWrite with operations from entities", async () => {
-            await chorusAdapter.upsertMany([{ uniqueId: 1 }, { uniqueId: 2 }] as unknown as ChorusEntity[]);
-            const actual = mockBulkWrite.mock.calls[0];
+            await chorusAdapter.upsertMany([
+                { ...CHORUS_ENTITIES[0], uniqueId: "1", siret: new Siret("12345678901234") },
+                { ...CHORUS_ENTITIES[1], uniqueId: "2", siret: undefined },
+            ]);
+            const actual = mockBulkWrite.mock.calls[0][0].map(({ updateOne }) => ({
+                filter: updateOne.filter,
+                siret: updateOne.update.$set.siret,
+                uniqueId: updateOne.update.$set.uniqueId,
+            }));
             expect(actual).toMatchInlineSnapshot(`
                 [
-                  [
-                    {
-                      "updateOne": {
-                        "filter": {
-                          "uniqueId": 1,
-                        },
-                        "update": {
-                          "$set": {
-                            "uniqueId": 1,
-                          },
-                        },
-                        "upsert": true,
-                      },
+                  {
+                    "filter": {
+                      "uniqueId": "1",
                     },
-                    {
-                      "updateOne": {
-                        "filter": {
-                          "uniqueId": 2,
-                        },
-                        "update": {
-                          "$set": {
-                            "uniqueId": 2,
-                          },
-                        },
-                        "upsert": true,
-                      },
+                    "siret": "12345678901234",
+                    "uniqueId": "1",
+                  },
+                  {
+                    "filter": {
+                      "uniqueId": "2",
                     },
-                  ],
+                    "siret": undefined,
+                    "uniqueId": "2",
+                  },
                 ]
             `);
         });
