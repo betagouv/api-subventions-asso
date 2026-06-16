@@ -1,7 +1,6 @@
 import { ProviderDataEntity } from "../../../../@types/ProviderData";
 
 export default interface ChorusEntity extends ProviderDataEntity {
-    uniqueId: string;
     ej: string;
     numPosteEJ: number;
     // @TODO: make it a Siret
