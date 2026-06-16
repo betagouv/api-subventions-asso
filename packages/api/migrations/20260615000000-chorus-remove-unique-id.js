@@ -2,6 +2,16 @@ module.exports = {
     async up(db) {
         const collection = db.collection("chorus");
 
+        await collection.updateMany({}, [
+            {
+                $set: {
+                    numPosteEJ: { $toInt: "$numPosteEJ" },
+                    numPosteDP: { $toInt: "$numPosteDP" },
+                    exercice: { $toInt: "$exercice" },
+                },
+            },
+        ]);
+
         await collection.createIndex(
             {
                 ej: 1,
