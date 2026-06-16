@@ -26,6 +26,7 @@ export default class SearchController {
 
     async fetchAssociationFromName(rawInput = "", page = 1) {
         const input = rawInput.trim();
+        const inputId = removeWhiteSpace(input);
         this.isLastSearchCompany.set(false);
         try {
             const search = await associationService.search(input, page);
@@ -33,19 +34,16 @@ export default class SearchController {
             // search by id with single result: we can redirect
             if (isSiret(input) && search.total === 1) return this.gotoEstablishment(input);
             if ((isSiren(input) || isRna(input)) && search.total === 1) {
-                return goto(`/association/${input}`, { replaceState: true });
+                return goto(`/association/${inputId}`, { replaceState: true });
 
                 // multiple results
             } else {
                 // display alert if there are duplicates in rna-siren links
                 if (isSiren(input) || isRna(input)) {
-                    this.duplicatesFromIdentifier.set(
-                        search.results
-                            .map(association =>
-                                [association.rna, association.siren].find(identifier => identifier !== input),
-                            )
-                            .filter(identifier => identifier) as string[],
-                    );
+                    const duplicates = search.results
+                        .map(association => [association.rna, association.siren].find(id => id && id !== inputId))
+                        .filter(identifier => identifier) as string[];
+                    this.duplicatesFromIdentifier.set(duplicates.length ? duplicates : null);
                 } else this.duplicatesFromIdentifier.set(null);
 
                 // search by name
