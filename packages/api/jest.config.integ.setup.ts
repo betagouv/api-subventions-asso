@@ -8,7 +8,7 @@ import crypto from "crypto";
 
 process.env.JWT_SECRET = crypto.randomBytes(256).toString("base64");
 process.env.BETA_GOUV_DOMAIN = "beta.gouv.fr";
-process.env.PRO_CONNECT_URL = "https://agent-connect.url";
+process.env.PRO_CONNECT_URL = "https://pro-connect.url";
 process.env.API_BREVO_TOKEN = "1FT47%TRADF!";
 process.env.MAIL_USER = "mail-user@datasubvention";
 process.env.RATE_LIMIT = "50"; // 20 in real app but can break integration test. Still limiting to 50 as more than that means we should break routes / test file

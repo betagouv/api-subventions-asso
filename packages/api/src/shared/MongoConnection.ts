@@ -68,7 +68,9 @@ export const connectDB = () => {
 
 export const client = mongoClient;
 
-export const mongoSessionStoreConfig = { uri: MONGO_URL, collection: "sessions", connectionOptions };
+export const MONGO_SESSION_COLLECTION = "sessions";
+
+export const mongoSessionStoreConfig = { uri: MONGO_URL, collection: MONGO_SESSION_COLLECTION, connectionOptions };
 
 export default mongoClient.db(MONGO_DBNAME, { ignoreUndefined: true });
 

@@ -1,10 +1,10 @@
 import { ObjectId } from "mongodb";
 import MongoAdapter from "../MongoAdapter";
 import { ProConnectTokenDbo } from "../../../../modules/user/@types/ProConnectUser";
-import { AcTokenPort } from "./ac-token.port";
+import ProConnectTokenPort from "./pro-connect-token.port";
 
-class ProConnectTokenAdapter extends MongoAdapter<ProConnectTokenDbo> implements AcTokenPort {
-    collectionName = "agent-connect-token";
+class ProConnectTokenAdapter extends MongoAdapter<ProConnectTokenDbo> implements ProConnectTokenPort {
+    collectionName = "pro-connect-token";
 
     findLastActive(userId: ObjectId): Promise<ProConnectTokenDbo | null> {
         return this.collection.findOne({ userId: new ObjectId(userId) }, { sort: { creationDate: -1 } });

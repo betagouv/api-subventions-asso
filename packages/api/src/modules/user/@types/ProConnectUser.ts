@@ -6,7 +6,7 @@ export type ProConnectUser = {
     given_name: string; // first names separated by spaces
     usual_name: string; // last name
     email: string;
-    uid: string; // agent connect identifier
+    uid: string; // pro connect identifier
     sub: string; // identifier dependant of identity provider. Don't use!
 
     siren?: SirenDto;

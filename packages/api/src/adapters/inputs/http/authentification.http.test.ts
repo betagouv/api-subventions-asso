@@ -31,7 +31,7 @@ describe("Authentication http", () => {
             expect(actual).toBe(expected);
         });
 
-        describe("without agent connect", () => {
+        describe("without pro connect", () => {
             let noAcCtrl: AuthentificationHttp;
 
             beforeAll(async () => {

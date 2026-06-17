@@ -24,7 +24,7 @@ import * as openidClient from "openid-client";
 jest.mock("../../../../configurations/pro-connect.conf", () => ({
     PRO_CONNECT_CLIENT_ID: "mocked_client_id",
     PRO_CONNECT_CLIENT_SECRET: "mocked_client_secret",
-    PRO_CONNECT_URL: "https://agent-connect/url",
+    PRO_CONNECT_URL: "https://pro-connect/url",
 }));
 jest.mock("../../../../configurations/front.conf", () => ({
     FRONT_OFFICE_URL: "http://my.front",

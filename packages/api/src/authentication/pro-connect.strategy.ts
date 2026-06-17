@@ -35,7 +35,7 @@ export class ProConnectStrategy extends passport.Strategy {
                 const state = randomState();
                 const nonce = randomNonce();
 
-                req.session["oidc:auth.agentconnect.gouv.fr"] = { state, nonce };
+                req.session["oidc:auth.proconnect.gouv.fr"] = { state, nonce };
 
                 // Force session save before redirect (your existing fix)
                 await new Promise<void>((resolve, reject) => {
@@ -55,7 +55,7 @@ export class ProConnectStrategy extends passport.Strategy {
             }
 
             // Step 4 — exchange code for tokens
-            const storedParams = req.session["oidc:auth.agentconnect.gouv.fr"];
+            const storedParams = req.session["oidc:auth.proconnect.gouv.fr"];
 
             if (!storedParams) {
                 return this.fail({ message: "Session OIDC params not found" });
@@ -64,7 +64,7 @@ export class ProConnectStrategy extends passport.Strategy {
             const { state: storedState, nonce: storedNonce } = storedParams;
 
             // Clean up session immediately
-            delete req.session["oidc:auth.agentconnect.gouv.fr"];
+            delete req.session["oidc:auth.proconnect.gouv.fr"];
 
             // Build the full callback URL from the incoming request
             const callbackUrl = new URL(

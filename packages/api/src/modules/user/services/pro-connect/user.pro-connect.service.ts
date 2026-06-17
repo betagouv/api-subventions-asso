@@ -54,7 +54,7 @@ export class UserProConnectService {
 
     async login(proConnectUser: ProConnectUser, tokenSet: TokenEndpointResponse): Promise<UserWithJWTDto> {
         // TODO for more resilience try to get by proConnectId first
-        if (!proConnectUser.email) throw new InternalServerError("email not contained in agent connect profile");
+        if (!proConnectUser.email) throw new InternalServerError("email not contained in pro connect profile");
         proConnectUser.email = proConnectUser.email.toLowerCase();
         const userWithSecrets: UserDbo | null = await userAdapter.getUserWithSecretsByEmail(proConnectUser.email);
         const isNewUser = !userWithSecrets;
@@ -116,8 +116,8 @@ export class UserProConnectService {
             email: userObject.email,
             firstname: userObject.firstName,
             lastname: userObject.lastName,
-            url: null, // no activation link, agent connect users are automatically active
-            active: true, // agent connect users automatically active
+            url: null, // no activation link, pro connect users are automatically active
+            active: true, // pro connect users automatically active
             signupAt: createdUser.signupAt,
             isProConnect: true,
         });

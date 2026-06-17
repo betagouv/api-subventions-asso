@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { ProConnectTokenDbo } from "../../../../modules/user/@types/ProConnectUser";
 
-export interface AcTokenPort {
+export default interface ProConnectTokenPort {
     createIndexes(): Promise<void>;
 
     findLastActive(userId: ObjectId): Promise<ProConnectTokenDbo | null>;
