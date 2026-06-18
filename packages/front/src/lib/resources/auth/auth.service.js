@@ -1,4 +1,3 @@
-import { ResetPasswordErrorCodes } from "dto";
 import authPort from "$lib/resources/auth/auth.port";
 import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
@@ -14,7 +13,7 @@ export class AuthService {
     }
 
     resetPassword(token, password) {
-        if (!token) return Promise.reject(ResetPasswordErrorCodes.INTERNAL_ERROR);
+        if (!token) return Promise.reject({ httpCode: 500 });
         return authPort.resetPassword(token, password).then(user => this.loginByUser(user));
     }
 

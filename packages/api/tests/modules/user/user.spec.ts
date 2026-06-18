@@ -65,8 +65,15 @@ describe("UserController, /user", () => {
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(400);
-            expect(response.body).toMatchSnapshot();
+            expect({
+                statusCode: response.statusCode,
+                messageType: typeof response.body.message,
+                bodyKeys: Object.keys(response.body),
+            }).toEqual({
+                statusCode: 400,
+                messageType: "string",
+                bodyKeys: ["message"],
+            });
         });
 
         it("should return 401 because user not connected", async () => {
@@ -91,7 +98,8 @@ describe("UserController, /user", () => {
                 .set("Accept", "application/json")
                 .expect(204);
 
-            const user = await userAdapter.findById(userId?.toString() as string);
+            const user = await userAdapter.findById(userId);
+
             expect(user).toMatchObject({
                 signupAt: expect.any(Date),
                 id: expect.any(String),

@@ -1,4 +1,4 @@
-import { ResetPasswordErrorCodes, TokenValidationType } from "dto";
+import { TokenValidationType } from "dto";
 import AgentTypeStep from "$lib/components/AgentTypeStep/AgentTypeStep.svelte";
 import CollectedDataAlert from "$lib/components/AgentTypeStep/CollectedDataAlert.svelte";
 import StructureFormStep from "$lib/components/StructureFormStep/StructureFormStep.svelte";
@@ -52,7 +52,7 @@ export default class ActivateAccountController {
     async _checkTokenValidity() {
         const tokenValidation = await authService.validateToken(this.token);
         if (!tokenValidation.valid) {
-            this.error = { data: { code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND } };
+            this.error = { httpCode: 404 };
             this.validationTokenStore.set("invalid");
         } else {
             if (tokenValidation.type === TokenValidationType.FORGET_PASSWORD) {

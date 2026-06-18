@@ -61,7 +61,7 @@ export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
         req.assoIdentifier = associationIdentifiers;
     } catch (e) {
         // somehow errorMiddleware does not catch errors in tsoa middlewares so it needs ot be called explicitly
-        errorHandler(false)(e, req, _res, next);
+        return errorHandler(false)(e, req, _res, next);
     }
     next();
 }
@@ -70,10 +70,9 @@ export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
 @Middlewares(isAssoIdentifierFromAssoMiddleware)
 @Security("jwt")
 @Tags("Association Controller")
-@Response<HttpErrorInterface>("401", "Non authentifié", { message: "User not logged", code: 1, cause: {} })
+@Response<HttpErrorInterface>("401", "Non authentifié", { message: "User not logged", cause: {} })
 @Response<HttpErrorInterface>("422", "Identifiant invalide", {
     message: "Votre recherche pointe vers une entité qui n'est pas une association",
-    code: 0,
     cause: {},
 })
 export class AssociationHttp extends Controller {

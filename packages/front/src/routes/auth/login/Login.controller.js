@@ -1,4 +1,3 @@
-import { LoginDtoErrorCodes } from "dto";
 import { goToUrl } from "$lib/services/router.service";
 import authService from "$lib/resources/auth/auth.service";
 import Store from "$lib/core/Store";
@@ -25,7 +24,7 @@ export default class LoginController {
             await authService.login(this.email, this.password);
             return authService.redirectAfterLogin();
         } catch (e) {
-            const message = this._getErrorMessage(e.data?.code);
+            const message = this._getErrorMessage(e.httpCode);
             this.error.set(message);
         }
         this._showAlert();
@@ -36,17 +35,17 @@ export default class LoginController {
             await authService.loginAgentConnect(rawStringQuery);
             return authService.redirectAfterLogin();
         } catch (e) {
-            const message = this._getErrorMessage(e.data?.code);
+            const message = this._getErrorMessage(e.httpCode);
             this.error.set(message);
         }
     }
 
-    _getErrorMessage(code) {
-        if (code === LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH) {
+    _getErrorMessage(httpCode) {
+        if (httpCode === 401) {
             return "Mot de passe ou email incorrect";
         }
 
-        if (code === LoginDtoErrorCodes.USER_NOT_ACTIVE) {
+        if (httpCode === 403) {
             return "Votre compte ne semble pas encore activé, si vous ne retrouvez pas votre mail d'activation vous pouvez faire mot de passe oublié.";
         }
 

@@ -1,6 +1,6 @@
-import { LoginDtoErrorCodes } from "dto";
 import LoginController from "./Login.controller";
 import UnauthorizedError from "$lib/errors/UnauthorizedError";
+import StaticError from "$lib/errors/StaticError";
 import authService from "$lib/resources/auth/auth.service";
 
 vi.mock("$lib/resources/auth/auth.service");
@@ -36,8 +36,8 @@ describe("LoginController", () => {
         });
 
         it("should call getErrorMessage", async () => {
-            const expected = 1;
-            authService.login.mockRejectedValueOnce(new UnauthorizedError({ code: expected }));
+            const expected = 401;
+            authService.login.mockRejectedValueOnce(new UnauthorizedError({}));
             const getErrorMessageMock = vi.spyOn(controller, "_getErrorMessage").mockReturnValue("");
             await controller.submit();
             expect(getErrorMessageMock).toHaveBeenCalledWith(expected);
@@ -45,7 +45,7 @@ describe("LoginController", () => {
 
         it("should call set message in error", async () => {
             const expected = "MESSAGE";
-            authService.login.mockRejectedValueOnce(new UnauthorizedError({ code: 1 }));
+            authService.login.mockRejectedValueOnce(new UnauthorizedError({}));
             vi.spyOn(controller, "_getErrorMessage").mockReturnValueOnce(expected);
             await controller.submit();
             expect(controller.error.value).toBe(expected);
@@ -54,14 +54,14 @@ describe("LoginController", () => {
 
     describe("_getErrorMessage", () => {
         it("should return 'email passoword don't match' message", () => {
-            const actual = controller._getErrorMessage(LoginDtoErrorCodes.EMAIL_OR_PASSWORD_NOT_MATCH);
+            const actual = controller._getErrorMessage(401);
             const expected = "Mot de passe ou email incorrect";
 
             expect(actual).toBe(expected);
         });
 
         it("should return 'inactive' message", () => {
-            const actual = controller._getErrorMessage(LoginDtoErrorCodes.USER_NOT_ACTIVE);
+            const actual = controller._getErrorMessage(403);
             const expected =
                 "Votre compte ne semble pas encore activé, si vous ne retrouvez pas votre mail d'activation vous pouvez faire mot de passe oublié.";
 
@@ -111,7 +111,7 @@ describe("LoginController", () => {
             const MESSAGE = "c'est une erreur";
             vi.spyOn(controller, "_getErrorMessage").mockReturnValueOnce(MESSAGE);
             const setErrorSpy = vi.spyOn(controller.error, "set");
-            authService.loginAgentConnect.mockRejectedValueOnce(new Error({ data: {} }));
+            authService.loginAgentConnect.mockRejectedValueOnce(new StaticError({ message: "" }));
             await controller._proceedWithAgentConnect(QUERY_STRING);
             expect(setErrorSpy).toHaveBeenCalledWith(MESSAGE);
         });

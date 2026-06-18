@@ -4,7 +4,6 @@ import {
     AgentJobTypeEnum,
     AgentTypeEnum,
     RegistrationSrcTypeEnum,
-    ResetPasswordErrorCodes,
     TerritorialScopeEnum,
     UserActivationInfoDto,
 } from "dto";
@@ -81,10 +80,7 @@ export class UserProfileService {
                 value: password,
                 // @ts-expect-error: show since typescript update #3360
                 method: userCheckService.passwordValidator,
-                error: new BadRequestError(
-                    UserCheckService.PASSWORD_VALIDATOR_MESSAGE,
-                    ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
-                ),
+                error: new BadRequestError(UserCheckService.PASSWORD_VALIDATOR_MESSAGE),
             });
 
         /**

@@ -1,7 +1,14 @@
 import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
-import { ResetPasswordErrorCodes, TokenValidationDtoResponse, TokenValidationType } from "dto";
-import { BadRequestError, InternalServerError, ResetTokenNotFoundError, UserNotFoundError } from "core";
+import { TokenValidationDtoResponse, TokenValidationType } from "dto";
+import {
+    BadRequestError,
+    ForbiddenError,
+    GoneError,
+    InternalServerError,
+    ResetTokenNotFoundError,
+    UserNotFoundError,
+} from "core";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
@@ -37,10 +44,7 @@ export class UserActivationService {
         let error: Error | null = null;
         if (!userReset) error = new ResetTokenNotFoundError();
         else if (this.isResetExpired(userReset))
-            error = new BadRequestError(
-                "Reset token has expired, please retry forget password",
-                ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
-            );
+            error = new GoneError("Reset token has expired, please retry forget password");
 
         return error ? { valid: false, error } : { valid: true };
     }
@@ -77,10 +81,7 @@ export class UserActivationService {
         if (!user) throw new UserNotFoundError();
 
         if (!userCheckService.passwordValidator(password))
-            throw new BadRequestError(
-                UserCheckService.PASSWORD_VALIDATOR_MESSAGE,
-                ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
-            );
+            throw new BadRequestError(UserCheckService.PASSWORD_VALIDATOR_MESSAGE);
 
         const hashPassword = await userAuthService.getHashPassword(password);
 
@@ -132,12 +133,8 @@ export class UserActivationService {
     async forgetPassword(email: string) {
         try {
             const user = await userAdapter.findByEmail(email.toLocaleLowerCase());
-
-            if (user.proConnectId)
-                throw new BadRequestError(
-                    "ProConnect users should not use password",
-                    ResetPasswordErrorCodes.PROCONNECT_NO_RESET,
-                );
+            if (!user) return; // Don't say user not found, for security reasons
+            if (user.proConnectId) throw new ForbiddenError("ProConnect users should not use password");
 
             const resetResult = await this.resetUser(user);
 
@@ -163,10 +160,7 @@ export class UserActivationService {
 
         const createdReset = await userResetAdapter.create(reset);
         if (!createdReset) {
-            throw new InternalServerError(
-                "The user reset password could not be created",
-                UserServiceErrors.CREATE_RESET_PASSWORD_WRONG,
-            );
+            throw new InternalServerError("The user reset password could not be created");
         }
 
         user.active = false;

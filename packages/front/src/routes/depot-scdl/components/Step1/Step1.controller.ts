@@ -52,9 +52,8 @@ export default class Step1Controller {
 
             return "success";
         } catch (e) {
-            const typedError = (e as StaticError).data as { code?: number; message?: string }; // todo : create type
             errorService.handleError(e);
-            if (typedError.code === 409) {
+            if ((e as StaticError).httpCode === 409) {
                 return "resume";
             }
         }

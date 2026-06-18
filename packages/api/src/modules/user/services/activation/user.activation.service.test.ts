@@ -2,8 +2,8 @@ import userActivationService, { UserActivationService } from "./user.activation.
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import { USER_ENTITY, USER_SECRETS, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
-import { BadRequestError, InternalServerError, NotFoundError, ResetTokenNotFoundError, UserNotFoundError } from "core";
-import { ResetPasswordErrorCodes, TokenValidationDtoPositiveResponse, TokenValidationType } from "dto";
+import { BadRequestError, GoneError, InternalServerError, ResetTokenNotFoundError, UserNotFoundError } from "core";
+import { TokenValidationDtoPositiveResponse, TokenValidationType } from "dto";
 
 jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
@@ -123,10 +123,7 @@ describe("user activation service", () => {
             mockisResetExpired.mockReturnValueOnce(true);
             const expected = {
                 valid: false,
-                error: new BadRequestError(
-                    "Reset token has expired, please retry forget password",
-                    ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
-                ),
+                error: new GoneError("Reset token has expired, please retry forget password"),
             };
             const actual = userActivationService.validateResetToken(USER_RESET_ENTITY);
             expect(actual).toEqual(expected);
@@ -244,18 +241,13 @@ describe("user activation service", () => {
 
         it("should reject because user not found", async () => {
             mockedUserCrudService.getUserById.mockResolvedValueOnce(null);
-            expect(userActivationService.resetPassword(PASSWORD, RESET_TOKEN)).rejects.toEqual(
-                new NotFoundError("User not found", ResetPasswordErrorCodes.USER_NOT_FOUND),
-            );
+            expect(userActivationService.resetPassword(PASSWORD, RESET_TOKEN)).rejects.toEqual(new UserNotFoundError());
         });
 
         it("should reject because password not valid", async () => {
             mockedUserCheckService.passwordValidator.mockReturnValueOnce(false);
             expect(userActivationService.resetPassword(PASSWORD, RESET_TOKEN)).rejects.toEqual(
-                new BadRequestError(
-                    UserCheckService.PASSWORD_VALIDATOR_MESSAGE,
-                    ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
-                ),
+                new BadRequestError(UserCheckService.PASSWORD_VALIDATOR_MESSAGE),
             );
         });
 

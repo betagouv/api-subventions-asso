@@ -1,9 +1,8 @@
 import { HttpError } from "../HttpError";
 
 export class NotFoundError extends HttpError {
-    constructor(message = "Resource Not Found", code?: number) {
+    constructor(message = "Resource Not Found") {
         super(message);
-        this.code = code;
     }
     status = 404;
 }

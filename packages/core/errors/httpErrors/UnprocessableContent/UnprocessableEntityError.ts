@@ -12,8 +12,7 @@ export const UnprocessableEntityErrorCode = 422;
 export class UnprocessableEntityError extends HttpError {
     status = UnprocessableEntityErrorCode;
 
-    constructor(message = UnprocessableEntityErrorMessage, cause?: Record<string, unknown>, code?: number) {
+    constructor(message = UnprocessableEntityErrorMessage, cause?: Record<string, unknown>) {
         super(message, { cause });
-        this.code = code;
     }
 }

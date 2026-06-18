@@ -1,5 +1,5 @@
 import request from "supertest";
-import { AgentTypeEnum, ResetPasswordErrorCodes } from "dto";
+import { AgentTypeEnum } from "dto";
 import { createAndActiveUser, createUser, DEFAULT_PASSWORD, USER_EMAIL } from "../../__helpers__/userHelper";
 import { createResetToken } from "../../__helpers__/resetTokenHelper";
 import userResetAdapter from "../../../src/adapters/outputs/db/user/user-reset.adapter";
@@ -21,15 +21,15 @@ describe("AuthentificationController, /auth", () => {
             await createUser();
         });
         it("should return SuccessResponse", async () => {
-            const expected = {
-                success: true,
-            };
-            await request(g.app)
+            const response = await request(g.app)
                 .post("/auth/forget-password")
                 .send({ email: "user@beta.gouv.fr" })
-                .set("Accept", "application/json")
-                .expect(200)
-                .expect(res => expect(res.body).toMatchObject(expected));
+                .set("Accept", "application/json");
+
+            expect(response).toMatchObject({
+                statusCode: 200,
+                body: { success: true },
+            });
         });
 
         it("should return 200 even if the user doesn't exist", async () => {
@@ -40,9 +40,9 @@ describe("AuthentificationController, /auth", () => {
                 })
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({
-                success: true,
+            expect(response).toMatchObject({
+                statusCode: 200,
+                body: { success: true },
             });
         });
     });
@@ -82,9 +82,15 @@ describe("AuthentificationController, /auth", () => {
                     token: userReset?.token,
                 })
                 .set("Accept", "application/json");
-            expect(response.statusCode).toBe(400);
-            expect(response.body).toMatchObject({
-                code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
+
+            expect({
+                statusCode: response.statusCode,
+                messageType: typeof response.body.message,
+                bodyKeys: Object.keys(response.body),
+            }).toEqual({
+                statusCode: 400,
+                messageType: "string",
+                bodyKeys: ["message"],
             });
         });
 
@@ -99,7 +105,9 @@ describe("AuthentificationController, /auth", () => {
                 .expect(404)
                 .expect(res =>
                     expect(res.body).toMatchObject({
-                        code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND,
+                        statusCode: 404,
+                        body: { message: "Reset token not found" },
+                        bodyKeys: ["message"],
                     }),
                 );
         });
@@ -122,9 +130,14 @@ describe("AuthentificationController, /auth", () => {
                 .set("Accept", "application/json");
             UserActivationService.RESET_TIMEOUT = oldResetTimout;
 
-            expect(response.statusCode).toBe(400);
-            expect(response.body).toMatchObject({
-                code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
+            expect({
+                statusCode: response.statusCode,
+                body: response.body,
+                bodyKeys: Object.keys(response.body),
+            }).toEqual({
+                statusCode: 410,
+                body: { message: "Reset token has expired, please retry forget password" },
+                bodyKeys: ["message"],
             });
 
             UserActivationService.RESET_TIMEOUT = oldResetTimout;
@@ -148,28 +161,32 @@ describe("AuthentificationController, /auth", () => {
                     },
                 };
 
-                await request(g.app)
+                const response = await request(g.app)
                     .post("/auth/login")
                     .send({
                         password: DEFAULT_PASSWORD,
                         email: USER_EMAIL,
                     })
-                    .set("Accept", "application/json")
-                    .expect(200)
-                    .expect(res => {
-                        expect(res.body.user).toMatchObject(expected);
-                    });
+                    .set("Accept", "application/json");
+
+                expect(response).toMatchObject({
+                    statusCode: 200,
+                    body: {
+                        user: expected,
+                    },
+                });
             });
 
             it("should not return password", async () => {
-                await request(g.app)
+                const response = await request(g.app)
                     .post("/auth/login")
                     .send({
                         password: DEFAULT_PASSWORD,
                         email: USER_EMAIL,
                     })
-                    .set("Accept", "application/json")
-                    .expect(res => expect(res.body.user.hashPassword).toEqual(undefined));
+                    .set("Accept", "application/json");
+
+                expect(response.body.user.hashPassword).toEqual(undefined);
             });
 
             it("should not log user", async () => {

@@ -277,17 +277,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
                 },
               },
               "RES",
-              [MockFunction] {
-                "calls": [
-                  [],
-                ],
-                "results": [
-                  {
-                    "type": "return",
-                    "value": undefined,
-                  },
-                ],
-              },
+              [MockFunction],
             ]
         `);
     });
@@ -311,17 +301,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
                 },
               },
               "RES",
-              [MockFunction] {
-                "calls": [
-                  [],
-                ],
-                "results": [
-                  {
-                    "type": "return",
-                    "value": undefined,
-                  },
-                ],
-              },
+              [MockFunction],
             ]
         `);
     });

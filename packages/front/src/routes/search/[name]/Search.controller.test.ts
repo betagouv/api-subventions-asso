@@ -1,5 +1,4 @@
 import { afterAll, beforeAll, beforeEach, type MockInstance } from "vitest";
-import { SearchCodeError } from "dto";
 
 import SearchController from "./Search.controller";
 
@@ -13,7 +12,6 @@ import associationService from "$lib/resources/associations/association.service"
 import { isSiret } from "$lib/helpers/identifierHelper";
 import { decodeQuerySearch, encodeQuerySearch } from "$lib/helpers/urlHelper";
 import { goto } from "$app/navigation";
-import { BadRequestError } from "$lib/errors";
 
 vi.mock("$lib/resources/associations/association.service");
 const mockedAssociationService = vi.mocked(associationService);
@@ -124,9 +122,7 @@ describe("SearchController", () => {
         });
 
         it("sets isLastSearchCompany to true if raised exception", async () => {
-            vi.mocked(mockedAssociationService.search).mockRejectedValueOnce(
-                new BadRequestError({ code: SearchCodeError.ID_NOT_ASSO }),
-            );
+            vi.mocked(mockedAssociationService.search).mockRejectedValueOnce({ httpCode: 422 });
             await controller.fetchAssociationFromName("name");
             expect(controller.isLastSearchCompany.value).toBe(true);
         });

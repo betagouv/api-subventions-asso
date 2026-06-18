@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { LoginDtoErrorCodes, UserErrorCodes } from "dto";
 import {
     BadRequestError,
     ForbiddenError,
@@ -16,7 +15,6 @@ import { NotificationType } from "../../../notify/@types/NotificationType";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { UserUpdateError } from "../../../../adapters/outputs/db/user/@errors/UserUpdateError";
 import { UserConsumerService } from "../consumer/user.consumer.service";
-import { UserServiceErrors } from "../../user.enum";
 import { getNewJwtExpireDate } from "../../user.helper";
 import UserEntity from "../../../../domain/users/UserEntity";
 import NewUserEntity from "../../../../domain/users/NewUserEntity";
@@ -67,7 +65,7 @@ export class UserAuthService {
 
     public async updatePassword(user: UserEntity, password: string) {
         if (!userCheckService.passwordValidator(password)) {
-            throw new BadRequestError(UserCheckService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD);
+            throw new BadRequestError(UserCheckService.PASSWORD_VALIDATOR_MESSAGE);
         }
 
         const userUpdated = await userAdapter.update(
@@ -103,24 +101,17 @@ export class UserAuthService {
         try {
             return userAdapter.update(updatedUser, true);
         } catch {
-            throw new InternalServerError(UserUpdateError.message, UserServiceErrors.LOGIN_UPDATE_JWT_FAIL);
+            throw new InternalServerError(UserUpdateError.message);
         }
     }
 
     async login(email: string, password: string) {
         const user = await userAdapter.getUserWithSecretsByEmail(email);
         if (!user) throw new LoginError();
-
-        if (!user.hashPassword) {
-            throw new UnauthorizedError(
-                "User has not set a password so they can't login this way",
-                LoginDtoErrorCodes.PASSWORD_UNSET,
-            );
-        }
-
+        if (!user.hashPassword) throw new UnauthorizedError("User has not set a password so they can't login this way");
         const validPassword = await bcrypt.compare(password, user.hashPassword);
         if (!validPassword) throw new LoginError();
-        if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
+        if (!user.active) throw new ForbiddenError("User is not active");
 
         const updatedUser = await this.updateJwt(user);
 
@@ -135,22 +126,15 @@ export class UserAuthService {
     async authenticate(tokenPayload, token) {
         // Find the user associated with the email provided by the user
         const user = await userAdapter.getUserWithSecretsByEmail(tokenPayload.email);
-        if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
+        if (!user) throw new NotFoundError("User not found");
 
         if (!tokenPayload[UserConsumerService.CONSUMER_TOKEN_PROP]) {
-            if (!user.active) throw new ForbiddenError("User is not active", UserServiceErrors.USER_NOT_ACTIVE);
+            if (!user.active) throw new ForbiddenError("User is not active");
 
             if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now())
-                throw new UnauthorizedError(
-                    "JWT has expired, please login try again",
-                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
-                );
+                throw new UnauthorizedError("JWT has expired, please login try again");
 
-            if (user.jwt?.token !== token)
-                throw new UnauthorizedError(
-                    "JWT has expired, please login try again",
-                    UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
-                );
+            if (user.jwt?.token !== token) throw new UnauthorizedError("JWT has expired, please login try again");
         }
         const { hashPassword, ...safeUser } = user;
         return safeUser;
