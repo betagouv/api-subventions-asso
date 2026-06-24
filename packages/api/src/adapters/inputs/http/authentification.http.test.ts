@@ -9,49 +9,35 @@ jest.mock("../../../modules/user/services/auth/user.auth.service");
 
 describe("Authentication http", () => {
     let ctrl: AuthentificationHttp;
-
+    const mockGetLogoutUrl = jest.spyOn(userProConnectService, "getLogoutUrl");
     beforeAll(() => {
         ctrl = new AuthentificationHttp();
     });
 
+    beforeEach(() => {
+        mockGetLogoutUrl.mockResolvedValue("/logout/url");
+    });
+
     describe("logout", () => {
-        // @ts-expect-error -- force typing for test
         const REQUEST = { user: "someone" } as IdentifiedRequest;
 
         it("call proConnect logout", async () => {
             await ctrl.logout(REQUEST);
-            expect(userProConnectService.getLogoutUrl).toHaveBeenCalledWith(REQUEST.user);
+            expect(mockGetLogoutUrl).toHaveBeenCalledWith(REQUEST.user);
         });
 
         it("return url from proConnect logout", async () => {
             const URL = "some.where";
             const expected = URL;
-            jest.mocked(userProConnectService.getLogoutUrl).mockResolvedValueOnce(URL);
+            jest.mocked(mockGetLogoutUrl).mockResolvedValueOnce(URL);
             const actual = await ctrl.logout(REQUEST);
             expect(actual).toBe(expected);
         });
 
-        describe("without pro connect", () => {
-            let noAcCtrl: AuthentificationHttp;
-
-            beforeAll(async () => {
-                jest.resetModules();
-                const { AuthentificationHttp: NoAcController } = await import("./authentification.http");
-                noAcCtrl = new NoAcController();
-            });
-            afterAll(() => {
-                jest.resetModules();
-            });
-
-            it("does not call proConnect logout because env var is off", async () => {
-                await noAcCtrl.logout(REQUEST);
-                expect(userProConnectService.getLogoutUrl).not.toHaveBeenCalled();
-            });
-
-            it("return null url if proConnect is disabled", async () => {
-                const actual = await noAcCtrl.logout(REQUEST);
-                expect(actual).toBeNull();
-            });
+        it("return null url if proConnect is not initialized", async () => {
+            mockGetLogoutUrl.mockImplementation().mockRejectedValue(new Error());
+            const actual = await ctrl.logout(REQUEST);
+            expect(actual).toBeNull();
         });
 
         it("call generic logout", async () => {

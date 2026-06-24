@@ -152,7 +152,11 @@ export class AuthentificationHttp extends Controller {
     public async logout(@Request() req: IdentifiedRequest): Promise<string | null> {
         let url: null | string = null;
         if (!req.user) throw new BadRequestError();
-        url = await userProConnectService.getLogoutUrl(req.user);
+        try {
+            url = await userProConnectService.getLogoutUrl(req.user);
+        } catch {
+            url = null;
+        }
         await userAuthService.logout(req.user);
         return url;
     }
