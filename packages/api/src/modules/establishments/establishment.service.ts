@@ -7,9 +7,7 @@ import { DefaultObject } from "../../@types";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import providers from "../providers";
 import FonjepEntityMapper from "../providers/fonjep/mappers/fonjep-entity.mapper";
-import subventionsService from "../subventions/subventions.service";
 import ApiAssoDtoMapper from "../providers/api-asso/mappers/api-asso.dto.mapper";
-import grantService from "../grant/grant.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseMapper from "../providers/api-entreprise/mappers/api-entreprise.mapper";
@@ -18,8 +16,13 @@ import AssociationIdentifier from "../../identifier-objects/AssociationIdentifie
 import { EstablishmentMapper } from "./establishment.mapper";
 import EstablishmentProvider from "./@types/EstablishmentProvider";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
+import getSubventionsByIdentifier, {
+    GetSubventionsByIdentifier,
+} from "../application-flat/use-cases/get-subventions-by-identifier";
+import rawGrantService from "../grant/raw-grant.service";
 
 export class EstablishmentService {
+    constructor(private getSubventions: GetSubventionsByIdentifier) {}
     private provider_score: DefaultObject<number> = {
         [ApiAssoDtoMapper.providerNameSiren]: 1,
         [ApiEntrepriseMapper.PROVIDER_NAME]: 1,
@@ -76,15 +79,15 @@ export class EstablishmentService {
     }
 
     getOldGrants(id: EstablishmentIdentifier) {
-        return grantService.getOldGrants(id);
+        return rawGrantService.getOldGrants(id);
     }
 
-    async getSubventions(id: EstablishmentIdentifier) {
-        return (await subventionsService.getDemandes(id)).flat().filter(subvention => subvention);
+    async getDemandes(id: EstablishmentIdentifier) {
+        return this.getSubventions.execute(id);
     }
 
-    async getPayments(id: EstablishmentIdentifier) {
-        return await paymentService.getPayments(id);
+    async getPaiements(id: EstablishmentIdentifier) {
+        return await paymentService.getPaiements(id);
     }
 
     async getDocuments(id: EstablishmentIdentifier) {
@@ -127,6 +130,6 @@ export class EstablishmentService {
     }
 }
 
-const establishmentService = new EstablishmentService();
+const establishmentService = new EstablishmentService(getSubventionsByIdentifier);
 
 export default establishmentService;

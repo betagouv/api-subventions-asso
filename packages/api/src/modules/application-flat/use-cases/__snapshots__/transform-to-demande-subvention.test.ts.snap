@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ApplicationFlatAdapter toDemandeSubvention adapts properly 1`] = `
+exports[`TransformToDemandeSubvention Use Case adapts properly 1`] = `
 {
   "actions_proposee": [
     {
@@ -104,7 +104,7 @@ exports[`ApplicationFlatAdapter toDemandeSubvention adapts properly 1`] = `
     "last_update": 2025-12-12T00:00:00.000Z,
     "provider": "osiris",
     "type": "string",
-    "value": "12345678901234",
+    "value": "10000000000001",
   },
   "sous_dispositif": {
     "last_update": 2025-12-12T00:00:00.000Z,

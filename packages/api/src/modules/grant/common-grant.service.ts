@@ -1,23 +1,15 @@
 import { CommonApplicationDto, ApplicationStatus, CommonGrantDto, CommonPaymentDto } from "dto";
-import providers from "../providers";
 import { AnyRawGrant, JoinedRawGrant } from "./@types/RawGrant";
-import GrantProvider from "./@types/GrantProvider";
+import applicationFlatService from "../application-flat/application-flat.service";
+import paymentFlatService from "../payment-flat/payment-flat.service";
 
+// @TODO: this is broken since the use of flats
 export class CommonGrantService {
-    // not an adapter because it needs to call other modules' adapters
-
-    private readonly providerMap: { [providerId: string]: GrantProvider };
-
-    constructor() {
-        this.providerMap = {};
-        for (const provider of Object.values(providers as unknown as { [serviceName: string]: GrantProvider })) {
-            if (!provider.isGrantProvider) continue;
-            if (!provider?.meta?.id) continue;
-            if (provider[CommonGrantService.adapterMethod]) this.providerMap[provider.meta.id] = provider;
-        }
-    }
-
     static adapterMethod = "rawToCommon";
+    private readonly providerMap = {
+        [applicationFlatService.meta.id]: applicationFlatService,
+        [paymentFlatService.meta.id]: paymentFlatService,
+    };
 
     private rawToCommonFragment(rawGrant: AnyRawGrant, publishable: boolean) {
         const providerId = rawGrant.provider;

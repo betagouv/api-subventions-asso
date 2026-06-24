@@ -11,12 +11,16 @@ import FormaterHelper from "../../shared/helpers/FormaterHelper";
 
 import documentsService from "../documents/documents.service";
 import paymentService from "../payments/payments.service";
-import subventionsService from "../subventions/subventions.service";
 import establishmentService from "../establishments/establishment.service";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import AssociationsProvider from "./@types/AssociationsProvider";
+import getSubventionsByIdentifier, {
+    GetSubventionsByIdentifier,
+} from "../application-flat/use-cases/get-subventions-by-identifier";
 
 export class AssociationsService {
+    constructor(private getSubventions: GetSubventionsByIdentifier) {}
+
     private provider_score: DefaultObject<number> = {
         [ApiAssoDtoMapper.providerNameSiren]: 1,
         [ApiAssoDtoMapper.providerNameRna]: 1,
@@ -68,12 +72,12 @@ export class AssociationsService {
      *
      */
 
-    async getSubventions(identifier: AssociationIdentifier) {
-        return (await subventionsService.getDemandes(identifier)).flat().filter(subvention => subvention);
+    async getDemandes(identifier: AssociationIdentifier) {
+        return this.getSubventions.execute(identifier);
     }
 
-    getPayments(identifier: AssociationIdentifier) {
-        return paymentService.getPayments(identifier);
+    getPaiements(identifier: AssociationIdentifier) {
+        return paymentService.getPaiements(identifier);
     }
 
     /**
@@ -87,6 +91,6 @@ export class AssociationsService {
     }
 }
 
-const associationsService = new AssociationsService();
+const associationsService = new AssociationsService(getSubventionsByIdentifier);
 
 export default associationsService;

@@ -1,6 +1,3 @@
-import ApplicationProvider from "../subventions/@types/ApplicationProvider";
-import PaymentProvider from "../payments/@types/PaymentProvider";
-import GrantProvider from "../grant/@types/GrantProvider";
 import paymentFlatService from "../payment-flat/payment-flat.service";
 import osirisService from "./osiris/osiris.service";
 import apiAssoService from "./api-asso/api-asso.service";
@@ -32,15 +29,3 @@ const providers: { [key: string]: Provider } = {
 };
 
 export default providers;
-
-export const applicationProviders = Object.values(providers).filter(
-    p => (p as ApplicationProvider).isApplicationProvider,
-) as ApplicationProvider[];
-
-export const paymentProviders = Object.values(providers).filter(
-    p => (p as PaymentProvider).isPaymentProvider,
-) as PaymentProvider[];
-
-export const grantProviders = Object.values(providers).filter(
-    p => (p as GrantProvider).isGrantProvider,
-) as GrantProvider[];
