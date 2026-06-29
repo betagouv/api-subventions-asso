@@ -26,20 +26,22 @@ export default class SearchController {
 
     async fetchAssociationFromName(rawInput = "", page = 1) {
         const input = rawInput.trim();
-        const inputId = removeWhiteSpace(input);
+        const inputId = removeWhiteSpace(rawInput);
+        const isSiretSearch = isSiret(inputId);
+        const isAssociationIdSearch = isSiren(inputId) || isRna(inputId);
         this.isLastSearchCompany.set(false);
         try {
             const search = await associationService.search(input, page);
 
             // search by id with single result: we can redirect
-            if (isSiret(input) && search.total === 1) return this.gotoEstablishment(input);
-            if ((isSiren(input) || isRna(input)) && search.total === 1) {
+            if (isSiretSearch && search.total === 1) return this.gotoEstablishment(inputId);
+            if (isAssociationIdSearch && search.total === 1) {
                 return goto(`/association/${inputId}`, { replaceState: true });
 
                 // multiple results
             } else {
                 // display alert if there are duplicates in rna-siren links
-                if (isSiren(input) || isRna(input)) {
+                if (isAssociationIdSearch) {
                     const duplicates = search.results
                         .map(association => [association.rna, association.siren].find(id => id && id !== inputId))
                         .filter(identifier => identifier) as string[];

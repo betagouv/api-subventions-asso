@@ -89,7 +89,7 @@ describe("SearchController", () => {
 
         it("should unset duplicate store on second search, with name", async () => {
             const expected = null;
-            mockedIdentifierHelper.isRna.mockReturnValueOnce(true);
+            mockedIdentifierHelper.isRna.mockReturnValueOnce(false);
             await controller.fetchAssociationFromName("name");
             const actual = controller.duplicatesFromIdentifier.value;
             expect(actual).toEqual(expected);
