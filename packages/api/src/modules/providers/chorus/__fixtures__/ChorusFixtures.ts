@@ -285,7 +285,6 @@ export const RAW_DUPLICATE_V004 = [
 ];
 
 export const ENTITY_WITH_RIDET = {
-    uniqueId: "de175292263fdd97b222a754309df07f",
     ej: "0001821732",
     numPosteEJ: 2,
     siret: DEFAULT_ASSOCIATION.siret,
@@ -334,7 +333,6 @@ export const CHORUS_FSE_ENTITIES: ChorusFseEntity[] = [
 
 export const CHORUS_ENTITIES: ChorusEntity[] = [
     {
-        uniqueId: "de175292263fdd97b222a754309df07f",
         ej: "0001821732",
         numPosteEJ: 2,
         siret: DEFAULT_ASSOCIATION.siret,
@@ -358,7 +356,6 @@ export const CHORUS_ENTITIES: ChorusEntity[] = [
         updateDate: new Date("2020-01-01"),
     },
     {
-        uniqueId: "11d177d88edbd421e4eef4f2e8d42b28",
         ej: "0001821732",
         numPosteEJ: 21,
         siret: "77568577900002",
@@ -382,7 +379,6 @@ export const CHORUS_ENTITIES: ChorusEntity[] = [
         updateDate: new Date("2020-01-01"),
     },
     {
-        uniqueId: "8fa4002caaa720f63bbe2acf525419c0",
         ej: "0003823760",
         numPosteEJ: 2,
         siret: "32984397300003",

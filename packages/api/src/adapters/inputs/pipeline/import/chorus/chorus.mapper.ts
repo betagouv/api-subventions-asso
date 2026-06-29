@@ -1,14 +1,13 @@
 import { Ridet, Siret, Tahitiet } from "../../../../../identifier-objects";
 import ChorusEntity from "../../../../../modules/providers/chorus/entities/ChorusEntity";
 import ChorusFseEntity from "../../../../../modules/providers/chorus/entities/ChorusFseEntity";
-import { getMD5 } from "../../../../../shared/helpers/StringHelper";
 import { ChorusDto, ChorusFseDto } from "./chorus.dto";
 
 export class ChorusMapper {
     public static toEntity(dto: ChorusDto): ChorusEntity {
-        const partial = {
+        return {
             ej: dto["N° EJ"],
-            numPosteEJ: dto["N° poste EJ"],
+            numPosteEJ: Number(dto["N° poste EJ"]),
             siret: dto["Code taxe 1"],
             ridetOrTahitiet: dto["No TVA 3 (COM-RIDET ou TAHITI)"],
             codeBranche: dto["Branche CODE"],
@@ -16,9 +15,9 @@ export class ChorusMapper {
             activitee: dto["Référentiel de programmation"],
             codeActivitee: dto["Référentiel de programmation CODE"],
             numeroDemandePaiement: dto["N° DP"],
-            numPosteDP: dto["N° poste DP"],
+            numPosteDP: Number(dto["N° poste DP"]),
             codeSociete: dto["Société"],
-            exercice: dto["Exercice comptable"],
+            exercice: Number(dto["Exercice comptable"]),
             numeroTier: dto["Fournisseur payé (DP)"],
             nomStructure: dto["Désignation de la structure"],
             centreFinancier: dto["Centre financier"],
@@ -28,14 +27,6 @@ export class ChorusMapper {
             amount: dto["Montant payé"],
             dateOperation: dto["Date de dernière opération sur la DP"],
             updateDate: new Date(),
-        };
-
-        return {
-            ...partial,
-            // @TODO: remove uniqueId from Chorus #3942
-            uniqueId: getMD5(
-                `${partial.ej}-${partial.numPosteEJ}-${partial.numeroDemandePaiement}-${partial.numPosteDP}-${partial.codeSociete}-${partial.exercice}`,
-            ),
         };
     }
 
