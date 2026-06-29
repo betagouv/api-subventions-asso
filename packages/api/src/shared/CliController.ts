@@ -124,7 +124,8 @@ export default class CliController {
         durationMs: number,
         fileCount: number,
     ): Promise<void> {
-        return notifyImportSuccessUseCase.execute(this._serviceMeta.name, file, report, durationMs, {
+        return notifyImportSuccessUseCase.execute(this._serviceMeta.name, file, report, {
+            durationMs,
             exportDate,
             fileCount,
         });

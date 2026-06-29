@@ -33,8 +33,7 @@ export default class HeliosCli extends CliController {
                     importedCount: filteredDtos.length,
                     errorCount: dtos.length - filteredDtos.length,
                 },
-                Date.now() - startAt,
-                { exportDate: new Date(), fileCount: 1 },
+                { durationMs: Date.now() - startAt, exportDate: new Date(), fileCount: 1 },
             );
         } catch (error) {
             await notifyImportFailureUseCase.execute("Helios", error as Error, {

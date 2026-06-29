@@ -1,6 +1,6 @@
-export interface NotifyImportSuccessContext {
+export interface BaseNotifyImport {
     providerSiret?: string;
     exportDate?: Date;
-    fileCount: number;
+    durationMs: number;
     exerciseYear?: number;
 }

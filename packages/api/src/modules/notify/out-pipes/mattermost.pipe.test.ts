@@ -316,7 +316,7 @@ describe("MattermostPipe", () => {
                 providerName: "Chorus",
                 exportDate: new Date("2025-09-03"),
                 error: "File could not be parsed",
-                details: { fileName: "chorus-data.csv" },
+                details: { fileName: "chorus-data.csv", durationMs: 3500 },
             });
             const actual = sendMessageSpy.mock.calls[0][0];
             expect(actual).toMatchSnapshot();
@@ -329,24 +329,10 @@ describe("MattermostPipe", () => {
             await notifyPipe.dataImportFailure({
                 providerName: "Chorus",
                 error: "File could not be parsed",
-                details: { fileName: "chorus-data.csv" },
-            });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).not.toContain("export du");
-        });
-
-        it("sends failure message with durationMs", async () => {
-            // @ts-expect-error -- private method
-            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
-            // @ts-expect-error -- private method
-            await notifyPipe.dataImportFailure({
-                providerName: "Chorus",
-                exportDate: new Date("2025-09-03"),
-                error: "File could not be parsed",
                 details: { fileName: "chorus-data.csv", durationMs: 3500 },
             });
             const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual).toMatchSnapshot();
+            expect(actual.text).not.toContain("export du");
         });
 
         it("sends failure message with all details fields", async () => {
@@ -378,7 +364,13 @@ describe("MattermostPipe", () => {
             await notifyPipe.dataImportFailure({
                 providerName: "Chorus",
                 error: "partial failure",
-                details: { parsedCount: 50, importedCount: 30, errorCount: 20 },
+                details: {
+                    fileName: "chorus-data.csv",
+                    durationMs: 3500,
+                    parsedCount: 50,
+                    importedCount: 30,
+                    errorCount: 20,
+                },
             });
             const actual = sendMessageSpy.mock.calls[0][0];
             expect(actual.text).toContain("**Counts partiels**");
@@ -391,7 +383,13 @@ describe("MattermostPipe", () => {
             await notifyPipe.dataImportFailure({
                 providerName: "Chorus",
                 error: "partial failure",
-                details: { parsedCount: 50, importedCount: 30, errorCount: 20 },
+                details: {
+                    fileName: "chorus-data.csv",
+                    durationMs: 3500,
+                    parsedCount: 50,
+                    importedCount: 30,
+                    errorCount: 20,
+                },
             });
             const actual = sendMessageSpy.mock.calls[0][0];
             expect(actual.text).toContain("- Lignes parsées : 50");
@@ -404,7 +402,13 @@ describe("MattermostPipe", () => {
             await notifyPipe.dataImportFailure({
                 providerName: "Chorus",
                 error: "partial failure",
-                details: { parsedCount: 50, importedCount: 30, errorCount: 20 },
+                details: {
+                    fileName: "chorus-data.csv",
+                    durationMs: 3500,
+                    parsedCount: 50,
+                    importedCount: 30,
+                    errorCount: 20,
+                },
             });
             const actual = sendMessageSpy.mock.calls[0][0];
             expect(actual.text).toContain("- Données importées : 30");
@@ -417,7 +421,13 @@ describe("MattermostPipe", () => {
             await notifyPipe.dataImportFailure({
                 providerName: "Chorus",
                 error: "partial failure",
-                details: { parsedCount: 50, importedCount: 30, errorCount: 20 },
+                details: {
+                    fileName: "chorus-data.csv",
+                    durationMs: 3500,
+                    parsedCount: 50,
+                    importedCount: 30,
+                    errorCount: 20,
+                },
             });
             const actual = sendMessageSpy.mock.calls[0][0];
             expect(actual.text).toContain("- Erreurs : 20");
@@ -430,34 +440,10 @@ describe("MattermostPipe", () => {
             await notifyPipe.dataImportFailure({
                 providerName: "Chorus",
                 error: "File could not be parsed",
-                details: { fileName: "chorus-data.csv" },
+                details: { fileName: "chorus-data.csv", durationMs: 3500 },
             });
             const actual = sendMessageSpy.mock.calls[0][0];
             expect(actual.text).not.toContain("**Counts partiels**");
-        });
-
-        it("omits fichier line when fileName is absent", async () => {
-            // @ts-expect-error -- private method
-            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
-            // @ts-expect-error -- private method
-            await notifyPipe.dataImportFailure({
-                providerName: "Chorus",
-                error: "File could not be parsed",
-            });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).not.toContain("**Fichier**");
-        });
-
-        it("omits durée line when durationMs is absent", async () => {
-            // @ts-expect-error -- private method
-            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
-            // @ts-expect-error -- private method
-            await notifyPipe.dataImportFailure({
-                providerName: "Chorus",
-                error: "File could not be parsed",
-            });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).not.toContain("**Durée**");
         });
 
         it("omits année line when exerciseYear is absent", async () => {
@@ -467,6 +453,7 @@ describe("MattermostPipe", () => {
             await notifyPipe.dataImportFailure({
                 providerName: "Chorus",
                 error: "File could not be parsed",
+                details: { fileName: "chorus-data.csv", durationMs: 3500 },
             });
             const actual = sendMessageSpy.mock.calls[0][0];
             expect(actual.text).not.toContain("**Année**");

@@ -180,7 +180,8 @@ export default class ScdlCli {
         ]);
 
         if (importReport) {
-            await notifyImportSuccessUseCase.execute(producer.name, file, importReport, durationMs ?? 0, {
+            await notifyImportSuccessUseCase.execute(producer.name, file, importReport, {
+                durationMs: durationMs ?? 0,
                 providerSiret: producer.siret,
                 exportDate,
                 fileCount: 1,

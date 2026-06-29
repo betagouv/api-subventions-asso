@@ -1,8 +1,8 @@
 import path from "path";
 import { ImportNotificationDetails } from "../../../@types/ImportNotificationDetails";
 import { ImportReport } from "../../../@types/ImportReport";
+import { NotifyImportSuccessContext } from "../../../@types/NotifyImportSuccessContext";
 import { NotificationType } from "../@types/NotificationType";
-import { NotifyImportSuccessContext } from "../@types/NotifyImportSuccessContext";
 import notifyService, { NotifyService } from "../notify.service";
 
 export default class NotifyImportSuccessUseCase {
@@ -12,7 +12,6 @@ export default class NotifyImportSuccessUseCase {
         providerName: string,
         file: string,
         report: ImportReport,
-        durationMs: number,
         context: NotifyImportSuccessContext,
     ): Promise<void> {
         const details: ImportNotificationDetails = {
@@ -20,7 +19,7 @@ export default class NotifyImportSuccessUseCase {
             parsedCount: report.parsedCount,
             importedCount: report.importedCount,
             errorCount: report.errorCount,
-            durationMs,
+            durationMs: context.durationMs,
             fileCount: context.fileCount,
             exerciseYear: context.exerciseYear,
         };

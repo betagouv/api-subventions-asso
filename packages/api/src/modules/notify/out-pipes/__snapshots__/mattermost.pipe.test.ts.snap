@@ -28,7 +28,8 @@ exports[`MattermostPipe dataImportFailure sends failure message 1`] = `
   "icon_emoji": "x",
   "text": "Échec d'import pour le fournisseur **Chorus** (export du **2025-09-03**).
 **Erreur** : File could not be parsed
-**Fichier** : \`chorus-data.csv\`",
+**Fichier** : \`chorus-data.csv\`
+**Durée** : 4s",
   "username": "Import de données",
 }
 `;
@@ -48,18 +49,6 @@ exports[`MattermostPipe dataImportFailure sends failure message with all details
 - Lignes parsées : 100
 - Données importées : 80
 - Erreurs : 20",
-  "username": "Import de données",
-}
-`;
-
-exports[`MattermostPipe dataImportFailure sends failure message with durationMs 1`] = `
-{
-  "channel": "datasubvention---produit",
-  "icon_emoji": "x",
-  "text": "Échec d'import pour le fournisseur **Chorus** (export du **2025-09-03**).
-**Erreur** : File could not be parsed
-**Fichier** : \`chorus-data.csv\`
-**Durée** : 4s",
   "username": "Import de données",
 }
 `;

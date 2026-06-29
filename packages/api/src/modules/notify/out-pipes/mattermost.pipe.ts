@@ -61,7 +61,7 @@ export class MattermostPipe implements NotifyOutPipe {
         }
     }
 
-    private countWithPercentage(value: number, total: number): string {
+    private formatValueWithPercent(value: number, total: number): string {
         if (total === 0) return `${value}`;
         const percent = ((value / total) * 100).toFixed(2);
         return `${value} (${percent}%)`;
@@ -81,8 +81,8 @@ export class MattermostPipe implements NotifyOutPipe {
             "",
             "**Counts**",
             `- Lignes parsées : ${parsedCount}`,
-            `- Données importées : ${this.countWithPercentage(importedCount, parsedCount)}`,
-            `- Erreurs : ${this.countWithPercentage(errorCount, parsedCount)}`,
+            `- Données importées : ${this.formatValueWithPercent(importedCount, parsedCount)}`,
+            `- Erreurs : ${this.formatValueWithPercent(errorCount, parsedCount)}`,
         ];
 
         const message = dedent`Import de données réussi pour le fournisseur **${data.providerName}**${
@@ -100,23 +100,19 @@ export class MattermostPipe implements NotifyOutPipe {
     }
 
     private dataImportFailure(data: NotificationDataTypes[NotificationType.DATA_IMPORT_FAILURE]) {
-        const details = data.details ?? {};
+        const details = data.details;
         const lines: string[] = [
-            ...(details.fileName !== undefined ? [`**Fichier** : \`${details.fileName}\``] : []),
+            `**Fichier** : \`${details.fileName}\``,
             ...(details.exerciseYear !== undefined ? [`**Année** : ${details.exerciseYear}`] : []),
-            ...(details.durationMs !== undefined ? [`**Durée** : ${Math.round(details.durationMs / 1000)}s`] : []),
+            `**Durée** : ${Math.round(details.durationMs / 1000)}s`,
             ...(details.fileCount !== undefined ? [`**Fichiers traités** : ${details.fileCount}`] : []),
         ];
 
-        if (
-            details.parsedCount !== undefined ||
-            details.importedCount !== undefined ||
-            details.errorCount !== undefined
-        ) {
+        if (details.parsedCount !== undefined) {
             lines.push("", "**Counts partiels**");
-            if (details.parsedCount !== undefined) lines.push(`- Lignes parsées : ${details.parsedCount}`);
-            if (details.importedCount !== undefined) lines.push(`- Données importées : ${details.importedCount}`);
-            if (details.errorCount !== undefined) lines.push(`- Erreurs : ${details.errorCount}`);
+            lines.push(`- Lignes parsées : ${details.parsedCount}`);
+            lines.push(`- Données importées : ${details.importedCount}`);
+            lines.push(`- Erreurs : ${details.errorCount}`);
         }
 
         const suffix = lines.length ? `\n${lines.join("\n")}` : "";

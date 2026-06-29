@@ -125,7 +125,8 @@ export default class OsirisCli implements ApplicationFlatCli {
                 importedCount: fileReports.reduce((sum, r) => sum + r.importedCount, 0),
                 errorCount: fileReports.reduce((sum, r) => sum + r.errorCount, 0),
             };
-            await notifyImportSuccessUseCase.execute(osirisService.meta.name, file, aggregated, Date.now() - startAt, {
+            await notifyImportSuccessUseCase.execute(osirisService.meta.name, file, aggregated, {
+                durationMs: Date.now() - startAt,
                 fileCount: files.length,
                 exerciseYear: year,
             });
