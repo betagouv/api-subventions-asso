@@ -1,61 +1,43 @@
 import { AuthentificationHttp } from "./authentification.http";
 import { IdentifiedRequest } from "../../../@types";
-import userAgentConnectService from "../../../modules/user/services/agentConnect/user.agentConnect.service";
+import userProConnectService from "../../../modules/user/services/pro-connect/user.pro-connect.service";
 import userAuthService from "../../../modules/user/services/auth/user.auth.service";
 import { BadRequestError } from "core";
 
-jest.mock("../../../modules/user/services/agentConnect/user.agentConnect.service");
+jest.mock("../../../modules/user/services/pro-connect/user.pro-connect.service");
 jest.mock("../../../modules/user/services/auth/user.auth.service");
 
 describe("Authentication http", () => {
     let ctrl: AuthentificationHttp;
-
+    const mockGetLogoutUrl = jest.spyOn(userProConnectService, "getLogoutUrl");
     beforeAll(() => {
         ctrl = new AuthentificationHttp();
     });
 
+    beforeEach(() => {
+        mockGetLogoutUrl.mockResolvedValue("/logout/url");
+    });
+
     describe("logout", () => {
-        // @ts-expect-error -- force typing for test
         const REQUEST = { user: "someone" } as IdentifiedRequest;
 
-        it("call agentConnect logout", async () => {
+        it("call proConnect logout", async () => {
             await ctrl.logout(REQUEST);
-            expect(userAgentConnectService.getLogoutUrl).toHaveBeenCalledWith(REQUEST.user);
+            expect(mockGetLogoutUrl).toHaveBeenCalledWith(REQUEST.user);
         });
 
-        it("return url from agentConnect logout", async () => {
+        it("return url from proConnect logout", async () => {
             const URL = "some.where";
             const expected = URL;
-            jest.mocked(userAgentConnectService.getLogoutUrl).mockResolvedValueOnce(URL);
+            jest.mocked(mockGetLogoutUrl).mockResolvedValueOnce(URL);
             const actual = await ctrl.logout(REQUEST);
             expect(actual).toBe(expected);
         });
 
-        describe("without agent connect", () => {
-            let noAcCtrl: AuthentificationHttp;
-
-            beforeAll(async () => {
-                jest.resetModules();
-                jest.doMock("../../../configurations/pro-connect.conf", () => ({
-                    AGENT_CONNECT_ENABLED: false,
-                    __esModule: true,
-                }));
-                const { AuthentificationHttp: NoAcController } = await import("./authentification.http");
-                noAcCtrl = new NoAcController();
-            });
-            afterAll(() => {
-                jest.resetModules();
-            });
-
-            it("does not call agentConnect logout because env var is off", async () => {
-                await noAcCtrl.logout(REQUEST);
-                expect(userAgentConnectService.getLogoutUrl).not.toHaveBeenCalled();
-            });
-
-            it("return null url if agentConnect is disabled", async () => {
-                const actual = await noAcCtrl.logout(REQUEST);
-                expect(actual).toBeNull();
-            });
+        it("return null url if proConnect is not initialized", async () => {
+            mockGetLogoutUrl.mockImplementation().mockRejectedValue(new Error());
+            const actual = await ctrl.logout(REQUEST);
+            expect(actual).toBeNull();
         });
 
         it("call generic logout", async () => {

@@ -19,10 +19,10 @@ import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.ad
 import notifyService from "../../../notify/notify.service";
 import { ObjectId } from "mongodb";
 import geoService from "../../../providers/geo-api/geo.service";
-import userAgentConnectService from "../agentConnect/user.agentConnect.service";
+import userProConnectService from "../pro-connect/user.pro-connect.service";
 
 jest.mock("../../../providers/geo-api/geo.service");
-jest.mock("../agentConnect/user.agentConnect.service");
+jest.mock("../pro-connect/user.pro-connect.service");
 
 jest.mock("../../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(stringHelper);
@@ -201,7 +201,7 @@ describe("user profile service", () => {
             mockValidateUserProfileData = jest.spyOn(userProfileService, "validateUserProfileData");
             mockSanitizeUserProfileData = jest.spyOn(userProfileService, "sanitizeUserProfileData");
             mockValidateUserProfileData.mockReturnValue({ valid: true });
-            jest.mocked(userAgentConnectService.agentConnectUpdateValidations).mockReturnValue({ valid: true });
+            jest.mocked(userProConnectService.proConnectUpdateValidations).mockReturnValue({ valid: true });
             mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
             mockedUserAdapter.update.mockResolvedValue({ ...USER_DBO, ...USER_ACTIVATION_INFO });
         });
@@ -218,9 +218,9 @@ describe("user profile service", () => {
             expect(mockValidateUserProfileData).toHaveBeenCalledWith(expected, false);
         });
 
-        it("throws if agentConnectUpdate validation is falsy", async () => {
+        it("throws if proConnectUpdate validation is falsy", async () => {
             const ERROR = new Error("test");
-            jest.mocked(userAgentConnectService.agentConnectUpdateValidations).mockReturnValueOnce({
+            jest.mocked(userProConnectService.proConnectUpdateValidations).mockReturnValueOnce({
                 valid: false,
                 error: ERROR,
             });
@@ -431,5 +431,5 @@ describe("user profile service", () => {
         });
     });
 
-    // TODO sanitizeUserProfileData also calls agentConnectUpdateValidations and removeSecrets
+    // TODO sanitizeUserProfileData also calls proConnectUpdateValidations and removeSecrets
 });

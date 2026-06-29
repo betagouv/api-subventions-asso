@@ -7,7 +7,7 @@ module.exports = {
             {
                 active: false,
                 disable: { $ne: true },
-                agentConnectId: { $ne: undefined },
+                proConnectId: { $ne: undefined },
                 lastActivityDate: undefined,
             },
             { $unset: { hashPassword: 1 } },
@@ -22,7 +22,7 @@ module.exports = {
                 disable: { $ne: true },
                 hashPassowrd: undefined,
                 lastActivityDate: undefined,
-                agentConnectId: { $ne: undefined },
+                proConnectId: { $ne: undefined },
             },
             { $set: { hashPassword: defaultHashPassword } },
         );

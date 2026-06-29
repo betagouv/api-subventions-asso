@@ -42,14 +42,14 @@ export const expressLogger = () =>
             // completes generated meta in log, careful it overrides nested values
             const whiteReq = {};
             requestWhitelist.map(propertyName => (whiteReq[propertyName] = req[propertyName]));
-            const { agentConnectId, ...anonymousUser } = req.user as UserDto;
+            const { proConnectId, ...anonymousUser } = req.user as UserDto;
             return {
                 req: {
                     ...whiteReq,
                     user: {
                         ...anonymousUser,
                         _id: (req.user as UserDto)?._id?.toString(),
-                        isAgentConnect: !!agentConnectId,
+                        isProConnect: !!proConnectId,
                     },
                 },
             };

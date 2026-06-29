@@ -91,11 +91,11 @@ describe("user crud service", () => {
         });
 
         it.each`
-            agentConnectId | checkFn
+            proConnectId   | checkFn
             ${null}        | ${mockedUserCheckService.validateEmailAndDomain}
             ${"something"} | ${mockedUserCheckService.validateOnlyEmail}
-        `("should call userCheckService.validateEmail()", async ({ agentConnectId, checkFn }) => {
-            spyFindByEmail.mockResolvedValue({ ...USER_WITHOUT_SECRET, agentConnectId });
+        `("should call userCheckService.validateEmail()", async ({ proConnectId, checkFn }) => {
+            spyFindByEmail.mockResolvedValue({ ...USER_WITHOUT_SECRET, proConnectId });
             await userCrudService.update(USER_WITHOUT_SECRET);
             expect(checkFn).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
         });
@@ -232,10 +232,10 @@ describe("user crud service", () => {
             expect(actual).toMatchObject(expected);
         });
 
-        it("sets profileToComplete and active according to saved agentConnectId", async () => {
-            await userCrudService.createUser({ ...FUTURE_USER, agentConnectId: "something" });
+        it("sets profileToComplete and active according to saved proConnectId", async () => {
+            await userCrudService.createUser({ ...FUTURE_USER, proConnectId: "something" });
             const expected = {
-                agentConnectId: "something",
+                proConnectId: "something",
                 profileToComplete: true,
                 active: true,
             };

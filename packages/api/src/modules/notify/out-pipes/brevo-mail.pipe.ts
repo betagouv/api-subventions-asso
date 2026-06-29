@@ -13,7 +13,7 @@ export enum TemplateEnum {
     autoDeletion = 156,
     warnDeletion = 155,
     activated = 135,
-    creationAgentConnect = 171,
+    creationProConnect = 171,
     resumeDeposit = 262,
     depositRenewal = 263,
 }
@@ -57,7 +57,7 @@ export class BrevoMailPipe implements NotifyOutPipe {
     }
 
     private async sendCreationMail(data: NotificationDataTypes[NotificationType.USER_CREATED]) {
-        if (data.isAgentConnect) return this.sendMail(data.email, { url: data.url }, TemplateEnum.creationAgentConnect);
+        if (data.isProConnect) return this.sendMail(data.email, { url: data.url }, TemplateEnum.creationProConnect);
         return this.sendMail(data.email, { url: data.url }, TemplateEnum.creation);
     }
 

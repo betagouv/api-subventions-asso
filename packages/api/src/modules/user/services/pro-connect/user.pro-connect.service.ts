@@ -15,19 +15,19 @@ import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
 import UserDbo from "../../../../adapters/outputs/db/user/@types/UserDbo";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import { AgentConnectUser } from "../../@types/AgentConnectUser";
+import { ProConnectUser } from "../../@types/ProConnectUser";
 import userCrudService from "../crud/user.crud.service";
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { applyValidations, ValidationResult } from "../../../../shared/helpers/validation.helper";
-import agentConnectTokenAdapter from "../../../../adapters/outputs/db/user/pro-connect.adapter";
+import proConnectTokenAdapter from "../../../../adapters/outputs/db/user/pro-connect.adapter";
 import {
-    AGENT_CONNECT_CLIENT_ID,
-    AGENT_CONNECT_CLIENT_SECRET,
-    AGENT_CONNECT_URL,
+    PRO_CONNECT_CLIENT_ID,
+    PRO_CONNECT_CLIENT_SECRET,
+    PRO_CONNECT_URL,
 } from "../../../../configurations/pro-connect.conf";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 
-export class UserAgentConnectService {
+export class UserProConnectService {
     private _client?: Configuration;
 
     get client() {
@@ -38,37 +38,37 @@ export class UserAgentConnectService {
         // discovery() replaces Issuer.discover() + new Client()
         // ClientSecretPost is the auth method — matches your client_secret_post setup
         this._client = await discovery(
-            new URL(AGENT_CONNECT_URL),
-            AGENT_CONNECT_CLIENT_ID,
+            new URL(PRO_CONNECT_URL),
+            PRO_CONNECT_CLIENT_ID,
             {
                 // 3rd param — client metadata
-                client_secret: AGENT_CONNECT_CLIENT_SECRET,
+                client_secret: PRO_CONNECT_CLIENT_SECRET,
                 redirect_uris: [`${FRONT_OFFICE_URL}/auth/login`],
                 response_types: ["code"],
                 id_token_signed_response_alg: "ES256",
                 userinfo_signed_response_alg: "ES256",
             },
-            ClientSecretPost(AGENT_CONNECT_CLIENT_SECRET),
+            ClientSecretPost(PRO_CONNECT_CLIENT_SECRET),
         );
     }
 
-    async login(agentConnectUser: AgentConnectUser, tokenSet: TokenEndpointResponse): Promise<UserWithJWTDto> {
-        // TODO for more resilience try to get by agentConnectId first
-        if (!agentConnectUser.email) throw new InternalServerError("email not contained in agent connect profile");
-        agentConnectUser.email = agentConnectUser.email.toLowerCase();
-        const userWithSecrets: UserDbo | null = await userAdapter.getUserWithSecretsByEmail(agentConnectUser.email);
+    async login(proConnectUser: ProConnectUser, tokenSet: TokenEndpointResponse): Promise<UserWithJWTDto> {
+        // TODO for more resilience try to get by proConnectId first
+        if (!proConnectUser.email) throw new InternalServerError("email not contained in pro connect profile");
+        proConnectUser.email = proConnectUser.email.toLowerCase();
+        const userWithSecrets: UserDbo | null = await userAdapter.getUserWithSecretsByEmail(proConnectUser.email);
         const isNewUser = !userWithSecrets;
 
         let user: Omit<UserDbo, "hashPassword"> = isNewUser
-            ? await this.createUserFromAgentConnect(agentConnectUser)
+            ? await this.createUserFromProConnect(proConnectUser)
             : removeHashPassword(userWithSecrets);
 
         if (!isNewUser)
             user = {
                 ...user,
-                firstName: agentConnectUser.given_name.split(" ")[0],
-                lastName: agentConnectUser.usual_name,
-                agentConnectId: agentConnectUser.uid,
+                firstName: proConnectUser.given_name.split(" ")[0],
+                lastName: proConnectUser.usual_name,
+                proConnectId: proConnectUser.uid,
                 active: true,
             };
 
@@ -81,9 +81,9 @@ export class UserAgentConnectService {
     }
 
     async getLogoutUrl(user: UserDto) {
-        if (!this.client) throw new InternalServerError("AgentConnect client is not initialized");
-        const tokenDbo = await agentConnectTokenAdapter.findLastActive(user._id);
-        agentConnectTokenAdapter.deleteAllByUserId(user._id);
+        if (!this.client) throw new InternalServerError("ProConnect client is not initialized");
+        const tokenDbo = await proConnectTokenAdapter.findLastActive(user._id);
+        proConnectTokenAdapter.deleteAllByUserId(user._id);
         if (!tokenDbo) return null;
         return buildEndSessionUrl(this._client as Configuration, {
             id_token_hint: tokenDbo.token,
@@ -92,17 +92,17 @@ export class UserAgentConnectService {
         }).href;
     }
 
-    async createUserFromAgentConnect(agentConnectUser: AgentConnectUser): Promise<Omit<UserDbo, "hashPassword">> {
+    async createUserFromProConnect(proConnectUser: ProConnectUser): Promise<Omit<UserDbo, "hashPassword">> {
         const userObject = {
-            email: agentConnectUser.email,
-            firstName: agentConnectUser.given_name.split(" ")[0],
-            lastName: agentConnectUser.usual_name,
-            agentConnectId: agentConnectUser.uid,
+            email: proConnectUser.email,
+            firstName: proConnectUser.given_name.split(" ")[0],
+            lastName: proConnectUser.usual_name,
+            proConnectId: proConnectUser.uid,
             roles: ["user"],
         };
 
         const domain = userObject.email.match(/.*@(.*)/)?.[1];
-        if (!domain) throw new InternalServerError("email from AgentConnect invalid");
+        if (!domain) throw new InternalServerError("email from ProConnect invalid");
 
         const createdUser = (await userCrudService.createUser(userObject, true).catch(e => {
             if (e instanceof DuplicateIndexError) {
@@ -116,29 +116,29 @@ export class UserAgentConnectService {
             email: userObject.email,
             firstname: userObject.firstName,
             lastname: userObject.lastName,
-            url: null, // no activation link, agent connect users are automatically active
-            active: true, // agent connect users automatically active
+            url: null, // no activation link, pro connect users are automatically active
+            active: true, // pro connect users automatically active
             signupAt: createdUser.signupAt,
-            isAgentConnect: true,
+            isProConnect: true,
         });
 
         return createdUser;
     }
 
     /**
-     * users linked to agentConnect cannot change all properties of their profile
+     * users linked to proConnect cannot change all properties of their profile
      * @param user initial user data
      * @param data new user data to save
      */
-    agentConnectUpdateValidations(user: UserDto, data: Partial<UpdatableUser>): ValidationResult {
-        if (!user.agentConnectId) return { valid: true };
+    proConnectUpdateValidations(user: UserDto, data: Partial<UpdatableUser>): ValidationResult {
+        if (!user.proConnectId) return { valid: true };
         return applyValidations([
             {
                 value: data.firstName,
                 // @ts-expect-error: show since typescript update #3360
                 method: (value: string | undefined | null) => !value || value === user.firstName,
                 error: new BadRequestError(
-                    "Un utilisateur lié à AgentConnect ne peut pas changer de prénom sur l'application",
+                    "Un utilisateur lié à ProConnect ne peut pas changer de prénom sur l'application",
                 ),
             },
             {
@@ -146,7 +146,7 @@ export class UserAgentConnectService {
                 // @ts-expect-error: show since typescript update #3360
                 method: (value: string | undefined | null) => !value || value === user.lastName,
                 error: new BadRequestError(
-                    "Un utilisateur lié à AgentConnect ne peut pas changer de nom de famille sur l'application",
+                    "Un utilisateur lié à ProConnect ne peut pas changer de nom de famille sur l'application",
                 ),
             },
         ]);
@@ -154,7 +154,7 @@ export class UserAgentConnectService {
 
     private async saveTokenSet(userId: ObjectId, tokenSet: TokenEndpointResponse) {
         if (!tokenSet.id_token) throw new InternalServerError("invalid tokenSet to save");
-        return agentConnectTokenAdapter.upsert({
+        return proConnectTokenAdapter.upsert({
             userId,
             token: tokenSet.id_token,
             creationDate: new Date(),
@@ -162,5 +162,5 @@ export class UserAgentConnectService {
     }
 }
 
-const userAgentConnectService = new UserAgentConnectService();
-export default userAgentConnectService;
+const userProConnectService = new UserProConnectService();
+export default userProConnectService;

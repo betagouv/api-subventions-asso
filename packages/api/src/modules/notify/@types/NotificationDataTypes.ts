@@ -18,7 +18,7 @@ export interface NotificationDataTypes {
         url: string | null;
         signupAt: Date;
         active: boolean;
-        isAgentConnect: boolean;
+        isProConnect: boolean;
     };
     [NotificationType.USER_DELETED]: {
         email: string;

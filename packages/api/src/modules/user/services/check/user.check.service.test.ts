@@ -130,12 +130,12 @@ describe("user check service", () => {
             expect(mockedUserRolesService.validRoles).toHaveBeenCalledWith(roles);
         });
 
-        it("validates email only if agent connect id is present", async () => {
-            await userCheckService.validateSanitizeUser({ email: USER_EMAIL, agentConnectId: "some-id" });
+        it("validates email only if pro connect id is present", async () => {
+            await userCheckService.validateSanitizeUser({ email: USER_EMAIL, proConnectId: "some-id" });
             expect(mockValidateEmailOnly).toHaveBeenCalledWith(USER_EMAIL);
         });
 
-        it("validates email and domain only if agent connect id is not present", async () => {
+        it("validates email and domain only if pro connect id is not present", async () => {
             await userCheckService.validateSanitizeUser({ email: USER_EMAIL });
             expect(mockValidateEmailAndDomain).toHaveBeenCalledWith(USER_EMAIL);
         });

@@ -99,7 +99,7 @@ describe("authService", () => {
         });
 
         it("rejects if user is linked to proConnect", async () => {
-            authPort.forgetPassword.mockResolvedValueOnce({ agentConnectId: "something" });
+            authPort.forgetPassword.mockResolvedValueOnce({ proConnectId: "something" });
             const test = () => authService.forgetPassword();
             await expect(test).rejects.toMatchInlineSnapshot(`undefined`);
         });
