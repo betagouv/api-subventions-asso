@@ -3,7 +3,7 @@
 exports[`Rgpd Cron removeInactiveUsers() should notify through mattermost 1`] = `
 [
   [
-    "https://mattermost.incubateur.net/hooks/qefuswbp9fybdjf97yqxo93cqr",
+    "https://mattermost.incubateur.net/hooks/xxx",
     {
       "channel": "datasubvention---comptes-app",
       "icon_emoji": "door",

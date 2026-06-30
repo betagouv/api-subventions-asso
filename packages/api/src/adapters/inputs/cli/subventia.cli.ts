@@ -26,6 +26,11 @@ export default class SubventiaCli extends CliController implements ApplicationFl
         const errors = processedData.invalids;
         await Promise.all([this.persistEntities(entities), this.exportErrors(errors, file)]);
         console.log("Subventia data parsed");
+        return {
+            parsedCount: entities.length + errors.length,
+            importedCount: entities.length,
+            errorCount: errors.length,
+        };
     }
 
     private async persistEntities(entities: Omit<SubventiaDbo, "_id">[]) {

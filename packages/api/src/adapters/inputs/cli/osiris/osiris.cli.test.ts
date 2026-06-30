@@ -1,3 +1,4 @@
+import fs from "fs";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import OsirisParser from "./osiris.parser";
 import osirisService from "../../../../modules/providers/osiris/osiris.service";
@@ -10,11 +11,20 @@ import {
     InvalidOsirisRequestError,
     VALID_REQUEST_ERROR_CODE,
 } from "../../../../modules/providers/osiris/osiris.errors";
+import notifyService from "../../../../modules/notify/notify.service";
+import { NotificationType } from "../../../../modules/notify/@types/NotificationType";
+import { GenericParser } from "../../../../shared/GenericParser";
 
+jest.mock("fs");
 jest.mock("./osiris.parser");
 jest.mock("./osiris-action.mapper");
 jest.mock("./osiris-request.mapper");
 jest.mock("../../../../modules/providers/osiris/osiris.service");
+jest.mock("../../../../modules/notify/notify.service", () => ({ notify: jest.fn().mockResolvedValue(true) }));
+jest.mock("../../../../modules/data-log/dataLog.service", () => ({
+    addFromFile: jest.fn().mockResolvedValue(undefined),
+}));
+jest.mock("../../../../shared/GenericParser", () => ({ GenericParser: { findFiles: jest.fn() } }));
 
 const BULK_RESULT = {
     insertedCount: 0,
@@ -29,6 +39,8 @@ describe("Osiris cli", () => {
     beforeEach(() => {
         cli = new OsirisCli();
         jest.clearAllMocks();
+        jest.mocked(fs.existsSync).mockReturnValue(true);
+        jest.mocked(fs.writeFileSync).mockImplementation(() => undefined);
     });
 
     describe("parse requests", () => {
@@ -118,6 +130,15 @@ describe("Osiris cli", () => {
             await cli._parseRequest(CONTENT_FILE, YEAR, []);
             expect(osirisService.bulkAddRequest).toHaveBeenCalledWith([ENTITIES[1]]);
         });
+
+        it("returns counts", async () => {
+            const result = await cli._parseRequest(CONTENT_FILE, YEAR, []);
+            expect(result).toEqual({
+                parsedCount: VALID_DTOS.length,
+                importedCount: VALID_DTOS.length,
+                errorCount: 0,
+            });
+        });
     });
 
     describe("parse actions", () => {
@@ -158,6 +179,74 @@ describe("Osiris cli", () => {
         it("bulk saves all valid entities", async () => {
             await cli._parseAction(CONTENT_FILE, YEAR, []);
             expect(osirisService.bulkAddActions).toHaveBeenCalledWith(DOCS);
+        });
+
+        it("returns counts", async () => {
+            const result = await cli._parseAction(CONTENT_FILE, YEAR, []);
+            expect(result).toEqual({
+                parsedCount: DTOS.length,
+                importedCount: DOCS.length,
+                errorCount: 0,
+            });
+        });
+    });
+
+    describe("parse()", () => {
+        const FILE = "some/path";
+        const FILE_RESULT = { parsedCount: 10, importedCount: 8, errorCount: 2 };
+
+        let _parseSpy: jest.SpyInstance;
+        let consoleInfoSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            // @ts-expect-error -- mock protected method
+            _parseSpy = jest.spyOn(cli, "_parse").mockResolvedValue(FILE_RESULT);
+            jest.mocked(GenericParser.findFiles).mockReturnValue([FILE]);
+            consoleInfoSpy = jest.spyOn(console, "info").mockImplementation(() => undefined);
+        });
+
+        afterEach(() => {
+            _parseSpy.mockRestore();
+            consoleInfoSpy.mockRestore();
+        });
+
+        it("notifies failure with accumulated partial counts when second file fails", async () => {
+            jest.mocked(GenericParser.findFiles).mockReturnValueOnce([FILE, "FILE_2"]);
+            _parseSpy
+                .mockResolvedValueOnce({ parsedCount: 10, importedCount: 8, errorCount: 2 })
+                .mockRejectedValueOnce(new Error("second file failed"));
+            await cli.parse("requests", FILE, "2023").catch(() => undefined);
+            expect(notifyService.notify).toHaveBeenCalledWith(
+                NotificationType.DATA_IMPORT_FAILURE,
+                expect.objectContaining({
+                    details: expect.objectContaining({ parsedCount: 10, importedCount: 8, errorCount: 2 }),
+                }),
+            );
+        });
+
+        it("notifies failure with fileCount when a file fails", async () => {
+            jest.mocked(GenericParser.findFiles).mockReturnValueOnce([FILE, "FILE_2"]);
+            _parseSpy
+                .mockResolvedValueOnce({ parsedCount: 10, importedCount: 8, errorCount: 2 })
+                .mockRejectedValueOnce(new Error("second file failed"));
+            await cli.parse("requests", FILE, "2023").catch(() => undefined);
+            expect(notifyService.notify).toHaveBeenCalledWith(
+                NotificationType.DATA_IMPORT_FAILURE,
+                expect.objectContaining({
+                    details: expect.objectContaining({ fileCount: 2 }),
+                }),
+            );
+        });
+
+        it("passes exerciseYear in success notification", async () => {
+            jest.mocked(GenericParser.findFiles).mockReturnValue(["some/SuiviDossiers_1.xls"]);
+            await cli.parse("requests", FILE, "2023");
+            expect(notifyService.notify).toHaveBeenCalledWith(
+                NotificationType.DATA_IMPORT_SUCCESS,
+                expect.objectContaining({
+                    details: expect.objectContaining({ exerciseYear: 2023 }),
+                }),
+            );
         });
     });
 

@@ -19,6 +19,7 @@ export const NOTIFICATION_ENV_CONFIG = {
     [NotificationType.BATCH_DEPOSIT_RESUME]: [EnvironmentEnum.PROD],
     [NotificationType.DEPOSIT_UNFINISHED]: [EnvironmentEnum.PROD],
     [NotificationType.DATA_IMPORT_SUCCESS]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
+    [NotificationType.DATA_IMPORT_FAILURE]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.DEPOSIT_SCDL_SUCCESS]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.EXTERNAL_API_ERROR]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.MONGO_CONNECTION_LOST]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],

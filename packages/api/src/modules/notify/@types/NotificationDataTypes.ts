@@ -1,6 +1,8 @@
 import { FutureUserDto, UserActivationInfoDto } from "dto";
 import { NotificationType } from "./NotificationType";
 import { DefaultObject } from "../../../@types";
+import { ImportNotificationDetails } from "../../../@types/ImportNotificationDetails";
+import { ImportReport } from "../../../@types/ImportReport";
 
 export interface NotificationDataTypes {
     [NotificationType.USER_ALREADY_EXIST]: {
@@ -78,6 +80,15 @@ export interface NotificationDataTypes {
         providerName: string;
         providerSiret?: string;
         exportDate?: Date;
+        details: ImportNotificationDetails;
+    };
+    [NotificationType.DATA_IMPORT_FAILURE]: {
+        providerName: string;
+        providerSiret?: string;
+        exportDate?: Date;
+        error: string;
+        details: Pick<ImportNotificationDetails, "fileName" | "durationMs" | "fileCount" | "exerciseYear"> &
+            Partial<ImportReport>;
     };
     [NotificationType.DEPOSIT_SCDL_SUCCESS]: {
         providerName: string;

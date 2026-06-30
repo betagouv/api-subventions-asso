@@ -14,10 +14,15 @@ import saveChorusFseEntities, {
 import updateFlatByExercise, {
     UpdateFlatByExercise,
 } from "../../../../../modules/providers/chorus/use-cases/update-flat-by-exercise";
+import { ImportReport } from "../../../../../@types/ImportReport";
 import { ChorusDto, ChorusFseDto } from "./chorus.dto";
 import { ChorusMapper } from "./chorus.mapper";
 import { ChorusParser } from "./chorus.parser";
 import { ChorusValidator } from "./chorus.validator";
+
+export interface ChorusImportOptions {
+    withoutEuropeanData?: boolean;
+}
 
 export class ChorusImport {
     constructor(
@@ -30,13 +35,15 @@ export class ChorusImport {
     ) {}
 
     // saves national chorus data
-    private async save(dtos: ChorusDto[]) {
+    private async save(dtos: ChorusDto[]): Promise<ImportReport> {
+        let validationErrorCount = 0;
         const entities = dtos
             ?.filter(dto => {
                 try {
                     return ChorusValidator.validate(dto);
                 } catch (e) {
                     if (e instanceof Error) console.log(e.message);
+                    validationErrorCount++;
                     return false;
                 }
             })
@@ -48,7 +55,19 @@ export class ChorusImport {
             for (const exercise of exercicesSet) {
                 await this.updateFlatByExercise.execute(exercise);
             }
+
+            return {
+                parsedCount: dtos.length,
+                importedCount: assoEntities.length,
+                errorCount: validationErrorCount + entities.length - assoEntities.length,
+            };
         }
+
+        return {
+            parsedCount: dtos.length,
+            importedCount: 0,
+            errorCount: dtos.length,
+        };
     }
 
     // saves european chorus data
@@ -71,9 +90,14 @@ export class ChorusImport {
         }
     }
 
-    async run(buffer: Buffer) {
+    async run(buffer: Buffer, options: ChorusImportOptions = {}): Promise<ImportReport> {
         const { national: nationalDtos, european: europeanDtos } = ChorusParser.fromBuffer(buffer);
-        return Promise.all([this.save(nationalDtos ?? []), this.saveFse(europeanDtos ?? [])]);
+        const [report] = await Promise.all([
+            this.save(nationalDtos ?? []),
+            options.withoutEuropeanData ? Promise.resolve() : this.saveFse(europeanDtos ?? []),
+        ]);
+
+        return report;
     }
 }
 

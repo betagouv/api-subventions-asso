@@ -12,6 +12,7 @@ process.env.PRO_CONNECT_URL = "https://pro-connect.url";
 process.env.API_BREVO_TOKEN = "1FT47%TRADF!";
 process.env.MAIL_USER = "mail-user@datasubvention";
 process.env.RATE_LIMIT = "50"; // 20 in real app but can break integration test. Still limiting to 50 as more than that means we should break routes / test file
+process.env.MATTERMOST_WEBHOOK_URL = "https://mattermost.incubateur.net/hooks/xxx";
 
 /**
  *

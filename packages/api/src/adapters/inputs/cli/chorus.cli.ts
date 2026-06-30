@@ -27,7 +27,7 @@ export default class ChorusCli extends CliController {
      * @param file path to file
      * @param logger
      */
-    protected async _parse(file: string, logger) {
+    protected async _parse(file: string, logger, ...args) {
         if (typeof file !== "string") {
             throw new Error("Parse command need file args");
         }
@@ -42,7 +42,9 @@ export default class ChorusCli extends CliController {
         const fileContent = fs.readFileSync(file);
 
         console.log("start importing chorus data into the system...");
-        await this.chorusImport.run(fileContent);
+        return this.chorusImport.run(fileContent, {
+            withoutEuropeanData: args.includes("--no-fse"),
+        });
     }
 
     async syncFlatByExercise(exercise: string) {

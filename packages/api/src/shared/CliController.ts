@@ -1,8 +1,12 @@
 import fs from "fs";
+import path from "path";
 import dataLogService from "../modules/data-log/dataLog.service";
 import CliLogger from "./CliLogger";
 import { GenericParser } from "./GenericParser";
 import { validateDate } from "./helpers/CliHelper";
+import { ImportReport } from "../@types/ImportReport";
+import { notifyImportFailureUseCase } from "../modules/notify/use-cases/notify-import-failure.use-case";
+import { notifyImportSuccessUseCase } from "../modules/notify/use-cases/notify-import-success.use-case";
 
 export default class CliController {
     protected logFileParsePath = "";
@@ -40,22 +44,52 @@ export default class CliController {
         this.logger.logIC(`${files.length} files in the parse queue`);
         this.logger.logIC(`You can read log in ${this.logFileParsePath}`);
 
-        await files
-            .reduce((acc, filePath) => {
-                return acc.then(() => this._parse(filePath, logs, exportDate, ...args));
-            }, Promise.resolve())
+        const fileReports: { report: ImportReport | void; duration: number }[] = [];
+        const startAt = Date.now();
+
+        try {
+            await files.reduce((acc, filePath) => {
+                return acc.then(async () => {
+                    const fileStartAt = Date.now();
+                    const report = await this._parse(filePath, logs, exportDate, ...args);
+                    const duration = Date.now() - fileStartAt;
+                    fileReports.push({ report, duration });
+                });
+            }, Promise.resolve());
+
             // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
-            .then(() =>
-                fs.writeFileSync(this.logFileParsePath, this.logger.getLogs() + logs.join(""), {
-                    flag: "w",
-                    encoding: "utf-8",
-                }),
-            );
-        await this._logImportSuccess(exportDate, file);
+            fs.writeFileSync(this.logFileParsePath, this.logger.getLogs() + logs.join(""), {
+                flag: "w",
+                encoding: "utf-8",
+            });
+            await this._logImportSuccess(exportDate, file);
+
+            const reportsWithCounts = fileReports
+                .map(({ report }) => report)
+                .filter((report): report is ImportReport => !!report);
+
+            if (reportsWithCounts.length > 0) {
+                const aggregated: ImportReport = {
+                    parsedCount: reportsWithCounts.reduce((sum, r) => sum + r.parsedCount, 0),
+                    importedCount: reportsWithCounts.reduce((sum, r) => sum + r.importedCount, 0),
+                    errorCount: reportsWithCounts.reduce((sum, r) => sum + r.errorCount, 0),
+                };
+                const totalDuration = fileReports.reduce((sum, { duration }) => sum + duration, 0);
+                await this._notifyImportSuccess(file, exportDate, aggregated, totalDuration, files.length);
+            }
+        } catch (error) {
+            const partialReport: ImportReport = {
+                parsedCount: fileReports.reduce((sum, { report }) => sum + (report?.parsedCount ?? 0), 0),
+                importedCount: fileReports.reduce((sum, { report }) => sum + (report?.importedCount ?? 0), 0),
+                errorCount: fileReports.reduce((sum, { report }) => sum + (report?.errorCount ?? 0), 0),
+            };
+            await this._notifyImportFailure(file, error as Error, exportDate, Date.now() - startAt, partialReport);
+            throw error;
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async _parse(file: string, logs: unknown[], exportDate: Date, ..._args) {
+    protected async _parse(_file: string, _logs: unknown[], _exportDate: Date, ..._args): Promise<ImportReport | void> {
         throw new Error("_parse() need to be implemented by the child class");
     }
 
@@ -80,6 +114,35 @@ export default class CliController {
             providerName: this._serviceMeta.name,
             fileName: fileName,
             editionDate,
+        });
+    }
+
+    protected async _notifyImportSuccess(
+        file: string,
+        exportDate: Date,
+        report: ImportReport,
+        durationMs: number,
+        fileCount: number,
+    ): Promise<void> {
+        return notifyImportSuccessUseCase.execute(this._serviceMeta.name, file, report, {
+            durationMs,
+            exportDate,
+            fileCount,
+        });
+    }
+
+    protected async _notifyImportFailure(
+        file: string,
+        error: Error,
+        exportDate: Date,
+        durationMs: number,
+        partialReport?: ImportReport,
+    ): Promise<void> {
+        return notifyImportFailureUseCase.execute(this._serviceMeta.name, error, {
+            exportDate,
+            durationMs,
+            fileName: path.basename(file),
+            report: partialReport,
         });
     }
 }

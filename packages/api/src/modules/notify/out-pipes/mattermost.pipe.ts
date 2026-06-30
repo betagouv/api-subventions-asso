@@ -16,7 +16,8 @@ export class MattermostPipe implements NotifyOutPipe {
     private readonly apiUrl: string;
 
     constructor() {
-        this.apiUrl = "https://mattermost.incubateur.net/hooks/qefuswbp9fybdjf97yqxo93cqr";
+        this.apiUrl = process.env.MATTERMOST_WEBHOOK_URL ?? "";
+        if (!this.apiUrl) console.warn("MATTERMOST_WEBHOOK_URL is not defined in environment variables");
     }
 
     notify(type, data) {
@@ -33,6 +34,8 @@ export class MattermostPipe implements NotifyOutPipe {
                 return this.depositUnfinished(data);
             case NotificationType.DATA_IMPORT_SUCCESS:
                 return this.dataImportSuccess(data);
+            case NotificationType.DATA_IMPORT_FAILURE:
+                return this.dataImportFailure(data);
             case NotificationType.DEPOSIT_SCDL_SUCCESS:
                 return this.depositScdlSuccess(data);
             case NotificationType.EXTERNAL_API_ERROR:
@@ -45,6 +48,7 @@ export class MattermostPipe implements NotifyOutPipe {
     }
 
     private async sendMessage(payload) {
+        if (!this.apiUrl) return false;
         try {
             await axios.post(this.apiUrl, {
                 ...payload,
@@ -57,15 +61,71 @@ export class MattermostPipe implements NotifyOutPipe {
         }
     }
 
+    private formatValueWithPercent(value: number, total: number): string {
+        if (total === 0) return `${value}`;
+        const percent = ((value / total) * 100).toFixed(2);
+        return `${value} (${percent}%)`;
+    }
+
     private dataImportSuccess(data: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]) {
+        const { fileName, fileCount, durationMs, parsedCount, importedCount, errorCount, exerciseYear } = data.details;
+        const fileLabel =
+            fileCount !== undefined && fileCount > 1
+                ? `**Batch** : \`${fileName}\` (${fileCount} fichiers)`
+                : `**Fichier** : \`${fileName}\``;
+
+        const details = [
+            fileLabel,
+            `**Durée** : ${Math.round(durationMs / 1000)}s`,
+            ...(exerciseYear !== undefined ? [`**Année** : ${exerciseYear}`] : []),
+            "",
+            "**Counts**",
+            `- Lignes parsées : ${parsedCount}`,
+            `- Données importées : ${this.formatValueWithPercent(importedCount, parsedCount)}`,
+            `- Erreurs : ${this.formatValueWithPercent(errorCount, parsedCount)}`,
+        ];
+
         const message = dedent`Import de données réussi pour le fournisseur **${data.providerName}**${
             data.providerSiret ? ` (SIRET : \`${data.providerSiret}\`)` : ""
-        }${data.exportDate ? ` avec une date d'export au **${data.exportDate.toISOString().split("T")[0]}**` : ""}.`;
+        }${data.exportDate ? ` avec une date d'export au **${data.exportDate.toISOString().split("T")[0]}**` : ""}.
+
+        ${details.join("\n")}`;
+
         return this.sendMessage({
             text: message,
             channel: MattermostChannels.PRODUCT,
             username: "Import de données",
             icon_emoji: "white_check_mark",
+        });
+    }
+
+    private dataImportFailure(data: NotificationDataTypes[NotificationType.DATA_IMPORT_FAILURE]) {
+        const details = data.details;
+        const lines: string[] = [
+            `**Fichier** : \`${details.fileName}\``,
+            ...(details.exerciseYear !== undefined ? [`**Année** : ${details.exerciseYear}`] : []),
+            `**Durée** : ${Math.round(details.durationMs / 1000)}s`,
+            ...(details.fileCount !== undefined ? [`**Fichiers traités** : ${details.fileCount}`] : []),
+        ];
+
+        if (details.parsedCount !== undefined) {
+            lines.push("", "**Counts partiels**");
+            lines.push(`- Lignes parsées : ${details.parsedCount}`);
+            lines.push(`- Données importées : ${details.importedCount}`);
+            lines.push(`- Erreurs : ${details.errorCount}`);
+        }
+
+        const suffix = lines.length ? `\n${lines.join("\n")}` : "";
+        const message = dedent`Échec d'import pour le fournisseur **${data.providerName}**${
+            data.exportDate ? ` (export du **${data.exportDate.toISOString().split("T")[0]}**)` : ""
+        }.
+        **Erreur** : ${data.error}${suffix}`;
+
+        return this.sendMessage({
+            text: message,
+            channel: MattermostChannels.PRODUCT,
+            username: "Import de données",
+            icon_emoji: "x",
         });
     }
 
