@@ -2,20 +2,18 @@
 
 exports[`ConsumerCli create should create a consumer token with user info 1`] = `
 {
-  "_id": Any<String>,
   "active": false,
   "email": "test@beta.gouv.fr",
-  "firstName": null,
   "iat": Any<Number>,
+  "id": Any<String>,
   "isConsumerToken": true,
-  "lastActivityDate": null,
-  "lastName": null,
+  "lastActivityDate": Any<String>,
   "nbVisits": 0,
   "now": Any<String>,
   "profileToComplete": true,
   "roles": [
-    "user",
     "consumer",
+    "user",
   ],
   "signupAt": Any<String>,
 }
@@ -23,18 +21,34 @@ exports[`ConsumerCli create should create a consumer token with user info 1`] = 
 
 exports[`ConsumerCli create should create a user 1`] = `
 {
-  "_id": Any<ObjectId>,
   "active": false,
+  "agentType": undefined,
+  "decentralizedLevel": undefined,
+  "decentralizedTerritory": undefined,
+  "disable": undefined,
   "email": "test@beta.gouv.fr",
-  "firstName": null,
-  "lastActivityDate": null,
-  "lastName": null,
+  "firstName": undefined,
+  "hashPassword": undefined,
+  "id": Any<String>,
+  "jobType": undefined,
+  "jwt": undefined,
+  "lastActivityDate": Any<Date>,
+  "lastName": undefined,
   "nbVisits": 0,
+  "phoneNumber": undefined,
+  "proConnectId": undefined,
   "profileToComplete": true,
+  "region": undefined,
+  "registrationSrc": undefined,
+  "registrationSrcDetails": undefined,
+  "registrationSrcEmail": undefined,
   "roles": [
-    "user",
     "consumer",
+    "user",
   ],
+  "service": undefined,
   "signupAt": Any<Date>,
+  "structure": undefined,
+  "territorialScope": undefined,
 }
 `;

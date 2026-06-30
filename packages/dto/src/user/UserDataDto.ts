@@ -1,14 +1,12 @@
 import UserDto from "./UserDto";
 
 export interface UserDataResetToken {
-    _id: string;
     userId: string;
     token: string;
     createdAt: Date;
 }
 
 export interface UserDataConsumerToken {
-    _id: string;
     userId: string;
     token: string;
 }

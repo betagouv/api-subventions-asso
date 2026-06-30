@@ -1,4 +1,3 @@
-import { UpdatableUser, UserDto, UserWithJWTDto } from "dto";
 import {
     discovery,
     ClientSecretPost,
@@ -7,17 +6,14 @@ import {
     buildEndSessionUrl,
     randomState,
 } from "openid-client";
-import { ObjectId } from "mongodb";
 import { BadRequestError, InternalServerError } from "core";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
-import UserDbo from "../../../../adapters/outputs/db/user/@types/UserDbo";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import { ProConnectUser } from "../../@types/ProConnectUser";
 import userCrudService from "../crud/user.crud.service";
-import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { applyValidations, ValidationResult } from "../../../../shared/helpers/validation.helper";
 import proConnectTokenAdapter from "../../../../adapters/outputs/db/user/pro-connect.adapter";
 import {
@@ -26,6 +22,10 @@ import {
     PRO_CONNECT_URL,
 } from "../../../../configurations/pro-connect.conf";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
+import UserEntity from "../../../../domain/users/UserEntity";
+import { UserRoles } from "../../../../domain/users/@types/UserRoles";
+import NewUserEntity from "../../../../domain/users/NewUserEntity";
+import UpdatableUserFields from "../../../../domain/users/@types/UpdatableUserFields";
 
 export class UserProConnectService {
     private _client?: Configuration;
@@ -52,38 +52,34 @@ export class UserProConnectService {
         );
     }
 
-    async login(proConnectUser: ProConnectUser, tokenSet: TokenEndpointResponse): Promise<UserWithJWTDto> {
+    async login(proConnectUser: ProConnectUser, tokenSet: TokenEndpointResponse) {
         // TODO for more resilience try to get by proConnectId first
         if (!proConnectUser.email) throw new InternalServerError("email not contained in pro connect profile");
         proConnectUser.email = proConnectUser.email.toLowerCase();
-        const userWithSecrets: UserDbo | null = await userAdapter.getUserWithSecretsByEmail(proConnectUser.email);
-        const isNewUser = !userWithSecrets;
+        let user: UserEntity | null;
 
-        let user: Omit<UserDbo, "hashPassword"> = isNewUser
-            ? await this.createUserFromProConnect(proConnectUser)
-            : removeHashPassword(userWithSecrets);
-
-        if (!isNewUser)
-            user = {
+        user = await userAdapter.getUserWithSecretsByEmail(proConnectUser.email);
+        if (!user) return this.createUserFromProConnect(proConnectUser);
+        else {
+            user = new UserEntity({
                 ...user,
                 firstName: proConnectUser.given_name.split(" ")[0],
                 lastName: proConnectUser.usual_name,
                 proConnectId: proConnectUser.uid,
                 active: true,
-            };
+            });
+            await Promise.all([userAuthService.updateJwt(user), this.saveTokenSet(user.id, tokenSet)])[0];
+            notifyService.notify(NotificationType.USER_LOGGED, { email: user.email, date: new Date() });
+            notifyService.notify(NotificationType.USER_UPDATED, user);
+        }
 
-        user = (await Promise.all([userAuthService.updateJwt(user), this.saveTokenSet(user._id, tokenSet)]))[0];
-
-        notifyService.notify(NotificationType.USER_LOGGED, { email: user.email, date: new Date() });
-        if (!isNewUser) notifyService.notify(NotificationType.USER_UPDATED, removeSecrets(user));
-
-        return user as UserWithJWTDto;
+        return user;
     }
 
-    async getLogoutUrl(user: UserDto) {
+    async getLogoutUrl(user: UserEntity) {
         if (!this.client) throw new InternalServerError("ProConnect client is not initialized");
-        const tokenDbo = await proConnectTokenAdapter.findLastActive(user._id);
-        proConnectTokenAdapter.deleteAllByUserId(user._id);
+        const tokenDbo = await proConnectTokenAdapter.findLastActive(user.id);
+        proConnectTokenAdapter.deleteAllByUserId(user.id);
         if (!tokenDbo) return null;
         return buildEndSessionUrl(this._client as Configuration, {
             id_token_hint: tokenDbo.token,
@@ -92,25 +88,25 @@ export class UserProConnectService {
         }).href;
     }
 
-    async createUserFromProConnect(proConnectUser: ProConnectUser): Promise<Omit<UserDbo, "hashPassword">> {
-        const userObject = {
+    async createUserFromProConnect(proConnectUser: ProConnectUser) {
+        const userObject = new NewUserEntity({
             email: proConnectUser.email,
             firstName: proConnectUser.given_name.split(" ")[0],
             lastName: proConnectUser.usual_name,
             proConnectId: proConnectUser.uid,
-            roles: ["user"],
-        };
+            roles: [UserRoles.USER],
+        });
 
         const domain = userObject.email.match(/.*@(.*)/)?.[1];
         if (!domain) throw new InternalServerError("email from ProConnect invalid");
 
-        const createdUser = (await userCrudService.createUser(userObject, true).catch(e => {
+        const createdUser = await userCrudService.createUser(userObject).catch(e => {
             if (e instanceof DuplicateIndexError) {
                 notifyService.notify(NotificationType.USER_CONFLICT, userObject);
                 throw new InternalServerError("An error has occurred");
             }
             throw e;
-        })) as Omit<UserDbo, "hashPassword">;
+        });
 
         notifyService.notify(NotificationType.USER_CREATED, {
             email: userObject.email,
@@ -130,21 +126,21 @@ export class UserProConnectService {
      * @param user initial user data
      * @param data new user data to save
      */
-    proConnectUpdateValidations(user: UserDto, data: Partial<UpdatableUser>): ValidationResult {
-        if (!user.proConnectId) return { valid: true };
+    proConnectUpdateValidations(originalUser: UserEntity, updatedUser: Partial<UpdatableUserFields>): ValidationResult {
+        if (!originalUser.proConnectId) return { valid: true };
         return applyValidations([
             {
-                value: data.firstName,
+                value: updatedUser.firstName,
                 // @ts-expect-error: show since typescript update #3360
-                method: (value: string | undefined | null) => !value || value === user.firstName,
+                method: (value: string | undefined | null) => !value || value === originalUser.firstName,
                 error: new BadRequestError(
                     "Un utilisateur lié à ProConnect ne peut pas changer de prénom sur l'application",
                 ),
             },
             {
-                value: data.lastName,
+                value: updatedUser.lastName,
                 // @ts-expect-error: show since typescript update #3360
-                method: (value: string | undefined | null) => !value || value === user.lastName,
+                method: (value: string | undefined | null) => !value || value === originalUser.lastName,
                 error: new BadRequestError(
                     "Un utilisateur lié à ProConnect ne peut pas changer de nom de famille sur l'application",
                 ),
@@ -152,7 +148,7 @@ export class UserProConnectService {
         ]);
     }
 
-    private async saveTokenSet(userId: ObjectId, tokenSet: TokenEndpointResponse) {
+    private async saveTokenSet(userId: string, tokenSet: TokenEndpointResponse) {
         if (!tokenSet.id_token) throw new InternalServerError("invalid tokenSet to save");
         return proConnectTokenAdapter.upsert({
             userId,

@@ -4,7 +4,8 @@ import userStatsService from "../../../modules/user/services/stats/user.stats.se
 import userActivationService from "../../../modules/user/services/activation/user.activation.service";
 import userCrudService from "../../../modules/user/services/crud/user.crud.service";
 import userRgpdService from "../../../modules/user/services/rgpd/user.rgpd.service";
-import { RoleEnum } from "../../../@enums/RolesEnum";
+import { RoleEnum } from "../../../domain/users/@types/UserRoles";
+import NewUserEntity from "../../../domain/users/NewUserEntity";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCli {
@@ -12,7 +13,9 @@ export default class UserCli {
 
     async createAdmin(email: string) {
         try {
-            const user = await userCrudService.createUser({ email, roles: [RoleEnum.admin, RoleEnum.user] });
+            const user = await userCrudService.createUser(
+                new NewUserEntity({ email, roles: [RoleEnum.admin, RoleEnum.user] }),
+            );
             console.info("Admin user has been created");
 
             await userActivationService.setsPasswordAndActivate(user);

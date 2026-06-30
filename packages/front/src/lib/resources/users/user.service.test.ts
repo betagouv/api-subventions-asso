@@ -16,9 +16,9 @@ describe("UsersService", () => {
     };
     describe("isUserActif", () => {
         it("should return true", () => {
-            const user = { lastActivityDate: new Date() };
+            const user = { lastActivityDate: new Date() } as unknown as UserDto;
             const expected = true;
-            const actual = userService.isUserActif(user as UserDto);
+            const actual = userService.isUserActif(user);
 
             expect(actual).toEqual(expected);
         });

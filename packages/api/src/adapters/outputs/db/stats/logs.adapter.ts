@@ -1,7 +1,7 @@
-import { UserDto } from "dto";
 import MongoAdapter from "../MongoAdapter";
 import { WinstonLog } from "../../../../@types/WinstonLog";
 import { logsPort } from "./logs.port";
+import UserEntity from "../../../../domain/users/UserEntity";
 
 export class LogsAdapter extends MongoAdapter<WinstonLog> implements logsPort {
     collectionName = "log";
@@ -30,7 +30,7 @@ export class LogsAdapter extends MongoAdapter<WinstonLog> implements logsPort {
         });
     }
 
-    public async anonymizeLogsByUser(initialUser: UserDto, disabledUser: UserDto): Promise<boolean> {
+    public async anonymizeLogsByUser(initialUser: UserEntity, disabledUser: UserEntity): Promise<boolean> {
         await this.collection.updateMany(
             { "meta.req.user.email": initialUser.email },
             { $set: { "meta.req.email": disabledUser.email } },

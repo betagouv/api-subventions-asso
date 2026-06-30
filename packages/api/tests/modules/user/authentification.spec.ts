@@ -9,6 +9,8 @@ import userActivationService, {
 } from "../../../src/modules/user/services/activation/user.activation.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 import { App } from "supertest/types";
+import NewUserEntity from "../../../src/domain/users/NewUserEntity";
+import UserEntity from "../../../src/domain/users/UserEntity";
 
 const g = global as unknown as { app: App };
 
@@ -47,30 +49,31 @@ describe("AuthentificationController, /auth", () => {
 
     describe("POST /reset-password", () => {
         it("should return 200", async () => {
-            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
+            const user = await userCrudService.createUser(new NewUserEntity({ email: "test-reset@beta.gouv.fr" }));
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
-            const userReset = await userResetAdapter.findOneByUserId(user._id);
+            const userReset = await userResetAdapter.findOneByUserId(user.id);
 
-            const response = await request(g.app)
+            await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
                     token: userReset?.token,
                 })
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({
-                user: { email: "test-reset@beta.gouv.fr", active: true },
-            });
+                .set("Accept", "application/json")
+                .expect(200)
+                .expect(res =>
+                    expect(res.body).toMatchObject({
+                        user: { email: "test-reset@beta.gouv.fr", active: true },
+                    }),
+                );
         });
 
         it("should reject because password is too weak", async () => {
-            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
+            const user = await userCrudService.createUser(new NewUserEntity({ email: "test-reset@beta.gouv.fr" }));
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
-            const userReset = await userResetAdapter.findOneByUserId(user._id);
+            const userReset = await userResetAdapter.findOneByUserId(user.id);
 
             const response = await request(g.app)
                 .post("/auth/reset-password")
@@ -86,25 +89,26 @@ describe("AuthentificationController, /auth", () => {
         });
 
         it("should reject because wrong token", async () => {
-            const response = await request(g.app)
+            await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
                     token: "sdsdsdsd",
                 })
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(404);
-            expect(response.body).toMatchObject({
-                code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND,
-            });
+                .set("Accept", "application/json")
+                .expect(404)
+                .expect(res =>
+                    expect(res.body).toMatchObject({
+                        code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND,
+                    }),
+                );
         });
 
         it("should reject because token is outdated", async () => {
-            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
+            const user = await userCrudService.createUser(new NewUserEntity({ email: "test-reset@beta.gouv.fr" }));
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
-            const userReset = await userResetAdapter.findOneByUserId(user._id);
+            const userReset = await userResetAdapter.findOneByUserId(user.id);
 
             const oldResetTimout = UserActivationService.RESET_TIMEOUT;
             UserActivationService.RESET_TIMEOUT = 0;
@@ -197,12 +201,12 @@ describe("AuthentificationController, /auth", () => {
     });
 
     describe("POST /activate", () => {
-        let user;
+        let user: UserEntity;
         let userResetToken;
 
         beforeEach(async () => {
             user = await createUser();
-            userResetToken = await createResetToken(user._id);
+            userResetToken = await createResetToken(user.id);
         });
         it("should return user", async () => {
             await request(g.app)
@@ -220,7 +224,7 @@ describe("AuthentificationController, /auth", () => {
                 .expect(res =>
                     expect(res.body.user).toMatchSnapshot({
                         signupAt: expect.any(String),
-                        _id: expect.any(String),
+                        id: expect.any(String),
                         jwt: { expirateDate: expect.any(String), token: expect.any(String) },
                         lastActivityDate: expect.any(String),
                     }),

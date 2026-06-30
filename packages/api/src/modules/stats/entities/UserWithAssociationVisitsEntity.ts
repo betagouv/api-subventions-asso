@@ -1,6 +1,6 @@
-import UserDbo from "../../../adapters/outputs/db/user/@types/UserDbo";
+import { UserDbo } from "../../../adapters/outputs/db/user/user.dbo";
 import AssociationVisitEntity from "./AssociationVisitEntity";
 
-export interface UserWithAssociationVisitsEntity extends UserDbo {
+export type UserWithAssociationVisitsEntity = UserDbo & {
     associationVisits: AssociationVisitEntity[];
-}
+};

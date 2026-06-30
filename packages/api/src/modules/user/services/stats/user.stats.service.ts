@@ -1,4 +1,3 @@
-import { UserDto } from "dto";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
@@ -15,7 +14,7 @@ export class UserStatsService {
         return userAdapter.findByPeriod(begin, end, withAdmin);
     }
 
-    public getUsersWithStats(): Promise<UserDto[]> {
+    public getUsersWithStats() {
         return userCrudService.find();
     }
 
@@ -41,10 +40,10 @@ export class UserStatsService {
     }
 
     private async updateNbRequestsInBrevo(usersId: string[]) {
-        const partialUsers = (await userAdapter.findPartialUsersById(usersId, ["email", "nbVisits"])) as Pick<
-            UserDto,
-            "email" | "nbVisits"
-        >[];
+        const partialUsers = (await userAdapter.findByIds(usersId)).map(user => ({
+            email: user.email,
+            nbVisits: user.nbVisits,
+        }));
 
         await notifyService.notify(NotificationType.STATS_NB_REQUESTS, partialUsers);
     }

@@ -1,8 +1,9 @@
-import { FutureUserDto, UserActivationInfoDto } from "dto";
 import { NotificationType } from "./NotificationType";
 import { DefaultObject } from "../../../@types";
 import { ImportNotificationDetails } from "../../../@types/ImportNotificationDetails";
 import { ImportReport } from "../../../@types/ImportReport";
+import { FutureUser } from "../../../domain/users/@types/FutureUser";
+import UserEntity from "../../../domain/users/UserEntity";
 
 export interface NotificationDataTypes {
     [NotificationType.USER_ALREADY_EXIST]: {
@@ -46,10 +47,9 @@ export interface NotificationDataTypes {
         email: string;
         date: Date;
     };
-    [NotificationType.USER_UPDATED]: Omit<UserActivationInfoDto, "password"> &
-        FutureUserDto & { lastActivityDate?: Date | null };
-    [NotificationType.USER_CONFLICT]: FutureUserDto;
-    [NotificationType.SIGNUP_BAD_DOMAIN]: FutureUserDto;
+    [NotificationType.USER_UPDATED]: UserEntity;
+    [NotificationType.USER_CONFLICT]: FutureUser;
+    [NotificationType.SIGNUP_BAD_DOMAIN]: FutureUser;
     [NotificationType.TEST_EMAIL]: {
         email: string;
         templateId: number;

@@ -3,6 +3,8 @@ import { IdentifiedRequest } from "../../../@types";
 import userProConnectService from "../../../modules/user/services/pro-connect/user.pro-connect.service";
 import userAuthService from "../../../modules/user/services/auth/user.auth.service";
 import { BadRequestError } from "core";
+import { USER_ENTITY } from "../../../modules/user/__fixtures__/user.fixture";
+import { UserDto } from "dto";
 
 jest.mock("../../../modules/user/services/pro-connect/user.pro-connect.service");
 jest.mock("../../../modules/user/services/auth/user.auth.service");
@@ -19,7 +21,11 @@ describe("Authentication http", () => {
     });
 
     describe("logout", () => {
-        const REQUEST = { user: "someone" } as IdentifiedRequest;
+        beforeAll(() => {
+            jest.spyOn(userProConnectService, "getLogoutUrl").mockResolvedValue("/logout/url");
+        });
+
+        const REQUEST = { user: USER_ENTITY as UserDto } as IdentifiedRequest;
 
         it("call proConnect logout", async () => {
             await ctrl.logout(REQUEST);

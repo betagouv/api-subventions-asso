@@ -1,6 +1,5 @@
 import { DepositScdlProcessHttp } from "./deposit-scdl-process.http";
 import { IdentifiedRequest } from "../../../@types";
-import { ObjectId } from "mongodb";
 import {
     CREATE_DEPOSIT_LOG_DTO,
     DEPOSIT_LOG_ENTITY_STEP_1,
@@ -13,13 +12,15 @@ import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities
 import { ConflictError, NotFoundError } from "core";
 import { depositScdlProcessService } from "../../../init-services";
 import DepositScdlLogDtoMapper from "../../../modules/deposit-scdl-process/deposit-scdl-log.dto.mapper";
+import { USER_ENTITY } from "../../../modules/user/__fixtures__/user.fixture";
+import { UserDto } from "dto";
 
 jest.mock("../../../modules/deposit-scdl-process/deposit-scdl-log.dto.mapper");
 
 const controller = new DepositScdlProcessHttp();
 
 describe("DepositScdlProcessHttp", () => {
-    const REQ = { user: { _id: new ObjectId() } } as IdentifiedRequest;
+    const REQ = { user: USER_ENTITY as UserDto } as IdentifiedRequest;
 
     describe("getDepositLog", () => {
         const getDepositLogSpy = jest.spyOn(depositScdlProcessService, "getDepositLog");
@@ -27,7 +28,7 @@ describe("DepositScdlProcessHttp", () => {
             const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
             getDepositLogSpy.mockReturnValueOnce(depositScdlLog);
             await controller.getDepositLog(REQ);
-            expect(getDepositLogSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+            expect(getDepositLogSpy).toHaveBeenCalledWith(REQ.user.id.toString());
         });
 
         it("should return depositLogDto", async () => {
@@ -46,7 +47,7 @@ describe("DepositScdlProcessHttp", () => {
         it("should call service with args", async () => {
             generateExistingGrantsCsvSpy.mockResolvedValueOnce({ csv: "csv", fileName: "fileName.csv" });
             await controller.generateExistingGrantsCsv(REQ);
-            expect(generateExistingGrantsCsvSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+            expect(generateExistingGrantsCsvSpy).toHaveBeenCalledWith(REQ.user.id.toString());
         });
 
         it("should return a csv", async () => {
@@ -63,7 +64,7 @@ describe("DepositScdlProcessHttp", () => {
         it("should call service with args", async () => {
             getFileDownloadUrlSpy.mockResolvedValueOnce(DOWNLOAD_URL);
             await controller.getFileDownloadUrl(REQ);
-            expect(getFileDownloadUrlSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+            expect(getFileDownloadUrlSpy).toHaveBeenCalledWith(REQ.user.id.toString());
         });
 
         it("should return FileDownloadUrlDto", async () => {
@@ -78,7 +79,7 @@ describe("DepositScdlProcessHttp", () => {
         it("should call service with args", async () => {
             deleteDepositLogSpy.mockReturnValueOnce(Promise.resolve());
             await controller.deleteDepositLog(REQ);
-            expect(deleteDepositLogSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+            expect(deleteDepositLogSpy).toHaveBeenCalledWith(REQ.user.id.toString());
         });
 
         it("should return null after deleting the deposit log", async () => {
@@ -101,7 +102,7 @@ describe("DepositScdlProcessHttp", () => {
             const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
             createDepositLogSpy.mockReturnValueOnce(depositScdlLog);
             await controller.createDepositLog(CREATE_DEPOSIT_LOG_DTO, REQ);
-            expect(createDepositLogSpy).toHaveBeenCalledWith(CREATE_DEPOSIT_LOG_DTO, REQ.user._id.toString());
+            expect(createDepositLogSpy).toHaveBeenCalledWith(CREATE_DEPOSIT_LOG_DTO, REQ.user.id.toString());
         });
 
         it("should return CreateDepositLogDto", async () => {
@@ -133,7 +134,7 @@ describe("DepositScdlProcessHttp", () => {
             expect(updateDepositLogSpy).toHaveBeenCalledWith(
                 STEP,
                 DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
-                REQ.user._id.toString(),
+                REQ.user.id.toString(),
             );
         });
 
@@ -181,7 +182,7 @@ describe("DepositScdlProcessHttp", () => {
 
             await controller.validateScdlFile(REQ, file, depositLogFormFiled);
             expect(validateScdlFileSpy).toHaveBeenCalledWith(
-                REQ.user._id.toString(),
+                REQ.user.id.toString(),
                 file,
                 DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
                 undefined,

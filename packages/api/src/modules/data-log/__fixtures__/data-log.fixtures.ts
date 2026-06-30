@@ -1,4 +1,4 @@
-import { USER_DBO } from "../../user/__fixtures__/user.fixture";
+import { USER_ENTITY } from "../../user/__fixtures__/user.fixture";
 import { DataLogSource } from "../entities/dataLogEntity";
 
 export const USER_FILE_DATA_LOG_DBOS = [
@@ -9,7 +9,7 @@ export const USER_FILE_DATA_LOG_DBOS = [
         providerName: "PROVIDER_NAME",
         source: DataLogSource.FILE,
         fileName: "FILE_NAME",
-        userId: USER_DBO._id,
+        userId: USER_ENTITY.id,
         fromAdmin: false,
     },
 ];

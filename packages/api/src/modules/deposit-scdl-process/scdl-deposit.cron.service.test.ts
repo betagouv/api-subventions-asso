@@ -3,8 +3,6 @@ import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
 import notifyService from "../notify/notify.service";
 import { NotificationType } from "../notify/@types/NotificationType";
 import userCrudService from "../user/services/crud/user.crud.service";
-import { UserDto } from "dto";
-import { ObjectId } from "mongodb";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import { ScdlDepositCronService } from "./scdl-deposit.cron.service";
 import { DepositLogPort } from "../../adapters/outputs/db/deposit-log/deposit-log.port";
@@ -12,6 +10,7 @@ import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/d
 import dataLogAdapter from "../../adapters/outputs/db/data-log/data-log.adapter";
 import userAdapter from "../../adapters/outputs/db/user/user.adapter";
 import SendDepositRenewalNotificationUseCase from "./send-deposit-renewal-notification.use-case";
+import UserEntity from "../../domain/users/UserEntity";
 
 jest.mock("./send-deposit-renewal-notification.use-case", () => {
     return {
@@ -31,11 +30,11 @@ jest.mock("../notify/notify.service", () => ({
 }));
 
 describe("ScdlDepositCronService", () => {
-    const USERS: UserDto[] = [
-        USER_WITHOUT_SECRET,
-        { ...USER_WITHOUT_SECRET, _id: new ObjectId("68ef9ce359f22baf00b81f71"), email: "another@email" },
+    const USERS: UserEntity[] = [
+        new UserEntity({ ...USER_WITHOUT_SECRET }),
+        new UserEntity({ ...USER_WITHOUT_SECRET, id: "68ef9ce359f22baf00b81f71", email: "another@email" }),
     ];
-    const DEPOSIT_LOGS = [DEPOSIT_LOG_ENTITY, { ...DEPOSIT_LOG_ENTITY, userId: USERS[1]._id.toString() }];
+    const DEPOSIT_LOGS = [DEPOSIT_LOG_ENTITY, { ...DEPOSIT_LOG_ENTITY, userId: USERS[1].id }];
 
     let mockDepositLogPort: jest.Mocked<DepositLogPort>;
     let scdlDepositCronService: ScdlDepositCronService;

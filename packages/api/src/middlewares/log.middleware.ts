@@ -38,7 +38,7 @@ export const expressLogger = () =>
         ],
         meta: true,
         dynamicMeta: function (req) {
-            if (!req.user || (req.user as UserDto)?._id == null) return {};
+            if (!req.user || (req.user as UserDto)?.id == null) return {};
             // completes generated meta in log, careful it overrides nested values
             const whiteReq = {};
             requestWhitelist.map(propertyName => (whiteReq[propertyName] = req[propertyName]));
@@ -46,10 +46,11 @@ export const expressLogger = () =>
             return {
                 req: {
                     ...whiteReq,
+                    // @TODO: save UserEntity ?
                     user: {
                         ...anonymousUser,
-                        _id: (req.user as UserDto)?._id?.toString(),
-                        isProConnect: !!proConnectId,
+                        _id: (req.user as UserDto)?.id, // @TODO: migration on logs to switch from _id to id ?
+                        isAgentConnect: !!proConnectId,
                     },
                 },
             };

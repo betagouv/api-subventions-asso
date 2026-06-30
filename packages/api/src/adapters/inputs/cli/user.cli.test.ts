@@ -5,7 +5,8 @@ import userCrudService from "../../../modules/user/services/crud/user.crud.servi
 import userActivationService from "../../../modules/user/services/activation/user.activation.service";
 jest.mock("../../../modules/user/services/crud/user.crud.service");
 jest.mock("../../../modules/user/services/activation/user.activation.service");
-import { USER_WITHOUT_SECRET } from "../../../modules/user/__fixtures__/user.fixture";
+import UserEntity from "../../../domain/users/UserEntity";
+import NewUserEntity from "../../../domain/users/NewUserEntity";
 
 describe("User CLI", () => {
     let cli: UserCli;
@@ -23,10 +24,11 @@ describe("User CLI", () => {
 
     describe("createAdmin", () => {
         const EMAIL = "superadmin@beta.gouv.fr";
-        const USER = { ...USER_WITHOUT_SECRET, email: EMAIL };
+        const NEW_USER = new NewUserEntity({ email: EMAIL, roles: ["admin", "user"] });
+        const USER = new UserEntity({ ...NEW_USER, id: "12345678" });
 
         beforeAll(() => {
-            jest.mocked(userCrudService.createUser).mockResolvedValue(USER);
+            jest.mocked(userCrudService.createUser).mockResolvedValue(new UserEntity({ ...NEW_USER, id: "12345678" }));
         });
         afterAll(() => {
             jest.mocked(userCrudService.createUser).mockRestore();
@@ -34,7 +36,7 @@ describe("User CLI", () => {
 
         it("calls createUser", async () => {
             await cli.createAdmin(EMAIL);
-            expect(userCrudService.createUser).toHaveBeenCalledWith({ email: EMAIL, roles: ["admin", "user"] });
+            expect(userCrudService.createUser).toHaveBeenCalledWith(expect.any(NewUserEntity));
         });
 
         it("activates user", async () => {

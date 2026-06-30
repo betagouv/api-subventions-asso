@@ -1,10 +1,10 @@
 import axios from "axios";
 import dedent from "dedent";
-import { FutureUserDto } from "dto";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
 import { ENV } from "../../../configurations/env.conf";
+import { FutureUser } from "../../../domain/users/@types/FutureUser";
 
 enum MattermostChannels {
     ACCOUNTS = "datasubvention---comptes-app",
@@ -179,7 +179,7 @@ export class MattermostPipe implements NotifyOutPipe {
         });
     }
 
-    private badEmailDomain(data: FutureUserDto) {
+    private badEmailDomain(data: FutureUser) {
         const message = `L'inscription de l'utilisateur ${
             data.email || ""
         } a échouée car le nom de domaine de l'adresse mail n'est pas accepté.`;

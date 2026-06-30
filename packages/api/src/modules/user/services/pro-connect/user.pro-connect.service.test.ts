@@ -9,17 +9,18 @@ import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
-import { USER_DBO, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
+import { USER_ENTITY, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import proConnectTokenAdapter from "../../../../adapters/outputs/db/user/pro-connect.adapter";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import { ObjectId } from "mongodb";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import configurationsService from "../../../configurations/configurations.service";
 import userCrudService from "../crud/user.crud.service";
-import { UserDto } from "dto";
 import { InternalServerError } from "core";
 import * as openidClient from "openid-client";
+import UserEntity from "../../../../domain/users/UserEntity";
+import NewUserEntity from "../../../../domain/users/NewUserEntity";
+import { UserRoles } from "../../../../domain/users/@types/UserRoles";
 
 jest.mock("../../../../configurations/pro-connect.conf", () => ({
     PRO_CONNECT_CLIENT_ID: "mocked_client_id",
@@ -32,7 +33,6 @@ jest.mock("../../../../configurations/front.conf", () => ({
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(), // I shouldn't have to do this but mocking didn't work
 }));
-jest.mock("../../../../shared/helpers/PortHelper");
 jest.mock("../crud/user.crud.service");
 jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 jest.mock("../../../../adapters/outputs/db/user/pro-connect.adapter");
@@ -40,7 +40,7 @@ jest.mock("../../../configurations/configurations.service");
 jest.mock("../auth/user.auth.service");
 
 describe("userProConnectService", () => {
-    const AC_USER: ProConnectUser = {
+    const PRO_CONNECT_USER: ProConnectUser = {
         email: "mail@mail.com",
         given_name: "prénom1 prénom2",
         sub: "",
@@ -86,68 +86,75 @@ describe("userProConnectService", () => {
 
     describe("login", () => {
         beforeAll(() => {
-            jest.mocked(userCrudService.createUser).mockResolvedValue({ ...USER_DBO, proConnectId: "acId" });
-            jest.mocked(userAuthService.updateJwt).mockResolvedValue({ ...USER_DBO, proConnectId: "acId" });
-        });
-        afterAll(() => {
-            jest.mocked(userCrudService.createUser).mockReset();
-            jest.mocked(userAuthService.updateJwt).mockReset();
+            jest.mocked(userCrudService.createUser).mockResolvedValue(
+                new UserEntity({ ...USER_WITHOUT_SECRET, proConnectId: "pcId" }),
+            );
+            jest.mocked(userAuthService.updateJwt).mockResolvedValue(
+                new UserEntity({
+                    ...USER_WITHOUT_SECRET,
+                    proConnectId: "pcId",
+                }),
+            );
+            jest.mocked(userAdapter.getUserWithSecretsByEmail).mockResolvedValue(USER_ENTITY);
         });
 
         it("gets user from port", async () => {
-            await userProConnectService.login(AC_USER, TOKENSET);
-            expect(userAdapter.getUserWithSecretsByEmail).toHaveBeenCalledWith(AC_USER.email);
+            await userProConnectService.login(PRO_CONNECT_USER, TOKENSET);
+            expect(userAdapter.getUserWithSecretsByEmail).toHaveBeenCalledWith(PRO_CONNECT_USER.email);
         });
 
         it("gets user from port with lowercase email", async () => {
-            await userProConnectService.login({ ...AC_USER, email: AC_USER.email.toUpperCase() }, TOKENSET);
-            expect(userAdapter.getUserWithSecretsByEmail).toHaveBeenCalledWith(AC_USER.email);
+            await userProConnectService.login(
+                { ...PRO_CONNECT_USER, email: PRO_CONNECT_USER.email.toUpperCase() },
+                TOKENSET,
+            );
+            expect(userAdapter.getUserWithSecretsByEmail).toHaveBeenCalledWith(PRO_CONNECT_USER.email);
         });
 
         it("updates user's jwt", async () => {
-            await userProConnectService.login(AC_USER, TOKENSET);
+            await userProConnectService.login(PRO_CONNECT_USER, TOKENSET);
             expect(userAuthService.updateJwt).toHaveBeenCalled();
         });
 
         it("saves proConnect token", async () => {
             // @ts-expect-error -- spy private
             const saveTokenSpy = jest.spyOn(userProConnectService, "saveTokenSet");
-            await userProConnectService.login(AC_USER, TOKENSET);
-            expect(saveTokenSpy).toHaveBeenCalledWith(USER_DBO._id, TOKENSET);
+            await userProConnectService.login(PRO_CONNECT_USER, TOKENSET);
+            expect(saveTokenSpy).toHaveBeenCalledWith(USER_WITHOUT_SECRET.id, TOKENSET);
         });
 
         it("notifies user login", async () => {
-            const expectedUser = { email: USER_DBO.email, date: expect.any(Date) };
-            await userProConnectService.login(AC_USER, TOKENSET);
+            const expectedUser = { email: USER_WITHOUT_SECRET.email, date: expect.any(Date) };
+            await userProConnectService.login(PRO_CONNECT_USER, TOKENSET);
             expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, expectedUser);
         });
 
         describe("new User", () => {
             it("creates user", async () => {
+                jest.mocked(userAdapter.getUserWithSecretsByEmail).mockResolvedValueOnce(null);
                 const createUserSpy = jest.spyOn(userProConnectService, "createUserFromProConnect");
-                await userProConnectService.login(AC_USER, TOKENSET);
-                expect(createUserSpy).toHaveBeenCalledWith(AC_USER);
+                await userProConnectService.login(PRO_CONNECT_USER, TOKENSET);
+                expect(createUserSpy).toHaveBeenCalledWith(PRO_CONNECT_USER);
             });
         });
 
         describe("known user", () => {
             beforeAll(() => {
-                jest.mocked(userAdapter.getUserWithSecretsByEmail).mockResolvedValue(USER_DBO);
+                jest.mocked(userAdapter.getUserWithSecretsByEmail).mockResolvedValue(USER_ENTITY);
             });
 
             afterAll(() => {
                 jest.mocked(userAdapter.getUserWithSecretsByEmail).mockReset();
             });
 
-            it("removes password from retrieved user", async () => {
-                await userProConnectService.login(AC_USER, TOKENSET);
-                expect(removeHashPassword).toHaveBeenCalledWith(USER_DBO);
-            });
-
-            it("notifies user update with no secret", async () => {
-                const expectedUser = USER_WITHOUT_SECRET;
-                jest.mocked(removeSecrets).mockReturnValueOnce(USER_WITHOUT_SECRET);
-                await userProConnectService.login(AC_USER, TOKENSET);
+            it("notifies user update", async () => {
+                const expectedUser = {
+                    ...USER_ENTITY,
+                    firstName: PRO_CONNECT_USER.given_name.split(" ")[0],
+                    lastName: PRO_CONNECT_USER.usual_name,
+                    proConnectId: PRO_CONNECT_USER.uid,
+                };
+                await userProConnectService.login(PRO_CONNECT_USER, TOKENSET);
                 expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, expectedUser);
             });
         });
@@ -162,7 +169,7 @@ describe("userProConnectService", () => {
             _id: new ObjectId(),
             creationDate: new Date(),
             token: "TOKEN",
-            userId: USER_WITHOUT_SECRET._id,
+            userId: new ObjectId(USER_WITHOUT_SECRET.id),
         };
 
         const RANDOM_STRING = "RANDOM";
@@ -175,12 +182,12 @@ describe("userProConnectService", () => {
 
         it("gets last token", async () => {
             await userProConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
-            expect(proConnectTokenAdapter.findLastActive).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id);
+            expect(proConnectTokenAdapter.findLastActive).toHaveBeenCalledWith(USER_WITHOUT_SECRET.id);
         });
 
         it("removes previous tokens", async () => {
             await userProConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
-            expect(proConnectTokenAdapter.deleteAllByUserId).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id);
+            expect(proConnectTokenAdapter.deleteAllByUserId).toHaveBeenCalledWith(USER_WITHOUT_SECRET.id);
         });
 
         it("returns null if no token found", async () => {
@@ -216,40 +223,49 @@ describe("userProConnectService", () => {
         });
 
         it("throws if no domain in email", async () => {
-            const test = () => userProConnectService.createUserFromProConnect({ ...AC_USER, email: "no-domain" });
+            const test = () =>
+                userProConnectService.createUserFromProConnect({ ...PRO_CONNECT_USER, email: "no-domain" });
             const expected = new InternalServerError("email from ProConnect invalid");
             await expect(test).rejects.toEqual(expected);
         });
 
         it("do not add email domain", async () => {
-            await userProConnectService.createUserFromProConnect({ ...AC_USER, email: "user@domain.fr" });
+            await userProConnectService.createUserFromProConnect({ ...PRO_CONNECT_USER, email: "user@domain.fr" });
             expect(configurationsService.addEmailDomain).not.toHaveBeenCalled();
         });
 
         it("creates user with userCrudService", async () => {
-            await userProConnectService.createUserFromProConnect(AC_USER);
-            expect(jest.mocked(userCrudService.createUser).mock.calls[0]).toMatchSnapshot();
+            await userProConnectService.createUserFromProConnect(PRO_CONNECT_USER);
+            expect(userCrudService.createUser).toHaveBeenCalledWith(
+                new NewUserEntity({
+                    email: PRO_CONNECT_USER.email,
+                    firstName: PRO_CONNECT_USER.given_name.split(" ")[0],
+                    lastName: PRO_CONNECT_USER.usual_name,
+                    proConnectId: PRO_CONNECT_USER.uid,
+                    roles: [UserRoles.USER],
+                }),
+            );
         });
 
         it("returns user from userCrudService", async () => {
             const expected = "user";
-            jest.mocked(userCrudService.createUser).mockResolvedValueOnce(expected as unknown as UserDto);
-            const actual = await userProConnectService.createUserFromProConnect(AC_USER);
+            jest.mocked(userCrudService.createUser).mockResolvedValueOnce(expected as unknown as UserEntity);
+            const actual = await userProConnectService.createUserFromProConnect(PRO_CONNECT_USER);
             expect(actual).toEqual(expected);
         });
 
         it("notifies USER_CREATED", async () => {
-            await userProConnectService.createUserFromProConnect(AC_USER);
+            await userProConnectService.createUserFromProConnect(PRO_CONNECT_USER);
             expect(notifyService.notify).toHaveBeenCalledWith(
                 NotificationType.USER_CREATED,
-                expect.objectContaining({ email: AC_USER.email, isProConnect: true }),
+                expect.objectContaining({ email: PRO_CONNECT_USER.email, isProConnect: true }),
             );
         });
 
         it("catches DuplicateIndexError", async () => {
             const expected = new InternalServerError("An error has occurred");
             jest.mocked(userCrudService.createUser).mockRejectedValueOnce(new DuplicateIndexError("", ""));
-            const test = () => userProConnectService.createUserFromProConnect(AC_USER);
+            const test = () => userProConnectService.createUserFromProConnect(PRO_CONNECT_USER);
             await expect(test).rejects.toEqual(expected);
         });
     });
@@ -257,19 +273,19 @@ describe("userProConnectService", () => {
     describe("proConnectUpdateValidations", () => {
         it("returns valid state if user is not linked to proConnect", () => {
             const expected = { valid: true };
-            const actual = userProConnectService.proConnectUpdateValidations({} as UserDto, {});
+            const actual = userProConnectService.proConnectUpdateValidations({} as UserEntity, {});
             expect(actual).toEqual(expected);
         });
 
         it("rejects firstName modification", () => {
-            const actual = userProConnectService.proConnectUpdateValidations({} as UserDto, {
+            const actual = userProConnectService.proConnectUpdateValidations({} as UserEntity, {
                 firstName: "something",
             });
             expect(actual).toMatchSnapshot();
         });
 
         it("rejects lastName modification", () => {
-            const actual = userProConnectService.proConnectUpdateValidations({} as UserDto, {
+            const actual = userProConnectService.proConnectUpdateValidations({} as UserEntity, {
                 lastName: "something",
             });
             expect(actual).toMatchSnapshot();

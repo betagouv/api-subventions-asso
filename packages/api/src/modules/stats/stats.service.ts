@@ -266,11 +266,11 @@ class StatsService {
 
     async getConsumersConsumption() {
         const consumers = await userCrudService.getConsumers();
-        const consumption = await logsAdapter.getConsumption(consumers.map(user => user._id.toString()));
+        const consumption = await logsAdapter.getConsumption(consumers.map(user => user.id.toString()));
         const consumptionByUserId = this.formatConsumption(consumption);
         const consumptionByEmail = {};
         for (const consumerId in consumptionByUserId) {
-            const consumer = consumers.find(consumer => consumer._id.toString() === consumerId);
+            const consumer = consumers.find(consumer => consumer.id.toString() === consumerId);
             consumptionByEmail[consumer!.email] = consumptionByUserId[consumerId];
         }
         return consumptionByEmail;

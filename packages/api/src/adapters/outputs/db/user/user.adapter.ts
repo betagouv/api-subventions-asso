@@ -1,11 +1,11 @@
-import { UserDto } from "dto";
-import { Filter, FindOptions, ObjectId } from "mongodb";
-import { InternalServerError } from "core";
-import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
+import { Filter, FindOptions, ObjectId, WithId } from "mongodb";
 import MongoAdapter from "../MongoAdapter";
-import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { UserPort } from "./user.port";
-import UserDbo, { UserNotPersisted } from "./@types/UserDbo";
+import { UserDbo } from "./user.dbo";
+import UserEntity from "../../../../domain/users/UserEntity";
+import UserMapper from "./user.mapper";
+import NewUserEntity from "../../../../domain/users/NewUserEntity";
+import { UserNotFoundError } from "core";
 
 export class UserAdapter extends MongoAdapter<UserDbo> implements UserPort {
     collectionName = "users";
@@ -14,73 +14,53 @@ export class UserAdapter extends MongoAdapter<UserDbo> implements UserPort {
         associationVisits: "_id",
     };
 
-    // must be removed with removeSecrets when returning UserDto
-    secretFields = ["hashPassword", "jwt"];
+    private safeProjection = { hashPassword: 0, jwt: 0 };
+    private defaultProjection = { hashPassword: 0 };
 
-    async findAll(): Promise<UserDto[]> {
-        return this.collection.find({}).toArray();
+    async findAll() {
+        return (await this.collection.find({}).toArray()).map(dbo => UserMapper.toEntity(dbo));
     }
 
-    async findByEmail(email: string): Promise<UserDto | null> {
-        const user = await this.collection.findOne({ email: email });
-        if (!user) return null;
-        return removeSecrets(user);
+    async findByEmail(email: string) {
+        const user = (await this.collection.findOne({ email: email }, { projection: this.safeProjection })) as WithId<
+            Omit<UserDbo, "hashPassword" | "jwt">
+        >;
+        if (!user) throw new UserNotFoundError();
+        return UserMapper.toEntity(user);
     }
 
-    async find(query: Filter<UserDbo> = {}, options?: FindOptions): Promise<UserDto[]> {
+    async find(query: Filter<UserDbo> = {}, options?: FindOptions) {
+        if (!options) options = { projection: this.safeProjection };
         const dbos = await this.collection.find(query, options).toArray();
-        return dbos.map(dbo => removeSecrets(dbo));
+        return dbos.map(dbo => UserMapper.toEntity(dbo));
     }
 
-    async findByIds(ids: string[]): Promise<Omit<UserDbo, "jwt" | "hashPassword">[]> {
+    async findByIds(ids: string[]) {
         const objectIds = ids.map(id => new ObjectId(id));
-        return this.collection.find({ _id: { $in: objectIds } }, { projection: { jwt: 0, hashPassword: 0 } }).toArray();
+        return (
+            await this.collection
+                .find({ _id: { $in: objectIds } }, { projection: { jwt: 0, hashPassword: 0 } })
+                .toArray()
+        ).map(dbo => UserMapper.toEntity(dbo));
     }
 
-    async findById(userId: ObjectId | string): Promise<UserDto | null> {
-        const user = await this.collection.findOne({ _id: new ObjectId(userId) });
+    async findById(userId: ObjectId | string) {
+        const user = (await this.collection.findOne(
+            { _id: new ObjectId(userId) },
+            { projection: this.safeProjection },
+        )) as WithId<Omit<UserDbo, "hashPassword" | "jwt">>;
         if (!user) return null;
-        return removeSecrets(user);
+        return UserMapper.toEntity(user);
     }
 
-    async findByPeriod(begin: Date, end: Date, withAdmin): Promise<UserDto[]> {
+    async findByPeriod(begin: Date, end: Date, withAdmin) {
         const query: Filter<UserDbo> = { signupAt: { $gte: begin, $lt: end } };
         if (!withAdmin) query.roles = { $ne: "admin" };
         return this.find(query);
     }
 
-    /**
-     *
-     * @param usersId list of user's id
-     * @param fields specific fields to return
-     * @returns
-     */
-    async findPartialUsersById(usersId: string[], fields: Array<keyof UserDto>): Promise<Partial<UserDto>[]> {
-        // ensure that we do not return secret fields and remove duplicates
-        // secrets should be guarded with typescript Array<keyof UserDto> type but we never know
-        // TODO-THOUGHTS: apply projection on others method to remove the use of removeSecrets ?
-        // TODO: find a way to prevent duplicates using TS ? But we should always keep those checks
-        fields = fields.filter((value, index) => !this.secretFields.includes(value) || fields.indexOf(value) !== index);
-
-        if (!fields) throw new Error("You should not use findPartialUsersById if you want full users data");
-
-        return this.find(
-            {
-                _id: { $in: usersId.map(id => new ObjectId(id)) },
-            },
-            {
-                projection: fields.reduce(
-                    (projection, field) => {
-                        projection[field] = 1;
-                        return projection;
-                    },
-                    { _id: 0 },
-                ),
-            },
-        ) as Promise<Partial<UserDbo>[]>;
-    }
-
-    async findInactiveSince(date: Date): Promise<UserDto[]> {
+    // @TODO: move this out of adapters as it contains application logic
+    async findInactiveSince(date: Date) {
         const query: Filter<UserDbo> = {
             lastActivityDate: { $lt: date },
             roles: { $ne: "admin" },
@@ -89,58 +69,54 @@ export class UserAdapter extends MongoAdapter<UserDbo> implements UserPort {
         return this.find(query);
     }
 
-    async findNotActivatedSince(date: Date, lastWarned: Date | undefined = undefined): Promise<UserDto[]> {
+    // @TODO: move this out of adapters as it contains application logic
+    async findNotActivatedSince(date: Date, lastWarned: Date | undefined = undefined) {
         const query: Filter<UserDbo> = {
-            lastActivityDate: null,
-            signupAt: { $lt: date },
+            active: false,
+            signupAt: lastWarned ? { $lt: date, $gt: lastWarned } : { $lt: date },
             roles: { $ne: "admin" },
             disable: { $ne: true },
         };
-        // @ts-expect-error -- query too strictly typed
-        if (lastWarned) query.signupAt["$gt"] = lastWarned;
         return this.find(query);
     }
 
-    async update(user: Partial<UserDbo>, withJwt = false): Promise<UserDto | Omit<UserDbo, "hashPassword">> {
-        const res = user._id
-            ? await this.collection.findOneAndUpdate({ _id: user._id }, { $set: user }, { returnDocument: "after" })
-            : await this.collection.findOneAndUpdate(
-                  { email: user.email },
-                  { $set: user },
-                  { returnDocument: "after" },
-              );
+    async update(user: UserEntity, withJwt = false) {
+        const projection = withJwt ? { projection: this.defaultProjection } : { projection: this.safeProjection };
+        const updatedUser = await this.collection.findOneAndUpdate(
+            { _id: new ObjectId(user.id) },
+            { $set: user },
+            {
+                ignoreUndefined: true, // protect from jwt erasing
+                returnDocument: "after",
+                ...projection, // projection = { projection: { hashPassword: 0, jwt: 0 }}
+            },
+        );
 
-        if (!res) throw new InternalServerError("User update failed");
-        return withJwt ? removeHashPassword(res) : removeSecrets(res);
+        if (!updatedUser) throw new UserNotFoundError();
+        return UserMapper.toEntity(updatedUser);
     }
 
-    async delete(user: UserDto): Promise<boolean> {
-        const result = await this.collection.deleteOne({ _id: user._id });
+    async delete(user: UserEntity) {
+        const result = await this.collection.deleteOne({ _id: new ObjectId(user.id) });
         return result.acknowledged;
     }
 
-    async create(user: UserNotPersisted): Promise<UserDto> {
-        return removeSecrets(await this.createAndReturnWithJWT(user));
+    async create(user: NewUserEntity) {
+        const objectId = new ObjectId();
+        await this.collection.insertOne({ _id: objectId, ...user });
+        return new UserEntity({ ...user, id: objectId.toString() });
     }
 
-    async createAndReturnWithJWT(user: UserNotPersisted): Promise<Omit<UserDbo, "hashPassword">> {
-        const userDbo: UserDbo = { ...user, _id: new ObjectId() };
-
-        try {
-            await this.collection.insertOne(userDbo);
-        } catch (error) {
-            if (isMongoDuplicateError(error)) throw buildDuplicateIndexError<UserDbo>(error);
-            throw error;
-        }
-        return removeHashPassword(userDbo);
+    async getUserWithSecretsByEmail(email: string) {
+        const user = await this.collection.findOne({ email });
+        if (!user) return null;
+        return UserMapper.toEntity(user);
     }
 
-    async getUserWithSecretsByEmail(email: string): Promise<UserDbo | null> {
-        return this.collection.findOne({ email });
-    }
-
-    async getUserWithSecretsById(id: ObjectId): Promise<UserDbo | null> {
-        return this.collection.findOne({ _id: id });
+    async getUserWithSecretsById(id: string) {
+        const user = await this.collection.findOne({ _id: new ObjectId(id) });
+        if (!user) return null;
+        return UserMapper.toEntity(user);
     }
 
     countTotalUsersOnDate(date, withAdmin: boolean): Promise<number> {

@@ -1,11 +1,12 @@
 import { RNA_STR, SIREN_STR } from "../../../tests/__fixtures__/association.fixture";
 import logsAdapter from "../../adapters/outputs/db/stats/logs.adapter";
 import statsAssociationsVisitAdapter from "../../adapters/outputs/db/stats/association-visit.adapter";
-import { CONSUMER_USER } from "../user/__fixtures__/user.fixture";
+import { CONSUMER_USER, USER_ENTITY } from "../user/__fixtures__/user.fixture";
 import userCrudService from "../user/services/crud/user.crud.service";
 import RouteTypesEnum from "./@types/RouteTypesEnum";
 import statsService from "./stats.service";
 import { FindCursor, ObjectId } from "mongodb";
+import UserEntity from "../../domain/users/UserEntity";
 
 jest.mocked("../user/services/crud/user.crud.service");
 jest.mock("../../adapters/outputs/db/stats/association-visit.adapter");
@@ -37,7 +38,6 @@ describe("StatsService", () => {
     });
 
     describe("getAnonymizedLogsOnPeriod", () => {
-        const ID_STRING = "123456789012345678901234";
         const LOG = {
             meta: {
                 req: {
@@ -47,7 +47,7 @@ describe("StatsService", () => {
                         lastName: "Tata",
                         phoneNumber: "0123456789",
                     },
-                    user: { _id: ID_STRING },
+                    user: { _id: USER_ENTITY.id },
                 },
             },
         };
@@ -75,7 +75,7 @@ describe("StatsService", () => {
         });
 
         it("sets user id as ObjectId", async () => {
-            const expected = new ObjectId(ID_STRING);
+            const expected = new ObjectId(USER_ENTITY.id);
             const req = (await statsService.getAnonymizedLogsOnPeriod(START, END))[0].meta.req as { userId?: ObjectId };
             const actual = req.userId;
             expect(actual).toEqual(expected);
@@ -88,12 +88,13 @@ describe("StatsService", () => {
     });
 
     describe("API CONSUMPTION PART", () => {
-        const CONSUMER_1 = { ...CONSUMER_USER };
+        const CONSUMER_1 = { ...CONSUMER_USER } as UserEntity;
         const CONSUMER_2 = {
             ...CONSUMER_USER,
-            _id: new ObjectId("6995dc65469048e843a1d4ec"),
+            id: "6995dc65469048e843a1d4ec",
             email: "consumer.2@beta.gouv.fr",
-        };
+        } as UserEntity;
+
         const CONSUMPTIONS: {
             userId: string;
             year: string;
@@ -101,7 +102,7 @@ describe("StatsService", () => {
             routes: Partial<Record<RouteTypesEnum, string[]>>;
         }[] = [
             {
-                userId: CONSUMER_1._id.toString(),
+                userId: CONSUMER_1.id.toString(),
                 year: "2025",
                 month: "1",
                 routes: {
@@ -109,7 +110,7 @@ describe("StatsService", () => {
                 },
             },
             {
-                userId: CONSUMER_2._id.toString(),
+                userId: CONSUMER_2.id.toString(),
                 year: "2025",
                 month: "4",
                 routes: {
@@ -117,7 +118,7 @@ describe("StatsService", () => {
                 },
             },
             {
-                userId: CONSUMER_1._id.toString(),
+                userId: CONSUMER_1.id.toString(),
                 year: "2025",
                 month: "7",
                 routes: {
@@ -126,7 +127,7 @@ describe("StatsService", () => {
                 },
             },
             {
-                userId: CONSUMER_1._id.toString(),
+                userId: CONSUMER_1.id.toString(),
                 year: "2026",
                 month: "1",
                 routes: {
@@ -134,7 +135,7 @@ describe("StatsService", () => {
                 },
             },
             {
-                userId: CONSUMER_2._id.toString(),
+                userId: CONSUMER_2.id.toString(),
                 year: "2026",
                 month: "3",
                 routes: {
@@ -143,7 +144,7 @@ describe("StatsService", () => {
                 },
             },
             {
-                userId: CONSUMER_2._id.toString(),
+                userId: CONSUMER_2.id.toString(),
                 year: "2026",
                 month: "4",
                 routes: {
@@ -156,10 +157,10 @@ describe("StatsService", () => {
         describe("getConsumersConsumption", () => {
             let mockFormatConsumption: jest.SpyInstance;
             const FORMATTED_CONSUMPTION = {
-                [CONSUMER_1._id.toString()]: { "2025": { "1": { association: { "/association/RNA": 12 } } } },
+                [CONSUMER_1.id.toString()]: { "2025": { "1": { association: { "/association/RNA": 12 } } } },
             };
             const CONSUMER_CONSUMPTION = {
-                [CONSUMER_1.email]: FORMATTED_CONSUMPTION[CONSUMER_1._id.toString()],
+                [CONSUMER_1.email]: FORMATTED_CONSUMPTION[CONSUMER_1.id.toString()],
             };
 
             beforeAll(() => {
@@ -183,7 +184,7 @@ describe("StatsService", () => {
 
             it("calls logPort.getUsersUrlByYear()", async () => {
                 await statsService.getConsumersConsumption();
-                expect(logsAdapter.getConsumption).toHaveBeenCalledWith([CONSUMER_USER._id.toString()]);
+                expect(logsAdapter.getConsumption).toHaveBeenCalledWith([CONSUMER_USER.id.toString()]);
             });
 
             it("format consumption", async () => {
@@ -237,7 +238,7 @@ describe("StatsService", () => {
                     .spyOn(statsService, "groupConsumptionsByUser")
                     // @ts-expect-error: mock private method
                     .mockReturnValue({
-                        [CONSUMER_1._id.toString()]: { year: "2025", month: "1", routes: ["/association/RNA"] },
+                        [CONSUMER_1.id.toString()]: { year: "2025", month: "1", routes: ["/association/RNA"] },
                     });
                 mockGroupUserConsumptionsByYear = jest
                     // @ts-expect-error: mock private method

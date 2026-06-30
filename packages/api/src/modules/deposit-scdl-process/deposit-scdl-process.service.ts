@@ -1,5 +1,5 @@
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
-import { CreateDepositScdlLogDto, DepositScdlLogDto, UserDto } from "dto";
+import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
 import { BadRequestError, ConflictError, NotFoundError } from "core";
 import depositScdlProcessCheckService from "./check/deposit-scdl-process.check.service";
 import DepositScdlLogDtoMapper from "./deposit-scdl-log.dto.mapper";
@@ -24,6 +24,7 @@ import { isUserAdmin } from "../../shared/helpers/UserHelper";
 import { DepositLogPort } from "../../adapters/outputs/db/deposit-log/deposit-log.port";
 import associationNameService from "../association-name/associationName.service";
 import ExerciceLineCount from "./entities/exerciceLineCount";
+import UserEntity from "../../domain/users/UserEntity";
 
 export class DepositScdlProcessService {
     constructor(private readonly depositLogPort: DepositLogPort) {}
@@ -282,8 +283,9 @@ export class DepositScdlProcessService {
         return s3StorageService.getUserFileDownloadUrl(userId, fileName);
     }
 
-    async parseAndPersistScdlFile(user: UserDto) {
-        const userId = user._id.toString();
+    async parseAndPersistScdlFile(user: UserEntity) {
+        console.log("DEBUG", user);
+        const userId = user.id;
         const existingDepositLog = await this.getDepositLog(userId);
         if (!existingDepositLog) {
             throw new NotFoundError("No deposit log found for this user");

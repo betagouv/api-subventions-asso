@@ -1,6 +1,6 @@
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { InternalServerError } from "core";
-import { CONSUMER_JWT_PAYLOAD, CONSUMER_USER, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
+import { CONSUMER_USER, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import userConsumerService from "./user.consumer.service";
 import userCrudService from "../crud/user.crud.service";
 jest.mock("../crud/user.crud.service");
@@ -10,11 +10,13 @@ jest.mock("../auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService);
 import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
 import { UserServiceErrors } from "../../user.enum";
+import NewUserEntity from "../../../../domain/users/NewUserEntity";
 jest.mock("../../../../adapters/outputs/db/user/consumer-token.adapter");
 const mockedConsumerTokenAdapter = jest.mocked(consumerTokenAdapter);
 
 describe("user consumer service", () => {
     describe("createConsumer", () => {
+        const NEW_USER = new NewUserEntity({ email: USER_EMAIL });
         beforeAll(() => {
             mockedUserCrudService.delete.mockImplementation(jest.fn());
             mockedUserCrudService.createUser.mockImplementation(async () => CONSUMER_USER);
@@ -26,49 +28,50 @@ describe("user consumer service", () => {
         });
 
         it("should call createUser()", async () => {
-            await userConsumerService.createConsumer({ email: USER_EMAIL });
-            expect(mockedUserCrudService.createUser).toBeCalledTimes(1);
+            await userConsumerService.createConsumer(NEW_USER);
+            expect(mockedUserCrudService.createUser).toHaveBeenCalledTimes(1);
         });
 
         it("should not create consumer token if user creation failed", async () => {
             mockedUserCrudService.createUser.mockRejectedValueOnce(new Error());
-            await userConsumerService.createConsumer({ email: USER_EMAIL }).catch(() => {});
-            expect(mockedUserCrudService.createUser).toBeCalledTimes(1);
+            await userConsumerService.createConsumer(NEW_USER).catch(() => {});
+            expect(mockedUserCrudService.createUser).toHaveBeenCalledTimes(1);
         });
 
         it("should create a token ", async () => {
-            const expected = CONSUMER_JWT_PAYLOAD;
+            const expected = USER_WITHOUT_SECRET;
             mockedUserCrudService.createUser.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
-            await userConsumerService.createConsumer({ email: USER_EMAIL });
+            await userConsumerService.createConsumer(NEW_USER);
             expect(mockedUserAuthService.buildJWTToken).toHaveBeenCalledWith(expected, {
                 expiration: false,
+                isConsumerToken: true,
             });
         });
 
         it("should call consumerTokenAdapter.create", async () => {
-            await userConsumerService.createConsumer({ email: USER_EMAIL });
-            expect(mockedConsumerTokenAdapter.create).toBeCalledTimes(1);
+            await userConsumerService.createConsumer(NEW_USER);
+            expect(mockedConsumerTokenAdapter.create).toHaveBeenCalledTimes(1);
         });
 
         it("should delete user if token generation failed", async () => {
             mockedConsumerTokenAdapter.create.mockRejectedValueOnce(new Error());
-            const id = USER_WITHOUT_SECRET._id.toString();
-            await userConsumerService.createConsumer({ email: USER_EMAIL }).catch(() => {});
+            const id = USER_WITHOUT_SECRET.id;
+            await userConsumerService.createConsumer(NEW_USER).catch(() => {});
             expect(mockedUserCrudService.delete).toHaveBeenCalledWith(id);
         });
 
         it("should throw if token generation failed", async () => {
             mockedConsumerTokenAdapter.create.mockRejectedValueOnce(new Error());
-            const test = () => userConsumerService.createConsumer({ email: USER_EMAIL });
+            const test = () => userConsumerService.createConsumer(NEW_USER);
             await expect(test).rejects.toMatchObject(
                 new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN),
             );
         });
 
-        it("should return UserDtoSuccessResponse", async () => {
+        it("should return UserEntity", async () => {
             const expected = CONSUMER_USER;
             mockedConsumerTokenAdapter.create.mockImplementationOnce(async () => true);
-            const actual = await userConsumerService.createConsumer({ email: USER_EMAIL });
+            const actual = await userConsumerService.createConsumer(NEW_USER);
             expect(actual).toEqual(expected);
         });
     });

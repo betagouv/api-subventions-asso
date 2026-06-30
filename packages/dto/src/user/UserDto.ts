@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import {
     AdminTerritorialLevel,
     AgentJobTypeEnum,
@@ -18,7 +17,7 @@ export interface FutureUserDto {
 }
 
 export interface UserDto extends FutureUserDto, Omit<UserActivationInfoDto, "password"> {
-    _id: ObjectId;
+    id: string;
     roles: string[];
     active: boolean;
     signupAt: Date;
@@ -36,8 +35,8 @@ export interface ActivateUserBody {
 
 export interface UserActivationInfoDto {
     password: string;
-    agentType: AgentTypeEnum;
-    jobType: AgentJobTypeEnum[];
+    agentType?: AgentTypeEnum;
+    jobType?: AgentJobTypeEnum[];
     service?: string;
     phoneNumber?: string;
     structure?: string;

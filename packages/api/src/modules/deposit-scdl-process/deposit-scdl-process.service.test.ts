@@ -24,7 +24,7 @@ import s3FileService from "../s3-file/s3-storage.service";
 import { DefaultObject } from "../../@types";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
-import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
+import { USER_ENTITY } from "../user/__fixtures__/user.fixture";
 import { DepositLogPort } from "../../adapters/outputs/db/deposit-log/deposit-log.port";
 import { DepositScdlProcessService } from "./deposit-scdl-process.service";
 import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.adapter.mock";
@@ -78,8 +78,8 @@ describe("DepositScdlProcessService", () => {
     >;
     let mockDetectCsvDelimiter: jest.SpyInstance<string, [fileContent: Buffer<ArrayBufferLike>]>;
 
-    const USER_ID_STR = USER_WITHOUT_SECRET._id.toString();
-    const USER = USER_WITHOUT_SECRET;
+    const USER_ID_STR = USER_ENTITY.id;
+    const USER = USER_ENTITY;
 
     const createMockFile = (originalname: string, buffer: Buffer = Buffer.from("test")): Express.Multer.File => ({
         fieldname: "file",
@@ -513,6 +513,7 @@ describe("DepositScdlProcessService", () => {
             [Siret]
         >;
         beforeEach(() => {
+            mockGetDepositLog.mockResolvedValue(DEPOSIT_LOG_ENTITY);
             jest.spyOn(depositScdlProcessCheckService, "finalCheckBeforePersist").mockResolvedValue(undefined);
             persistMock = jest.spyOn(scdlService, "persist").mockResolvedValue(undefined);
             deletDepositMock = mockDepositLogPort.deleteByUserId.mockResolvedValue(true);

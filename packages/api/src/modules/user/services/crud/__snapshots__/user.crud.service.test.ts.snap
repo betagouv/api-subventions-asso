@@ -3,22 +3,22 @@
 exports[`user crud service listUsers returns proper result 1`] = `
 [
   {
-    "_id": 1,
+    "id": 1,
     "resetToken": "TOKEN1",
     "resetTokenDate": 2025-01-16T00:00:00.000Z,
     "resetUrl": "link/TOKEN1",
   },
   {
-    "_id": 2,
+    "id": 2,
   },
   {
-    "_id": 3,
+    "id": 3,
     "resetToken": "TOKEN3",
     "resetTokenDate": 2025-01-16T00:00:00.000Z,
     "resetUrl": "link/TOKEN3",
   },
   {
-    "_id": 4,
+    "id": 4,
   },
 ]
 `;

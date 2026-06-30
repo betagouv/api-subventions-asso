@@ -6,13 +6,21 @@ import ProConnectTokenPort from "./pro-connect-token.port";
 class ProConnectTokenAdapter extends MongoAdapter<ProConnectTokenDbo> implements ProConnectTokenPort {
     collectionName = "pro-connect-token";
 
-    findLastActive(userId: ObjectId): Promise<ProConnectTokenDbo | null> {
+    findLastActive(userId: string): Promise<ProConnectTokenDbo | null> {
         return this.collection.findOne({ userId: new ObjectId(userId) }, { sort: { creationDate: -1 } });
     }
 
-    async upsert(entity: Omit<ProConnectTokenDbo, "_id">): Promise<boolean> {
-        return (await this.collection.updateOne({ userId: entity.userId }, { $set: entity }, { upsert: true }))
-            .acknowledged;
+    async upsert(entity: Omit<ProConnectTokenDbo, "_id" | "userId"> & { userId: string }): Promise<boolean> {
+        const { userId, ...partialDbo } = entity;
+        const objectId = new ObjectId(userId);
+
+        return (
+            await this.collection.updateOne(
+                { userId: objectId },
+                { $set: { ...partialDbo, _id: objectId } },
+                { upsert: true },
+            )
+        ).acknowledged;
     }
 
     async deleteAllByUserId(userId: string | ObjectId): Promise<boolean> {

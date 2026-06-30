@@ -1,8 +1,8 @@
 import * as UserHelper from "./UserHelper";
 import statsService from "../../modules/stats/stats.service";
 import { ObjectId } from "mongodb";
-import { RoleEnum } from "../../@enums/RolesEnum";
-import { UserDto } from "dto";
+import { RoleEnum } from "../../domain/users/@types/UserRoles";
+import UserEntity from "../../domain/users/UserEntity";
 
 describe("UserHelper", () => {
     describe("isUserActif", () => {
@@ -31,7 +31,7 @@ describe("UserHelper", () => {
             const actual = UserHelper.isUserAdmin({
                 _id: new ObjectId(),
                 roles: [RoleEnum.user, RoleEnum.admin],
-            } as unknown as UserDto);
+            } as unknown as UserEntity);
             expect(actual).toEqual(expected);
         });
 
@@ -40,7 +40,7 @@ describe("UserHelper", () => {
             const actual = UserHelper.isUserAdmin({
                 _id: new ObjectId(),
                 roles: [RoleEnum.user],
-            } as unknown as UserDto);
+            } as unknown as UserEntity);
             expect(actual).toEqual(expected);
         });
     });

@@ -1,7 +1,8 @@
-import { RoleEnum } from "../../../@enums/RolesEnum";
+import { UserRoles } from "../../../domain/users/@types/UserRoles";
 import { CliStaticInterface } from "../../../@types";
 import { StaticImplements } from "../../../decorators/static-implements.decorator";
 import userCrudService from "../../../modules/user/services/crud/user.crud.service";
+import NewUserEntity from "../../../domain/users/NewUserEntity";
 
 @StaticImplements<CliStaticInterface>()
 export default class ConsumerCli {
@@ -9,7 +10,9 @@ export default class ConsumerCli {
 
     async create(email: string) {
         try {
-            await userCrudService.signup({ email: email.toLocaleLowerCase() }, RoleEnum.consumer);
+            await userCrudService.signup(
+                new NewUserEntity({ email: email.toLocaleLowerCase(), roles: [UserRoles.CONSUMER] }),
+            );
             console.info("Consumer user has been created");
         } catch (error) {
             const e = error as Error;

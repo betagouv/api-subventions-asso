@@ -1,11 +1,9 @@
-import { UserDto } from "dto";
-import { BadRequestError, InternalServerError } from "core";
-import { RoleEnum } from "../../../../@enums/RolesEnum";
+import { RoleEnum } from "../../../../domain/users/@types/UserRoles";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
-import { UserServiceErrors } from "../../user.enum";
+import UserEntity from "../../../../domain/users/UserEntity";
 
 export class UserRolesService {
-    public getRoles(user: UserDto) {
+    public getRoles(user: UserEntity) {
         return user.roles;
     }
 
@@ -17,22 +15,12 @@ export class UserRolesService {
         return roles.every(role => this.isRoleValid(role));
     }
 
-    async addRolesToUser(user: UserDto | string, roles: RoleEnum[]): Promise<{ user: UserDto }> {
-        if (typeof user === "string") {
-            const foundUser = await userAdapter.findByEmail(user);
-            if (!foundUser) {
-                throw new InternalServerError("An error has occurred");
-            }
-            user = foundUser;
-        }
-
-        const roleEnumValues = Object.values(RoleEnum);
-        const invalidRole = roles.find(role => !roleEnumValues.includes(role));
-        if (invalidRole) {
-            throw new BadRequestError(`Role ${invalidRole} is not valid`, UserServiceErrors.ROLE_NOT_FOUND);
-        }
-
-        return { user: await userAdapter.update({ ...user, roles: [...new Set([...user.roles, ...roles])] }) };
+    async addRolesToUser(email: string, roles: RoleEnum[]) {
+        const user = await userAdapter.findByEmail(email);
+        const entity = new UserEntity({ ...user, roles: [...new Set([...user.roles, ...roles])] });
+        return {
+            user: await userAdapter.update(entity),
+        };
     }
 }
 
