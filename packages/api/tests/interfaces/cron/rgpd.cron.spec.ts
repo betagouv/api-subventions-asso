@@ -67,6 +67,7 @@ describe("Rgpd Cron", () => {
                     email: expect.stringMatching(/^[a-f0-9]+@deleted\.datasubvention\.beta\.gouv\.fr$/),
                     id: expect.any(String),
                     lastActivityDate: expect.any(Date),
+                    signupAt: expect.any(Date),
                     jwt: { ...user.jwt, expirateDate: expect.any(Date) },
                 })),
             ).toMatchSnapshot();
