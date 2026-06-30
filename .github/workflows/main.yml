@@ -72,6 +72,7 @@ jobs:
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
             - run: corepack enable
+            - run: pnpm --filter api generate
             - run: pnpm test:integ
               working-directory: "./packages/api"
     tests-api-unit:
@@ -108,5 +109,6 @@ jobs:
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
             - run: corepack enable
+            - run: pnpm --filter dto build
             - run: pnpm test
               working-directory: "./packages/front"
