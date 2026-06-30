@@ -11,6 +11,7 @@ export class OsirisRequestAdapter extends MongoAdapter<OsirisRequestEntity> impl
     collectionName = "osiris-requests";
 
     async createIndexes() {
+        // TODO: desactivate/activate this before/after (pre-)production migration
         await this.collection.createIndex({ "dossier.osirisId": 1, "dossier.exerciceBudgetaire": 1 }, { unique: true });
         await this.collection.createIndex({ "dossier.osirisId": 1 });
         await this.collection.createIndex({ "association.rna": 1 });

@@ -19,6 +19,7 @@
 
         /* Transpiling with TypeScript */
         "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "outDir": "build",
         "rootDir": ".",
 
@@ -27,7 +28,7 @@
 
         "types": ["reflect-metadata", "jest", "multer"],
         "paths": {
-            "~": ["./src"]
+            "~/*": ["./src"]
         },
 
         /* TypeScript rules */

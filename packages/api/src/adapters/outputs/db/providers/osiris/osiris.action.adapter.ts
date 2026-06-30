@@ -10,6 +10,7 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
     collectionName = "osiris-actions";
 
     async createIndexes() {
+        // TODO: desactivate/activate this before/after (pre-)production migration
         await this.collection.createIndex({ "dossier.uniqueId": 1 }, { unique: true });
         await this.collection.createIndex({ "dossier.osirisActionId": 1 });
         await this.collection.createIndex({ "dossier.requestUniqueId": 1 });

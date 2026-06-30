@@ -1,10 +1,10 @@
 import { AssociationIdType } from "../../../identifier-objects/@types/IdentifierType";
 import Rna from "../../../identifier-objects/Rna";
 import Siren from "../../../identifier-objects/Siren";
-import FindSiretFromRnaUseCase from "./find-siret-from-rna.use-case";
-import FindSiretFromSirenUseCase from "./find-siret-from-siren.use-case";
+import findSiretFromRna, { FindSiretFromRnaUseCase } from "./find-siret-from-rna.use-case";
+import findSiretFromSiren, { FindSiretFromSirenUseCase } from "./find-siret-from-siren.use-case";
 
-export default class FindSiretFromAssociationIdentifierUseCase {
+export class FindSiretFromAssociationIdentifierUseCase {
     constructor(
         private findFromRna: FindSiretFromRnaUseCase,
         private findFromSiren: FindSiretFromSirenUseCase,
@@ -16,3 +16,6 @@ export default class FindSiretFromAssociationIdentifierUseCase {
         throw new Error("Invalid Association Identifier");
     }
 }
+
+const findSiretFromAssoIdentifier = new FindSiretFromAssociationIdentifierUseCase(findSiretFromRna, findSiretFromSiren);
+export default findSiretFromAssoIdentifier;

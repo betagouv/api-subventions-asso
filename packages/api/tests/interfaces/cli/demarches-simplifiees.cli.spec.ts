@@ -10,55 +10,69 @@ import * as inquirerPrompt from "@inquirer/prompts";
 
 describe("DemarchesSimplifieesCli", () => {
     let sendHttpQueryMock: jest.SpyInstance;
+    let inputMock: jest.SpyInstance;
+
+    async function generateDefaultSchema() {
+        for (let i = 0; i < 3; i++) {
+            inputMock.mockResolvedValueOnce("");
+            inputMock.mockResolvedValueOnce("2025");
+        }
+        const PATH = "tests/interfaces/cli/__fixtures__/demarche-simplifiees-seed.fixture.json";
+        await cli.generateSchema(PATH, 42);
+    }
+
     const cli = new DemarchesSimplifieesCli();
 
     beforeAll(() => {
+        inputMock = jest.spyOn(inquirerPrompt, "input");
         sendHttpQueryMock = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(DS_DTO);
     });
 
     afterAll(() => {
+        inputMock.mockRestore();
         sendHttpQueryMock.mockRestore();
     });
 
     describe("on data", () => {
-        beforeEach(async () => {
-            await demarchesSimplifieesSchemaAdapter.upsert(SCHEMA);
-        });
-
         describe("updateAll", () => {
             it("inserts new application", async () => {
+                await generateDefaultSchema();
                 await cli.updateAll();
                 const actual = await demarchesSimplifieesDataAdapter.findAllCursor().toArray();
-                expect(actual).toMatchObject([{ ...DS_ENTITY, _id: expect.anything() }]);
+                expect(actual).toMatchSnapshot();
             });
 
             it("inserts new application in flat collections", async () => {
+                await generateDefaultSchema();
                 await cli.updateAll();
                 const actual = await applicationFlatAdapter.findAll();
-                expect(actual).toMatchObject([DS_FLAT]);
+                expect(actual).toMatchSnapshot();
             });
 
             it("updates existing application", async () => {
+                await generateDefaultSchema();
                 const OLD_ENTITY = JSON.parse(JSON.stringify(DS_ENTITY));
                 OLD_ENTITY.demande.champs["Q2hhbXAtMjUwNjg0MA=="].value = "2500";
                 await demarchesSimplifieesDataAdapter.upsert(OLD_ENTITY);
                 await cli.updateAll();
                 const actual = await demarchesSimplifieesDataAdapter.findAllCursor().toArray();
-                expect(actual).toMatchObject([DS_ENTITY]);
+                expect(actual).toMatchSnapshot();
             });
 
             it("updates existing application in flat collection", async () => {
+                await generateDefaultSchema();
                 const OLD_ENTITY: ApplicationFlatEntity = {
                     ...DS_FLAT,
                     requestedAmount: 2500,
-                } as unknown as ApplicationFlatEntity; // TODO
+                } as unknown as ApplicationFlatEntity;
                 await applicationFlatAdapter.upsertOne(OLD_ENTITY);
                 await cli.updateAll();
                 const actual = await applicationFlatAdapter.findAll();
-                expect(actual).toMatchObject([DS_FLAT]);
+                expect(actual).toMatchSnapshot();
             });
 
             it("does not save draft", async () => {
+                await generateDefaultSchema();
                 const DRAFT_DTO = JSON.parse(JSON.stringify(DS_DTO));
                 DRAFT_DTO.data.demarche.state = "en_construction";
                 sendHttpQueryMock.mockResolvedValueOnce(DRAFT_DTO);
@@ -84,14 +98,14 @@ describe("DemarchesSimplifieesCli", () => {
 
         describe("initApplicationFlat", () => {
             beforeEach(async () => {
-                await demarchesSimplifieesSchemaAdapter.upsert(SCHEMA);
+                await generateDefaultSchema();
                 await demarchesSimplifieesDataAdapter.upsert(DS_ENTITY);
             });
 
             it("creates flat application for each ds application", async () => {
                 await cli.initApplicationFlat();
                 const actual = await applicationFlatAdapter.findAll();
-                expect(actual).toMatchObject([DS_FLAT]);
+                expect(actual).toMatchSnapshot();
             });
 
             it.each`
@@ -111,15 +125,6 @@ describe("DemarchesSimplifieesCli", () => {
     });
 
     describe("on schemas", () => {
-        let inputMock: jest.SpyInstance;
-
-        beforeAll(() => {
-            inputMock = jest.spyOn(inquirerPrompt, "input");
-        });
-        afterAll(() => {
-            inputMock.mockRestore();
-        });
-
         describe("generateSchema", () => {
             it("creates required schema", async () => {
                 for (let i = 0; i < 3; i++) {
@@ -131,7 +136,7 @@ describe("DemarchesSimplifieesCli", () => {
 
                 // I only test flat schema because it is what is meant to remain
                 const actual = (await demarchesSimplifieesSchemaAdapter.findAll()).map(s => s.flatSchema);
-                expect(actual).toMatchObject([SCHEMA.flatSchema]);
+                expect(actual).toMatchSnapshot();
             });
         });
     });

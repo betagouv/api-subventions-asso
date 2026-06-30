@@ -14,7 +14,7 @@ export interface FutureUserDto {
     roles?: string[];
     firstName?: string;
     lastName?: string;
-    agentConnectId?: string;
+    proConnectId?: string;
 }
 
 export interface UserDto extends FutureUserDto, Omit<UserActivationInfoDto, "password"> {
@@ -25,7 +25,7 @@ export interface UserDto extends FutureUserDto, Omit<UserActivationInfoDto, "pas
     profileToComplete: boolean;
     disable?: boolean;
     lastActivityDate: Date | null;
-    agentConnectId?: string;
+    proConnectId?: string;
     nbVisits: number;
 }
 
@@ -69,7 +69,7 @@ export interface UpdatableUser {
     registrationSrc?: RegistrationSrcTypeEnum[];
     registrationSrcEmail?: string;
     registrationSrcDetails?: string;
-    //To user from agent connect
+    //To user from pro connect
     profileToComplete?: boolean;
 }
 

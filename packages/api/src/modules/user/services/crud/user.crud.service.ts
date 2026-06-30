@@ -42,7 +42,7 @@ export class UserCrudService {
     public async update(user: Partial<UserDto> & Pick<UserDto, "email">): Promise<UserDto> {
         const fullUser = await userCrudService.findByEmail(user.email);
 
-        if (fullUser?.agentConnectId) userCheckService.validateOnlyEmail(user.email);
+        if (fullUser?.proConnectId) userCheckService.validateOnlyEmail(user.email);
         else await userCheckService.validateEmailAndDomain(user.email);
 
         return await userAdapter.update(user);
@@ -93,7 +93,7 @@ export class UserCrudService {
             lastName: sanitizedUser.lastName || null,
             profileToComplete: true,
             lastActivityDate: null,
-            agentConnectId: userObject.agentConnectId,
+            proConnectId: userObject.proConnectId,
             nbVisits: 0,
         } as unknown;
 
@@ -105,7 +105,7 @@ export class UserCrudService {
         const user = {
             ...(partialUser as UserDto),
             jwt: jwtParams,
-            active: !!userObject.agentConnectId,
+            active: !!userObject.proConnectId,
         } as UserNotPersisted;
 
         const createdUser = withJWT ? await userAdapter.createAndReturnWithJWT(user) : await userAdapter.create(user);
@@ -145,7 +145,7 @@ export class UserCrudService {
             url: `${FRONT_OFFICE_URL}/auth/activate/${resetResult.token}`,
             active: user.active,
             signupAt: user.signupAt,
-            isAgentConnect: false,
+            isProConnect: false,
         });
 
         return user;

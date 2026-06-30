@@ -1,11 +1,11 @@
 import path from "path";
 import fs from "fs";
 import sireneStockUniteLegaleApiAdapter from "../../../src/adapters/outputs/api/sirene/sirene-stock-unite-legale.adapter";
-import sireneStockUniteLegaleDbAdapter from "../../../src/adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.adapter";
 import SireneStockUniteLegaleCli from "../../../src/adapters/inputs/cli/sirene-stock-unite-legale.cli";
 import { ObjectId } from "mongodb";
 import uniteLegalNameAdapter from "../../../src/adapters/outputs/db/unite-legale-name/unite-legale-name.adapter";
-import uniteLegalEntrepriseAdapter from "../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
+import uniteLegaleEntrepriseAdapter from "../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
+import sireneUniteLegaleAdapter from "../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 
 const ZIP_PATH = path.resolve(__dirname, "../../../src/modules/providers/sirene/__fixtures__");
 
@@ -29,7 +29,7 @@ describe("SireneStockUniteLegaleCli", () => {
         it("should persist sirene data", async () => {
             await cli.import();
             // @ts-expect-error: access protected for test
-            const data = (await sireneStockUniteLegaleDbAdapter.collection.find({}).toArray()).map(object => ({
+            const data = (await sireneUniteLegaleAdapter.collection.find({}).toArray()).map(object => ({
                 ...object,
                 _id: expect.any(ObjectId),
             }));
@@ -49,7 +49,7 @@ describe("SireneStockUniteLegaleCli", () => {
         it("should persist entreprises' siret", async () => {
             await cli.import();
             // @ts-expect-error: access protected for test
-            const data = (await uniteLegalEntrepriseAdapter.collection.find({}).toArray()).map(object => ({
+            const data = (await uniteLegaleEntrepriseAdapter.collection.find({}).toArray()).map(object => ({
                 ...object,
                 _id: expect.any(ObjectId),
             }));

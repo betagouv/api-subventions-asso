@@ -27,6 +27,8 @@ import ScdlBatchCli from "./adapters/inputs/cli/scdl-batch.cli";
 import HeliosCli from "./adapters/inputs/cli/helios/helios.cli";
 import createHeliosCli from "./adapters/inputs/cli/helios/helios.cli.factory";
 import DepositLogCli from "./adapters/inputs/cli/scdl-deposit.cli";
+import chorusImport from "./adapters/inputs/pipeline/import/chorus/chorus.import";
+import updateFlatByExercise from "./modules/providers/chorus/use-cases/update-flat-by-exercise";
 
 async function main() {
     await connectDB();
@@ -58,7 +60,10 @@ async function main() {
         DepositLogCli,
     ];
 
-    const factoryMap = new Map([[HeliosCli.cmdName, { factory: createHeliosCli }]]);
+    const factoryMap = new Map([
+        [HeliosCli.cmdName, { factory: createHeliosCli }],
+        [ChorusCli.cmdName, { factory: () => new ChorusCli(chorusImport, updateFlatByExercise) }],
+    ]);
 
     const args = process.argv.slice(2);
 

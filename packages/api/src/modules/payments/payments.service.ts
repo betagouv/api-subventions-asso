@@ -1,10 +1,10 @@
 import { ChorusPayment, DemandeSubvention, FonjepPayment, Payment } from "dto";
-import { paymentProviders } from "../providers";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
+import paymentFlatService from "../payment-flat/payment-flat.service";
 
 export class PaymentsService {
-    async getPayments(identifier: StructureIdentifier) {
-        return [...(await Promise.all(paymentProviders.map(p => p.getPayments(identifier)))).flat()];
+    async getPaiements(identifier: StructureIdentifier) {
+        return paymentFlatService.getPaiements(identifier);
     }
 
     /**

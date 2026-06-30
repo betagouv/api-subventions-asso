@@ -1,12 +1,12 @@
 {
     "name": "api",
-    "version": "0.84.5",
+    "version": "0.84.8",
     "description": "",
     "main": "index.js",
     "engines": {
         "npm": "use-pnpm-instead",
         "yarn": "use-pnpm-instead",
-        "pnpm": "10.x",
+        "pnpm": "11.x",
         "node": "22.x"
     },
     "scripts": {

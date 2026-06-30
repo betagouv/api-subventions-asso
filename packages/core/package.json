@@ -9,7 +9,7 @@
     "engines": {
         "npm": "use-pnpm-instead",
         "yarn": "use-pnpm-instead",
-        "pnpm": "10.x",
+        "pnpm": "11.x",
         "node": "22.x"
     },
     "directories": {

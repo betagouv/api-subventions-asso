@@ -193,7 +193,7 @@ export class EstablishmentHttp extends Controller {
     ): Promise<GetSubventionsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
 
-        const subventions = await establishmentService.getSubventions(estabIdentifier);
+        const subventions = await establishmentService.getDemandes(estabIdentifier);
         return { subventions };
     }
 
@@ -213,7 +213,7 @@ export class EstablishmentHttp extends Controller {
         @Request() req,
     ): Promise<GetPaymentsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
-        const payments = await establishmentService.getPayments(estabIdentifier);
+        const payments = await establishmentService.getPaiements(estabIdentifier);
         return { versements: payments };
     }
 
@@ -226,7 +226,7 @@ export class EstablishmentHttp extends Controller {
      */
     @Example<PaymentFlatDto[]>([PAYMENT_DTO_EXAMPLE])
     @Get("/paiements")
-    public async getEntitiesByIdentifier(
+    public async getPaymentsFlatByIdentifier(
         identifier: EstablishmentIdentifierDto,
         @Request() req,
     ): Promise<PaymentFlatDto[]> {

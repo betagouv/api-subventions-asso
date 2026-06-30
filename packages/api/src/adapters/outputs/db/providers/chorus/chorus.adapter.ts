@@ -23,10 +23,6 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusP
         });
     }
 
-    public async findOneByUniqueId(uniqueId: string) {
-        return this.collection.findOne({ uniqueId: uniqueId }, { projection: { _id: 0 } });
-    }
-
     public async create(entity: ChorusEntity) {
         await this.collection.insertOne(entity);
     }
@@ -36,7 +32,14 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusP
             e =>
                 ({
                     updateOne: {
-                        filter: { uniqueId: e.uniqueId },
+                        filter: {
+                            ej: e.ej,
+                            numPosteEJ: e.numPosteEJ,
+                            numeroDemandePaiement: e.numeroDemandePaiement,
+                            numPosteDP: e.numPosteDP,
+                            codeSociete: e.codeSociete,
+                            exercice: e.exercice,
+                        },
                         update: { $set: e },
                         upsert: true,
                     },
@@ -47,8 +50,17 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusP
     }
 
     public async update(entity: ChorusEntity) {
-        await this.collection.updateOne({ uniqueId: entity.uniqueId }, { $set: entity });
-        await this.collection.findOne({ uniqueId: entity.uniqueId }, { projection: { _id: 0 } });
+        await this.collection.updateOne(
+            {
+                ej: entity.ej,
+                numPosteEJ: entity.numPosteEJ,
+                numeroDemandePaiement: entity.numeroDemandePaiement,
+                numPosteDP: entity.numPosteDP,
+                codeSociete: entity.codeSociete,
+                exercice: entity.exercice,
+            },
+            { $set: entity },
+        );
         return;
     }
 
@@ -72,7 +84,7 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusP
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
-        return this.collection.find(query, projection);
+        return this.collection.find(query, { projection });
     }
 
     public cursorFindOnExercise(exerciceBudgetaire: number) {
@@ -82,7 +94,17 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusP
     }
 
     async createIndexes() {
-        await this.collection.createIndex({ uniqueId: 1 }, { unique: true });
+        await this.collection.createIndex(
+            {
+                ej: 1,
+                numPosteEJ: 1,
+                numeroDemandePaiement: 1,
+                numPosteDP: 1,
+                codeSociete: 1,
+                exercice: 1,
+            },
+            { unique: true },
+        );
         await this.collection.createIndex({ ej: 1 });
         await this.collection.createIndex({ siret: 1 });
         await this.collection.createIndex({ updated: 1 });

@@ -97,6 +97,9 @@ export default [
                 },
             ],
             "svelte/require-each-key": "warn",
+            // TODO: Re-enable after fixing navigation code
+            // This rule requires updates to navigation code across the codebase
+            "svelte/no-navigation-without-resolve": "off",
         },
     },
 

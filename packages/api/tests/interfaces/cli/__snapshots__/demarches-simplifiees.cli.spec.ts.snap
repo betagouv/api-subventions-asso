@@ -1,0 +1,333 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DemarchesSimplifieesCli on data initApplicationFlat creates flat application for each ds application 1`] = `
+[
+  {
+    "allocatorId": null,
+    "allocatorIdType": null,
+    "allocatorName": null,
+    "applicationId": "demarches-simplifiees-42-some-long-id",
+    "applicationProviderId": "some-long-id",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "100000000",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "10000000000001",
+    },
+    "beneficiaryEstablishmentIdType": "siret",
+    "budgetaryYear": 2025,
+    "cofinancersIdType": null,
+    "cofinancersNames": null,
+    "cofinancingRequested": null,
+    "confinancersId": null,
+    "conventionDate": null,
+    "decisionDate": null,
+    "decisionReference": null,
+    "depositDate": 2012-12-12T00:00:00.000Z,
+    "ej": null,
+    "grantedAmount": null,
+    "idRAE": null,
+    "instructiveDepartementId": null,
+    "instructiveDepartmentIdType": null,
+    "instructiveDepartmentName": "Direction instructrice",
+    "joinKeyDesc": null,
+    "joinKeyId": null,
+    "managingAuthorityId": null,
+    "managingAuthorityIdType": null,
+    "managingAuthorityName": null,
+    "nature": null,
+    "object": null,
+    "paymentCondition": null,
+    "paymentConditionDesc": null,
+    "paymentId": "10000000000001-null-2025",
+    "paymentPeriodDates": null,
+    "pluriannual": null,
+    "pluriannualYears": null,
+    "provider": "demarches-simplifiees-42",
+    "requestYear": 2012,
+    "requestedAmount": 5000,
+    "scheme": "Démarches fixture title",
+    "statusLabel": "Accordé",
+    "subScheme": null,
+    "subventionPercentage": null,
+    "totalAmount": null,
+    "ueNotification": null,
+    "uniqueId": "demarches-simplifiees-42-some-long-id-2025",
+    "updateDate": 2022-12-22T00:00:00.000Z,
+  },
+]
+`;
+
+exports[`DemarchesSimplifieesCli on data updateAll inserts new application 1`] = `
+[
+  {
+    "demande": {
+      "annotations": {
+        "Q2hhbXAtMjUzOTIyMA==": {
+          "label": "Montant de la subvention accordé",
+          "value": "",
+        },
+      },
+      "champs": {
+        "Q2hhbXAtMjM2MzQwMg==": {
+          "label": "Intitulé du projet",
+          "value": "Journée d'étude des conseillers VPAH à Vannes",
+        },
+        "Q2hhbXAtMjUwNjg0MA==": {
+          "label": "... demander une subvention de",
+          "value": "5000",
+        },
+      },
+      "dateDepot": "2012-12-12",
+      "dateDerniereModification": "2022-12-22",
+      "datePassageEnInstruction": "2018-12-18",
+      "dateTraitement": "2020-12-20",
+      "demandeur": {
+        "siret": "10000000000001",
+      },
+      "demarche": {
+        "title": "Démarches fixture title",
+      },
+      "groupeInstructeur": {
+        "label": "Instructeur de fixture",
+      },
+      "id": "some-long-id",
+      "motivation": null,
+      "pdf": {
+        "contentType": "",
+        "filename": "",
+        "url": "",
+      },
+      "state": "accepte",
+    },
+    "demarcheId": 42,
+    "service": {
+      "nom": "Service de fixture",
+      "organisme": "Organisme du service de fixture",
+    },
+    "siret": "10000000000001",
+  },
+]
+`;
+
+exports[`DemarchesSimplifieesCli on data updateAll inserts new application in flat collections 1`] = `
+[
+  {
+    "allocatorId": null,
+    "allocatorIdType": null,
+    "allocatorName": null,
+    "applicationId": "demarches-simplifiees-42-some-long-id",
+    "applicationProviderId": "some-long-id",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "100000000",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "10000000000001",
+    },
+    "beneficiaryEstablishmentIdType": "siret",
+    "budgetaryYear": 2025,
+    "cofinancersIdType": null,
+    "cofinancersNames": null,
+    "cofinancingRequested": null,
+    "confinancersId": null,
+    "conventionDate": null,
+    "decisionDate": null,
+    "decisionReference": null,
+    "depositDate": 2012-12-12T00:00:00.000Z,
+    "ej": null,
+    "grantedAmount": null,
+    "idRAE": null,
+    "instructiveDepartementId": null,
+    "instructiveDepartmentIdType": null,
+    "instructiveDepartmentName": "Direction instructrice",
+    "joinKeyDesc": null,
+    "joinKeyId": null,
+    "managingAuthorityId": null,
+    "managingAuthorityIdType": null,
+    "managingAuthorityName": null,
+    "nature": null,
+    "object": null,
+    "paymentCondition": null,
+    "paymentConditionDesc": null,
+    "paymentId": "10000000000001-null-2025",
+    "paymentPeriodDates": null,
+    "pluriannual": null,
+    "pluriannualYears": null,
+    "provider": "demarches-simplifiees-42",
+    "requestYear": 2012,
+    "requestedAmount": 5000,
+    "scheme": "Démarches fixture title",
+    "statusLabel": "Accordé",
+    "subScheme": null,
+    "subventionPercentage": null,
+    "totalAmount": null,
+    "ueNotification": null,
+    "uniqueId": "demarches-simplifiees-42-some-long-id-2025",
+    "updateDate": 2022-12-22T00:00:00.000Z,
+  },
+]
+`;
+
+exports[`DemarchesSimplifieesCli on data updateAll updates existing application 1`] = `
+[
+  {
+    "demande": {
+      "annotations": {
+        "Q2hhbXAtMjUzOTIyMA==": {
+          "label": "Montant de la subvention accordé",
+          "value": "",
+        },
+      },
+      "champs": {
+        "Q2hhbXAtMjM2MzQwMg==": {
+          "label": "Intitulé du projet",
+          "value": "Journée d'étude des conseillers VPAH à Vannes",
+        },
+        "Q2hhbXAtMjUwNjg0MA==": {
+          "label": "... demander une subvention de",
+          "value": "5000",
+        },
+      },
+      "dateDepot": "2012-12-12",
+      "dateDerniereModification": "2022-12-22",
+      "datePassageEnInstruction": "2018-12-18",
+      "dateTraitement": "2020-12-20",
+      "demandeur": {
+        "siret": "10000000000001",
+      },
+      "demarche": {
+        "title": "Démarches fixture title",
+      },
+      "groupeInstructeur": {
+        "label": "Instructeur de fixture",
+      },
+      "id": "some-long-id",
+      "motivation": null,
+      "pdf": {
+        "contentType": "",
+        "filename": "",
+        "url": "",
+      },
+      "state": "accepte",
+    },
+    "demarcheId": 42,
+    "service": {
+      "nom": "Service de fixture",
+      "organisme": "Organisme du service de fixture",
+    },
+    "siret": "10000000000001",
+  },
+]
+`;
+
+exports[`DemarchesSimplifieesCli on data updateAll updates existing application in flat collection 1`] = `
+[
+  {
+    "allocatorId": null,
+    "allocatorIdType": null,
+    "allocatorName": null,
+    "applicationId": "demarches-simplifiees-42-some-long-id",
+    "applicationProviderId": "some-long-id",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "100000000",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "10000000000001",
+    },
+    "beneficiaryEstablishmentIdType": "siret",
+    "budgetaryYear": 2025,
+    "cofinancersIdType": null,
+    "cofinancersNames": null,
+    "cofinancingRequested": null,
+    "confinancersId": null,
+    "conventionDate": null,
+    "decisionDate": null,
+    "decisionReference": null,
+    "depositDate": 2012-12-12T00:00:00.000Z,
+    "ej": null,
+    "grantedAmount": null,
+    "idRAE": null,
+    "instructiveDepartementId": null,
+    "instructiveDepartmentIdType": null,
+    "instructiveDepartmentName": "Direction instructrice",
+    "joinKeyDesc": null,
+    "joinKeyId": null,
+    "managingAuthorityId": null,
+    "managingAuthorityIdType": null,
+    "managingAuthorityName": null,
+    "nature": null,
+    "object": null,
+    "paymentCondition": null,
+    "paymentConditionDesc": null,
+    "paymentId": "10000000000001-null-2025",
+    "paymentPeriodDates": null,
+    "pluriannual": null,
+    "pluriannualYears": null,
+    "provider": "demarches-simplifiees-42",
+    "requestYear": 2012,
+    "requestedAmount": 5000,
+    "scheme": "Démarches fixture title",
+    "statusLabel": "Accordé",
+    "subScheme": null,
+    "subventionPercentage": null,
+    "totalAmount": null,
+    "ueNotification": null,
+    "uniqueId": "demarches-simplifiees-42-some-long-id-2025",
+    "updateDate": 2022-12-22T00:00:00.000Z,
+  },
+]
+`;
+
+exports[`DemarchesSimplifieesCli on schemas generateSchema creates required schema 1`] = `
+[
+  [
+    {
+      "to": "instructiveDepartmentName",
+      "value": "Direction instructrice",
+    },
+    {
+      "from": "siret",
+      "to": "beneficiaryEstablishmentId",
+    },
+    {
+      "from": "demande.state",
+      "to": "status",
+    },
+    {
+      "from": "demande.annotations.Q2hhbXAtMjUzOTIyMA==.value",
+      "to": "grantedAmount",
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMjUwNjg0MA==.value",
+      "to": "requestedAmount",
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMjM2MzQwMg==.value",
+      "to": "objet",
+    },
+    {
+      "from": "demande.dateDepot",
+      "to": "depositDate",
+    },
+    {
+      "to": "budgetaryYear",
+      "value": 2025,
+    },
+    {
+      "from": "demande.demarche.title",
+      "to": "scheme",
+    },
+    {
+      "from": "demande.dateDerniereModification",
+      "to": "updateDate",
+    },
+    {
+      "from": "demande.id",
+      "to": "applicationProviderId",
+    },
+  ],
+]
+`;

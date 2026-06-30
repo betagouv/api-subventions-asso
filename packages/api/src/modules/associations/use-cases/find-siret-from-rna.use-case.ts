@@ -1,11 +1,13 @@
+import rnaSirenAdapter from "../../../adapters/outputs/db/rna-siren/rna-siren.adapter";
 import { RnaSirenPort } from "../../../adapters/outputs/db/rna-siren/rna-siren.port";
-import { SireneStockUniteLegalePort } from "../../../adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.port";
+import { SireneUniteLegalePort } from "../../../adapters/outputs/db/sirene/sirene-unite-legale.port";
+import sireneUniteLegaleAdapter from "../../../adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import Rna from "../../../identifier-objects/Rna";
 
-export default class FindSiretFromRnaUseCase {
+export class FindSiretFromRnaUseCase {
     constructor(
         private rnaSirenPort: RnaSirenPort,
-        private sirenePort: SireneStockUniteLegalePort,
+        private sirenePort: SireneUniteLegalePort,
     ) {}
 
     async execute(rna: Rna) {
@@ -29,3 +31,6 @@ export default class FindSiretFromRnaUseCase {
         }
     }
 }
+
+const findSiretFromRna = new FindSiretFromRnaUseCase(rnaSirenAdapter, sireneUniteLegaleAdapter);
+export default findSiretFromRna;

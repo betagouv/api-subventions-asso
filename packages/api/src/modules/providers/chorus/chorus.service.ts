@@ -9,11 +9,11 @@ import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 import Siret from "../../../identifier-objects/Siret";
 import ChorusFseEntity from "./entities/ChorusFseEntity";
-import chorusFseAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.fse.adapter";
+import chorusFseAdapter from "../../../adapters/outputs/db/providers/chorus/chorus-fse.adapter";
 import PaymentFlatProvider from "../../payment-flat/@types/paymentFlatProvider";
 import paymentFlatService from "../../payment-flat/payment-flat.service";
 import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
-import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
+import transformFseToFlat, { TransformFseToFlat } from "./use-cases/transform-fse-to-flat";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -21,7 +21,7 @@ export interface RejectedRequest {
 }
 
 export class ChorusService extends ProviderCore implements PaymentFlatProvider {
-    constructor() {
+    constructor(private transformFseToFlat: TransformFseToFlat) {
         super({
             name: "Chorus",
             type: ProviderEnum.raw,
@@ -37,28 +37,6 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
         return chorusAdapter.upsertMany(entities);
     }
 
-    /*
-     * it is weird that this filter, that essentially accepts according to structure being an asso or not.
-     * The check about that should be associationHelper.isIdentifierFromAsso but we historically have this one
-     * that use chorus specific data
-     * */
-    public async isAcceptedEntity(entity: ChorusEntity) {
-        // quick fix to handle payments to assocations without siret but ridet or tahiti
-        // there is cases where both siret and ridet/tahiti columns values are #
-        // for now we insert all because we don't know the rules behind it
-        // and we don't want to lose any information
-        if (entity.siret === "#") {
-            return true;
-        } else {
-            const siren = new Siret(entity.siret).toSiren();
-
-            const cache = this.sirenBelongAssoCache.get(siren.value);
-            if (cache !== null) return cache;
-
-            return this.sirenBelongAsso(siren);
-        }
-    }
-
     // will replace isAcceptedEntity when Chorus will be refactored to match new ChorusFseEntity process
     public async isEntityAccepted(entity: ChorusFseEntity) {
         const siret = entity.identifier;
@@ -72,19 +50,6 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
             // @TODO: handle ridet/tahitied validation
             return false;
         }
-    }
-
-    /**
-     * @param entities /!\ entities must be validated upstream
-     */
-    public async insertBatchChorus(entities: ChorusEntity[]) {
-        const acceptedEntities = await asyncFilter(entities, entity => this.isAcceptedEntity(entity));
-        if (acceptedEntities.length) await this.upsertMany(acceptedEntities);
-
-        return {
-            rejected: entities.length - acceptedEntities.length,
-            created: acceptedEntities.length,
-        };
     }
 
     public async sirenBelongAsso(siren: Siren): Promise<boolean> {
@@ -115,7 +80,7 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
 
     // @TODO: sync this with payment-flat.chorus.service
     public syncFlat(entities: ChorusFseEntity[]) {
-        const stream = ReadableStream.from(entities.map(entity => ChorusFseMapper.toPaymentFlat(entity)));
+        const stream = ReadableStream.from(entities.map(entity => this.transformFseToFlat.execute(entity)));
         return this.savePaymentsFromStream(stream);
     }
 
@@ -129,8 +94,8 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
         // @TODO: make an helper (asyncIterator, adapter) => ReadableStream
         const stream = ReadableStream.from(chorusFseAdapter.getIterableFindAll()).pipeThrough(
             new TransformStream({
-                transform(chorusFseEntity, controller) {
-                    controller.enqueue(ChorusFseMapper.toPaymentFlat(chorusFseEntity));
+                transform: (chorusFseEntity, controller) => {
+                    controller.enqueue(this.transformFseToFlat.execute(chorusFseEntity));
                 },
             }),
         );
@@ -138,6 +103,6 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
     }
 }
 
-const chorusService = new ChorusService();
+const chorusService = new ChorusService(transformFseToFlat);
 
 export default chorusService;

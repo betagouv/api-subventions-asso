@@ -1,8 +1,8 @@
 import { AnyIdentifierIdType } from "../../../identifier-objects/@types/IdentifierType";
 import { Rid, Ridet, Rna, Siren, Siret, Tahiti, Tahitiet } from "../../../identifier-objects";
-import CheckSirenIsFromAssoUseCase from "./check-siren-is-from-asso.use-case";
+import checkSirenIsFromAsso, { CheckSirenIsFromAssoUseCase } from "./check-siren-is-from-asso.use-case";
 
-export default class CheckIdentifierIsFromAssoUseCase {
+export class CheckIdentifierIsFromAssoUseCase {
     constructor(private checkSirenFromAsso: CheckSirenIsFromAssoUseCase) {}
 
     async execute(identifier: AnyIdentifierIdType) {
@@ -16,3 +16,6 @@ export default class CheckIdentifierIsFromAssoUseCase {
         return this.checkSirenFromAsso.execute(siren);
     }
 }
+
+const checkIdentifierIsFromAsso = new CheckIdentifierIsFromAssoUseCase(checkSirenIsFromAsso);
+export default checkIdentifierIsFromAsso;

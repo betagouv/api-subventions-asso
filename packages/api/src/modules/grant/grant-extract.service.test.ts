@@ -31,7 +31,6 @@ describe("GrantExtractService", () => {
 
         beforeAll(() => {
             isSirenSpy = jest.spyOn(Siren, "isSiren").mockReturnValue(true);
-            jest.mocked(grantService.handleMultiYearGrants).mockImplementation(v => v); // TODO mock
             jest.mocked(grantService.getGrants).mockResolvedValue(GRANTS);
             jest.mocked(associationsService.getAssociation).mockResolvedValue(ASSO);
             jest.mocked(associationsService.getEstablishments).mockResolvedValue(ESTABS);
@@ -39,7 +38,6 @@ describe("GrantExtractService", () => {
 
         afterAll(() => {
             isSirenSpy.mockRestore();
-            jest.mocked(grantService.handleMultiYearGrants).mockRestore();
             jest.mocked(grantService.getGrants).mockRestore();
             jest.mocked(associationsService.getAssociation).mockRestore();
             jest.mocked(associationsService.getEstablishments).mockRestore();

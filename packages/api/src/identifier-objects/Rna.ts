@@ -4,7 +4,7 @@ export const RNA_NAME = "rna";
 
 export default class Rna extends IdentifierObject {
     static isRna(rna: string | undefined): boolean {
-        return typeof rna === "string" && /^W\d[A-Z\d]\d{7}$/.test(rna);
+        return typeof rna === "string" && /^W\d[A-Z\d]\d{7}$/.test(rna.toUpperCase());
     }
 
     static getName(): "rna" {
@@ -16,7 +16,7 @@ export default class Rna extends IdentifierObject {
             throw new Error("Invalid RNA: " + rna);
         }
 
-        super(rna);
+        super(rna.toUpperCase());
     }
 
     get name(): typeof RNA_NAME {

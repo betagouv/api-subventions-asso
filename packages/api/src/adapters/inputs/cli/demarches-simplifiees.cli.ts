@@ -8,10 +8,11 @@ import { DemarchesSimplifieesSchemaSeed } from "../../../modules/providers/demar
 
 @StaticImplements<CliStaticInterface>()
 export default class DemarchesSimplifieesCli implements ApplicationFlatCli {
-    static cmdName = "demarches-simplifiees";
+    static cmdName = "dn"; // for Démarches Numériques
 
-    async updateAll() {
-        await demarchesSimplifieesService.updateAllForms();
+    async updateAll(...args) {
+        if (args.includes("--force")) await demarchesSimplifieesService.initAllForms();
+        else await demarchesSimplifieesService.updateAllForms();
     }
 
     initApplicationFlat() {

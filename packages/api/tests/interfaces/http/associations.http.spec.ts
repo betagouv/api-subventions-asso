@@ -5,7 +5,6 @@ import { OSIRIS_REQUEST_ENTITY, OSIRIS_ACTION_ENTITY } from "../cli/__fixtures__
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenAdapter from "../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
-import { AnyRawGrant, JoinedRawGrant } from "../../../src/modules/grant/@types/RawGrant";
 import demarchesSimplifieesDataAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter";
 
 import demarchesSimplifieesSchemaAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-schema.adapter";
@@ -293,55 +292,6 @@ describe("/association", () => {
             expect(response.statusCode).toBe(200);
             response.body.subventions = expectAnyApplicationDate(response.body.subventions);
             expect(response.body).toMatchSnapshot();
-        });
-    });
-
-    describe("/{identifier}/raw-grants", () => {
-        const anonymiseData = (data: JoinedRawGrant[] | null) => {
-            if (!data) return null;
-            const expectAnyRawGrantId = (rawGrant: AnyRawGrant) => {
-                // if Application or Payment
-                return {
-                    ...rawGrant,
-                    data: { ...rawGrant.data, _id: expect.any(String) },
-                };
-            };
-
-            const withoutIdGrants = data.map(joinedRawGrant => ({
-                application: joinedRawGrant.application ? expectAnyRawGrantId(joinedRawGrant.application) : null,
-                payments: joinedRawGrant.payments?.map(expectAnyRawGrantId),
-            }));
-
-            return withoutIdGrants;
-        };
-
-        it("should return raw grants with siren", async () => {
-            const response = await request(g.app)
-                .get(`/association/${SIREN_STR}/raw-grants`)
-                .set("x-access-token", await createAndGetAdminToken())
-                .set("Accept", "application/json");
-            expect(response.statusCode).toBe(200);
-            expect(anonymiseData(response.body)).toMatchSnapshot();
-        });
-
-        it("should return raw grants with rna", async () => {
-            const response = await request(g.app)
-                .get(`/association/${RNA_STR}/raw-grants`)
-                .set("x-access-token", await createAndGetAdminToken())
-                .set("Accept", "application/json");
-            expect(response.statusCode).toBe(200);
-            expect(anonymiseData(response.body)).toMatchSnapshot();
-        });
-
-        it("should return empty array if identifier is RNA and no SIREN matched", async () => {
-            const expected = [];
-            const response = await request(g.app)
-                .get(`/association/${LONELY_RNA}/raw-grants`)
-                .set("x-access-token", await createAndGetAdminToken())
-                .set("Accept", "application/json");
-            expect(response.statusCode).toBe(200);
-            const actual = response.body;
-            expect(actual).toEqual(expected);
         });
     });
 

@@ -2,11 +2,6 @@ import { IncomingMessage } from "http";
 import { Socket } from "node:net";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { ProviderRequestService } from "../../provider-request/provider-request.service";
-import {
-    applicationProvidersFixtures,
-    grantProvidersFixtures,
-    paymentProvidersFixtures,
-} from "../__fixtures__/providers.fixture";
 
 const providers = {
     // RAW service AssociationProvider + DemandeSubventionProvider
@@ -18,7 +13,6 @@ const providers = {
             description: "descriptionA",
         },
         isAssociationsProvider: true,
-        isApplicationProvider: true,
         getAssociationsBySiren: () => [{}],
         getAssociationsBySiret: () => [{}],
         getAssociationsByRna: () => [{}],
@@ -35,7 +29,6 @@ const providers = {
             description: "descriptionB",
         },
         isAssociationsProvider: true,
-        isApplicationProvider: true,
         getAssociationsBySiren: () => [{}],
         getAssociationsBySiret: () => [{}],
         getAssociationsByRna: () => [{}],
@@ -51,12 +44,11 @@ const providers = {
             description: "descriptionC",
         },
         isAssociationsProvider: true,
-        isApplicationProvider: false,
         getAssociationsBySiren: async () => null,
         getAssociationsBySiret: async () => null,
         getAssociationsByRna: async () => null,
     },
-    // API service that is not either an AssociationProvider or ApplicationProvider
+    // API service that is not AssociationProvider
     serviceD: {
         meta: {
             name: "serviceD",
@@ -65,12 +57,11 @@ const providers = {
             description: "descriptionD",
         },
         isAssociationsProvider: false,
-        isApplicationProvider: false,
         getAssociationsBySiren: async () => [{}],
         getAssociationsBySiret: async () => [{}],
         getAssociationsByRna: async () => [{}],
     },
-    // RAW sercice that is not either an AssociationProvider or ApplicationProvider
+    // RAW sercice that is not an AssociationProvider
     serviceE: {
         meta: {
             name: "serviceE",
@@ -79,7 +70,6 @@ const providers = {
             description: "descriptionE with getSpecificDocumentStream",
         },
         isAssociationsProvider: false,
-        isApplicationProvider: false,
         getAssociationsBySiren: async () => [{}],
         getAssociationsBySiret: async () => [{}],
         getAssociationsByRna: async () => [{}],
@@ -89,7 +79,3 @@ const providers = {
 };
 
 export default providers;
-
-export const applicationProviders = applicationProvidersFixtures;
-export const paymentProviders = paymentProvidersFixtures;
-export const grantProviders = grantProvidersFixtures;

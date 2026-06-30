@@ -1,14 +1,11 @@
 import fs from "fs";
 import { StaticImplements } from "../../../decorators/static-implements.decorator";
 import { CliStaticInterface } from "../../../@types";
-import ChorusParser from "../../../modules/providers/chorus/chorus.parser";
 import chorusService from "../../../modules/providers/chorus/chorus.service";
-import * as CliHelper from "../../../shared/helpers/CliHelper";
 import CliController from "../../../shared/CliController";
-import ChorusEntity from "../../../modules/providers/chorus/entities/ChorusEntity";
 import paymentFlatChorusService from "../../../modules/payment-flat/payment-flat.chorus.service";
-import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
-import ChorusFseEntity from "../../../modules/providers/chorus/entities/ChorusFseEntity";
+import { ChorusImport } from "../pipeline/import/chorus/chorus.import";
+import { UpdateFlatByExercise } from "../../../modules/providers/chorus/use-cases/update-flat-by-exercise";
 
 @StaticImplements<CliStaticInterface>()
 export default class ChorusCli extends CliController {
@@ -17,6 +14,13 @@ export default class ChorusCli extends CliController {
     protected logFileParsePath = "./logs/chorus.parse.log.txt";
     protected _serviceMeta = chorusService.meta;
     protected batchSize = 1000;
+
+    constructor(
+        private chorusImport: ChorusImport,
+        private updateFlatByExercise: UpdateFlatByExercise,
+    ) {
+        super();
+    }
 
     /**
      * Parse Chorus XLS files
@@ -37,82 +41,14 @@ export default class ChorusCli extends CliController {
 
         const fileContent = fs.readFileSync(file);
 
-        let withEuropeanData = true; // since 2026 we got european data
-        if (args.includes("--no-fse")) withEuropeanData = false;
-
-        const { national, european } = ChorusParser.parse(fileContent, {
-            withoutEuropeanData: !withEuropeanData,
+        console.log("start importing chorus data into the system...");
+        return this.chorusImport.run(fileContent, {
+            withoutEuropeanData: args.includes("--no-fse"),
         });
-
-        const [persistResult] = await Promise.all([
-            this.persistChorusEntities(national, logger),
-            withEuropeanData ? this.persistChorusFseEntities(european!) : Promise.resolve(),
-        ]);
-
-        return {
-            parsedCount: national.length,
-            importedCount: persistResult.created,
-            errorCount: persistResult.rejected,
-        };
     }
 
-    private async persistChorusEntities(entities: ChorusEntity[], logger) {
-        const totalEntities = entities.length;
-        const exercicesSet = entities.reduce((set, entity) => set.add(entity.exercice), new Set<number>());
-
-        console.info(`\n${totalEntities} valid entities found in file.`);
-
-        console.info("Start register in database ...");
-
-        const batchs: ChorusEntity[][] = [];
-
-        for (let i = 0; i < entities.length; i += this.batchSize) {
-            batchs.push(entities.slice(i, i + this.batchSize));
-        }
-
-        const finalResult = {
-            created: 0,
-            rejected: 0,
-        };
-
-        await asyncForEach(batchs, async (batch, index) => {
-            CliHelper.printProgress(index * this.batchSize, totalEntities);
-            const result = await chorusService.insertBatchChorus(batch);
-            finalResult.created += result.created;
-            finalResult.rejected += result.rejected;
-        });
-
-        logger.push(`RESULT: ${JSON.stringify(finalResult)}`);
-
-        for (const exercise of exercicesSet) {
-            await this.resyncFlatByExercise(exercise);
-        }
-
-        fs.writeFileSync(this.logFileParsePath, logger.join(""), {
-            flag: "w",
-            encoding: "utf-8",
-        });
-
-        return finalResult;
-    }
-
-    private persistChorusFseEntities(entities: ChorusFseEntity[]) {
-        return chorusService.persistEuropeanEntities(entities);
-    }
-
-    /**
-     * Exercice should be of type number but when invoking from CLI it will always be a string
-     * @param exercise
-     */
-    async resyncFlatByExercise(exercise: string | number) {
-        const exerciseNumber = Number(exercise);
-        if (isNaN(exerciseNumber)) throw new Error("Exercise must be a valid number");
-
-        const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
-        this.logger.logIC(`Resync payment flat collection for exercice ${exerciseNumber}`);
-        await paymentFlatChorusService.updatePaymentsFlatCollection(exerciseNumber);
-        await chorusService.syncFlatByExercise(exerciseNumber);
-        clearInterval(ticTacInterval);
+    async syncFlatByExercise(exercise: string) {
+        await this.updateFlatByExercise.execute(Number(exercise));
     }
 
     async resetFlat() {
