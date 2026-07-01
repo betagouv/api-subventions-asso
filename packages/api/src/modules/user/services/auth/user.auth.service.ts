@@ -131,10 +131,10 @@ export class UserAuthService {
         if (!tokenPayload[UserConsumerService.CONSUMER_TOKEN_PROP]) {
             if (!user.active) throw new ForbiddenError("User is not active");
 
-            if (new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now())
+            const isTokenExpired = new Date(tokenPayload.now).getTime() + JWT_EXPIRES_TIME < Date.now();
+            const isTokenOutdated = user.jwt?.token !== token;
+            if (isTokenExpired || isTokenOutdated)
                 throw new UnauthorizedError("JWT has expired, please login try again");
-
-            if (user.jwt?.token !== token) throw new UnauthorizedError("JWT has expired, please login try again");
         }
         const { hashPassword, ...safeUser } = user;
         return safeUser;
