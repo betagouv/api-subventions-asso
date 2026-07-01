@@ -15,11 +15,11 @@ export class FilterChorusEntities {
             try {
                 if (entity.siret === "#" && entity.ridetOrTahitiet === "#") return false;
                 if (entity.siret === "#") {
-                    return await this.checkIsAsso.execute(
+                    return this.checkIsAsso.execute(
                         EstablishmentIdentifier.buildIdentifierFromString(entity.ridetOrTahitiet)!,
                     );
                 } else {
-                    return await this.checkIsAsso.execute(new Siret(entity.siret));
+                    return this.checkIsAsso.execute(new Siret(entity.siret));
                 }
             } catch (e) {
                 // filter entities with wrong identifiers format
