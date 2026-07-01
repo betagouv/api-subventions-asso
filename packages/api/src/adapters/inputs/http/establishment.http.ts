@@ -57,6 +57,7 @@ export async function isEstabIdentifierFromAssoMiddleware(req, _res, next) {
     } catch (e) {
         // somehow errorMiddleware does not catch errors in tsoa middlewares so it needs ot be called explicitly
         errorHandler(false)(e, req, _res, next);
+        return;
     }
     next();
 }

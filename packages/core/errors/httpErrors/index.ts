@@ -1,6 +1,7 @@
 export * from "./BadRequestError";
 export * from "./ConflictError";
 export * from "./ForbiddenError";
+export * from "./GoneError";
 export * from "./HttpError";
 export * from "./InternalServerError";
 export * from "./UnauthorizedError";

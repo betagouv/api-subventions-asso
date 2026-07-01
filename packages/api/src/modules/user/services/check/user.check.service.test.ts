@@ -1,4 +1,4 @@
-import userCheckService from "./user.check.service";
+import userCheckService, { EmailDomainNotAcceptedError } from "./user.check.service";
 import { BadRequestError } from "core";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import configurationsService from "../../../configurations/configurations.service";
@@ -11,7 +11,6 @@ import * as stringHelper from "../../../../shared/helpers/StringHelper";
 jest.mock("../../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(stringHelper);
 import userRolesService from "../roles/user.roles.service";
-import { UserServiceErrors } from "../../user.enum";
 import notifyService from "../../../notify/notify.service";
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(), // I shouldn't have to do this but mocking didn't work
@@ -95,10 +94,7 @@ describe("user check service", () => {
 
         it("should throw error if domain not accepted", async () => {
             mockedConfigurationsService.isDomainAccepted.mockResolvedValueOnce(false);
-            const expected = {
-                message: "Email domain is not accepted",
-                code: UserServiceErrors.CREATE_EMAIL_GOUV,
-            };
+            const expected = new EmailDomainNotAcceptedError();
             const test = () => userCheckService.validateEmailAndDomain(EMAIL);
             await expect(test).rejects.toMatchObject(expected);
         });
@@ -149,7 +145,7 @@ describe("user check service", () => {
 
         it("notifies if bad domain error", async () => {
             const USER = { email: USER_EMAIL };
-            const error = new BadRequestError("error message", UserServiceErrors.CREATE_EMAIL_GOUV);
+            const error = new EmailDomainNotAcceptedError();
             mockValidateEmailAndDomain.mockRejectedValueOnce(error);
             await userCheckService.validateSanitizeUser(USER).catch(_e => {});
             expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.SIGNUP_BAD_DOMAIN, USER);

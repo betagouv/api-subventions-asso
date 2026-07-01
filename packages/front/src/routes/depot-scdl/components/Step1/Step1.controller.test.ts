@@ -70,7 +70,8 @@ describe("Step1Controller", () => {
         it("should return resume when 409 error", async () => {
             const expected = "resume";
             const error = {
-                data: { code: 409, message: "Conflict" },
+                httpCode: 409,
+                data: { message: "Conflict" },
             };
             createDepositLogMock.mockRejectedValue(error);
             const actual = await controller.handleValidate();
@@ -79,7 +80,8 @@ describe("Step1Controller", () => {
 
         it("should return undefined when 400 error", async () => {
             const error = {
-                data: { code: 400, message: "Bad Request" },
+                httpCode: 400,
+                data: { message: "Bad Request" },
             };
             createDepositLogMock.mockRejectedValue(error);
             const actual = await controller.handleValidate();

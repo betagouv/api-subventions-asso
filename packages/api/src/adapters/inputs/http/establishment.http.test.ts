@@ -260,17 +260,7 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
                 },
               },
               "RES",
-              [MockFunction] {
-                "calls": [
-                  [],
-                ],
-                "results": [
-                  {
-                    "type": "return",
-                    "value": undefined,
-                  },
-                ],
-              },
+              [MockFunction],
             ]
         `);
     });
@@ -301,17 +291,7 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
                 },
               },
               "RES",
-              [MockFunction] {
-                "calls": [
-                  [],
-                ],
-                "results": [
-                  {
-                    "type": "return",
-                    "value": undefined,
-                  },
-                ],
-              },
+              [MockFunction],
             ]
         `);
     });

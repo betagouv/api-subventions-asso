@@ -4,10 +4,15 @@ import { REGEX_MAIL, REGEX_PASSWORD } from "../../user.constant";
 import configurationsService from "../../../configurations/configurations.service";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
 import userRolesService from "../roles/user.roles.service";
-import { UserServiceErrors } from "../../user.enum";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import { FutureUser } from "../../../../domain/users/@types/FutureUser";
+
+export class EmailDomainNotAcceptedError extends BadRequestError {
+    constructor() {
+        super("Email domain is not accepted");
+    }
+}
 
 export class UserCheckService {
     public static PASSWORD_VALIDATOR_MESSAGE = dedent`Password is too weak, please use this rules:
@@ -24,13 +29,11 @@ export class UserCheckService {
     async validateEmailAndDomain(email: string): Promise<void> {
         this.validateOnlyEmail(email);
 
-        if (!(await configurationsService.isDomainAccepted(email)))
-            throw new BadRequestError("Email domain is not accepted", UserServiceErrors.CREATE_EMAIL_GOUV);
+        if (!(await configurationsService.isDomainAccepted(email))) throw new EmailDomainNotAcceptedError();
     }
 
     validateOnlyEmail(email: string): void {
-        if (!REGEX_MAIL.test(email))
-            throw new BadRequestError("Email is not valid", UserServiceErrors.CREATE_INVALID_EMAIL);
+        if (!REGEX_MAIL.test(email)) throw new BadRequestError("Email is not valid");
     }
 
     /**
@@ -42,14 +45,13 @@ export class UserCheckService {
             if (user.proConnectId) userCheckService.validateOnlyEmail(user.email);
             else await userCheckService.validateEmailAndDomain(user.email);
         } catch (e) {
-            if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV) {
+            if (e instanceof EmailDomainNotAcceptedError) {
                 notifyService.notify(NotificationType.SIGNUP_BAD_DOMAIN, user);
             }
             throw e;
         }
 
-        if (!userRolesService.validRoles(user.roles || []))
-            throw new BadRequestError("Given user role does not exist", UserServiceErrors.ROLE_NOT_FOUND);
+        if (!userRolesService.validRoles(user.roles || [])) throw new BadRequestError("Given user role does not exist");
 
         const sanitizedUser = { ...user };
         if (sanitizedUser.firstName) sanitizedUser.firstName = sanitizeToPlainText(sanitizedUser.firstName?.toString());

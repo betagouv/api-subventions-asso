@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { SearchCodeError } from "dto";
     import TabsAsso from "./components/TabsAsso.svelte";
     import { AssociationController } from "./Association.controller";
     import DuplicateAlert from "./components/DuplicateAlert.svelte";
@@ -42,13 +41,13 @@
 {:catch error}
     {#if error.httpCode === 404}
         <DataNotFound />
-    {:else if error.httpCode === 400 && error?.data?.code === SearchCodeError.ID_NOT_ASSO}
+    {:else if error.httpCode === 422}
         <div class="fr-mb-3w">
             <Alert type="warning" title="Attention">
                 Il semblerait que vous cherchiez une entreprise et non une association
             </Alert>
         </div>
-    {:else if error.httpCode === 400 && error?.data?.code === SearchCodeError.MULTIPLE_ASSOS}
+    {:else if error.httpCode === 409}
         <div class="fr-mb-3w">
             <Alert type="warning" title="Attention">
                 Plusieurs associations ont été trouvées avec cet identifiant, merci d'en utiliser un plus spécifique

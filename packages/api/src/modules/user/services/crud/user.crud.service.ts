@@ -1,9 +1,8 @@
-import { SignupErrorCodes } from "dto";
 import { BadRequestError, InternalServerError } from "core";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import { DefaultObject } from "../../../../@types";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
-import userCheckService from "../check/user.check.service";
+import userCheckService, { EmailDomainNotAcceptedError } from "../check/user.check.service";
 import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
 import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
 import notifyService from "../../../notify/notify.service";
@@ -13,7 +12,6 @@ import userAuthService from "../auth/user.auth.service";
 import userConsumerService from "../consumer/user.consumer.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userActivationService from "../activation/user.activation.service";
-import { UserServiceErrors } from "../../user.enum";
 import { getNewJwtExpireDate } from "../../user.helper";
 import NewUserEntity from "../../../../domain/users/NewUserEntity";
 import UserEntity from "../../../../domain/users/UserEntity";
@@ -103,8 +101,7 @@ export class UserCrudService {
 
         const createdUser = await userAdapter.create(user);
 
-        if (!createdUser)
-            throw new InternalServerError("The user could not be created", UserServiceErrors.CREATE_USER_WRONG);
+        if (!createdUser) throw new InternalServerError("The user could not be created");
 
         return createdUser;
     }
@@ -117,8 +114,7 @@ export class UserCrudService {
             try {
                 user = await userCrudService.createUser(newUser);
             } catch (e) {
-                if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV)
-                    throw new BadRequestError(e.message, SignupErrorCodes.EMAIL_MUST_BE_END_GOUV);
+                if (e instanceof EmailDomainNotAcceptedError) throw new BadRequestError(e.message);
                 if (e instanceof DuplicateIndexError) {
                     notifyService.notify(NotificationType.USER_CONFLICT, newUser);
                     throw new InternalServerError("An error has occurred");

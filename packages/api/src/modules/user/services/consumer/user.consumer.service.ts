@@ -3,7 +3,6 @@ import userCrudService from "../crud/user.crud.service";
 import userAuthService from "../auth/user.auth.service";
 import { ConsumerToken } from "../../entities/ConsumerToken";
 import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
-import { UserServiceErrors } from "../../user.enum";
 import NewUserEntity from "../../../../domain/users/NewUserEntity";
 
 export class UserConsumerService {
@@ -22,7 +21,7 @@ export class UserConsumerService {
             return user;
         } catch {
             await userCrudService.delete(user.id);
-            throw new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN);
+            throw new InternalServerError("Could not create consumer token");
         }
     }
 

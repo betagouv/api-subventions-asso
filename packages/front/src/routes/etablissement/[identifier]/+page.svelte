@@ -1,5 +1,4 @@
 <script>
-    import { SearchCodeError } from "dto";
     import TabsEtab from "./components/TabsEtab.svelte";
     import { EstablishmentController } from "./Establishment.controller";
     import DataNotFound from "$lib/components/DataNotFound.svelte";
@@ -31,7 +30,7 @@
 {:catch error}
     {#if error.httpCode === 404}
         <DataNotFound />
-    {:else if error.httpCode === 400 && error?.data?.code === SearchCodeError.ID_NOT_ASSO}
+    {:else if error.httpCode === 422}
         <div class="fr-mb-3w">
             <Alert type="warning" title="Attention">
                 Il semblerait que vous cherchiez un établissement d'une entreprise et non d'une association

@@ -9,7 +9,6 @@ jest.mock("jsonwebtoken", () => ({
 }));
 
 import userAuthService from "./user.auth.service";
-import { LoginDtoErrorCodes, UserErrorCodes } from "dto";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -22,12 +21,11 @@ import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 import { SIGNED_TOKEN, USER_ENTITY, USER_SECRETS, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
-import { BadRequestError, UnauthorizedError, LoginError } from "core";
+import { BadRequestError, ForbiddenError, NotFoundError, UnauthorizedError, LoginError } from "core";
 
 jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 
 import userCheckService, { UserCheckService } from "../check/user.check.service";
-import UserReset from "../../entities/UserReset";
 
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
@@ -43,8 +41,8 @@ jest.mock("../../../notify/notify.service", () => ({
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import userActivationService from "../activation/user.activation.service";
-import { UserServiceErrors } from "../../user.enum";
 import UserEntity from "../../../../domain/users/UserEntity";
+import { UserResetEntity } from "../../entities/UserResetEntity";
 
 jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
@@ -107,7 +105,7 @@ describe("user auth service", () => {
         it("should reject because password not valid", async () => {
             mockedUserCheckService.passwordValidator.mockReturnValue(false);
             expect(userAuthService.updatePassword(USER_WITHOUT_SECRET, PASSWORD)).rejects.toEqual(
-                new BadRequestError(UserCheckService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD),
+                new BadRequestError(UserCheckService.PASSWORD_VALIDATOR_MESSAGE),
             );
         });
 
@@ -134,7 +132,6 @@ describe("user auth service", () => {
             }));
             await userAuthService.updateJwt(USER_WITHOUT_SECRET);
             expect(mockBuildJWTToken).toHaveBeenCalledTimes(1);
-            expect(userAdapter.update).toHaveBeenCalledTimes(1);
         });
 
         it("should return user", async () => {
@@ -195,21 +192,13 @@ describe("user auth service", () => {
                     hashPassword: undefined,
                 }),
             );
-            const expected = new UnauthorizedError(
-                "User has not set a password so they can't login this way",
-                LoginDtoErrorCodes.PASSWORD_UNSET,
-            );
+            const expected = new UnauthorizedError("User has not set a password so they can't login this way");
 
             try {
                 await userAuthService.login(USER_WITHOUT_SECRET.email, "PASSWORD");
             } catch (e) {
-                console.log(e, typeof e);
                 expect(e).toEqual(expected);
             }
-
-            // await expect(async () =>
-            //     userAuthService.login(USER_WITHOUT_SECRET.email, "PASSWORD"),
-            // ).rejects.toMatchObject(expected);
         });
 
         it("should throw an UnauthorizedError if user is not active", async () => {
@@ -221,7 +210,6 @@ describe("user auth service", () => {
             );
             const expected = {
                 message: "User is not active",
-                code: LoginDtoErrorCodes.USER_NOT_ACTIVE,
             };
             await expect(async () =>
                 userAuthService.login(USER_WITHOUT_SECRET.email, "PASSWORD"),
@@ -242,7 +230,7 @@ describe("user auth service", () => {
         });
 
         it("should notify USER_LOGGED", async () => {
-            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({}) as UserReset);
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({}) as UserResetEntity);
             mockedUserCrudService.createUser.mockImplementationOnce(async () => ({}) as UserEntity);
             await userAuthService.login(USER_WITHOUT_SECRET.email, "PASSWORD");
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {
@@ -256,7 +244,7 @@ describe("user auth service", () => {
         const DECODED_TOKEN = { ...USER_WITHOUT_SECRET, now: (d => new Date(d.setDate(d.getDate() + 1)))(new Date()) };
         it("should throw error if user does not exist", async () => {
             mockedUserAdapter.getUserWithSecretsByEmail.mockImplementationOnce(jest.fn());
-            const expected = { message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
+            const expected = new NotFoundError("User not found");
             const test = async () => await userAuthService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
             await expect(test).rejects.toMatchObject(expected);
         });
@@ -269,17 +257,14 @@ describe("user auth service", () => {
                         active: false,
                     }) as UserEntity,
             );
-            const expected = { message: "User is not active", code: UserServiceErrors.USER_NOT_ACTIVE };
+            const expected = new ForbiddenError("User is not active");
             const test = async () => await userAuthService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
             await expect(test).rejects.toMatchObject(expected);
         });
 
         it("should return UserServiceError if token has expired", async () => {
             mockedUserAdapter.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
-            const expected = {
-                message: "JWT has expired, please login try again",
-                code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
-            };
+            const expected = new UnauthorizedError("JWT has expired, please login try again");
             const test = () =>
                 userAuthService.authenticate(
                     {

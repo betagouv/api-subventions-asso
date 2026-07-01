@@ -35,8 +35,8 @@
             {/if}
         {:catch error}
             <Alert title="Attention" type="warning">
-                {#if ctrl.errorMsgByCode[error.code]}
-                    {ctrl.errorMsgByCode[error.code]}
+                {#if ctrl.errorMsgByStatus[error.httpCode]}
+                    {ctrl.errorMsgByStatus[error.httpCode]}
                 {:else}
                     Une erreur est survenue. Veuillez réessayer plus tard.
                 {/if}

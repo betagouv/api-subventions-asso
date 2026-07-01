@@ -9,7 +9,6 @@ import userAuthService from "../auth/user.auth.service";
 jest.mock("../auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService);
 import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
-import { UserServiceErrors } from "../../user.enum";
 import NewUserEntity from "../../../../domain/users/NewUserEntity";
 jest.mock("../../../../adapters/outputs/db/user/consumer-token.adapter");
 const mockedConsumerTokenAdapter = jest.mocked(consumerTokenAdapter);
@@ -63,9 +62,7 @@ describe("user consumer service", () => {
         it("should throw if token generation failed", async () => {
             mockedConsumerTokenAdapter.create.mockRejectedValueOnce(new Error());
             const test = () => userConsumerService.createConsumer(NEW_USER);
-            await expect(test).rejects.toMatchObject(
-                new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN),
-            );
+            await expect(test).rejects.toMatchObject(new InternalServerError("Could not create consumer token"));
         });
 
         it("should return UserEntity", async () => {
