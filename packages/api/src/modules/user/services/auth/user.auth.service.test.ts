@@ -9,7 +9,6 @@ jest.mock("jsonwebtoken", () => ({
 }));
 
 import userAuthService from "./user.auth.service";
-import { LoginDtoErrorCodes } from "dto";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -27,7 +26,6 @@ import { BadRequestError, ForbiddenError, NotFoundError, UnauthorizedError, Logi
 jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 
 import userCheckService, { UserCheckService } from "../check/user.check.service";
-import UserReset from "../../entities/UserReset";
 
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
@@ -43,8 +41,8 @@ jest.mock("../../../notify/notify.service", () => ({
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import userActivationService from "../activation/user.activation.service";
-import { UserServiceErrors } from "../../user.enum";
 import UserEntity from "../../../../domain/users/UserEntity";
+import { UserResetEntity } from "../../entities/UserResetEntity";
 
 jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
@@ -194,10 +192,7 @@ describe("user auth service", () => {
                     hashPassword: undefined,
                 }),
             );
-            const expected = new UnauthorizedError(
-                "User has not set a password so they can't login this way",
-                LoginDtoErrorCodes.PASSWORD_UNSET,
-            );
+            const expected = new UnauthorizedError("User has not set a password so they can't login this way");
 
             try {
                 await userAuthService.login(USER_WITHOUT_SECRET.email, "PASSWORD");
@@ -215,7 +210,6 @@ describe("user auth service", () => {
             );
             const expected = {
                 message: "User is not active",
-                code: LoginDtoErrorCodes.USER_NOT_ACTIVE,
             };
             await expect(async () =>
                 userAuthService.login(USER_WITHOUT_SECRET.email, "PASSWORD"),
@@ -236,7 +230,7 @@ describe("user auth service", () => {
         });
 
         it("should notify USER_LOGGED", async () => {
-            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({}) as UserReset);
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({}) as UserResetEntity);
             mockedUserCrudService.createUser.mockImplementationOnce(async () => ({}) as UserEntity);
             await userAuthService.login(USER_WITHOUT_SECRET.email, "PASSWORD");
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {

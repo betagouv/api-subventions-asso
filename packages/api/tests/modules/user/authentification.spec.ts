@@ -103,13 +103,7 @@ describe("AuthentificationController, /auth", () => {
                 })
                 .set("Accept", "application/json")
                 .expect(404)
-                .expect(res =>
-                    expect(res.body).toMatchObject({
-                        statusCode: 404,
-                        body: { message: "Reset token not found" },
-                        bodyKeys: ["message"],
-                    }),
-                );
+                .expect(res => expect(res.body).toMatchObject({ message: "Reset token not found" }));
         });
 
         it("should reject because token is outdated", async () => {
