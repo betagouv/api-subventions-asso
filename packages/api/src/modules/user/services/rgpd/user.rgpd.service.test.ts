@@ -37,19 +37,13 @@ jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService);
-import * as portHelper from "../../../../shared/helpers/PortHelper";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userActivationService from "../activation/user.activation.service";
 import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
-import { UserDto } from "dto";
-
-jest.mock("../../../../shared/helpers/PortHelper", () => ({
-    removeSecrets: jest.fn(user => user),
-    uniformizeId: jest.fn(token => token),
-}));
 
 import logsAdapter from "../../../../adapters/outputs/db/stats/logs.adapter";
 import { WinstonLog } from "../../../../@types/WinstonLog";
+import UserEntity from "../../../../domain/users/UserEntity";
 jest.mock("../../../../adapters/outputs/db/stats/logs.adapter");
 
 describe("user rgpd service", () => {
@@ -69,67 +63,50 @@ describe("user rgpd service", () => {
         });
 
         it("should call userService.getUserById()", async () => {
-            await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
-            expect(mockedUserCrudService.getUserById).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+            await userRgpdService.getAllData(USER_WITHOUT_SECRET.id);
+            expect(mockedUserCrudService.getUserById).toHaveBeenCalledWith(USER_WITHOUT_SECRET.id);
         });
 
         it("should throw error when user not found", async () => {
             mockedUserCrudService.getUserById.mockResolvedValueOnce(null);
-            const method = () => userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
-            expect(method).rejects.toThrowError(NotFoundError);
+            const method = () => userRgpdService.getAllData(USER_WITHOUT_SECRET.id);
+            expect(method).rejects.toThrow(NotFoundError);
         });
 
         it("should call userResetPort.findByUserId()", async () => {
-            await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
-            expect(mockedUserResetAdapter.findByUserId).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+            await userRgpdService.getAllData(USER_WITHOUT_SECRET.id);
+            expect(mockedUserResetAdapter.findByUserId).toHaveBeenCalledWith(USER_WITHOUT_SECRET.id);
         });
 
         it("should call consumerTokenPort.find()", async () => {
-            await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
-            expect(mockedConsumerTokenAdapter.find).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
-        });
-
-        it("should call uniformizeId()", async () => {
-            const USER_ID = new ObjectId();
-            const _ID = new ObjectId();
-
-            mockedUserResetAdapter.findByUserId.mockResolvedValueOnce([
-                // @ts-expect-error: mock return value
-                {
-                    userId: USER_ID,
-                    _id: _ID,
-                },
-            ]);
-
-            await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
-            expect(portHelper.uniformizeId).toHaveBeenCalledTimes(1);
+            await userRgpdService.getAllData(USER_WITHOUT_SECRET.id);
+            expect(mockedConsumerTokenAdapter.find).toHaveBeenCalledWith(USER_WITHOUT_SECRET.id);
         });
 
         it("should call statsService.getAllVisitsUser()", async () => {
-            await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
-            expect(mockedStatsService.getAllVisitsUser).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+            await userRgpdService.getAllData(USER_WITHOUT_SECRET.id);
+            expect(mockedStatsService.getAllVisitsUser).toHaveBeenCalledWith(USER_WITHOUT_SECRET.id);
         });
 
         it("should return associationVisits", async () => {
-            const ASSOCIATION_VISITS = [{ userId: USER_WITHOUT_SECRET._id }];
+            const ASSOCIATION_VISITS = [{ userId: USER_WITHOUT_SECRET.id }];
             const expected = ASSOCIATION_VISITS.map(visit => ({ ...visit, userId: visit.userId.toString() }));
             // @ts-expect-error: mock
             mockedStatsService.getAllVisitsUser.mockResolvedValueOnce(ASSOCIATION_VISITS);
-            const actual = (await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString())).statistics
-                .associationVisit;
+            const actual = (await userRgpdService.getAllData(USER_WITHOUT_SECRET.id)).statistics.associationVisit;
             expect(actual).toEqual(expected);
         });
 
         it("should call statsService.getAllLogUser()", async () => {
-            await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
-            expect(mockedStatsService.getAllLogUser).toBeCalledWith(USER_WITHOUT_SECRET.email);
+            await userRgpdService.getAllData(USER_WITHOUT_SECRET.id);
+            expect(mockedStatsService.getAllLogUser).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
         });
 
         it("should getting return logs", async () => {
             // @ts-expect-error: mock logs
             const expected = [{ _id: new ObjectId(), userId: new ObjectId() }] as WithId<WinstonLog>[];
             mockedStatsService.getAllLogUser.mockResolvedValueOnce(expected);
-            const actual = (await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString())).logs;
+            const actual = (await userRgpdService.getAllData(USER_WITHOUT_SECRET.id)).logs;
             expect(actual).toEqual(expected);
         });
     });
@@ -138,7 +115,7 @@ describe("user rgpd service", () => {
         const USER = USER_WITHOUT_SECRET;
 
         beforeEach(() => {
-            mockedUserAdapter.update.mockResolvedValue({} as UserDto);
+            mockedUserAdapter.update.mockResolvedValue({} as UserEntity);
         });
 
         afterEach(() => {
@@ -192,7 +169,7 @@ describe("user rgpd service", () => {
     });
 
     describe("disableById", () => {
-        const USER_ID = USER_WITHOUT_SECRET._id.toString();
+        const USER_ID = USER_WITHOUT_SECRET.id;
         let disableMock: jest.SpyInstance;
 
         beforeEach(() => {

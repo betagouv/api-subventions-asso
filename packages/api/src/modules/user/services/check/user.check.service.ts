@@ -1,5 +1,4 @@
 import dedent from "dedent";
-import { FutureUserDto } from "dto";
 import { BadRequestError } from "core";
 import { REGEX_MAIL, REGEX_PASSWORD } from "../../user.constant";
 import configurationsService from "../../../configurations/configurations.service";
@@ -8,6 +7,7 @@ import userRolesService from "../roles/user.roles.service";
 import { UserServiceErrors } from "../../user.enum";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
+import { FutureUser } from "../../../../domain/users/@types/FutureUser";
 
 export class UserCheckService {
     public static PASSWORD_VALIDATOR_MESSAGE = dedent`Password is too weak, please use this rules:
@@ -37,7 +37,7 @@ export class UserCheckService {
      * validates and sanitizes in-place user.
      * @param user
      */
-    async validateSanitizeUser(user: FutureUserDto) {
+    async validateSanitizeUser(user: FutureUser) {
         try {
             if (user.proConnectId) userCheckService.validateOnlyEmail(user.email);
             else await userCheckService.validateEmailAndDomain(user.email);

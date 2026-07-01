@@ -4,31 +4,31 @@ jest.mock("../../../../adapters/outputs/db/user/user.adapter");
 const mockedUserAdapter = jest.mocked(userAdapter);
 import userCrudService from "../crud/user.crud.service";
 jest.mock("../crud/user.crud.service");
-import { UserDto } from "dto";
 import notifyService from "../../../notify/notify.service";
 jest.mock("../../../notify/notify.service", () => ({ notify: jest.fn() }));
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import statsAssociationsVisitAdapter from "../../../../adapters/outputs/db/stats/association-visit.adapter";
 jest.mock("../../../../adapters/outputs/db/stats/association-visit.adapter");
 import configurationsService from "../../../configurations/configurations.service";
+import UserEntity from "../../../../domain/users/UserEntity";
 jest.mock("../../../configurations/configurations.service");
 
 // fixtures users with nb visits updated
 const PARTIAL_USERS = [
-    { _id: "67a480e7dd6e57423b7f0825", nbVisits: 34, email: "john.doe@gouv.fr" },
-    { _id: "67a480f671757a46cd1b9461", nbVisits: 13, email: "thomas.martin@gouv.fr" },
-];
+    { id: "67a480e7dd6e57423b7f0825", nbVisits: 34, email: "john.doe@gouv.fr" },
+    { id: "67a480f671757a46cd1b9461", nbVisits: 13, email: "thomas.martin@gouv.fr" },
+] as unknown as UserEntity[];
 
-const OMIT_ID_PARTIAL_USERS = PARTIAL_USERS.map(user => ({ email: user.email, nbVisits: user.nbVisits }));
+const OMIT_ID_PARTIAL_USERS = PARTIAL_USERS.map(user => ({ email: user.email, nbVisits: user.nbVisits }) as UserEntity);
 
 // fixtures update nb requests for users calculated from statsAssociationsVisitPort
 const COUNT_BY_USER = [
-    { _id: PARTIAL_USERS[0]._id, count: 16 },
-    { _id: PARTIAL_USERS[1]._id, count: 2 },
+    { _id: PARTIAL_USERS[0].id, count: 16 },
+    { _id: PARTIAL_USERS[1].id, count: 2 },
 ];
 
 describe("user stats service", () => {
-    beforeAll(() => mockedUserAdapter.findPartialUsersById.mockResolvedValue(OMIT_ID_PARTIAL_USERS));
+    beforeAll(() => mockedUserAdapter.findByIds.mockResolvedValue(PARTIAL_USERS));
 
     describe("countTotalUsersOnDate()", () => {
         const PORT_RETURN = 5;
@@ -40,12 +40,12 @@ describe("user stats service", () => {
 
         it("should call adapter with given args", async () => {
             await userStatsService.countTotalUsersOnDate(DATE, WITH_ADMIN);
-            expect(mockedUserAdapter.countTotalUsersOnDate).toBeCalledWith(DATE, WITH_ADMIN);
+            expect(mockedUserAdapter.countTotalUsersOnDate).toHaveBeenCalledWith(DATE, WITH_ADMIN);
         });
 
         it("should call adapter with default", async () => {
             await userStatsService.countTotalUsersOnDate(DATE);
-            expect(mockedUserAdapter.countTotalUsersOnDate).toBeCalledWith(DATE, false);
+            expect(mockedUserAdapter.countTotalUsersOnDate).toHaveBeenCalledWith(DATE, false);
         });
 
         it("should return adapter's return value", async () => {
@@ -67,12 +67,12 @@ describe("user stats service", () => {
 
         it("should call adapter with given args", async () => {
             await userStatsService.findByPeriod(BEGIN, END, WITH_ADMIN);
-            expect(mockedUserAdapter.findByPeriod).toBeCalledWith(BEGIN, END, WITH_ADMIN);
+            expect(mockedUserAdapter.findByPeriod).toHaveBeenCalledWith(BEGIN, END, WITH_ADMIN);
         });
 
         it("should call adapter with default", async () => {
             await userStatsService.findByPeriod(BEGIN, END);
-            expect(mockedUserAdapter.findByPeriod).toBeCalledWith(BEGIN, END, false);
+            expect(mockedUserAdapter.findByPeriod).toHaveBeenCalledWith(BEGIN, END, false);
         });
 
         it("should return adapter's return value", async () => {
@@ -83,7 +83,7 @@ describe("user stats service", () => {
     });
 
     describe("getUsersWithStats", () => {
-        const PROMISE = "PROMISE" as unknown as Promise<UserDto[]>;
+        const PROMISE = "PROMISE" as unknown as Promise<UserEntity[]>;
 
         beforeAll(() => {
             jest.mocked(userCrudService.find).mockReturnValueOnce(PROMISE);
@@ -170,12 +170,11 @@ describe("user stats service", () => {
             const USERS_ID = COUNT_BY_USER.map(element => element._id);
             // @ts-expect-error: test protected method
             await userStatsService.updateNbRequestsInBrevo(USERS_ID);
-            expect(userAdapter.findPartialUsersById).toHaveBeenCalledWith(USERS_ID, ["email", "nbVisits"]);
+            expect(userAdapter.findByIds).toHaveBeenCalledWith(USERS_ID);
         });
 
         it("should notify STATS_NB_REQUESTS", async () => {
             const expected = OMIT_ID_PARTIAL_USERS;
-            jest.spyOn(userAdapter, "findPartialUsersById").mockResolvedValue(expected);
             // @ts-expect-error: test protected method
             await userStatsService.updateNbRequestsInBrevo(COUNT_BY_USER);
             expect(jest.mocked(notifyService.notify)).toHaveBeenCalledWith(

@@ -66,18 +66,6 @@ describe("user profile service", () => {
                 });
                 expect(actual).toMatchSnapshot();
             });
-
-            it("does not check password if arg does not require it ", () => {
-                const expected = { valid: true };
-                const actual = userProfileService.validateUserProfileData(
-                    {
-                        ...validInput,
-                        password: "PA$$W0RD",
-                    },
-                    false,
-                );
-                expect(actual).toEqual(expected);
-            });
         });
 
         describe("agentType", () => {
@@ -210,12 +198,6 @@ describe("user profile service", () => {
             mockValidateUserProfileData.mockRestore();
             mockSanitizeUserProfileData.mockRestore();
             mockedUserAdapter.update.mockReset();
-        });
-
-        it("should call validateUserProfileData() without testing password", async () => {
-            const expected = { ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO };
-            await userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
-            expect(mockValidateUserProfileData).toHaveBeenCalledWith(expected, false);
         });
 
         it("throws if proConnectUpdate validation is falsy", async () => {

@@ -1,20 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`userProConnectService createUserFromProConnect creates user with userCrudService 1`] = `
-[
-  {
-    "email": "mail@mail.com",
-    "firstName": "prénom1",
-    "lastName": "nom de famille",
-    "proConnectId": "123456789",
-    "roles": [
-      "user",
-    ],
-  },
-  true,
-]
-`;
-
 exports[`userProConnectService getLogoutUrl fails if client not initialized 1`] = `[Error: ProConnect client is not initialized]`;
 
 exports[`userProConnectService proConnectUpdateValidations rejects firstName modification 1`] = `

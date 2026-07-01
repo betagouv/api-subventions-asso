@@ -1,11 +1,12 @@
 import type { ConsumerTokenDtoPositiveResponse, ConsumerTokenDtoResponse, UserDto } from "dto";
 import type { IdentifiedRequest } from "../../../@types";
 
-import { RoleEnum } from "../../../@enums/RolesEnum";
+import { RoleEnum, UserRoles } from "../../../domain/users/@types/UserRoles";
 import { Controller, Get, Route, Security, Tags, Response, Request, Post, Body, Example, Hidden } from "tsoa";
 import { HttpErrorInterface } from "core";
 import userConsumerService from "../../../modules/user/services/consumer/user.consumer.service";
 import userCrudService from "../../../modules/user/services/crud/user.crud.service";
+import NewUserEntity from "../../../domain/users/NewUserEntity";
 
 @Route("consumer")
 @Tags("Consumer Controller")
@@ -26,7 +27,7 @@ export class ConsumerHttp extends Controller {
     @Response<HttpErrorInterface>(404, "Aucun token d'authentification n'a été trouvé")
     @Response<HttpErrorInterface>(401, "L'utilisateur n'a pas le rôle CONSUMER")
     public async getToken(@Request() req: IdentifiedRequest): Promise<ConsumerTokenDtoResponse> {
-        const token = await userConsumerService.findConsumerToken(req.user._id);
+        const token = await userConsumerService.findConsumerToken(req.user.id);
         return { token };
     }
 
@@ -37,7 +38,7 @@ export class ConsumerHttp extends Controller {
      */
     @Example<{ user: UserDto }>({
         user: {
-            _id: "507f1f77bcf86cd799439011" as unknown as UserDto["_id"],
+            id: "507f1f77bcf86cd799439011" as unknown as UserDto["id"],
             email: "consumer@api-example.fr",
             roles: ["consumer"],
             active: true,
@@ -52,7 +53,9 @@ export class ConsumerHttp extends Controller {
     @Security("jwt", ["admin"])
     @Response<{ user: UserDto }>(200, "Retourne l'utilisateur créé")
     async create(@Body() { email }: { email: string }): Promise<{ user: UserDto }> {
-        const user = await userCrudService.signup({ email: email.toLocaleLowerCase() }, RoleEnum.consumer);
+        const user = await userCrudService.signup(
+            new NewUserEntity({ email: email.toLocaleLowerCase(), roles: [UserRoles.CONSUMER] }),
+        );
         return { user };
     }
 }

@@ -55,12 +55,10 @@ exports[`AdminController, /admin GET /stats/consumers returns API consumption st
 
 exports[`AdminController, /admin GET /user/list-users should return UserRequestsSuccessResponse 1`] = `
 {
-  "_id": Any<String>,
   "active": true,
   "email": "active.user@beta.gouv.fr",
-  "firstName": null,
-  "lastActivityDate": null,
-  "lastName": null,
+  "id": Any<String>,
+  "lastActivityDate": Any<String>,
   "nbVisits": 3,
   "profileToComplete": true,
   "roles": [
@@ -79,5 +77,23 @@ exports[`AdminController, /admin POST /user/roles should reject because role not
     },
   },
   "message": "Validation Failed",
+}
+`;
+
+exports[`AdminController, /admin POST /user/roles should return 200 1`] = `
+{
+  "user": {
+    "active": true,
+    "email": "admin@beta.gouv.fr",
+    "id": Any<String>,
+    "lastActivityDate": Any<String>,
+    "nbVisits": 0,
+    "profileToComplete": true,
+    "roles": [
+      "admin",
+      "user",
+    ],
+    "signupAt": Any<String>,
+  },
 }
 `;

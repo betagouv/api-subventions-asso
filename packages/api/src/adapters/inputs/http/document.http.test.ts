@@ -56,7 +56,7 @@ describe("DocumentController", () => {
         ];
         const USER_ID = "ID";
         // @ts-expect-error mock
-        const REQUEST: IdentifiedRequest = { user: { _id: { toString: jest.fn(() => USER_ID) } } };
+        const REQUEST: IdentifiedRequest = { user: { id: USER_ID } };
 
         beforeAll(() => {
             jest.mocked(documentsService.safeGetRequestedDocumentFiles).mockResolvedValue(stream as ReadStream);

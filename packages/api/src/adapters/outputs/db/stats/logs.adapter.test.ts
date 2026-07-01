@@ -32,7 +32,7 @@ describe("Logs Port", () => {
             jest.useRealTimers();
         });
 
-        it.each([{ userIds: [CONSUMER_USER._id.toString()] }, { userIds: [] }])(
+        it.each([{ userIds: [CONSUMER_USER.id.toString()] }, { userIds: [] }])(
             "match given users id",
             ({ userIds }) => {
                 const expected = { $in: userIds };

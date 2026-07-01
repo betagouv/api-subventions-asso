@@ -6,37 +6,31 @@ import {
     RegistrationSrcTypeEnum,
     ResetPasswordErrorCodes,
     TerritorialScopeEnum,
-    UpdatableUser,
     UserActivationInfoDto,
-    UserDto,
 } from "dto";
-import { BadRequestError, UserNotFoundError } from "core";
+import { BadRequestError, ResetTokenNotFoundError, UserNotFoundError } from "core";
 import { isInObjectValues } from "../../../../shared/Validators";
 import { joinEnum } from "../../../../shared/helpers/ArrayHelper";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
-import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
-import UserReset from "../../entities/UserReset";
 import userAuthService from "../auth/user.auth.service";
-import UserDbo from "../../../../adapters/outputs/db/user/@types/UserDbo";
 import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
 import geoService from "../../../providers/geo-api/geo.service";
 import { applyValidations, ValidationCriterias, ValidationResult } from "../../../../shared/helpers/validation.helper";
 import userProConnectService from "../pro-connect/user.pro-connect.service";
+import UserEntity from "../../../../domain/users/UserEntity";
+import UpdatableUserFields from "../../../../domain/users/@types/UpdatableUserFields";
 
 export class UserProfileService {
-    validateUserProfileData(
-        userInfo: Partial<UpdatableUser> | UserActivationInfoDto,
-        withPassword = true,
-    ): ValidationResult {
+    validateUserProfileData(userInfo: Partial<UserEntity> & { password?: string }): ValidationResult {
         const { agentType, jobType, structure, region, registrationSrc } = userInfo;
         let password = "";
-        if (withPassword && "password" in userInfo) password = userInfo?.password;
+        if (userInfo.password) password = userInfo?.password;
         const validations: ValidationCriterias = [
             {
                 value: agentType,
@@ -82,7 +76,7 @@ export class UserProfileService {
             },
         ];
 
-        if (withPassword)
+        if (userInfo.password)
             validations.push({
                 value: password,
                 // @ts-expect-error: show since typescript update #3360
@@ -116,7 +110,7 @@ export class UserProfileService {
         return applyValidations(validations);
     }
 
-    sanitizeUserProfileData(unsafeUserInfo: Partial<UpdatableUser> | UserActivationInfoDto) {
+    sanitizeUserProfileData(unsafeUserInfo: Partial<UpdatableUserFields> | UserActivationInfoDto) {
         const fieldsToSanitize = [
             "service",
             "phoneNumber",
@@ -132,34 +126,34 @@ export class UserProfileService {
         return sanitizedUserInfo;
     }
 
-    async profileUpdate(user: UserDto, data: Partial<UpdatableUser>): Promise<UserDto> {
+    async profileUpdate(user: UserEntity, data: Partial<UpdatableUserFields>) {
         if (!user) throw new UserNotFoundError();
 
-        const toBeUpdatedUser = { ...user, ...data };
+        const toBeUpdatedUser = new UserEntity({ ...user, ...data });
 
-        const userInfoValidation = userProfileService.validateUserProfileData(toBeUpdatedUser, false);
+        const userInfoValidation = userProfileService.validateUserProfileData(toBeUpdatedUser);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
 
-        const validationProConnect = userProConnectService.proConnectUpdateValidations(user, toBeUpdatedUser);
+        const validationProConnect = userProConnectService.proConnectUpdateValidations(user, data);
         if (!validationProConnect.valid) throw validationProConnect.error;
 
         const safeUserInfo = userProfileService.sanitizeUserProfileData(data);
         await this.deduceRegion(safeUserInfo);
-        const updatedUser = await userAdapter.update({ ...user, ...safeUserInfo });
+        const updatedUser = await userAdapter.update(new UserEntity({ ...user, ...safeUserInfo }));
 
-        const safeUpdatedUser = removeSecrets(updatedUser);
-        await notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser); // await needed in a migration, better management in #2180
-        return safeUpdatedUser;
+        notifyService.notify(NotificationType.USER_UPDATED, updatedUser);
+        return updatedUser;
     }
 
-    public async activate(resetToken: string, userInfo: UserActivationInfoDto): Promise<UserDto> {
-        // TODO remove if/when unused by consumers
+    public async activate(resetToken: string, userInfo: UserActivationInfoDto) {
+        // @TODO remove if/when unused by consumers
         const userReset = await userResetAdapter.findByToken(resetToken);
+        if (!userReset) throw new ResetTokenNotFoundError();
 
         const tokenValidation = userActivationService.validateResetToken(userReset);
         if (!tokenValidation.valid) throw tokenValidation.error;
 
-        const user = await userCrudService.getUserById((userReset as UserReset).userId);
+        const user = await userCrudService.getUserById(userReset.userId);
         if (!user) throw new UserNotFoundError();
 
         if (!userInfo.jobType) userInfo.jobType = [];
@@ -177,20 +171,20 @@ export class UserProfileService {
         // @ts-expect-error -- intermediate type
         delete safeUserInfo.password;
 
-        const activeUser = (await userAdapter.update(
-            {
+        const activeUser = await userAdapter.update(
+            new UserEntity({
                 ...user,
                 ...safeUserInfo,
                 active: true,
                 profileToComplete: false,
                 lastActivityDate: new Date(),
-            } as Omit<UserDbo, "jwt">,
+            }),
             true,
-        )) as Omit<UserDbo, "hashPassword">;
+        );
 
         const userWithJwt = await userAuthService.updateJwt(activeUser);
 
-        notifyService.notify(NotificationType.USER_UPDATED, removeSecrets(userWithJwt));
+        notifyService.notify(NotificationType.USER_UPDATED, activeUser);
         notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
         notifyService.notify(NotificationType.USER_LOGGED, {
             email: user.email,
@@ -200,7 +194,7 @@ export class UserProfileService {
         return userWithJwt;
     }
 
-    private async deduceRegion(userInfo: Partial<UpdatableUser> | UserActivationInfoDto) {
+    private async deduceRegion(userInfo: Partial<UpdatableUserFields> | UserActivationInfoDto) {
         if (userInfo.agentType !== AgentTypeEnum.DECONCENTRATED_ADMIN) return;
         if (userInfo.decentralizedLevel === AdminTerritorialLevel.REGIONAL)
             userInfo.region = userInfo.decentralizedTerritory;

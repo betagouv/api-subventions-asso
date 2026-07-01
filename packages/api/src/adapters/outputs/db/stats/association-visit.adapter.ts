@@ -2,16 +2,20 @@ import { ObjectId } from "mongodb";
 import MongoAdapter from "../MongoAdapter";
 import AssociationVisitEntity from "../../../../modules/stats/entities/AssociationVisitEntity";
 import { StatsAssociationVisitPort } from "./stats-association-visit.port";
+import { AssociationVisitDbo } from "./association-visit.dbo";
 
-export class AssociationVisitAdapter extends MongoAdapter<AssociationVisitEntity> implements StatsAssociationVisitPort {
+export class AssociationVisitAdapter extends MongoAdapter<AssociationVisitDbo> implements StatsAssociationVisitPort {
     collectionName = "stats-association-visits";
 
     joinIndexes = {
         user: "userId",
     };
 
+    private toDbo = (entity: AssociationVisitEntity) => ({ ...entity, userId: new ObjectId(entity.userId) });
+    private toEntity = (dbo: AssociationVisitDbo) => ({ ...dbo, userId: dbo.userId.toString() });
+
     async add(entity: AssociationVisitEntity): Promise<void> {
-        await this.collection.insertOne(entity);
+        await this.collection.insertOne(this.toDbo(entity));
     }
 
     async createIndexes() {
@@ -83,12 +87,13 @@ export class AssociationVisitAdapter extends MongoAdapter<AssociationVisitEntity
         return result.map(document => ({ ...document, _id: document._id.toString() }));
     }
 
-    findByUserId(userId: string): Promise<AssociationVisitEntity[]> {
-        return this.collection.find({ userId: new ObjectId(userId) }).toArray();
+    async findByUserId(userId: string): Promise<AssociationVisitEntity[]> {
+        const visits = await this.collection.find({ userId: new ObjectId(userId) }).toArray();
+        return visits.map(visit => this.toEntity(visit));
     }
 
-    findOnPeriod(start: Date, end: Date): Promise<AssociationVisitEntity[]> {
-        return this.collection
+    async findOnPeriod(start: Date, end: Date): Promise<AssociationVisitEntity[]> {
+        const visits = await this.collection
             .find({
                 date: {
                     $gte: start,
@@ -96,6 +101,7 @@ export class AssociationVisitAdapter extends MongoAdapter<AssociationVisitEntity
                 },
             })
             .toArray();
+        return visits.map(visit => this.toEntity(visit));
     }
 }
 

@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { UserWithJWTDto, UserDto } from "dto";
+import { UserDto, UserWithJWTDto } from "dto";
 import { IVerifyOptions } from "passport-local";
 
 export interface IdentifiedRequest extends Request {

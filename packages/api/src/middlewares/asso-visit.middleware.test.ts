@@ -70,7 +70,7 @@ describe("StatsAssoVisitsMiddleware", () => {
             const USER_ID = "USER_ID";
             const req = {
                 user: {
-                    _id: USER_ID,
+                    id: USER_ID,
                 },
                 originalUrl: `/${resourceType}/${identifier}`,
             } as unknown as IdentifiedRequest;

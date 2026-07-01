@@ -2,6 +2,7 @@ import { IVerifyOptions } from "passport-local";
 import { UnauthorizedError } from "core";
 import { LoginRequest } from "../@types";
 import userActivationService from "../modules/user/services/activation/user.activation.service";
+import UserEntity from "../domain/users/UserEntity";
 
 /**
  * TSOA auth setting
@@ -27,6 +28,6 @@ export function expressAuthentication(req: LoginRequest, securityName = "jwt", s
             return reject(new UnauthorizedError("JWT does not contain required scope."));
         }
 
-        resolve(userActivationService.refreshExpirationToken(user));
+        resolve(userActivationService.refreshExpirationToken(new UserEntity(user as UserEntity)));
     });
 }

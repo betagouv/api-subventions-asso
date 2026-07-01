@@ -1,32 +1,32 @@
-import { ObjectId } from "mongodb";
-import { FutureUserDto } from "dto";
 import { InternalServerError, NotFoundError } from "core";
 import userCrudService from "../crud/user.crud.service";
 import userAuthService from "../auth/user.auth.service";
-import { RoleEnum } from "../../../../@enums/RolesEnum";
 import { ConsumerToken } from "../../entities/ConsumerToken";
 import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
 import { UserServiceErrors } from "../../user.enum";
+import NewUserEntity from "../../../../domain/users/NewUserEntity";
 
 export class UserConsumerService {
-    public static CONSUMER_TOKEN_PROP = "isConsumerToken";
+    public static CONSUMER_TOKEN_PROP = "isConsumerToken" as const;
 
-    async createConsumer(userObject: FutureUserDto) {
-        const user = await userCrudService.createUser({ ...userObject, roles: [RoleEnum.user, RoleEnum.consumer] });
-        const consumerToken = userAuthService.buildJWTToken(
-            { ...user, [UserConsumerService.CONSUMER_TOKEN_PROP]: true },
-            { expiration: false },
-        );
+    async createConsumer(newUser: NewUserEntity) {
+        const user = await userCrudService.createUser(newUser);
+
+        const consumerToken = userAuthService.buildJWTToken(user, {
+            [UserConsumerService.CONSUMER_TOKEN_PROP]: true,
+            expiration: false,
+        });
+
         try {
-            await consumerTokenAdapter.create(new ConsumerToken(user._id, consumerToken));
+            await consumerTokenAdapter.create(new ConsumerToken(user.id, consumerToken));
             return user;
         } catch {
-            await userCrudService.delete(user._id.toString());
+            await userCrudService.delete(user.id);
             throw new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN);
         }
     }
 
-    async findConsumerToken(userId: ObjectId): Promise<string> {
+    async findConsumerToken(userId: string): Promise<string> {
         const token = await consumerTokenAdapter.findToken(userId);
         if (!token) {
             throw new NotFoundError("Aucun token d'authentification n'a été trouvé");

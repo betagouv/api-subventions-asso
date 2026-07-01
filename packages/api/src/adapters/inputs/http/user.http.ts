@@ -9,6 +9,7 @@ import userRgpdService from "../../../modules/user/services/rgpd/user.rgpd.servi
 import userProfileService from "../../../modules/user/services/profile/user.profile.service";
 import userCrudService from "../../../modules/user/services/crud/user.crud.service";
 import { USER_DTO_DEFAULT, USER_DTO_LOGGED } from "./examples/Users";
+import UserEntity from "../../../domain/users/UserEntity";
 
 @Route("user")
 @Tags("User Controller")
@@ -21,7 +22,7 @@ export class UserHttp extends Controller {
     @Get("/roles")
     @Security("jwt", ["user"])
     public async getRoles(@Request() req: IdentifiedRequest): Promise<GetRolesDtoResponse> {
-        return { roles: await userRolesService.getRoles(req.user) };
+        return { roles: await userRolesService.getRoles(new UserEntity(req.user as UserEntity)) };
     }
 
     /**
@@ -36,7 +37,9 @@ export class UserHttp extends Controller {
         @Request() req: IdentifiedRequest,
         @Body() body: { password: string },
     ): Promise<UserDtoResponse> {
-        return await userAuthService.updatePassword(req.user, body.password);
+        return (await userAuthService.updatePassword(new UserEntity(req.user as UserEntity), body.password)) as {
+            user: UserDto;
+        };
     }
 
     /**
@@ -46,7 +49,7 @@ export class UserHttp extends Controller {
     @Security("jwt", ["user"])
     @Response<HttpErrorInterface>(400, "Bad Request")
     public async deleteSelfUser(@Request() req: IdentifiedRequest): Promise<boolean> {
-        const success = await userRgpdService.disableById(req.user._id.toString());
+        const success = await userRgpdService.disableById(req.user.id);
         if (!success) throw new NotFoundError("user to delete not found");
         this.setStatus(204);
         return true;
@@ -60,7 +63,7 @@ export class UserHttp extends Controller {
     @Security("jwt", ["user"])
     @Response<HttpErrorInterface>(400, "Bad Request")
     public getSelfUser(@Request() req: IdentifiedRequest): Promise<UserDto> {
-        return userCrudService.getUserWithoutSecret(req.user.email);
+        return userCrudService.findByEmail(req.user.email) as Promise<UserDto>;
     }
 
     /**
@@ -71,7 +74,7 @@ export class UserHttp extends Controller {
     @Security("jwt", ["user"])
     @Response<HttpErrorInterface>(400, "Bad Request")
     public updateProfile(@Request() req: IdentifiedRequest, @Body() body: Partial<UpdatableUser>): Promise<UserDto> {
-        return userProfileService.profileUpdate(req.user, body);
+        return userProfileService.profileUpdate(new UserEntity(req.user as UserEntity), body) as Promise<UserDto>;
     }
 
     /**
@@ -79,10 +82,7 @@ export class UserHttp extends Controller {
      */
     @Example<UserDataDto>({
         user: USER_DTO_DEFAULT,
-        tokens: [
-            // @ts-expect-error: no object id in dto
-            { userId: "string", token: "string", createdAt: new Date("2023-10-03") },
-        ],
+        tokens: [{ userId: "string", token: "string", createdAt: new Date("2023-10-03") }],
         logs: [
             {
                 req: {
@@ -107,6 +107,6 @@ export class UserHttp extends Controller {
     @Get("/data")
     @Security("jwt", ["user"])
     public async getData(@Request() req: IdentifiedRequest): Promise<UserDataDto> {
-        return userRgpdService.getAllData(req.user._id.toString());
+        return userRgpdService.getAllData(req.user.id.toString()) as Promise<UserDataDto>;
     }
 }

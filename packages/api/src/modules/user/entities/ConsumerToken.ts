@@ -5,8 +5,8 @@ export class ConsumerToken {
     public userId: ObjectId;
     public token: string;
 
-    constructor(userId, token) {
-        this.userId = userId;
+    constructor(userId: string, token: string) {
+        this.userId = new ObjectId(userId);
         this.token = token;
         this._id = new ObjectId();
     }

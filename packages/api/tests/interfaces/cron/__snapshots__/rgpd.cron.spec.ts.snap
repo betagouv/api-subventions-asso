@@ -1,5 +1,74 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Rgpd Cron removeInactiveUsers() should disable users that did not use the app for 2 years 1`] = `
+[
+  {
+    "active": false,
+    "agentType": undefined,
+    "decentralizedLevel": undefined,
+    "decentralizedTerritory": undefined,
+    "disable": true,
+    "email": StringMatching /\\^\\[a-f0-9\\]\\+@deleted\\\\\\.datasubvention\\\\\\.beta\\\\\\.gouv\\\\\\.fr\\$/,
+    "firstName": "",
+    "hashPassword": undefined,
+    "id": Any<String>,
+    "jobType": undefined,
+    "jwt": {
+      "expirateDate": Any<Date>,
+    },
+    "lastActivityDate": Any<Date>,
+    "lastName": "",
+    "nbVisits": 0,
+    "phoneNumber": "",
+    "proConnectId": undefined,
+    "profileToComplete": true,
+    "region": undefined,
+    "registrationSrc": undefined,
+    "registrationSrcDetails": undefined,
+    "registrationSrcEmail": undefined,
+    "roles": [
+      "user",
+    ],
+    "service": undefined,
+    "signupAt": Any<Date>,
+    "structure": undefined,
+    "territorialScope": undefined,
+  },
+  {
+    "active": false,
+    "agentType": undefined,
+    "decentralizedLevel": undefined,
+    "decentralizedTerritory": undefined,
+    "disable": true,
+    "email": StringMatching /\\^\\[a-f0-9\\]\\+@deleted\\\\\\.datasubvention\\\\\\.beta\\\\\\.gouv\\\\\\.fr\\$/,
+    "firstName": "",
+    "hashPassword": undefined,
+    "id": Any<String>,
+    "jobType": undefined,
+    "jwt": {
+      "expirateDate": Any<Date>,
+    },
+    "lastActivityDate": Any<Date>,
+    "lastName": "",
+    "nbVisits": 0,
+    "phoneNumber": "",
+    "proConnectId": undefined,
+    "profileToComplete": true,
+    "region": undefined,
+    "registrationSrc": undefined,
+    "registrationSrcDetails": undefined,
+    "registrationSrcEmail": undefined,
+    "roles": [
+      "user",
+    ],
+    "service": undefined,
+    "signupAt": Any<Date>,
+    "structure": undefined,
+    "territorialScope": undefined,
+  },
+]
+`;
+
 exports[`Rgpd Cron removeInactiveUsers() should notify through mattermost 1`] = `
 [
   [

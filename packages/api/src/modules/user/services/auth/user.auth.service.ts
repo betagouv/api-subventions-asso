@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { LoginDtoErrorCodes, UserDto, UserErrorCodes, UserWithJWTDto } from "dto";
+import { LoginDtoErrorCodes, UserErrorCodes } from "dto";
 import {
     BadRequestError,
     ForbiddenError,
@@ -11,15 +11,16 @@ import {
 } from "core";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../../../configurations/jwt.conf";
-import UserDbo from "../../../../adapters/outputs/db/user/@types/UserDbo";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { UserUpdateError } from "../../../../adapters/outputs/db/user/@errors/UserUpdateError";
-import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { UserConsumerService } from "../consumer/user.consumer.service";
 import { UserServiceErrors } from "../../user.enum";
 import { getNewJwtExpireDate } from "../../user.helper";
+import UserEntity from "../../../../domain/users/UserEntity";
+import NewUserEntity from "../../../../domain/users/NewUserEntity";
+import PlainObject from "../../../../@types/PlainObject";
 
 export class UserAuthService {
     public async getHashPassword(password: string) {
@@ -41,17 +42,20 @@ export class UserAuthService {
         return { jwt: userWithSecrets.jwt };
     }
 
-    public async findJwtByUser(user: UserDto) {
-        const userDbo = await userAdapter.getUserWithSecretsById(user._id);
-        return userDbo?.jwt;
-    }
-
     public buildJWTToken(
-        user: Omit<UserDbo, "hashPassword"> | UserDto,
-        options: { expiration: boolean } = { expiration: true },
+        user: PlainObject<UserEntity> | PlainObject<NewUserEntity>,
+        options: { expiration: boolean; [UserConsumerService.CONSUMER_TOKEN_PROP]: boolean } = {
+            expiration: true,
+            isConsumerToken: false,
+        },
     ) {
-        const userNoJwt = removeSecrets(user);
-        const jwtContent = { ...userNoJwt, now: new Date() };
+        const { jwt: _token, ...safeUser } = user;
+        const jwtContent = {
+            ...safeUser,
+            now: new Date(),
+            [UserConsumerService.CONSUMER_TOKEN_PROP]: options[UserConsumerService.CONSUMER_TOKEN_PROP],
+        };
+
         const jwtOption: jwt.SignOptions = {};
 
         if (options.expiration) {
@@ -61,20 +65,22 @@ export class UserAuthService {
         return jwt.sign(jwtContent, JWT_SECRET, jwtOption);
     }
 
-    public async updatePassword(user: UserDto, password: string): Promise<{ user: UserDto }> {
+    public async updatePassword(user: UserEntity, password: string) {
         if (!userCheckService.passwordValidator(password)) {
             throw new BadRequestError(UserCheckService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD);
         }
 
-        const userUpdated = await userAdapter.update({
-            ...user,
-            hashPassword: await this.getHashPassword(password),
-            active: true,
-        });
+        const userUpdated = await userAdapter.update(
+            new UserEntity({
+                ...user,
+                hashPassword: await this.getHashPassword(password),
+                active: true,
+            }),
+        );
         return { user: userUpdated };
     }
 
-    public async logout(user: UserDto) {
+    public async logout(user: UserEntity) {
         const userWithSecrets = await userAdapter.getUserWithSecretsByEmail(user.email);
 
         if (!userWithSecrets?.jwt) {
@@ -82,32 +88,36 @@ export class UserAuthService {
             return user;
         }
 
-        return userAdapter.update({ ...user, jwt: null });
+        const { jwt, ...logoutUser } = userWithSecrets;
+        return userAdapter.update(new UserEntity({ ...logoutUser }));
     }
 
-    async updateJwt(user: Omit<UserDbo, "hashPassword">): Promise<UserWithJWTDto> {
+    async updateJwt(user: UserEntity) {
         const updatedJwt = {
             token: this.buildJWTToken(user),
             expirateDate: getNewJwtExpireDate(),
         };
 
+        const updatedUser = new UserEntity({ ...user, jwt: updatedJwt });
+
         try {
-            user.jwt = updatedJwt;
-            return (await userAdapter.update(user, true)) as UserWithJWTDto;
+            return userAdapter.update(updatedUser, true);
         } catch {
             throw new InternalServerError(UserUpdateError.message, UserServiceErrors.LOGIN_UPDATE_JWT_FAIL);
         }
     }
 
-    async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
+    async login(email: string, password: string) {
         const user = await userAdapter.getUserWithSecretsByEmail(email);
-
         if (!user) throw new LoginError();
-        if (!user.hashPassword)
+
+        if (!user.hashPassword) {
             throw new UnauthorizedError(
                 "User has not set a password so they can't login this way",
                 LoginDtoErrorCodes.PASSWORD_UNSET,
             );
+        }
+
         const validPassword = await bcrypt.compare(password, user.hashPassword);
         if (!validPassword) throw new LoginError();
         if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
@@ -122,7 +132,7 @@ export class UserAuthService {
         return updatedUser;
     }
 
-    async authenticate(tokenPayload, token): Promise<UserDto> {
+    async authenticate(tokenPayload, token) {
         // Find the user associated with the email provided by the user
         const user = await userAdapter.getUserWithSecretsByEmail(tokenPayload.email);
         if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
@@ -142,7 +152,8 @@ export class UserAuthService {
                     UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,
                 );
         }
-        return removeSecrets(user) as UserDto;
+        const { hashPassword, ...safeUser } = user;
+        return safeUser;
     }
 }
 
