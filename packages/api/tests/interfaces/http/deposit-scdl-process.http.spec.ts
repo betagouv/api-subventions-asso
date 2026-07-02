@@ -43,7 +43,7 @@ describe("/parcours-depot", () => {
     describe("GET /", () => {
         it("should return 200 with deposit object", async () => {
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined));
 
@@ -73,7 +73,7 @@ describe("/parcours-depot", () => {
         it("should return 200 and match expected csv", async () => {
             await miscScdlGrantAdapter.createMany(SCDL_GRANT_DBOS);
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             const uploadFileInfo = new UploadedFileInfosEntity(
                 "test.csv",
@@ -106,7 +106,7 @@ describe("/parcours-depot", () => {
         it("should return 200 and match expected filename", async () => {
             await miscScdlGrantAdapter.createMany(SCDL_GRANT_DBOS);
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             const uploadFileInfo = new UploadedFileInfosEntity(
                 "test.csv",
@@ -143,7 +143,7 @@ describe("/parcours-depot", () => {
         it("should return 200 with presigned url", async () => {
             await miscScdlGrantAdapter.createMany(SCDL_GRANT_DBOS);
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             const uploadFileInfo = new UploadedFileInfosEntity(
                 "test.csv",
@@ -179,7 +179,7 @@ describe("/parcours-depot", () => {
             s3Mock.on(DeleteObjectCommand).resolvesOnce({});
 
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
             const filename = "test-csv-valid.csv";
             const uploadFileInfo = new UploadedFileInfosEntity(
                 filename,
@@ -211,7 +211,7 @@ describe("/parcours-depot", () => {
 
         it("should return 204 if deposit log does not exist", async () => {
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
             const existingLog = await depositLogAdapter.findOneByUserId(userId);
             expect(existingLog).toBeNull();
 
@@ -242,7 +242,7 @@ describe("/parcours-depot", () => {
 
         it("should return 409 when user already has deposit log", async () => {
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined));
 
@@ -278,7 +278,7 @@ describe("/parcours-depot", () => {
     describe("PATCH /step/{step}", () => {
         it("should update deposit log and return 200", async () => {
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, "12345678901234"));
 
@@ -299,7 +299,7 @@ describe("/parcours-depot", () => {
 
         it("should return BadRequest error when update inconsistent", async () => {
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             const depositLogEntity = new DepositScdlLogEntity(userId, 2, undefined, "12345678901234");
             await depositLogAdapter.insertOne(depositLogEntity);
@@ -325,7 +325,7 @@ describe("/parcours-depot", () => {
 
         it("should return bad request error when step don't exists", async () => {
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined));
 
@@ -345,7 +345,7 @@ describe("/parcours-depot", () => {
             s3Mock.on(PutObjectCommand).resolvesOnce({});
 
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, "12345678901234"));
 
@@ -356,8 +356,6 @@ describe("/parcours-depot", () => {
                 .attach("file", csvPath)
                 .field("depositScdlLogDto", JSON.stringify(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2))
                 .set("x-access-token", token);
-
-            console.log(response);
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual(
@@ -379,7 +377,7 @@ describe("/parcours-depot", () => {
 
         it("should return BadRequest error when scdl dto inconsistent", async () => {
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, "12345678901234"));
 
@@ -399,7 +397,7 @@ describe("/parcours-depot", () => {
             s3Mock.on(PutObjectCommand).resolvesOnce({});
 
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, "12345678901234"));
 
@@ -428,7 +426,7 @@ describe("/parcours-depot", () => {
             s3Mock.on(PutObjectCommand).resolvesOnce({});
 
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             await depositLogAdapter.insertOne(new DepositScdlLogEntity(userId, 1, undefined, "12345678901234"));
 
@@ -468,7 +466,7 @@ describe("/parcours-depot", () => {
             } as MiscScdlProducerEntity);
 
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             const uploadFileInfo = new UploadedFileInfosEntity(
                 "test-csv-valid.csv",
@@ -503,7 +501,7 @@ describe("/parcours-depot", () => {
             } as MiscScdlProducerEntity);
 
             const token = await createAndGetUserToken();
-            const userId = (await getDefaultUser())!._id.toString();
+            const userId = (await getDefaultUser())!.id.toString();
 
             const uploadFileInfo = new UploadedFileInfosEntity(
                 "test-csv-invalid.csv",

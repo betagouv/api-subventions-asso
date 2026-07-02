@@ -23,8 +23,8 @@ jobs:
     build:
         runs-on: ubuntu-22.04
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
               with:
                   node-version: "22.15"
             - run: corepack enable
@@ -32,7 +32,7 @@ jobs:
             - run: pnpm prepare
             - run: pnpm build
             - run: pnpm generate
-            - uses: actions/cache@v3
+            - uses: actions/cache@v4
               with:
                   path: |
                       **/tsoa/
@@ -43,11 +43,11 @@ jobs:
         runs-on: ubuntu-22.04
         needs: build
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
               with:
                   node-version: "22.15"
-            - uses: actions/cache@v3
+            - uses: actions/cache@v4
               with:
                   path: |
                       **/tsoa/
@@ -60,11 +60,11 @@ jobs:
         runs-on: ubuntu-22.04
         needs: build
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
               with:
                   node-version: "22.15"
-            - uses: actions/cache@v3
+            - uses: actions/cache@v4
               with:
                   path: |
                       **/tsoa/
@@ -72,17 +72,18 @@ jobs:
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
             - run: corepack enable
+            - run: pnpm --filter api generate
             - run: pnpm test:integ
               working-directory: "./packages/api"
     tests-api-unit:
         runs-on: ubuntu-22.04
         needs: build
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
               with:
                   node-version: "22.15"
-            - uses: actions/cache@v3
+            - uses: actions/cache@v4
               with:
                   path: |
                       **/tsoa/
@@ -96,11 +97,11 @@ jobs:
         runs-on: ubuntu-22.04
         needs: build
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
               with:
                   node-version: "22.15"
-            - uses: actions/cache@v3
+            - uses: actions/cache@v4
               with:
                   path: |
                       **/tsoa/
@@ -108,5 +109,6 @@ jobs:
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
             - run: corepack enable
+            - run: pnpm --filter dto build
             - run: pnpm test
               working-directory: "./packages/front"

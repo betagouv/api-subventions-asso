@@ -1,9 +1,8 @@
 import { HttpError } from "./HttpError";
 
 export class UnprocessableError extends HttpError {
-    constructor(message = "Unprocessable Content", code?: number) {
+    constructor(message = "Unprocessable Content") {
         super(message);
-        this.code = code;
     }
     status = 422;
 }

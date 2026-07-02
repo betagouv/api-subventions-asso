@@ -161,6 +161,14 @@ describe("SCDL CLI", () => {
                     providerName: PRODUCER.name,
                     providerSiret: PRODUCER.siret,
                     exportDate: new Date(FIRST_IMPORT_DATE),
+                    details: {
+                        fileName: "SCDL.csv",
+                        parsedCount: 5,
+                        importedCount: 4,
+                        errorCount: 1,
+                        durationMs: expect.any(Number),
+                        fileCount: 1,
+                    },
                 });
             });
         });

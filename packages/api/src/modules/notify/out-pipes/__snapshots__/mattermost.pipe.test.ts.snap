@@ -22,11 +22,68 @@ N'oubliez pas de supprimer toutes leurs données !",
 }
 `;
 
-exports[`MattermostPipe dataImportSuccess sends message 1`] = `
+exports[`MattermostPipe dataImportFailure sends failure message 1`] = `
+{
+  "channel": "datasubvention---produit",
+  "icon_emoji": "x",
+  "text": "Échec d'import pour le fournisseur **Chorus** (export du **2025-09-03**).
+**Erreur** : File could not be parsed
+**Fichier** : \`chorus-data.csv\`
+**Durée** : 4s",
+  "username": "Import de données",
+}
+`;
+
+exports[`MattermostPipe dataImportFailure sends failure message with all details fields 1`] = `
+{
+  "channel": "datasubvention---produit",
+  "icon_emoji": "x",
+  "text": "Échec d'import pour le fournisseur **Osiris** (export du **2025-09-03**).
+**Erreur** : Parse error on line 42
+**Fichier** : \`SuiviDossiers.csv\`
+**Année** : 2023
+**Durée** : 5s
+**Fichiers traités** : 2
+
+**Counts partiels**
+- Lignes parsées : 100
+- Données importées : 80
+- Erreurs : 20",
+  "username": "Import de données",
+}
+`;
+
+exports[`MattermostPipe dataImportSuccess sends message for single file 1`] = `
 {
   "channel": "datasubvention---produit",
   "icon_emoji": "white_check_mark",
-  "text": "Import de données réussi pour le fournisseur **Ville de Rennes** (SIRET : \`12345678900012\`) avec une date d'export au **2025-09-03**.",
+  "text": "Import de données réussi pour le fournisseur **Ville de Rennes** (SIRET : \`12345678900012\`) avec une date d'export au **2025-09-03**.
+
+**Fichier** : \`SCDL.csv\`
+**Durée** : 1s
+
+**Counts**
+- Lignes parsées : 100
+- Données importées : 99 (99.00%)
+- Erreurs : 1 (1.00%)",
+  "username": "Import de données",
+}
+`;
+
+exports[`MattermostPipe dataImportSuccess shows exerciseYear when provided 1`] = `
+{
+  "channel": "datasubvention---produit",
+  "icon_emoji": "white_check_mark",
+  "text": "Import de données réussi pour le fournisseur **Osiris**.
+
+**Fichier** : \`SuiviDossiers\`
+**Durée** : 60s
+**Année** : 2023
+
+**Counts**
+- Lignes parsées : 247931
+- Données importées : 122892 (49.57%)
+- Erreurs : 125039 (50.43%)",
   "username": "Import de données",
 }
 `;

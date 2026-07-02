@@ -57,6 +57,7 @@ export async function isEstabIdentifierFromAssoMiddleware(req, _res, next) {
     } catch (e) {
         // somehow errorMiddleware does not catch errors in tsoa middlewares so it needs ot be called explicitly
         errorHandler(false)(e, req, _res, next);
+        return;
     }
     next();
 }
@@ -193,7 +194,7 @@ export class EstablishmentHttp extends Controller {
     ): Promise<GetSubventionsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
 
-        const subventions = await establishmentService.getSubventions(estabIdentifier);
+        const subventions = await establishmentService.getDemandes(estabIdentifier);
         return { subventions };
     }
 
@@ -213,7 +214,7 @@ export class EstablishmentHttp extends Controller {
         @Request() req,
     ): Promise<GetPaymentsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
-        const payments = await establishmentService.getPayments(estabIdentifier);
+        const payments = await establishmentService.getPaiements(estabIdentifier);
         return { versements: payments };
     }
 
@@ -226,7 +227,7 @@ export class EstablishmentHttp extends Controller {
      */
     @Example<PaymentFlatDto[]>([PAYMENT_DTO_EXAMPLE])
     @Get("/paiements")
-    public async getEntitiesByIdentifier(
+    public async getPaymentsFlatByIdentifier(
         identifier: EstablishmentIdentifierDto,
         @Request() req,
     ): Promise<PaymentFlatDto[]> {

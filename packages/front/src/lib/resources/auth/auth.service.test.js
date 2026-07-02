@@ -8,21 +8,6 @@ import { goToUrl } from "$lib/services/router.service";
 import userService from "$lib/resources/users/user.service";
 import localStorageService from "$lib/services/localStorage.service";
 
-const mocks = vi.hoisted(() => {
-    return {
-        DEFAULT_ERROR_CODE: 49,
-    };
-});
-
-vi.mock("dto", async () => {
-    const actual = await vi.importActual("dto");
-    return {
-        ...actual,
-        SignupErrorCodes: { EMAIL_NOT_VALID: mocks.DEFAULT_ERROR_CODE },
-        ResetPasswordErrorCodes: { INTERNAL_ERROR: mocks.DEFAULT_ERROR_CODE },
-        __esModule: true, // this property makes it work
-    };
-});
 vi.mock("$lib/resources/auth/auth.port");
 vi.mock("$lib/services/crisp.service");
 vi.mock("$lib/services/localStorage.service", async () => {
@@ -58,9 +43,9 @@ describe("authService", () => {
         });
         afterAll(() => authPort.resetPassword.mockRestore());
 
-        it("rejects with appropriate code if no token", async () => {
+        it("rejects with internal server error status if no token", async () => {
             const test = () => authService.resetPassword();
-            await expect(test).rejects.toBe(mocks.DEFAULT_ERROR_CODE);
+            await expect(test).rejects.toEqual({ httpCode: 500 });
         });
 
         it("calls port", async () => {
@@ -99,7 +84,7 @@ describe("authService", () => {
         });
 
         it("rejects if user is linked to proConnect", async () => {
-            authPort.forgetPassword.mockResolvedValueOnce({ agentConnectId: "something" });
+            authPort.forgetPassword.mockResolvedValueOnce({ proConnectId: "something" });
             const test = () => authService.forgetPassword();
             await expect(test).rejects.toMatchInlineSnapshot(`undefined`);
         });

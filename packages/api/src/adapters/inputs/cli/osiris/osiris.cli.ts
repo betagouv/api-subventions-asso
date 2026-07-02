@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 
 import { StaticImplements } from "../../../../decorators/static-implements.decorator";
 import { ApplicationFlatCli, CliStaticInterface } from "../../../../@types";
@@ -16,6 +17,9 @@ import OsirisActionEntity from "../../../../modules/providers/osiris/entities/Os
 import Siret from "../../../../identifier-objects/Siret";
 import { isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../../shared/Validators";
 import { InvalidOsirisRequestError } from "../../../../modules/providers/osiris/osiris.errors";
+import { ImportReport } from "../../../../@types/ImportReport";
+import { notifyImportFailureUseCase } from "../../../../modules/notify/use-cases/notify-import-failure.use-case";
+import { notifyImportSuccessUseCase } from "../../../../modules/notify/use-cases/notify-import-success.use-case";
 
 @StaticImplements<CliStaticInterface>()
 export default class OsirisCli implements ApplicationFlatCli {
@@ -62,7 +66,7 @@ export default class OsirisCli implements ApplicationFlatCli {
         return true;
     }
 
-    public async parse(type: "requests" | "actions", file: string, extractYear: string): Promise<unknown> {
+    public async parse(type: "requests" | "actions", file: string, extractYear: string): Promise<void> {
         if (typeof type != "string" && typeof file != "string" && typeof extractYear != "string") {
             throw new Error("Parse command need type, extractYear and file args");
         }
@@ -76,21 +80,57 @@ export default class OsirisCli implements ApplicationFlatCli {
         }
 
         const files = GenericParser.findFiles(file);
+        const year = parseInt(extractYear, 10);
         const logs: unknown[] = [];
 
         console.info(`${files.length} files in the parse queue`);
         console.info(`You can read log in ${this.logFileParsePath[type]}`);
 
-        return files
-            .reduce((acc, filePath) => {
-                return acc.then(() => this._parse(type, filePath, parseInt(extractYear, 10), logs));
-            }, Promise.resolve())
-            .then(() =>
-                fs.writeFileSync(this.logFileParsePath[type], logs.join(""), {
-                    flag: "w",
-                    encoding: "utf-8",
-                }),
-            );
+        const startAt = Date.now();
+        const fileReports: ImportReport[] = [];
+
+        try {
+            await files
+                .reduce((acc, filePath) => {
+                    return acc.then(async () => {
+                        const result = await this._parse(type, filePath, year, logs);
+                        if (result) fileReports.push(result);
+                    });
+                }, Promise.resolve())
+                .then(() =>
+                    fs.writeFileSync(this.logFileParsePath[type], logs.join(""), {
+                        flag: "w",
+                        encoding: "utf-8",
+                    }),
+                );
+        } catch (error) {
+            const partialReport: ImportReport = {
+                parsedCount: fileReports.reduce((sum, r) => sum + r.parsedCount, 0),
+                importedCount: fileReports.reduce((sum, r) => sum + r.importedCount, 0),
+                errorCount: fileReports.reduce((sum, r) => sum + r.errorCount, 0),
+            };
+            await notifyImportFailureUseCase.execute(osirisService.meta.name, error as Error, {
+                durationMs: Date.now() - startAt,
+                fileName: path.basename(file),
+                exerciseYear: year,
+                fileCount: files.length,
+                report: partialReport,
+            });
+            throw error;
+        }
+
+        if (fileReports.length > 0) {
+            const aggregated: ImportReport = {
+                parsedCount: fileReports.reduce((sum, r) => sum + r.parsedCount, 0),
+                importedCount: fileReports.reduce((sum, r) => sum + r.importedCount, 0),
+                errorCount: fileReports.reduce((sum, r) => sum + r.errorCount, 0),
+            };
+            await notifyImportSuccessUseCase.execute(osirisService.meta.name, file, aggregated, {
+                durationMs: Date.now() - startAt,
+                fileCount: files.length,
+                exerciseYear: year,
+            });
+        }
     }
 
     protected async _parse(type: string, file: string, year: number, logs: unknown[]) {
@@ -99,10 +139,12 @@ export default class OsirisCli implements ApplicationFlatCli {
 
         const fileContent = fs.readFileSync(file);
 
+        let importReport: ImportReport;
+
         if (type === "requests") {
-            await this._parseRequest(fileContent, year, logs);
+            importReport = await this._parseRequest(fileContent, year, logs);
         } else if (type === "actions") {
-            await this._parseAction(fileContent, year, logs);
+            importReport = await this._parseAction(fileContent, year, logs);
         } else {
             throw new Error(`The type ${type} is not taken into account`);
         }
@@ -114,6 +156,8 @@ export default class OsirisCli implements ApplicationFlatCli {
             // this assumes that extraction date is close enough to integration date
             editionDate: new Date(),
         });
+
+        return importReport;
     }
 
     async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
@@ -179,6 +223,12 @@ export default class OsirisCli implements ApplicationFlatCli {
             } requests updated
             ${nbErrors} requests not valid
         `);
+
+        return {
+            parsedCount: dtos.length,
+            importedCount: validated.length,
+            errorCount: nbErrors,
+        };
     }
 
     async _parseAction(contentFile: Buffer, year: number, logs: unknown[]) {
@@ -224,6 +274,12 @@ export default class OsirisCli implements ApplicationFlatCli {
             } actions updated
             ${nbErrors} actions not valid
         `);
+
+        return {
+            parsedCount: dtos.length,
+            importedCount: entities.length,
+            errorCount: nbErrors,
+        };
     }
 
     async initApplicationFlat() {

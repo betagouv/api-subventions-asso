@@ -1,8 +1,7 @@
 import { AgentJobTypeEnum, AgentTypeEnum, UserDto, UserWithJWTDto } from "dto";
 
 export const USER_DTO_DEFAULT: UserDto = {
-    // @ts-expect-error: no tightning to mongodb
-    _id: "string",
+    id: "string",
     agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
     jobType: [AgentJobTypeEnum.ADMINISTRATOR],
     email: "john.doe@gouv.fr",
@@ -15,8 +14,7 @@ export const USER_DTO_DEFAULT: UserDto = {
 };
 
 export const USER_DTO_NEW: UserDto = {
-    // @ts-expect-error: no tightning to mongodb
-    _id: "string",
+    id: "string",
     agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
     jobType: [AgentJobTypeEnum.ADMINISTRATOR],
     email: "john.doe@gouv.fr",
@@ -29,8 +27,7 @@ export const USER_DTO_NEW: UserDto = {
 };
 
 export const USER_DTO_SIGNIN: UserDto = {
-    // @ts-expect-error: no tightning to mongodb
-    _id: "string",
+    id: "string",
     agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
     jobType: [AgentJobTypeEnum.ADMINISTRATOR],
     email: "john.doe@gouv.fr",
@@ -43,8 +40,7 @@ export const USER_DTO_SIGNIN: UserDto = {
 };
 
 export const USER_DTO_ADMIN: UserDto = {
-    // @ts-expect-error: no tightning to mongodb
-    _id: "string",
+    id: "string",
     agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
     jobType: [AgentJobTypeEnum.ADMINISTRATOR],
     email: "john.doe@gouv.fr",
@@ -57,8 +53,7 @@ export const USER_DTO_ADMIN: UserDto = {
 };
 
 export const USER_DTO_LOGGED: UserWithJWTDto = {
-    // @ts-expect-error: no tightning to mongodb
-    _id: "string",
+    id: "string",
     agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
     jobType: [AgentJobTypeEnum.ADMINISTRATOR],
     email: "john.doe@gouv.fr",

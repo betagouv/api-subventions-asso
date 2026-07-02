@@ -36,6 +36,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * **front:** [#3825](https://github.com/betagouv/api-subventions-asso/issues/3825) fix setTrackerUrl ([f1d7516](https://github.com/betagouv/api-subventions-asso/commit/f1d751608e7b8b532d1b2d30af107cb843c72057))
 * **front:** [#3825](https://github.com/betagouv/api-subventions-asso/issues/3825) fix setTrackerUrl ([#3936](https://github.com/betagouv/api-subventions-asso/issues/3936)) ([af8d3fe](https://github.com/betagouv/api-subventions-asso/commit/af8d3feb3b11a3499f386c1360c2ff0704d9fdc6))
 
+
 ## [0.84.7](https://github.com/betagouv/api-subventions-asso/compare/v0.84.6...v0.84.7) (2026-06-05)
 
 ### Bug Fixes

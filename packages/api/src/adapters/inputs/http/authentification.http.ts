@@ -1,10 +1,11 @@
-import type { CookieOptions } from "express";
+import type { CookieOptions, Request as ExpressRequest } from "express";
 import type {
     ResetPasswordDtoResponse,
     TokenValidationDtoResponse,
     ActivateDtoResponse,
     LoginDtoResponse,
     ActivateUserBody,
+    UserDto,
 } from "dto";
 import {
     AdminTerritorialLevel,
@@ -18,19 +19,19 @@ import type { IdentifiedRequest, LoginRequest } from "../../../@types";
 
 import { DEV } from "../../../configurations/env.conf";
 import { DOMAIN } from "../../../configurations/domain.conf";
-import { AGENT_CONNECT_ENABLED } from "../../../configurations/pro-connect.conf";
 import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security, Example } from "tsoa";
 import { BadRequestError, InternalServerError } from "core";
 import userAuthService from "../../../modules/user/services/auth/user.auth.service";
 import userProfileService from "../../../modules/user/services/profile/user.profile.service";
 import userActivationService from "../../../modules/user/services/activation/user.activation.service";
-import userAgentConnectService from "../../../modules/user/services/agentConnect/user.agentConnect.service";
+import userProConnectService from "../../../modules/user/services/pro-connect/user.pro-connect.service";
 import { USER_DTO_DEFAULT, USER_DTO_LOGGED, USER_DTO_SIGNIN } from "./examples/Users";
+import UserEntity from "../../../domain/users/UserEntity";
 
 @Route("/auth")
 @Tags("Authentification Controller")
 export class AuthentificationHttp extends Controller {
-    private setCookie(req, user) {
+    private setCookie(req: ExpressRequest, user) {
         const cookieOption: CookieOptions = {
             secure: true,
             sameSite: "strict",
@@ -69,9 +70,14 @@ export class AuthentificationHttp extends Controller {
         @Body() body: { password: string; token: string },
         @Request() req,
     ): Promise<ResetPasswordDtoResponse> {
-        const user = await userActivationService.resetPassword(body.password, body.token);
-        this.setCookie(req, user);
-        return { user };
+        try {
+            const user = (await userActivationService.resetPassword(body.password, body.token)) as UserDto;
+            this.setCookie(req, user);
+            return { user };
+        } catch (e) {
+            console.log("ici", e);
+            throw e;
+        }
     }
 
     private _login(req) {
@@ -100,14 +106,14 @@ export class AuthentificationHttp extends Controller {
     }
 
     /**
-     * @summary Authentification via ProConnect (ex AgentConnect)
+     * @summary Authentification via ProConnect (ex ProConnect)
      */
     @Example<LoginDtoResponse>({
         user: USER_DTO_LOGGED,
     })
     @Get("/ac/login")
     @SuccessResponse("200", "Login successfully")
-    public agentConnectLogin(@Request() req: Request): LoginDtoResponse {
+    public proConnectLogin(@Request() req: Request): LoginDtoResponse {
         // If you change the route please change in express.auth.hooks.ts
         return this._login(req);
     }
@@ -139,10 +145,15 @@ export class AuthentificationHttp extends Controller {
     @Post("/activate")
     @SuccessResponse("200")
     public async activate(@Body() body: ActivateUserBody, @Request() req): Promise<ActivateDtoResponse> {
-        const user = await userProfileService.activate(body.token, body.data);
-        this.setCookie(req, user);
-        this.setStatus(200);
-        return { user };
+        try {
+            const user = (await userProfileService.activate(body.token, body.data)) as UserDto;
+            this.setCookie(req, user);
+            this.setStatus(200);
+            return { user };
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
     }
 
     /**
@@ -153,8 +164,12 @@ export class AuthentificationHttp extends Controller {
     public async logout(@Request() req: IdentifiedRequest): Promise<string | null> {
         let url: null | string = null;
         if (!req.user) throw new BadRequestError();
-        if (AGENT_CONNECT_ENABLED) url = await userAgentConnectService.getLogoutUrl(req.user);
-        await userAuthService.logout(req.user);
+        try {
+            url = await userProConnectService.getLogoutUrl(new UserEntity(req.user as UserEntity));
+        } catch {
+            url = null;
+        }
+        await userAuthService.logout(new UserEntity(req.user as UserEntity));
         return url;
     }
 

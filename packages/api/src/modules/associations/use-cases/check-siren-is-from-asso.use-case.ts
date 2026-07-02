@@ -1,15 +1,18 @@
-import { SireneStockUniteLegalePort } from "../../../adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.port";
-import { UniteLegalEntreprisePort } from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.port";
+import sireneUniteLegaleAdapter from "../../../adapters/outputs/db/sirene/sirene-unite-legale.adapter";
+import { SireneUniteLegalePort } from "../../../adapters/outputs/db/sirene/sirene-unite-legale.port";
+import uniteLegaleEntrepriseAdapter from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
+import { UniteLegaleEntreprisePort } from "../../../adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.port";
 import { RnaSirenPort } from "../../../adapters/outputs/db/rna-siren/rna-siren.port";
 import { Siren } from "../../../identifier-objects";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
-import { ApiAssoService } from "../../providers/api-asso/api-asso.service";
+import apiAssoService, { ApiAssoService } from "../../providers/api-asso/api-asso.service";
+import rnaSirenAdapter from "../../../adapters/outputs/db/rna-siren/rna-siren.adapter";
 
-export default class CheckSirenIsFromAssoUseCase {
+export class CheckSirenIsFromAssoUseCase {
     constructor(
-        private sirenePort: SireneStockUniteLegalePort,
+        private sirenePort: SireneUniteLegalePort,
         private rnaSirenPort: RnaSirenPort,
-        private entreprisePort: UniteLegalEntreprisePort,
+        private entreprisePort: UniteLegaleEntreprisePort,
         // @TODO: make this a use case
         private apiAssoService: ApiAssoService,
     ) {}
@@ -21,11 +24,20 @@ export default class CheckSirenIsFromAssoUseCase {
         if ((await this.rnaSirenPort.find(siren))?.length) return true;
         // entreprise collection stores only entreprise siren
         if (await this.entreprisePort.findOneBySiren(siren)) return false;
+
         // backup solution
         const asso = await this.apiAssoService.findAssociationBySiren(siren);
-
         const category = asso?.categorie_juridique?.[0]?.value;
         if (!category) return false;
         return LEGAL_CATEGORIES_ACCEPTED.includes(category);
     }
 }
+
+const checkSirenIsFromAsso = new CheckSirenIsFromAssoUseCase(
+    sireneUniteLegaleAdapter,
+    rnaSirenAdapter,
+    uniteLegaleEntrepriseAdapter,
+    apiAssoService,
+);
+
+export default checkSirenIsFromAsso;

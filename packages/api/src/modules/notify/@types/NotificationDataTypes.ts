@@ -1,6 +1,9 @@
-import { FutureUserDto, UserActivationInfoDto } from "dto";
 import { NotificationType } from "./NotificationType";
 import { DefaultObject } from "../../../@types";
+import { ImportNotificationDetails } from "../../../@types/ImportNotificationDetails";
+import { ImportReport } from "../../../@types/ImportReport";
+import { FutureUser } from "../../../domain/users/@types/FutureUser";
+import UserEntity from "../../../domain/users/UserEntity";
 
 export interface NotificationDataTypes {
     [NotificationType.USER_ALREADY_EXIST]: {
@@ -18,7 +21,7 @@ export interface NotificationDataTypes {
         url: string | null;
         signupAt: Date;
         active: boolean;
-        isAgentConnect: boolean;
+        isProConnect: boolean;
     };
     [NotificationType.USER_DELETED]: {
         email: string;
@@ -44,10 +47,9 @@ export interface NotificationDataTypes {
         email: string;
         date: Date;
     };
-    [NotificationType.USER_UPDATED]: Omit<UserActivationInfoDto, "password"> &
-        FutureUserDto & { lastActivityDate?: Date | null };
-    [NotificationType.USER_CONFLICT]: FutureUserDto;
-    [NotificationType.SIGNUP_BAD_DOMAIN]: FutureUserDto;
+    [NotificationType.USER_UPDATED]: UserEntity;
+    [NotificationType.USER_CONFLICT]: FutureUser;
+    [NotificationType.SIGNUP_BAD_DOMAIN]: FutureUser;
     [NotificationType.TEST_EMAIL]: {
         email: string;
         templateId: number;
@@ -78,6 +80,15 @@ export interface NotificationDataTypes {
         providerName: string;
         providerSiret?: string;
         exportDate?: Date;
+        details: ImportNotificationDetails;
+    };
+    [NotificationType.DATA_IMPORT_FAILURE]: {
+        providerName: string;
+        providerSiret?: string;
+        exportDate?: Date;
+        error: string;
+        details: Pick<ImportNotificationDetails, "fileName" | "durationMs" | "fileCount" | "exerciseYear"> &
+            Partial<ImportReport>;
     };
     [NotificationType.DEPOSIT_SCDL_SUCCESS]: {
         providerName: string;

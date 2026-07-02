@@ -23,7 +23,6 @@ export function errorHandler(isTest: boolean) {
             if (!isTest) console.error(err);
 
             let response: Record<string, string | number> = { message: err.message };
-            if (err.code) response.code = err.code;
             if (err.cause) response = { ...response, ...err.cause };
             return res.status(err.status).json(response);
         }

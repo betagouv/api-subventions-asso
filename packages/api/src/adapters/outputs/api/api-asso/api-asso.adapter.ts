@@ -39,7 +39,11 @@ class ApiAssoAdapter implements ApiAssoPort {
                         "X-Gravitee-Api-Key": API_ASSO_TOKEN as string,
                     },
                 })
-                .then(response => this.cacheAndReturn(route, response));
+                .then(response => this.cacheAndReturn(route, response))
+                .catch(error => {
+                    if (error.response?.status === 404) return null;
+                    throw error;
+                });
     }
 
     getStructure(identifier: Rna | Siren) {

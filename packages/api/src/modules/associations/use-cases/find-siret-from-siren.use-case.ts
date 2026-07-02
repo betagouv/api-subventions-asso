@@ -1,9 +1,10 @@
-import { SireneStockUniteLegalePort } from "../../../adapters/outputs/db/sirene/stock-unite-legale/sirene-stock-unite-legale.port";
+import sireneUniteLegaleAdapter from "../../../adapters/outputs/db/sirene/sirene-unite-legale.adapter";
+import { SireneUniteLegalePort } from "../../../adapters/outputs/db/sirene/sirene-unite-legale.port";
 import Siren from "../../../identifier-objects/Siren";
 import Siret from "../../../identifier-objects/Siret";
 
-export default class FindSiretFromSirenUseCase {
-    constructor(private sirenePort: SireneStockUniteLegalePort) {}
+export class FindSiretFromSirenUseCase {
+    constructor(private sirenePort: SireneUniteLegalePort) {}
 
     async execute(siren: Siren) {
         const nic = (await this.sirenePort.findOneBySiren(siren))?.nicSiegeUniteLegale;
@@ -11,3 +12,6 @@ export default class FindSiretFromSirenUseCase {
         else return null;
     }
 }
+
+const findSiretFromSiren = new FindSiretFromSirenUseCase(sireneUniteLegaleAdapter);
+export default findSiretFromSiren;

@@ -1,9 +1,8 @@
 import { HttpError } from "./HttpError";
 
 export class ForbiddenError extends HttpError {
-    constructor(message = "Forbidden", code?: number) {
+    constructor(message = "Forbidden") {
         super(message);
-        this.code = code;
     }
     status = 403;
 }

@@ -1,4 +1,4 @@
-import { DemandeSubvention, Establishment } from "dto";
+import { DemandeSubvention, EstablishmentSimplifiedWithProviderValues } from "dto";
 import establishmentService from "../../../modules/establishments/establishment.service";
 import { EstablishmentHttp, isEstabIdentifierFromAssoMiddleware } from "./establishment.http";
 import EstablishmentIdentifier from "../../../identifier-objects/EstablishmentIdentifier";
@@ -36,36 +36,36 @@ describe("EstablishmentHttp", () => {
     });
 
     describe("getDemandeSubventions", () => {
-        const getSubventionsSpy = jest.spyOn(establishmentService, "getSubventions");
+        const getDemandesSpy = jest.spyOn(establishmentService, "getDemandes");
         it("should call service with args", async () => {
             const subventions = [{}] as DemandeSubvention[];
             // @ts-expect-error: mock
-            getSubventionsSpy.mockReturnValueOnce(subventions);
+            getDemandesSpy.mockReturnValueOnce(subventions);
             await controller.getDemandeSubventions(SIRET.value, REQ);
-            expect(getSubventionsSpy).toHaveBeenCalledWith(ESTABLISHMENT_ID);
+            expect(getDemandesSpy).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
 
         it("should return a grant requests", async () => {
             const subventions = [{}] as DemandeSubvention[];
             // @ts-expect-error: mock
-            getSubventionsSpy.mockReturnValueOnce(subventions);
+            getDemandesSpy.mockReturnValueOnce(subventions);
             const expected = { subventions };
             const promise = controller.getDemandeSubventions(SIRET.value, REQ);
             expect(await promise).toEqual(expected);
         });
     });
 
-    describe("getPayments", () => {
-        const getSubventionsSpy = jest.spyOn(establishmentService, "getPayments");
+    describe("getPaiements", () => {
+        const getPaiementsSpy = jest.spyOn(establishmentService, "getPaiements");
         it("should call service with args", async () => {
-            getSubventionsSpy.mockImplementationOnce(jest.fn());
+            getPaiementsSpy.mockImplementationOnce(jest.fn());
             await controller.getPaymentsEstablishement(SIRET.value, REQ);
-            expect(getSubventionsSpy).toHaveBeenCalledWith(ESTABLISHMENT_ID);
+            expect(getPaiementsSpy).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
 
         it("should return payments", async () => {
             // @ts-expect-error: mock
-            getSubventionsSpy.mockImplementationOnce(() => payments);
+            getPaiementsSpy.mockImplementationOnce(() => payments);
             const payments = [{}];
             const expected = { versements: payments };
             const actual = await controller.getPaymentsEstablishement(SIRET.value, REQ);
@@ -112,7 +112,9 @@ describe("EstablishmentHttp", () => {
     describe("getEstablishment", () => {
         const getEstablishmentSpy = jest.spyOn(establishmentService, "getEstablishment");
         it("should call service with args", async () => {
-            getEstablishmentSpy.mockImplementationOnce(async () => ({ siret: SIRET }) as unknown as Establishment);
+            getEstablishmentSpy.mockImplementationOnce(
+                async () => ({ siret: SIRET }) as unknown as EstablishmentSimplifiedWithProviderValues,
+            );
             await controller.getEstablishment(SIRET.value, REQ);
             expect(getEstablishmentSpy).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
@@ -258,17 +260,7 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
                 },
               },
               "RES",
-              [MockFunction] {
-                "calls": [
-                  [],
-                ],
-                "results": [
-                  {
-                    "type": "return",
-                    "value": undefined,
-                  },
-                ],
-              },
+              [MockFunction],
             ]
         `);
     });
@@ -299,17 +291,7 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
                 },
               },
               "RES",
-              [MockFunction] {
-                "calls": [
-                  [],
-                ],
-                "results": [
-                  {
-                    "type": "return",
-                    "value": undefined,
-                  },
-                ],
-              },
+              [MockFunction],
             ]
         `);
     });

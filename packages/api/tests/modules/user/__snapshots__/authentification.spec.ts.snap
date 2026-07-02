@@ -2,18 +2,16 @@
 
 exports[`AuthentificationController, /auth POST /activate should return user 1`] = `
 {
-  "_id": Any<String>,
   "active": true,
   "agentType": "CENTRAL_ADMIN",
   "email": "user@beta.gouv.fr",
-  "firstName": null,
+  "id": Any<String>,
   "jobType": [],
   "jwt": {
     "expirateDate": Any<String>,
     "token": Any<String>,
   },
   "lastActivityDate": Any<String>,
-  "lastName": null,
   "nbVisits": 0,
   "profileToComplete": false,
   "registrationSrc": [],

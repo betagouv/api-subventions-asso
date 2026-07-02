@@ -2,7 +2,7 @@
     import PasswordErrorAlertController from "./PasswordErrorAlert.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
 
-    export let error: { data?: { code: string } };
+    export let error: { httpCode?: number };
     const ctrl = new PasswordErrorAlertController(error);
 </script>
 

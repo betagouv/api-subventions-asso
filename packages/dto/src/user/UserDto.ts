@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import {
     AdminTerritorialLevel,
     AgentJobTypeEnum,
@@ -14,18 +13,18 @@ export interface FutureUserDto {
     roles?: string[];
     firstName?: string;
     lastName?: string;
-    agentConnectId?: string;
+    proConnectId?: string;
 }
 
 export interface UserDto extends FutureUserDto, Omit<UserActivationInfoDto, "password"> {
-    _id: ObjectId;
+    id: string;
     roles: string[];
     active: boolean;
     signupAt: Date;
     profileToComplete: boolean;
     disable?: boolean;
     lastActivityDate: Date | null;
-    agentConnectId?: string;
+    proConnectId?: string;
     nbVisits: number;
 }
 
@@ -36,8 +35,8 @@ export interface ActivateUserBody {
 
 export interface UserActivationInfoDto {
     password: string;
-    agentType: AgentTypeEnum;
-    jobType: AgentJobTypeEnum[];
+    agentType?: AgentTypeEnum;
+    jobType?: AgentJobTypeEnum[];
     service?: string;
     phoneNumber?: string;
     structure?: string;
@@ -69,7 +68,7 @@ export interface UpdatableUser {
     registrationSrc?: RegistrationSrcTypeEnum[];
     registrationSrcEmail?: string;
     registrationSrcDetails?: string;
-    //To user from agent connect
+    //To user from pro connect
     profileToComplete?: boolean;
 }
 

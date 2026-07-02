@@ -1,9 +1,9 @@
 import { StructureIdentifier } from "../../../identifier-objects/@types/StructureIdentifier";
-import grantService from "../../grant/grant.service";
+import rawGrantService from "../../grant/raw-grant.service";
 
 class OpenDataGrantService {
     getByStructure(identifier: StructureIdentifier) {
-        return grantService.getCommonGrants(identifier, true);
+        return rawGrantService.getCommonGrants(identifier, true);
     }
 }
 

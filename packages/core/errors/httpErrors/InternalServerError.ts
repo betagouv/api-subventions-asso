@@ -4,9 +4,8 @@ export const InternalServerErrorMessage = "Internal Server Error";
 export const InternalServerErrorCode = 500;
 
 export class InternalServerError extends HttpError {
-    constructor(message = InternalServerErrorMessage, code?: number) {
+    constructor(message = InternalServerErrorMessage) {
         super(message);
-        this.code = code;
     }
     status = InternalServerErrorCode;
 }

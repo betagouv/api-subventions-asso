@@ -1,25 +1,23 @@
-import { FutureUserDto, SignupErrorCodes, UserDto, UserWithJWTDto, UserWithResetTokenDto } from "dto";
-import { BadRequestError, InternalServerError, NotFoundError } from "core";
+import { BadRequestError, InternalServerError } from "core";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import { DefaultObject } from "../../../../@types";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
-import userCheckService from "../check/user.check.service";
+import userCheckService, { EmailDomainNotAcceptedError } from "../check/user.check.service";
 import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
 import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import { RoleEnum } from "../../../../@enums/RolesEnum";
+import { RoleEnum } from "../../../../domain/users/@types/UserRoles";
 import userAuthService from "../auth/user.auth.service";
-import { UserNotPersisted } from "../../../../adapters/outputs/db/user/@types/UserDbo";
 import userConsumerService from "../consumer/user.consumer.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userActivationService from "../activation/user.activation.service";
-import { removeSecrets } from "../../../../shared/helpers/PortHelper";
-import { UserServiceErrors } from "../../user.enum";
 import { getNewJwtExpireDate } from "../../user.helper";
+import NewUserEntity from "../../../../domain/users/NewUserEntity";
+import UserEntity from "../../../../domain/users/UserEntity";
 
 export class UserCrudService {
-    find(query: DefaultObject = {}) {
+    find(query?: DefaultObject) {
         return userAdapter.find(query);
     }
 
@@ -39,13 +37,13 @@ export class UserCrudService {
         return userAdapter.findById(userId);
     }
 
-    public async update(user: Partial<UserDto> & Pick<UserDto, "email">): Promise<UserDto> {
+    public async update(user: UserEntity) {
         const fullUser = await userCrudService.findByEmail(user.email);
 
-        if (fullUser?.agentConnectId) userCheckService.validateOnlyEmail(user.email);
+        if (fullUser?.proConnectId) userCheckService.validateOnlyEmail(user.email);
         else await userCheckService.validateEmailAndDomain(user.email);
 
-        return await userAdapter.update(user);
+        return userAdapter.update(user);
     }
 
     public async delete(userId: string): Promise<boolean> {
@@ -56,18 +54,18 @@ export class UserCrudService {
         if (!(await userAdapter.delete(user))) return false;
 
         const deletePromises = [
-            userResetAdapter.removeAllByUserId(user._id),
-            consumerTokenAdapter.deleteAllByUserId(user._id),
+            userResetAdapter.removeAllByUserId(user.id),
+            consumerTokenAdapter.deleteAllByUserId(user.id),
         ];
 
         return (await Promise.all(deletePromises)).every(success => success);
     }
 
-    public async listUsers(): Promise<UserWithResetTokenDto[]> {
+    public async listUsers() {
         const users = await this.find();
         return await Promise.all(
             users.map(async user => {
-                const reset = await userResetAdapter.findOneByUserId(user._id);
+                const reset = await userResetAdapter.findOneByUserId(user.id);
                 if (!reset || userActivationService.isResetExpired(reset)) return user;
                 return {
                     ...user,
@@ -79,57 +77,46 @@ export class UserCrudService {
         );
     }
 
-    async createUser(userObject: FutureUserDto, withJWT = false): Promise<UserDto | UserWithJWTDto> {
-        // default values and ensures format
-        if (!userObject.roles) userObject.roles = [RoleEnum.user];
+    async createUser(newUser: NewUserEntity) {
+        const sanitizedUser = await userCheckService.validateSanitizeUser(newUser);
 
-        const sanitizedUser = await userCheckService.validateSanitizeUser(userObject);
-
-        const partialUser = {
-            email: userObject.email,
-            signupAt: new Date(),
+        const partialUser = new NewUserEntity({
+            email: newUser.email,
             roles: sanitizedUser.roles,
-            firstName: sanitizedUser.firstName || null,
-            lastName: sanitizedUser.lastName || null,
-            profileToComplete: true,
-            lastActivityDate: null,
-            agentConnectId: userObject.agentConnectId,
-            nbVisits: 0,
-        } as unknown;
+            firstName: sanitizedUser.firstName,
+            lastName: sanitizedUser.lastName,
+            proConnectId: newUser.proConnectId,
+        });
 
         const jwtParams = {
-            token: userAuthService.buildJWTToken(partialUser as UserDto),
+            token: userAuthService.buildJWTToken(partialUser),
             expirateDate: getNewJwtExpireDate(),
         };
 
-        const user = {
-            ...(partialUser as UserDto),
+        // @TODO: maybe AbstractUser should implement a method to add jwt to avoid creating another Entity ?
+        const user = new NewUserEntity({
+            ...partialUser,
             jwt: jwtParams,
-            active: !!userObject.agentConnectId,
-        } as UserNotPersisted;
+        });
 
-        const createdUser = withJWT ? await userAdapter.createAndReturnWithJWT(user) : await userAdapter.create(user);
+        const createdUser = await userAdapter.create(user);
 
-        if (!createdUser)
-            throw new InternalServerError("The user could not be created", UserServiceErrors.CREATE_USER_WRONG);
+        if (!createdUser) throw new InternalServerError("The user could not be created");
 
         return createdUser;
     }
 
-    public async signup(userObject: FutureUserDto, role = RoleEnum.user): Promise<UserDto> {
-        userObject.roles = [role];
-
+    public async signup(newUser: NewUserEntity) {
         let user;
-        if (role == RoleEnum.consumer) {
-            user = await userConsumerService.createConsumer(userObject);
+        if (newUser.roles.includes(RoleEnum.consumer)) {
+            user = await userConsumerService.createConsumer(newUser);
         } else {
             try {
-                user = await userCrudService.createUser(userObject);
+                user = await userCrudService.createUser(newUser);
             } catch (e) {
-                if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV)
-                    throw new BadRequestError(e.message, SignupErrorCodes.EMAIL_MUST_BE_END_GOUV);
+                if (e instanceof EmailDomainNotAcceptedError) throw new BadRequestError(e.message);
                 if (e instanceof DuplicateIndexError) {
-                    notifyService.notify(NotificationType.USER_CONFLICT, userObject);
+                    notifyService.notify(NotificationType.USER_CONFLICT, newUser);
                     throw new InternalServerError("An error has occurred");
                 }
                 throw e;
@@ -139,22 +126,16 @@ export class UserCrudService {
         const resetResult = await userActivationService.resetUser(user);
 
         notifyService.notify(NotificationType.USER_CREATED, {
-            email: userObject.email,
-            firstname: userObject.firstName,
-            lastname: userObject.lastName,
+            email: newUser.email,
+            firstname: newUser.firstName,
+            lastname: newUser.lastName,
             url: `${FRONT_OFFICE_URL}/auth/activate/${resetResult.token}`,
             active: user.active,
             signupAt: user.signupAt,
-            isAgentConnect: false,
+            isProConnect: false,
         });
 
         return user;
-    }
-
-    async getUserWithoutSecret(email: string) {
-        const withSecrets = await userAdapter.getUserWithSecretsByEmail(email);
-        if (!withSecrets) throw new NotFoundError("User not found");
-        return removeSecrets(withSecrets);
     }
 }
 

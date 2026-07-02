@@ -1,11 +1,7 @@
-import { SearchCodeError } from "dto";
-import { BadRequestError } from "./httpErrors";
+import { ConflictError } from "./httpErrors";
 
-export class MultipleAssociationsError extends BadRequestError {
+export class MultipleAssociationsError extends ConflictError {
     constructor() {
-        super(
-            "Multiple associations found with this identifier, please use a more specific one",
-            SearchCodeError.MULTIPLE_ASSOS,
-        );
+        super("Multiple associations found with this identifier, please use a more specific one");
     }
 }

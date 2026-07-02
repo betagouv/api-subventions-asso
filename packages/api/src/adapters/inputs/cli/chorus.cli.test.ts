@@ -1,73 +1,38 @@
 import fs from "fs";
-import ChorusParser from "../../../modules/providers/chorus/chorus.parser";
 import chorusService from "../../../modules/providers/chorus/chorus.service";
 import ChorusCli from "./chorus.cli";
-import { CHORUS_ENTITIES } from "../../../modules/providers/chorus/__fixtures__/ChorusFixtures";
 import paymentFlatChorusService from "../../../modules/payment-flat/payment-flat.chorus.service";
+import { ChorusImport } from "../pipeline/import/chorus/chorus.import";
+import { UpdateFlatByExercise } from "../../../modules/providers/chorus/use-cases/update-flat-by-exercise";
 
 jest.mock("fs");
 const mockedFs = jest.mocked(fs);
-jest.mock("../../../modules/providers/chorus/chorus.parser");
 jest.mock("../../../shared/helpers/CliHelper");
 jest.mock("../../../modules/providers/chorus/chorus.service");
-const mockedService = jest.mocked(chorusService);
 jest.mock("../../../modules/payment-flat/payment-flat.chorus.service");
+jest.mock("../../../modules/notify/notify.service", () => ({ notify: jest.fn().mockResolvedValue(true) }));
+jest.mock("../../../modules/data-log/dataLog.service", () => ({ addFromFile: jest.fn().mockResolvedValue(undefined) }));
 
 describe("Chorus CLI", () => {
     const LOGGER = { push: jest.fn(), join: jest.fn() };
 
     const FILE_PATH = "../../file/path";
     const FILE_CONTENT = "HERE_MY_CONTENT";
-    const NATIONAL_CHORUS_ENTITIES = [...CHORUS_ENTITIES];
-    const EUROPEAN_CHORUS_ENTITIES = [];
+    const IMPORT_REPORT = { parsedCount: 100, importedCount: 80, errorCount: 20 };
 
+    const mockChorusImport = { run: jest.fn() } as unknown as jest.Mocked<ChorusImport>;
+    const mockUpdateFlatByExercise = { execute: jest.fn() } as unknown as jest.Mocked<UpdateFlatByExercise>;
     let controller: ChorusCli;
 
     beforeEach(() => {
         mockedFs.existsSync.mockReturnValue(true);
         mockedFs.readFileSync.mockReturnValue(FILE_CONTENT);
         mockedFs.writeFileSync.mockImplementation(jest.fn());
-        mockedService.insertBatchChorus.mockResolvedValue({ created: 100, rejected: 10 });
-        ChorusParser.parse = jest
-            .fn()
-            .mockReturnValue({ national: NATIONAL_CHORUS_ENTITIES, european: EUROPEAN_CHORUS_ENTITIES });
-        controller = new ChorusCli();
+        mockChorusImport.run.mockResolvedValue(IMPORT_REPORT);
+        controller = new ChorusCli(mockChorusImport, mockUpdateFlatByExercise);
     });
-
-    describe("persistChorusEntities", () => {
-        let resyncFlatSpy: jest.SpyInstance;
-
-        beforeEach(() => {
-            resyncFlatSpy = jest.spyOn(controller, "resyncFlatByExercise").mockImplementation(jest.fn());
-        });
-
-        it("should call chorusService.insertBatchChorus()", async () => {
-            // @ts-expect-error: test private method
-            await controller.persistChorusEntities(NATIONAL_CHORUS_ENTITIES, LOGGER);
-            expect(mockedService.insertBatchChorus).toHaveBeenCalledTimes(1);
-        });
-
-        it("saves paymentFlat entities for each exercise found in file", async () => {
-            // @ts-expect-error: test private method
-            await controller.persistChorusEntities(NATIONAL_CHORUS_ENTITIES, LOGGER);
-            expect(resyncFlatSpy).toHaveBeenCalledWith(2022);
-            expect(resyncFlatSpy).toHaveBeenCalledWith(2023);
-        });
-    });
-
-    describe("persistChorusFseEntities", () => {});
 
     describe("_parse()", () => {
-        let mockPersistChorusEntities: jest.SpyInstance;
-        let mockPersistChorusFseEntities: jest.SpyInstance;
-
-        beforeEach(() => {
-            // @ts-expect-error: mock private method
-            mockPersistChorusEntities = jest.spyOn(controller, "persistChorusEntities").mockResolvedValue();
-            // @ts-expect-error: mock private method
-            mockPersistChorusFseEntities = jest.spyOn(controller, "persistChorusFseEntities").mockResolvedValue();
-        });
-
         it("should throw error if file is not a string", () => {
             // @ts-expect-error: test protected method
             expect(() => controller._parse(undefined, LOGGER)).rejects.toThrow(
@@ -83,36 +48,30 @@ describe("Chorus CLI", () => {
             );
         });
 
-        it("should call ChorusParser.parse()", async () => {
+        it("runs chorus import", async () => {
             // @ts-expect-error: test protected method
             await controller._parse(FILE_PATH, LOGGER);
-            expect(ChorusParser.parse).toHaveBeenCalledTimes(1);
+            expect(mockChorusImport.run).toHaveBeenCalledWith(FILE_CONTENT, { withoutEuropeanData: false });
         });
 
-        it("should persist chorus entities", async () => {
-            // @ts-expect-error: test protected method
-            await controller._parse(FILE_PATH, LOGGER);
-            expect(mockPersistChorusEntities).toHaveBeenCalledWith(NATIONAL_CHORUS_ENTITIES, LOGGER);
-        });
-
-        it("should persist chorus fse entities", async () => {
-            // @ts-expect-error: test protected method
-            await controller._parse(FILE_PATH, LOGGER);
-            expect(mockPersistChorusFseEntities).toHaveBeenCalledWith(EUROPEAN_CHORUS_ENTITIES);
-        });
-
-        it("handle --no-fse option for old files (prior to 2026)", async () => {
+        it("passes --no-fse option to chorus import", async () => {
             // @ts-expect-error: test protected method
             await controller._parse(FILE_PATH, LOGGER, "--no-fse");
-            expect(mockPersistChorusFseEntities).not.toHaveBeenCalled();
+            expect(mockChorusImport.run).toHaveBeenCalledWith(FILE_CONTENT, { withoutEuropeanData: true });
+        });
+
+        it("returns ImportReport from chorus import", async () => {
+            // @ts-expect-error: test protected method
+            const result = await controller._parse(FILE_PATH, LOGGER);
+            expect(result).toEqual(IMPORT_REPORT);
         });
     });
 
-    describe("resyncPaymentFlatByExercise", () => {
-        it("calls service updatePaymentsFlatCollection", async () => {
+    describe("syncFlatByExercise", () => {
+        it("calls use case updateFlatByExercise", async () => {
             const YEAR = 2022;
-            await controller.resyncFlatByExercise(YEAR);
-            expect(paymentFlatChorusService.updatePaymentsFlatCollection).toHaveBeenCalledWith(YEAR);
+            await controller.syncFlatByExercise(String(YEAR));
+            expect(mockUpdateFlatByExercise.execute).toHaveBeenCalledWith(YEAR);
         });
     });
 

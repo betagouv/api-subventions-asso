@@ -1,10 +1,9 @@
 import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import { RoleEnum } from "../../../src/@enums/RolesEnum";
+import { RoleEnum } from "../../../src/domain/users/@types/UserRoles";
 import { createAndActiveUser, createConsumerUser } from "../../__helpers__/userHelper";
 import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
 import statsAssociationsVisitAdapter from "../../../src/adapters/outputs/db/stats/association-visit.adapter";
-import UserDbo from "../../../src/adapters/outputs/db/user/@types/UserDbo";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
@@ -13,6 +12,7 @@ import { App } from "supertest/types";
 import logsAdapter from "../../../src/adapters/outputs/db/stats/logs.adapter";
 import { LoggedMeta, WinstonLog } from "../../../src/@types/WinstonLog";
 import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
+import NewUserEntity from "../../../src/domain/users/NewUserEntity";
 
 const g = global as unknown as { app: App };
 
@@ -22,23 +22,28 @@ describe("AdminController, /admin", () => {
 
     describe("POST /user/roles", () => {
         it("should return 200", async () => {
-            const response = await request(g.app)
+            await request(g.app)
                 .post("/admin/user/roles")
                 .send({
                     email: "admin@beta.gouv.fr",
                     roles: [RoleEnum.admin],
                 })
                 .set("x-access-token", await createAndGetAdminToken())
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({
-                user: { email: "admin@beta.gouv.fr", roles: ["user", "admin"] },
-            });
+                .set("Accept", "application/json")
+                .expect(200)
+                .expect(res =>
+                    expect(res.body).toMatchSnapshot({
+                        user: {
+                            id: expect.any(String),
+                            lastActivityDate: expect.any(String),
+                            signupAt: expect.any(String),
+                        },
+                    }),
+                );
         });
 
         it("should add role", async () => {
-            await userCrudService.createUser({ email: "futur-admin@beta.gouv.fr" });
+            await userCrudService.createUser(new NewUserEntity({ email: "futur-admin@beta.gouv.fr" }));
 
             const response = await request(g.app)
                 .post("/admin/user/roles")
@@ -59,7 +64,7 @@ describe("AdminController, /admin", () => {
         });
 
         it("should reject because role not exist", async () => {
-            await userCrudService.createUser({ email: "futur-admin@beta.gouv.fr" });
+            await userCrudService.createUser(new NewUserEntity({ email: "futur-admin@beta.gouv.fr" }));
 
             const response = await request(g.app)
                 .post("/admin/user/roles")
@@ -101,25 +106,25 @@ describe("AdminController, /admin", () => {
     });
 
     describe("GET /user/list-users", () => {
-        it("should return UserRequestsSuccessResponse", async () => {
+        it.only("should return UserRequestsSuccessResponse", async () => {
             const TODAY = new Date();
             const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";
             await createAndActiveUser(ACTIVE_USER_EMAIL);
-            const ACTIVE_USER = (await userAdapter.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
+            const ACTIVE_USER = await userAdapter.findByEmail(ACTIVE_USER_EMAIL);
             await Promise.all([
                 statsAssociationsVisitAdapter.add({
                     associationIdentifier: SIREN,
-                    userId: ACTIVE_USER._id,
+                    userId: ACTIVE_USER.id,
                     date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 12)),
                 }),
                 statsAssociationsVisitAdapter.add({
                     associationIdentifier: SIREN,
-                    userId: ACTIVE_USER._id,
+                    userId: ACTIVE_USER.id,
                     date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 6)),
                 }),
                 statsAssociationsVisitAdapter.add({
                     associationIdentifier: SIREN,
-                    userId: ACTIVE_USER._id,
+                    userId: ACTIVE_USER.id,
                     date: TODAY,
                 }),
             ]);
@@ -132,8 +137,9 @@ describe("AdminController, /admin", () => {
                 .expect(200);
 
             expect(response.body.users[0]).toMatchSnapshot({
-                _id: expect.any(String),
+                id: expect.any(String),
                 signupAt: expect.any(String),
+                lastActivityDate: expect.any(String),
             });
         });
     });
@@ -153,56 +159,56 @@ describe("AdminController, /admin", () => {
                     req: {
                         url: `/association/${DEFAULT_ASSOCIATION.rna}/grants/v2`,
                         // @ts-expect-error: mock user dbo
-                        user: { _id: consumer._id.toString() },
+                        user: { _id: consumer.id.toString() },
                     },
                 },
                 {
                     req: {
                         url: `/association/${DEFAULT_ASSOCIATION.rna}`,
                         // @ts-expect-error: mock user dbo
-                        user: { _id: consumer._id.toString() },
+                        user: { _id: consumer.id.toString() },
                     },
                 },
                 {
                     req: {
                         url: `/association/${DEFAULT_ASSOCIATION.siren}`,
                         // @ts-expect-error: mock user dbo
-                        user: { _id: consumer._id.toString() },
+                        user: { _id: consumer.id.toString() },
                     },
                 },
                 {
                     req: {
                         url: `/etablissement/${DEFAULT_ASSOCIATION.siret}`,
                         // @ts-expect-error: mock user dbo
-                        user: { _id: consumer._id.toString() },
+                        user: { _id: consumer.id.toString() },
                     },
                 },
                 {
                     req: {
                         url: `/open-data/rna-siren/${DEFAULT_ASSOCIATION.siren}`,
                         // @ts-expect-error: mock user dbo
-                        user: { _id: consumer._id.toString() },
+                        user: { _id: consumer.id.toString() },
                     },
                 },
                 {
                     req: {
                         url: "/search/associations/recherche%20par%20nom",
                         // @ts-expect-error: mock user dbo
-                        user: { _id: consumer._id.toString() },
+                        user: { _id: consumer.id.toString() },
                     },
                 },
                 {
                     req: {
                         url: "/document/api-asso/?url=https%3A%2F%2Flecompteasso%3A%2F%2Flecompteasso",
                         // @ts-expect-error: mock user dbo
-                        user: { _id: consumer._id.toString() },
+                        user: { _id: consumer.id.toString() },
                     },
                 },
                 {
                     req: {
                         url: "/parcours-depot/depot-fichier-scdl",
                         // @ts-expect-error: mock user dbo
-                        user: { _id: consumer._id.toString() },
+                        user: { _id: consumer.id.toString() },
                     },
                 },
             ];

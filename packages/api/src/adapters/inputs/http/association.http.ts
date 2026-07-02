@@ -34,7 +34,6 @@ import { HttpErrorInterface, NotAssociationError } from "core";
 
 import associationService from "../../../modules/associations/associations.service";
 import grantService from "../../../modules/grant/grant.service";
-import { JoinedRawGrantDto } from "../../../modules/grant/@types/RawGrant";
 import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";
 import grantExtractService from "../../../modules/grant/grant-extract.service";
 import { errorHandler } from "../../../middlewares/error.middleware";
@@ -44,6 +43,7 @@ import applicationFlatService from "../../../modules/application-flat/applicatio
 import { PAYMENT_DTO_EXAMPLE, APPLICATION_DTO_EXAMPLE } from "./examples/Grants";
 import { OLD_APPLICATON_DTO, OLD_PAYMENT_DTO } from "./examples/OldGrants";
 import { DOCUMENT_DTO } from "./examples/Documents";
+import rawGrantService from "../../../modules/grant/raw-grant.service";
 
 export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
     /*
@@ -62,6 +62,7 @@ export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
     } catch (e) {
         // somehow errorMiddleware does not catch errors in tsoa middlewares so it needs ot be called explicitly
         errorHandler(false)(e, req, _res, next);
+        return;
     }
     next();
 }
@@ -70,10 +71,9 @@ export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
 @Middlewares(isAssoIdentifierFromAssoMiddleware)
 @Security("jwt")
 @Tags("Association Controller")
-@Response<HttpErrorInterface>("401", "Non authentifié", { message: "User not logged", code: 1, cause: {} })
+@Response<HttpErrorInterface>("401", "Non authentifié", { message: "User not logged", cause: {} })
 @Response<HttpErrorInterface>("422", "Identifiant invalide", {
     message: "Votre recherche pointe vers une entité qui n'est pas une association",
-    code: 0,
     cause: {},
 })
 export class AssociationHttp extends Controller {
@@ -151,7 +151,7 @@ export class AssociationHttp extends Controller {
         @Request() req,
     ): Promise<GetSubventionsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
-        const subventions = await associationService.getSubventions(associationIdentifiers);
+        const subventions = await associationService.getDemandes(associationIdentifiers);
         return { subventions };
     }
 
@@ -167,13 +167,13 @@ export class AssociationHttp extends Controller {
     })
     @Deprecated()
     @Get("/versements")
-    public async getPayments(
+    public async getPaiements(
         @Path() identifier: AssociationIdentifierDto,
         @Request() req,
     ): Promise<GetPaymentsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
 
-        const payments = await associationService.getPayments(associationIdentifiers);
+        const payments = await associationService.getPaiements(associationIdentifiers);
         return { versements: payments };
     }
 
@@ -262,7 +262,7 @@ export class AssociationHttp extends Controller {
         @Request() req,
     ): Promise<GetOldGrantsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
-        const grants = await grantService.getOldGrants(associationIdentifiers);
+        const grants = await rawGrantService.getOldGrants(associationIdentifiers);
         return { subventions: grants, count: grants.length };
     }
 
@@ -311,28 +311,6 @@ export class AssociationHttp extends Controller {
         stream.push(csv);
         stream.push(null);
         return stream;
-    }
-
-    /**
-     * Recherche les subventions liées à une association, format brut
-     *
-     * @deprecated test purposes
-     * @summary Recherche les subventions liées à une association, format brut
-     * @param identifier Identifiant Siren ou Rna
-     * @param req
-     */
-    @Deprecated()
-    @Get("/raw-grants")
-    @Security("jwt", ["admin"])
-    @Response<HttpErrorInterface>("404")
-    @Response<HttpErrorInterface>("403", "Accès refusé")
-    public async getRawGrants(
-        @Path() identifier: AssociationIdentifierDto,
-        @Request() req,
-    ): Promise<JoinedRawGrantDto[]> {
-        const associationIdentifiers = req.assoIdentifier;
-
-        return grantService.getRawGrantsDto(associationIdentifiers);
     }
 
     /**

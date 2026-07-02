@@ -1,5 +1,4 @@
 import type { PaginatedAssociationNameDto, SiretDto } from "dto";
-import { SearchCodeError } from "dto";
 import { goto } from "$app/navigation";
 import Store from "$lib/core/Store";
 import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
@@ -7,7 +6,6 @@ import { decodeQuerySearch, encodeQuerySearch } from "$lib/helpers/urlHelper";
 import { isRna, isSiren, isSiret } from "$lib/helpers/identifierHelper";
 import associationService from "$lib/resources/associations/association.service";
 import { removeWhiteSpace } from "$lib/helpers/stringHelper";
-import { BadRequestError } from "$lib/errors";
 
 export default class SearchController {
     inputSearch: Store<string | undefined>;
@@ -26,26 +24,26 @@ export default class SearchController {
 
     async fetchAssociationFromName(rawInput = "", page = 1) {
         const input = rawInput.trim();
+        const inputId = removeWhiteSpace(rawInput);
+        const isSiretSearch = isSiret(inputId);
+        const isAssociationIdSearch = isSiren(inputId) || isRna(inputId);
         this.isLastSearchCompany.set(false);
         try {
             const search = await associationService.search(input, page);
 
             // search by id with single result: we can redirect
-            if (isSiret(input) && search.total === 1) return this.gotoEstablishment(input);
-            if ((isSiren(input) || isRna(input)) && search.total === 1) {
-                return goto(`/association/${input}`, { replaceState: true });
+            if (isSiretSearch && search.total === 1) return this.gotoEstablishment(inputId);
+            if (isAssociationIdSearch && search.total === 1) {
+                return goto(`/association/${inputId}`, { replaceState: true });
 
                 // multiple results
             } else {
                 // display alert if there are duplicates in rna-siren links
-                if (isSiren(input) || isRna(input)) {
-                    this.duplicatesFromIdentifier.set(
-                        search.results
-                            .map(association =>
-                                [association.rna, association.siren].find(identifier => identifier !== input),
-                            )
-                            .filter(identifier => identifier) as string[],
-                    );
+                if (isAssociationIdSearch) {
+                    const duplicates = search.results
+                        .map(association => [association.rna, association.siren].find(id => id && id !== inputId))
+                        .filter(identifier => identifier) as string[];
+                    this.duplicatesFromIdentifier.set(duplicates.length ? duplicates : null);
                 } else this.duplicatesFromIdentifier.set(null);
 
                 // search by name
@@ -55,8 +53,7 @@ export default class SearchController {
                 goto(`/search/${encodeQuerySearch(input)}`, { replaceState: true });
             }
         } catch (e) {
-            if (e instanceof BadRequestError && e.data?.code === SearchCodeError.ID_NOT_ASSO)
-                this.isLastSearchCompany.set(true);
+            if ((e as { httpCode?: number }).httpCode === 422) this.isLastSearchCompany.set(true);
         }
     }
 

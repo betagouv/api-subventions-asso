@@ -9,8 +9,10 @@ import Siren from "../../../identifier-objects/Siren";
 import grantExtractService from "../../../modules/grant/grant-extract.service";
 import { errorHandler } from "../../../middlewares/error.middleware";
 import associationHelper from "../../../modules/associations/associations.helper";
+import rawGrantService from "../../../modules/grant/raw-grant.service";
 
 jest.mock("../../../modules/grant/grant.service");
+jest.mock("../../../modules/grant/raw-grant.service");
 jest.mock("../../../modules/grant/grant-extract.service");
 jest.mock("../../../modules/association-identifier/association-identifier.service");
 jest.mock("../../../middlewares/error.middleware");
@@ -31,19 +33,19 @@ describe("AssociationHttp", () => {
     });
 
     describe("getDemandeSubventions", () => {
-        const getSubventionsSpy = jest.spyOn(associationsService, "getSubventions");
+        const getDemandesSpy = jest.spyOn(associationsService, "getDemandes");
         it("should call service with args", async () => {
             const subventions = [{}] as DemandeSubvention[];
             // @ts-expect-error: mock
-            getSubventionsSpy.mockReturnValueOnce(subventions);
+            getDemandesSpy.mockReturnValueOnce(subventions);
             await controller.getDemandeSubventions(IDENTIFIER.value, REQ);
-            expect(getSubventionsSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
+            expect(getDemandesSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
 
         it("should return a grant requests", async () => {
             const subventions = [{}] as DemandeSubvention[];
             // @ts-expect-error: mock
-            getSubventionsSpy.mockReturnValueOnce(subventions);
+            getDemandesSpy.mockReturnValueOnce(subventions);
             const expected = { subventions };
             const promise = controller.getDemandeSubventions(IDENTIFIER.value, REQ);
             expect(await promise).toEqual(expected);
@@ -52,12 +54,12 @@ describe("AssociationHttp", () => {
 
     describe("getOldGrants", () => {
         beforeAll(() => {
-            jest.mocked(grantService.getOldGrants).mockResolvedValue([]);
+            jest.mocked(rawGrantService.getOldGrants).mockResolvedValue([]);
         });
 
         it("should call grantService.getOldGrants()", async () => {
             await controller.getOldGrants(IDENTIFIER.value, REQ);
-            expect(grantService.getOldGrants).toHaveBeenCalledWith(ASSOCIATION_ID);
+            expect(rawGrantService.getOldGrants).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
     });
 
@@ -80,20 +82,20 @@ describe("AssociationHttp", () => {
         });
     });
 
-    describe("getPayments", () => {
-        const getSubventionsSpy = jest.spyOn(associationsService, "getPayments");
+    describe("getPaiements", () => {
+        const getDemandesSpy = jest.spyOn(associationsService, "getPaiements");
         it("should call service with args", async () => {
-            getSubventionsSpy.mockImplementationOnce(jest.fn());
-            await controller.getPayments(IDENTIFIER.value, REQ);
-            expect(getSubventionsSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
+            getDemandesSpy.mockImplementationOnce(jest.fn());
+            await controller.getPaiements(IDENTIFIER.value, REQ);
+            expect(getDemandesSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
 
         it("should return payments", async () => {
             // @ts-expect-error: mock
-            getSubventionsSpy.mockImplementationOnce(() => payments);
+            getDemandesSpy.mockImplementationOnce(() => payments);
             const payments = [{}];
             const expected = { versements: payments };
-            const actual = await controller.getPayments(IDENTIFIER.value, REQ);
+            const actual = await controller.getPaiements(IDENTIFIER.value, REQ);
             expect(actual).toEqual(expected);
         });
     });
@@ -118,7 +120,7 @@ describe("AssociationHttp", () => {
         it("should throw error", async () => {
             const ERROR_MESSAGE = "Error";
             getDocumentsSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            expect(() => controller.getDocuments(IDENTIFIER.value, REQ)).rejects.toThrowError(ERROR_MESSAGE);
+            expect(() => controller.getDocuments(IDENTIFIER.value, REQ)).rejects.toThrow(ERROR_MESSAGE);
         });
     });
 
@@ -142,7 +144,7 @@ describe("AssociationHttp", () => {
         it("should return an error message", async () => {
             const ERROR_MESSAGE = "Error";
             getAssociationSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            expect(() => controller.getAssociation(IDENTIFIER.value, REQ)).rejects.toThrowError(ERROR_MESSAGE);
+            expect(() => controller.getAssociation(IDENTIFIER.value, REQ)).rejects.toThrow(ERROR_MESSAGE);
         });
     });
 
@@ -275,17 +277,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
                 },
               },
               "RES",
-              [MockFunction] {
-                "calls": [
-                  [],
-                ],
-                "results": [
-                  {
-                    "type": "return",
-                    "value": undefined,
-                  },
-                ],
-              },
+              [MockFunction],
             ]
         `);
     });
@@ -309,17 +301,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
                 },
               },
               "RES",
-              [MockFunction] {
-                "calls": [
-                  [],
-                ],
-                "results": [
-                  {
-                    "type": "return",
-                    "value": undefined,
-                  },
-                ],
-              },
+              [MockFunction],
             ]
         `);
     });

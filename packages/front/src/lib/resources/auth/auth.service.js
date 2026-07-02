@@ -1,4 +1,3 @@
-import { ResetPasswordErrorCodes } from "dto";
 import authPort from "$lib/resources/auth/auth.port";
 import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
@@ -14,7 +13,7 @@ export class AuthService {
     }
 
     resetPassword(token, password) {
-        if (!token) return Promise.reject(ResetPasswordErrorCodes.INTERNAL_ERROR);
+        if (!token) return Promise.reject({ httpCode: 500 });
         return authPort.resetPassword(token, password).then(user => this.loginByUser(user));
     }
 
@@ -99,7 +98,7 @@ export class AuthService {
         const redirection = localStorageService.getItem("redirectUrl", null).value;
         // if connect with proconnect and incomplete profil - redirection to form
         const currentUser = this.getCurrentUser();
-        if (currentUser && currentUser.agentConnectId && currentUser.profileToComplete) {
+        if (currentUser && currentUser.proConnectId && currentUser.profileToComplete) {
             return goToUrl("/auth/signup-ac");
         }
         if (!redirection) return goToUrl("/");

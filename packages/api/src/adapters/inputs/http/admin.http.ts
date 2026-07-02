@@ -1,4 +1,11 @@
-import type { CreateUserDtoResponse, FutureUserDto, UserDtoResponse, UserListDtoResponse } from "dto";
+import type {
+    CreateUserDtoResponse,
+    FutureUserDto,
+    UserDto,
+    UserDtoResponse,
+    UserListDtoResponse,
+    UserWithResetTokenDto,
+} from "dto";
 import type { IdentifiedRequest } from "../../../@types";
 import {
     Route,
@@ -16,12 +23,14 @@ import {
     Hidden,
 } from "tsoa";
 import { BadRequestError, HttpErrorInterface } from "core";
-import { RoleEnum } from "../../../@enums/RolesEnum";
+import { RoleEnum } from "../../../domain/users/@types/UserRoles";
 import userRolesService from "../../../modules/user/services/roles/user.roles.service";
 import userRgpdService from "../../../modules/user/services/rgpd/user.rgpd.service";
 import userCrudService from "../../../modules/user/services/crud/user.crud.service";
 import statsService from "../../../modules/stats/stats.service";
 import { USER_DTO_ADMIN, USER_DTO_DEFAULT, USER_DTO_NEW } from "./examples/Users";
+import NewUserEntity from "../../../domain/users/NewUserEntity";
+import { FutureUser } from "../../../domain/users/@types/FutureUser";
 
 @Route("admin")
 @Hidden()
@@ -37,7 +46,7 @@ export class AdminHttp extends Controller {
     @Post("/user/roles")
     @Response<HttpErrorInterface>(400, "Role Not Valid")
     public async upgradeUserRoles(@Body() body: { email: string; roles: RoleEnum[] }): Promise<UserDtoResponse> {
-        return await userRolesService.addRolesToUser(body.email, body.roles);
+        return (await userRolesService.addRolesToUser(body.email, body.roles)) as { user: UserDto };
     }
 
     /**
@@ -49,7 +58,7 @@ export class AdminHttp extends Controller {
     @Get("/user/list-users")
     public async listUsers(): Promise<UserListDtoResponse> {
         return {
-            users: await userCrudService.listUsers(),
+            users: (await userCrudService.listUsers()) as UserWithResetTokenDto[],
         };
     }
 
@@ -67,7 +76,7 @@ export class AdminHttp extends Controller {
             ...body,
             email: body.email.toLocaleLowerCase(),
         };
-        const user = await userCrudService.signup(formatedBody);
+        const user = await userCrudService.signup(new NewUserEntity(formatedBody as FutureUser));
         this.setStatus(201);
         return { user };
     }
@@ -81,7 +90,7 @@ export class AdminHttp extends Controller {
     public async deleteUser(@Request() req: IdentifiedRequest, @Path() id: string): Promise<boolean> {
         if (!id) throw new BadRequestError("User ID is not defined");
 
-        if (req.user._id.toString() === id) {
+        if (req.user.id === id) {
             throw new BadRequestError("Cannot delete its own account");
         }
 

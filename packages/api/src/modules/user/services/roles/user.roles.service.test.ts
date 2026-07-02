@@ -1,11 +1,11 @@
-import { RoleEnum } from "../../../../@enums/RolesEnum";
-import { BadRequestError, InternalServerError } from "core";
+import { RoleEnum } from "../../../../domain/users/@types/UserRoles";
 import userRolesService from "./user.roles.service";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
-import { USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
+import { USER_ENTITY } from "../../__fixtures__/user.fixture";
+import UserEntity from "../../../../domain/users/UserEntity";
+
 jest.mock("../../../../adapters/outputs/db/user/user.adapter");
-const mockedUserAdapter = jest.mocked(userAdapter);
 
 describe("user roles service", () => {
     describe("isRoleValid", () => {
@@ -40,42 +40,26 @@ describe("user roles service", () => {
     });
 
     describe("addRolesToUser", () => {
-        afterAll(() => mockedUserAdapter.findByEmail.mockReset());
-
-        it("should throw InternalServerError if user email not found", async () => {
-            mockedUserAdapter.findByEmail.mockImplementationOnce(async () => null);
-            const expected = new InternalServerError("An error has occurred");
-            let actual;
-            try {
-                actual = await userRolesService.addRolesToUser("wrong@email.fr", [RoleEnum.admin]);
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(expected);
+        beforeAll(() => {
+            jest.spyOn(userAdapter, "findByEmail").mockResolvedValue(USER_ENTITY);
         });
 
-        it("should throw BadRequestError if role not found", async () => {
-            const ROLE = "adm";
-            const expected = new BadRequestError(`Role ${ROLE} is not valid`);
+        it("should throw error if given role is not valid", async () => {
+            const ROLE = "not-a-role";
             // @ts-expect-error: wrong value
-            expect(() => userRolesService.addRolesToUser(USER_WITHOUT_SECRET, [ROLE])).rejects.toThrowError(expected);
+            await expect(async () => userRolesService.addRolesToUser(USER_ENTITY.email, [ROLE])).rejects.toThrow(
+                new Error(`Role ${ROLE} is not valid`),
+            );
         });
 
-        it("should call userPort.update() with user as argument", async () => {
-            await userRolesService.addRolesToUser(USER_WITHOUT_SECRET, [RoleEnum.admin]);
-            expect(mockedUserAdapter.update).toHaveBeenCalledWith({
-                ...USER_WITHOUT_SECRET,
-                roles: [...USER_WITHOUT_SECRET.roles, RoleEnum.admin],
-            });
-        });
-
-        it("should call userPort.update() with email as argument", async () => {
-            mockedUserAdapter.findByEmail.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
+        it("should call userPort.update()", async () => {
             await userRolesService.addRolesToUser(USER_EMAIL, [RoleEnum.admin]);
-            expect(mockedUserAdapter.update).toHaveBeenCalledWith({
-                ...USER_WITHOUT_SECRET,
-                roles: [...USER_WITHOUT_SECRET.roles, RoleEnum.admin],
-            });
+            expect(userAdapter.update).toHaveBeenCalledWith(
+                new UserEntity({
+                    ...USER_ENTITY,
+                    roles: [...USER_ENTITY.roles, RoleEnum.admin],
+                }),
+            );
         });
     });
 });

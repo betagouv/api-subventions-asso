@@ -1,13 +1,15 @@
 import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
 import { ScdlDepositCron } from "../../../src/adapters/inputs/cron/scdl-deposit.cron";
 import { DEPOSIT_LOG_DBO } from "../../../src/modules/deposit-scdl-process/__fixtures__/deposit-log.fixture";
-import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
 import { addDaysToDate, sameDateLastYear } from "../../../src/shared/helpers/DateHelper";
 import depositLogAdapter from "../../../src/adapters/outputs/db/deposit-log/deposit-log.adapter";
 import { ENV as _ENV, EnvironmentEnum } from "../../../src/configurations/env.conf";
 import brevoMailNotifyPipe from "../../../src/modules/notify/out-pipes/brevo-mail.pipe";
 import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
 import { USER_FILE_DATA_LOG_DBOS } from "../../../src/modules/data-log/__fixtures__/data-log.fixtures";
+import { USER_ENTITY } from "../../../src/modules/user/__fixtures__/user.fixture";
+import NewUserEntity from "../../../src/domain/users/NewUserEntity";
+import UserEntity from "../../../src/domain/users/UserEntity";
 
 describe("ScdlDeposit CRON", () => {
     let cron: ScdlDepositCron;
@@ -27,11 +29,14 @@ describe("ScdlDeposit CRON", () => {
         beforeEach(async () => {
             const TODAY = new Date();
             const twoDaysAgo = addDaysToDate(TODAY, -2);
-            const user = await userAdapter.create({ ...USER_DBO, signupAt: addDaysToDate(TODAY, -10) });
+            const user = await userAdapter.create(new NewUserEntity(USER_ENTITY));
+
+            await userAdapter.update(new UserEntity({ ...user, signupAt: addDaysToDate(TODAY, -10) }));
+
             await depositLogAdapter.insertOne({
                 ...DEPOSIT_LOG_DBO,
                 updateDate: twoDaysAgo,
-                userId: user._id.toString(),
+                userId: user.id.toString(),
             });
         });
 
@@ -48,11 +53,12 @@ describe("ScdlDeposit CRON", () => {
         const oneYearAgo = sameDateLastYear(TODAY);
 
         it("notify user", async () => {
-            const user = await userAdapter.create({ ...USER_DBO, signupAt: oneYearAgo });
+            const user = await userAdapter.create(new NewUserEntity(USER_ENTITY));
+            await userAdapter.update(new UserEntity({ ...user, signupAt: oneYearAgo }));
             await dataLogAdapter.insert({
                 ...USER_FILE_DATA_LOG_DBOS[0],
                 integrationDate: sameDateLastYear(new Date()),
-                userId: user._id.toString(),
+                userId: user.id.toString(),
             });
             await cron.notifyDepositRenewal();
             // @ts-expect-error: access private property

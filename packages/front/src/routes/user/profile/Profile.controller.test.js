@@ -19,8 +19,8 @@ describe("ProfileController", () => {
 
         it.each`
             expected | user
-            ${true}  | ${{ agentConnectId: "something" }}
-            ${false} | ${{ agentConnectId: null }}
+            ${true}  | ${{ proConnectId: "something" }}
+            ${false} | ${{ proConnectId: null }}
         `("sets isAgentConnectUser property to $expected according to user", async ({ expected, user }) => {
             vi.mocked(userService.getSelfUser).mockResolvedValue(user);
             await controller.init();

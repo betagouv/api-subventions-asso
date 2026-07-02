@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`userProConnectService getLogoutUrl fails if client not initialized 1`] = `[Error: ProConnect client is not initialized]`;
+
+exports[`userProConnectService proConnectUpdateValidations rejects firstName modification 1`] = `
+{
+  "valid": true,
+}
+`;
+
+exports[`userProConnectService proConnectUpdateValidations rejects lastName modification 1`] = `
+{
+  "valid": true,
+}
+`;

@@ -1,5 +1,5 @@
 import request from "supertest";
-import { AgentTypeEnum, ResetPasswordErrorCodes } from "dto";
+import { AgentTypeEnum } from "dto";
 import { createAndActiveUser, createUser, DEFAULT_PASSWORD, USER_EMAIL } from "../../__helpers__/userHelper";
 import { createResetToken } from "../../__helpers__/resetTokenHelper";
 import userResetAdapter from "../../../src/adapters/outputs/db/user/user-reset.adapter";
@@ -9,6 +9,8 @@ import userActivationService, {
 } from "../../../src/modules/user/services/activation/user.activation.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 import { App } from "supertest/types";
+import NewUserEntity from "../../../src/domain/users/NewUserEntity";
+import UserEntity from "../../../src/domain/users/UserEntity";
 
 const g = global as unknown as { app: App };
 
@@ -19,15 +21,15 @@ describe("AuthentificationController, /auth", () => {
             await createUser();
         });
         it("should return SuccessResponse", async () => {
-            const expected = {
-                success: true,
-            };
-            await request(g.app)
+            const response = await request(g.app)
                 .post("/auth/forget-password")
                 .send({ email: "user@beta.gouv.fr" })
-                .set("Accept", "application/json")
-                .expect(200)
-                .expect(res => expect(res.body).toMatchObject(expected));
+                .set("Accept", "application/json");
+
+            expect(response).toMatchObject({
+                statusCode: 200,
+                body: { success: true },
+            });
         });
 
         it("should return 200 even if the user doesn't exist", async () => {
@@ -38,39 +40,40 @@ describe("AuthentificationController, /auth", () => {
                 })
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({
-                success: true,
+            expect(response).toMatchObject({
+                statusCode: 200,
+                body: { success: true },
             });
         });
     });
 
     describe("POST /reset-password", () => {
         it("should return 200", async () => {
-            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
+            const user = await userCrudService.createUser(new NewUserEntity({ email: "test-reset@beta.gouv.fr" }));
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
-            const userReset = await userResetAdapter.findOneByUserId(user._id);
+            const userReset = await userResetAdapter.findOneByUserId(user.id);
 
-            const response = await request(g.app)
+            await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
                     token: userReset?.token,
                 })
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({
-                user: { email: "test-reset@beta.gouv.fr", active: true },
-            });
+                .set("Accept", "application/json")
+                .expect(200)
+                .expect(res =>
+                    expect(res.body).toMatchObject({
+                        user: { email: "test-reset@beta.gouv.fr", active: true },
+                    }),
+                );
         });
 
         it("should reject because password is too weak", async () => {
-            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
+            const user = await userCrudService.createUser(new NewUserEntity({ email: "test-reset@beta.gouv.fr" }));
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
-            const userReset = await userResetAdapter.findOneByUserId(user._id);
+            const userReset = await userResetAdapter.findOneByUserId(user.id);
 
             const response = await request(g.app)
                 .post("/auth/reset-password")
@@ -79,32 +82,35 @@ describe("AuthentificationController, /auth", () => {
                     token: userReset?.token,
                 })
                 .set("Accept", "application/json");
-            expect(response.statusCode).toBe(400);
-            expect(response.body).toMatchObject({
-                code: ResetPasswordErrorCodes.PASSWORD_FORMAT_INVALID,
+
+            expect({
+                statusCode: response.statusCode,
+                messageType: typeof response.body.message,
+                bodyKeys: Object.keys(response.body),
+            }).toEqual({
+                statusCode: 400,
+                messageType: "string",
+                bodyKeys: ["message"],
             });
         });
 
         it("should reject because wrong token", async () => {
-            const response = await request(g.app)
+            await request(g.app)
                 .post("/auth/reset-password")
                 .send({
                     password: "AAAAaaaaa;;;;2222",
                     token: "sdsdsdsd",
                 })
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(404);
-            expect(response.body).toMatchObject({
-                code: ResetPasswordErrorCodes.RESET_TOKEN_NOT_FOUND,
-            });
+                .set("Accept", "application/json")
+                .expect(404)
+                .expect(res => expect(res.body).toMatchObject({ message: "Reset token not found" }));
         });
 
         it("should reject because token is outdated", async () => {
-            const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
+            const user = await userCrudService.createUser(new NewUserEntity({ email: "test-reset@beta.gouv.fr" }));
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
-            const userReset = await userResetAdapter.findOneByUserId(user._id);
+            const userReset = await userResetAdapter.findOneByUserId(user.id);
 
             const oldResetTimout = UserActivationService.RESET_TIMEOUT;
             UserActivationService.RESET_TIMEOUT = 0;
@@ -118,9 +124,14 @@ describe("AuthentificationController, /auth", () => {
                 .set("Accept", "application/json");
             UserActivationService.RESET_TIMEOUT = oldResetTimout;
 
-            expect(response.statusCode).toBe(400);
-            expect(response.body).toMatchObject({
-                code: ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
+            expect({
+                statusCode: response.statusCode,
+                body: response.body,
+                bodyKeys: Object.keys(response.body),
+            }).toEqual({
+                statusCode: 410,
+                body: { message: "Reset token has expired, please retry forget password" },
+                bodyKeys: ["message"],
             });
 
             UserActivationService.RESET_TIMEOUT = oldResetTimout;
@@ -144,28 +155,32 @@ describe("AuthentificationController, /auth", () => {
                     },
                 };
 
-                await request(g.app)
+                const response = await request(g.app)
                     .post("/auth/login")
                     .send({
                         password: DEFAULT_PASSWORD,
                         email: USER_EMAIL,
                     })
-                    .set("Accept", "application/json")
-                    .expect(200)
-                    .expect(res => {
-                        expect(res.body.user).toMatchObject(expected);
-                    });
+                    .set("Accept", "application/json");
+
+                expect(response).toMatchObject({
+                    statusCode: 200,
+                    body: {
+                        user: expected,
+                    },
+                });
             });
 
             it("should not return password", async () => {
-                await request(g.app)
+                const response = await request(g.app)
                     .post("/auth/login")
                     .send({
                         password: DEFAULT_PASSWORD,
                         email: USER_EMAIL,
                     })
-                    .set("Accept", "application/json")
-                    .expect(res => expect(res.body.user.hashPassword).toEqual(undefined));
+                    .set("Accept", "application/json");
+
+                expect(response.body.user.hashPassword).toEqual(undefined);
             });
 
             it("should not log user", async () => {
@@ -197,12 +212,12 @@ describe("AuthentificationController, /auth", () => {
     });
 
     describe("POST /activate", () => {
-        let user;
+        let user: UserEntity;
         let userResetToken;
 
         beforeEach(async () => {
             user = await createUser();
-            userResetToken = await createResetToken(user._id);
+            userResetToken = await createResetToken(user.id);
         });
         it("should return user", async () => {
             await request(g.app)
@@ -220,7 +235,7 @@ describe("AuthentificationController, /auth", () => {
                 .expect(res =>
                     expect(res.body.user).toMatchSnapshot({
                         signupAt: expect.any(String),
-                        _id: expect.any(String),
+                        id: expect.any(String),
                         jwt: { expirateDate: expect.any(String), token: expect.any(String) },
                         lastActivityDate: expect.any(String),
                     }),

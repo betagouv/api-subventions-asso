@@ -8,7 +8,6 @@ export interface ChorusPort {
     findOneByEJ(ej: string): Promise<ChorusEntity | null>;
     findOneBySiret(siret: Siret): Promise<ChorusEntity | null>;
     findOneBySiren(siren: Siren): Promise<ChorusEntity | null>;
-    findOneByUniqueId(uniqueId: string): Promise<ChorusEntity | null>;
     create(entity: ChorusEntity): Promise<void>;
     upsertMany(entities: ChorusEntity[]): Promise<void>;
     update(entity: ChorusEntity): Promise<void>;

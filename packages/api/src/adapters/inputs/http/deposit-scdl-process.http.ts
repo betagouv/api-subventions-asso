@@ -23,6 +23,7 @@ import {
 import DepositScdlLogDtoMapper from "../../../modules/deposit-scdl-process/deposit-scdl-log.dto.mapper";
 import { depositScdlProcessService } from "../../../init-services";
 import { fixFilenameEncoding } from "../../../shared/helpers/FileHelper";
+import UserEntity from "../../../domain/users/UserEntity";
 
 @Route("/parcours-depot")
 @Security("jwt")
@@ -58,7 +59,7 @@ export class DepositScdlProcessHttp extends Controller {
     @Response("204", "No deposit log found for this user")
     @Response("401", "Unauthorized")
     public async getDepositLog(@Request() req: IdentifiedRequest): Promise<DepositScdlLogResponseDto | void> {
-        const depositScdlLog = await depositScdlProcessService.getDepositLog(req.user._id.toString());
+        const depositScdlLog = await depositScdlProcessService.getDepositLog(req.user.id.toString());
         if (!depositScdlLog) {
             this.setStatus(204);
             return;
@@ -76,7 +77,7 @@ export class DepositScdlProcessHttp extends Controller {
     @SuccessResponse("200", "csv returned successfully")
     @Response("401", "Unauthorized")
     public async generateExistingGrantsCsv(@Request() req: IdentifiedRequest): Promise<string> {
-        const { csv, fileName } = await depositScdlProcessService.generateExistingGrantsCsv(req.user._id.toString());
+        const { csv, fileName } = await depositScdlProcessService.generateExistingGrantsCsv(req.user.id.toString());
 
         this.setHeader("content-type", "text/csv; charset=utf-8");
         this.setHeader("content-disposition", `attachment; filename=${fileName}`);
@@ -98,7 +99,7 @@ export class DepositScdlProcessHttp extends Controller {
     @Response("401", "Unauthorized")
     @Response("404", "Not found")
     public async getFileDownloadUrl(@Request() req: IdentifiedRequest): Promise<FileDownloadUrlDto> {
-        const url = await depositScdlProcessService.getFileDownloadUrl(req.user._id.toString());
+        const url = await depositScdlProcessService.getFileDownloadUrl(req.user.id.toString());
         return { url };
     }
 
@@ -112,7 +113,7 @@ export class DepositScdlProcessHttp extends Controller {
     @Response("204")
     @Response("401", "Unauthorized")
     public async deleteDepositLog(@Request() req: IdentifiedRequest): Promise<void> {
-        await depositScdlProcessService.deleteDepositLog(req.user._id.toString());
+        await depositScdlProcessService.deleteDepositLog(req.user.id.toString());
         this.setStatus(204);
     }
 
@@ -137,7 +138,7 @@ export class DepositScdlProcessHttp extends Controller {
     ): Promise<DepositScdlLogResponseDto> {
         const newDepositLog = await depositScdlProcessService.createDepositLog(
             createDepositScdlLogDto,
-            req.user._id.toString(),
+            req.user.id.toString(),
         );
         this.setStatus(201);
         return DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(newDepositLog);
@@ -168,7 +169,7 @@ export class DepositScdlProcessHttp extends Controller {
         const updatedDepositLog = await depositScdlProcessService.updateDepositLog(
             step,
             depositScdlLogDto,
-            req.user._id.toString(),
+            req.user.id.toString(),
         );
         return DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(updatedDepositLog);
     }
@@ -224,7 +225,7 @@ export class DepositScdlProcessHttp extends Controller {
         const parsedProcessedExercices = processedExercices ? (JSON.parse(processedExercices) as number[]) : undefined;
         if (file) file.originalname = fixFilenameEncoding(file.originalname); // accented char pb: see if other way to fix this
         const updatedDepositLog = await depositScdlProcessService.validateScdlFile(
-            req.user._id.toString(),
+            req.user.id.toString(),
             file,
             parsedDto,
             pageName,
@@ -245,7 +246,7 @@ export class DepositScdlProcessHttp extends Controller {
     @Response("400", "Bad Request, invalid payload")
     @Response("409", "Conflict, database state has changed since last parsing. Re-parsing required.")
     public async parseAndPersistScdlFile(@Request() req: IdentifiedRequest): Promise<void> {
-        await depositScdlProcessService.parseAndPersistScdlFile(req.user);
+        await depositScdlProcessService.parseAndPersistScdlFile(new UserEntity(req.user as UserEntity));
         this.setStatus(204);
     }
 }

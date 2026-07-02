@@ -124,10 +124,10 @@ Pour build l'api il est nécessaire au préalable de build le dossier dto pour a
 AgentConnect ne fonctionne pas avec l'url `localhost`. Pour qu'AgentConnect fonctionne, il faut
 
 1. définir les variables d'environnements
-    - AGENT_CONNECT_ENABLED -> `true`
-    - AGENT_CONNECT_CLIENT_ID
-    - AGENT_CONNECT_CLIENT_SECRET
-    - AGENT_CONNECT_URL : https://fca.integ01.dev-agentconnect.fr/api/v2 en local et préprod
+    - PRO_CONNECT_ENABLED -> `true`
+    - PRO_CONNECT_CLIENT_ID
+    - PRO_CONNECT_CLIENT_SECRET
+    - PRO_CONNECT_URL : https://fca.integ01.dev-agentconnect.fr/api/v2 en local et préprod
 2. Les URI de redirection et déconnexion sont définies sur le compte partenaire ProConnect avec le compte dev
 
 ## Démarrer l'api en local

@@ -1,33 +1,27 @@
-import { UserDataDto, UserDto } from "dto";
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "core";
 import userResetAdapter from "../../../../adapters/outputs/db/user/user-reset.adapter";
 import consumerTokenAdapter from "../../../../adapters/outputs/db/user/consumer-token.adapter";
-import { uniformizeId } from "../../../../shared/helpers/PortHelper";
 import statsService from "../../../stats/stats.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userAdapter from "../../../../adapters/outputs/db/user/user.adapter";
 import userCrudService from "../crud/user.crud.service";
-import { DefaultObject } from "../../../../@types";
 import userActivationService from "../activation/user.activation.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import configurationsAdapter from "../../../../adapters/outputs/db/configurations/configurations.adapter";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../configurations/configurations.service";
 import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
 import logsAdapter from "../../../../adapters/outputs/db/stats/logs.adapter";
+import UserEntity from "../../../../domain/users/UserEntity";
 
 export class UserRgpdService {
-    public async getAllData(userId: string): Promise<UserDataDto> {
+    public async getAllData(userId: string) {
         const user = await userCrudService.getUserById(userId);
 
         if (!user) throw new NotFoundError("User is not found");
 
-        const userIdToString = document => ({ ...document, userId: document.userId.toString() });
-
-        const tokens = [...(await userResetAdapter.findByUserId(userId)), ...(await consumerTokenAdapter.find(userId))]
-            .map(uniformizeId)
-            .map(userIdToString);
+        const tokens = [...(await userResetAdapter.findByUserId(userId)), ...(await consumerTokenAdapter.find(userId))];
 
         const associationVisits = await statsService.getAllVisitsUser(userId);
         const userLogs = await statsService.getAllLogUser(user.email);
@@ -37,7 +31,7 @@ export class UserRgpdService {
             tokens,
             logs: userLogs,
             statistics: {
-                associationVisit: associationVisits.map(userIdToString),
+                associationVisit: associationVisits,
             },
         };
     }
@@ -47,29 +41,26 @@ export class UserRgpdService {
         return this.disable(user, self);
     }
 
-    public async disable(user: UserDto | null, self = true, whileBatch = false): Promise<boolean> {
+    public async disable(user: UserEntity | null, self = true, whileBatch = false): Promise<boolean> {
         if (!user) return false;
         // Anonymize the user when it is being deleted to keep use stats consistent
         // It keeps roles and signupAt in place to avoid breaking any stats
-        const disabledUser = {
+        const disabledUser = new UserEntity({
             ...user,
             active: false,
-            email: `${user._id}@deleted.datasubvention.beta.gouv.fr`,
-            jwt: null,
+            email: `${user.id}@deleted.datasubvention.beta.gouv.fr`,
+            jwt: undefined,
             hashPassword: "",
             disable: true,
             firstName: "",
             lastName: "",
             phoneNumber: "",
-        };
-        const promises = Promise.all([
-            logsAdapter.anonymizeLogsByUser(user, disabledUser),
-            userAdapter.update(disabledUser).then(r => !!r),
-        ]);
+        });
+        await Promise.all([logsAdapter.anonymizeLogsByUser(user, disabledUser), userAdapter.update(disabledUser)]);
 
         if (!whileBatch) notifyService.notify(NotificationType.USER_DELETED, { email: user.email, selfDeleted: self });
 
-        return (await promises).every(r => r);
+        return true;
     }
 
     /*
@@ -82,7 +73,6 @@ export class UserRgpdService {
         const lastActivityLimit = new Date(now.valueOf());
         lastActivityLimit.setFullYear(now.getFullYear() - 2);
         const inactiveUsersToDisable = await userAdapter.findInactiveSince(lastActivityLimit);
-
         const subscriptionNotActivatedLimit = new Date(now.valueOf());
         subscriptionNotActivatedLimit.setUTCMonth(now.getUTCMonth() - 6);
         const neverSeenUsersToDisable = await userAdapter.findNotActivatedSince(subscriptionNotActivatedLimit);
@@ -93,6 +83,7 @@ export class UserRgpdService {
             ...inactiveUsersToDisable,
             ...(STALL_RGPD_CRON_6_MONTHS_DELETION < now ? neverSeenUsersToDisable : []), // TODO clean after the 2024-07-08
         ];
+
         const disablePromises = usersToDisable.map(user =>
             this.disable(user, false, true).catch(e => {
                 Sentry.captureException(e);
@@ -109,6 +100,7 @@ export class UserRgpdService {
                     lastname: user.lastName,
                 })),
             });
+
         return results.every(Boolean);
     }
 
@@ -125,7 +117,6 @@ export class UserRgpdService {
         const lastSubscriptionNotActivatedLimit = new Date(now.valueOf());
         lastSubscriptionNotActivatedLimit.setUTCMonth(now.getUTCMonth() - 5);
         const usersToWarn = await userAdapter.findNotActivatedSince(lastSubscriptionNotActivatedLimit, lastWarningWave);
-
         const promises = usersToWarn.map(user =>
             userActivationService
                 .resetUser(user)
@@ -147,20 +138,6 @@ export class UserRgpdService {
         );
         const results = await Promise.all(promises);
         return results.every(Boolean);
-    }
-
-    async findAnonymizedUsers(query: DefaultObject = {}) {
-        const users = await userCrudService.find(query);
-
-        return users.map(user => {
-            return {
-                ...user,
-                email: undefined,
-                firstName: undefined,
-                lastName: undefined,
-                phoneNumber: undefined,
-            };
-        });
     }
 }
 

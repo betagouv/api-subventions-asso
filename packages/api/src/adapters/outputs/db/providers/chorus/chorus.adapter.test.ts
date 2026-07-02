@@ -1,6 +1,6 @@
 import MongoAdapter from "../../MongoAdapter";
 import chorusAdapter from "./chorus.adapter";
-import ChorusEntity from "../../../../../modules/providers/chorus/entities/ChorusEntity";
+import { CHORUS_ENTITIES } from "../../../../../modules/providers/chorus/__fixtures__/ChorusFixtures";
 
 describe("chorusPort", () => {
     const mockBulkWrite = jest.fn();
@@ -16,39 +16,35 @@ describe("chorusPort", () => {
     afterEach(() => mockBulkWrite.mockReset());
 
     describe("upsertMany", () => {
-        it("calls bulkWrite with operations from entities", async () => {
-            await chorusAdapter.upsertMany([{ uniqueId: 1 }, { uniqueId: 2 }] as unknown as ChorusEntity[]);
-            const actual = mockBulkWrite.mock.calls[0];
+        it("calls bulkWrite with filters from chorus unique index", async () => {
+            await chorusAdapter.upsertMany(CHORUS_ENTITIES);
+            const actual = mockBulkWrite.mock.calls[0][0].map(({ updateOne }) => updateOne.filter);
             expect(actual).toMatchInlineSnapshot(`
                 [
-                  [
-                    {
-                      "updateOne": {
-                        "filter": {
-                          "uniqueId": 1,
-                        },
-                        "update": {
-                          "$set": {
-                            "uniqueId": 1,
-                          },
-                        },
-                        "upsert": true,
-                      },
-                    },
-                    {
-                      "updateOne": {
-                        "filter": {
-                          "uniqueId": 2,
-                        },
-                        "update": {
-                          "$set": {
-                            "uniqueId": 2,
-                          },
-                        },
-                        "upsert": true,
-                      },
-                    },
-                  ],
+                  {
+                    "codeSociete": "HNOR",
+                    "ej": "0001821732",
+                    "exercice": 2023,
+                    "numPosteDP": 3,
+                    "numPosteEJ": 2,
+                    "numeroDemandePaiement": "000195567",
+                  },
+                  {
+                    "codeSociete": "HNOR",
+                    "ej": "0001821732",
+                    "exercice": 2023,
+                    "numPosteDP": 2,
+                    "numPosteEJ": 21,
+                    "numeroDemandePaiement": "000212692",
+                  },
+                  {
+                    "codeSociete": "HNOR",
+                    "ej": "0003823760",
+                    "exercice": 2022,
+                    "numPosteDP": 2,
+                    "numPosteEJ": 2,
+                    "numeroDemandePaiement": "000311141",
+                  },
                 ]
             `);
         });
