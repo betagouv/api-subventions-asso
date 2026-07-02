@@ -26,6 +26,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * **api,front:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) add .versionrc.json ([fbd75db](https://github.com/betagouv/api-subventions-asso/commit/fbd75db1e9e9c60f961b2a8fdb0b00890de31245))
+* **api:** [#3982](https://github.com/betagouv/api-subventions-asso/issues/3982) updates sirene stock unite legale url to use stable link ([#3983](https://github.com/betagouv/api-subventions-asso/issues/3983)) ([43c3818](https://github.com/betagouv/api-subventions-asso/commit/43c38180ea5a221061713ecfb019d38c8f9c920d))
 * **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) edit Procfile ([83a537a](https://github.com/betagouv/api-subventions-asso/commit/83a537ab87a70be3177f00eee0b3c97ed6658eb8))
 * **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) tmp disable osiris-request and osiris-action indexes ([6d8ebb7](https://github.com/betagouv/api-subventions-asso/commit/6d8ebb7b6ddf83fb31575873d82e9c832ce50f5d))
 * **api:** [#3822](https://github.com/betagouv/api-subventions-asso/issues/3822) do not send empty params to brevo transcation api ([#3951](https://github.com/betagouv/api-subventions-asso/issues/3951)) ([ef1d030](https://github.com/betagouv/api-subventions-asso/commit/ef1d0305b4ee95766ca307f3b3ba93b707c3f15d))
@@ -34,6 +35,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * **api:** tmp disable createIndexes of osiris requests ([d0ee453](https://github.com/betagouv/api-subventions-asso/commit/d0ee453105e5fbab283390b475099985d3261803))
 * **front:** [#3825](https://github.com/betagouv/api-subventions-asso/issues/3825) fix setTrackerUrl ([f1d7516](https://github.com/betagouv/api-subventions-asso/commit/f1d751608e7b8b532d1b2d30af107cb843c72057))
 * **front:** [#3825](https://github.com/betagouv/api-subventions-asso/issues/3825) fix setTrackerUrl ([#3936](https://github.com/betagouv/api-subventions-asso/issues/3936)) ([af8d3fe](https://github.com/betagouv/api-subventions-asso/commit/af8d3feb3b11a3499f386c1360c2ff0704d9fdc6))
+
 
 ## [0.84.7](https://github.com/betagouv/api-subventions-asso/compare/v0.84.6...v0.84.7) (2026-06-05)
 
