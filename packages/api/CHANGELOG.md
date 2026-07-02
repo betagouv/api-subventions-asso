@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.84.8](https://github.com/betagouv/api-subventions-asso/compare/v0.84.7...v0.84.8) (2026-07-02)
+
+### Bug Fixes
+
+- **api:** [#3982](https://github.com/betagouv/api-subventions-asso/issues/3982) updates sirene stock unite legale url to use stable link ([#3983](https://github.com/betagouv/api-subventions-asso/issues/3983)) ([43c3818](https://github.com/betagouv/api-subventions-asso/commit/43c38180ea5a221061713ecfb019d38c8f9c920d))
+
 ## [0.84.7](https://github.com/betagouv/api-subventions-asso/compare/v0.84.6...v0.84.7) (2026-06-05)
 
 ### Bug Fixes
