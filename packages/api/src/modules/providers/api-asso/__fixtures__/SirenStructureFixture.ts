@@ -42,7 +42,7 @@ export const sirenStructureFixture: SirenStructureDto = {
         },
     },
     nbEtabsActifs: 1,
-    etablissement: [
+    etablissements: [
         {
             actif: true,
             adresse: {
