@@ -31,11 +31,9 @@ describe("ApiAssoService", () => {
 
     const RNA = "W750000000";
     const API_ASSO_RESPONSE = {
-        asso: {
-            documents: {
-                document_dac: [],
-                document_rna: [],
-            },
+        documents: {
+            document_dac: [],
+            document_rna: [],
         },
     };
 
@@ -153,11 +151,11 @@ describe("ApiAssoService", () => {
         it("call sendRequest()", async () => {
             // @ts-expect-error: private method
             await apiAssoService.fetchDocuments(ASSOCIATION_ID);
-            expect(mockSendRequest).toHaveBeenCalledWith(`/proxy_db_asso/documents/${RNA}`);
+            expect(mockSendRequest).toHaveBeenCalledWith(`/api/structure/${RNA}`);
         });
 
         it("return documents", async () => {
-            const expected = API_ASSO_RESPONSE.asso.documents;
+            const expected = API_ASSO_RESPONSE.documents;
             mockSendRequest.mockImplementationOnce(async () => API_ASSO_RESPONSE);
             // @ts-expect-error: private method
             const actual = await apiAssoService.fetchDocuments(ASSOCIATION_ID);
@@ -171,11 +169,9 @@ describe("ApiAssoService", () => {
             };
             // @ts-expect-error: mock
             mockSendRequest.mockResolvedValue({
-                asso: {
-                    documents: {
-                        document_dac: "something",
-                        document_rna: "else",
-                    },
+                documents: {
+                    document_dac: "something",
+                    document_rna: "else",
                 },
             });
             // @ts-expect-error: private method
@@ -288,7 +284,7 @@ describe("ApiAssoService", () => {
             const ASSO_WITH_STRUCTURES = {
                 data: true,
                 identite: { date_modif_siren: "smthg" },
-                etablissement: { length: 1 },
+                etablissements: [{}],
             };
             let mockSendRequest: jest.SpyInstance;
             let mockGetDefaultDateModifSiren: jest.SpyInstance;
@@ -322,7 +318,7 @@ describe("ApiAssoService", () => {
 
             it("should return null if result without date", async () => {
                 const expected = null;
-                mockSendRequest.mockResolvedValueOnce({ data: true, etablissement: { length: 1 } });
+                mockSendRequest.mockResolvedValueOnce({ data: true, etablissements: [{}] });
                 const actual = await apiAssoService.findAssociationBySiren(SIREN);
                 expect(actual).toBe(expected);
             });
