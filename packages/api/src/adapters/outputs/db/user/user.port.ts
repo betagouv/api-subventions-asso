@@ -16,6 +16,7 @@ export interface UserPort {
     findInactiveSince(date: Date): Promise<UserEntity[]>;
     findNotActivatedSince(date: Date, lastWarned: Date | undefined): Promise<UserEntity[]>;
     update(user: Partial<UserEntity>, withJwt: boolean): Promise<UserEntity | Omit<UserEntity, "hashPassword">>;
+    removeJwt(userId: string): Promise<UserEntity>;
     delete(user: UserEntity): Promise<boolean>;
 
     getUserWithSecretsByEmail(email: string): Promise<UserEntity | null>;

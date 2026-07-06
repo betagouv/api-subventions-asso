@@ -96,6 +96,20 @@ export class UserAdapter extends MongoAdapter<UserDbo> implements UserPort {
         return UserMapper.toEntity(updatedUser);
     }
 
+    async removeJwt(userId: string) {
+        const updatedUser = await this.collection.findOneAndUpdate(
+            { _id: new ObjectId(userId) },
+            { $unset: { jwt: "" } },
+            {
+                returnDocument: "after",
+                projection: this.safeProjection,
+            },
+        );
+
+        if (!updatedUser) throw new UserNotFoundError();
+        return UserMapper.toEntity(updatedUser);
+    }
+
     async delete(user: UserEntity) {
         const result = await this.collection.deleteOne({ _id: new ObjectId(user.id) });
         return result.acknowledged;

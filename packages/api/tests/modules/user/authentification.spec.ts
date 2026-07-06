@@ -8,6 +8,7 @@ import userActivationService, {
     UserActivationService,
 } from "../../../src/modules/user/services/activation/user.activation.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
+import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
 import { App } from "supertest/types";
 import NewUserEntity from "../../../src/domain/users/NewUserEntity";
 import UserEntity from "../../../src/domain/users/UserEntity";
@@ -16,6 +17,16 @@ const g = global as unknown as { app: App };
 
 describe("AuthentificationController, /auth", () => {
     jest.spyOn(notifyService, "notify").mockResolvedValue(true);
+
+    const loginDefaultUser = async () =>
+        request(g.app)
+            .post("/auth/login")
+            .send({
+                email: USER_EMAIL,
+                password: DEFAULT_PASSWORD,
+            })
+            .set("Accept", "application/json");
+
     describe("POST /forget-password", () => {
         beforeEach(async () => {
             await createUser();
@@ -208,6 +219,41 @@ describe("AuthentificationController, /auth", () => {
 
                 expect(response.statusCode).toBe(401);
             });
+        });
+    });
+
+    describe("GET /logout", () => {
+        beforeEach(async () => {
+            await createAndActiveUser();
+        });
+
+        it("should have a jwt before logout", async () => {
+            await loginDefaultUser();
+            const user = await userAdapter.getUserWithSecretsByEmail(USER_EMAIL);
+            expect(user?.jwt).toBeDefined();
+        });
+
+        it("should delete jwt after logout", async () => {
+            const loginResponse = await loginDefaultUser();
+            await request(g.app).get("/auth/logout").set("x-access-token", loginResponse.body.user.jwt.token);
+            const user = await userAdapter.getUserWithSecretsByEmail(USER_EMAIL);
+            expect(user?.jwt).toBeUndefined();
+        });
+
+        it("should reject old token after logout", async () => {
+            const loginResponse = await loginDefaultUser();
+            const token = loginResponse.body.user.jwt.token;
+            await request(g.app).get("/auth/logout").set("x-access-token", token);
+            const response = await request(g.app).get("/user/me").set("x-access-token", token);
+            expect(response.statusCode).toBe(401);
+        });
+
+        it("should clear token cookie", async () => {
+            const loginResponse = await loginDefaultUser();
+            const response = await request(g.app)
+                .get("/auth/logout")
+                .set("x-access-token", loginResponse.body.user.jwt.token);
+            expect(response.headers["set-cookie"]?.some(cookie => /^token=;/.test(cookie))).toBe(true);
         });
     });
 

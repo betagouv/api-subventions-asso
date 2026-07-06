@@ -86,8 +86,7 @@ export class UserAuthService {
             return user;
         }
 
-        const { jwt, ...logoutUser } = userWithSecrets;
-        return userAdapter.update(new UserEntity({ ...logoutUser }));
+        return userAdapter.removeJwt(userWithSecrets.id);
     }
 
     async updateJwt(user: UserEntity) {
