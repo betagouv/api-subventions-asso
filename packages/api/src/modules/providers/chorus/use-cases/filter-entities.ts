@@ -15,9 +15,9 @@ export class FilterChorusEntities {
             try {
                 if (entity.siret === "#" && entity.ridetOrTahitiet === "#") return false;
                 if (entity.siret === "#") {
-                    return this.checkIsAsso.execute(
-                        EstablishmentIdentifier.buildIdentifierFromString(entity.ridetOrTahitiet)!,
-                    );
+                    const identifier = EstablishmentIdentifier.buildIdentifierFromString(entity.ridetOrTahitiet);
+                    if (!identifier) return false;
+                    return this.checkIsAsso.execute(identifier);
                 } else {
                     return this.checkIsAsso.execute(new Siret(entity.siret));
                 }
