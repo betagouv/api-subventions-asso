@@ -162,9 +162,9 @@ describe("user auth service", () => {
             expect(mockedUserAdapter.getUserWithSecretsByEmail).toHaveBeenCalledTimes(1);
         });
 
-        it("should call userAdapter.update()", async () => {
+        it("should call userAdapter.removeJwt()", async () => {
             await userAuthService.logout(USER_WITHOUT_SECRET);
-            expect(mockedUserAdapter.update).toHaveBeenCalledTimes(1);
+            expect(mockedUserAdapter.removeJwt).toHaveBeenCalledWith(USER_WITHOUT_SECRET.id);
         });
     });
 

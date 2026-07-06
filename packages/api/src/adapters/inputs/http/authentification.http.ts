@@ -31,12 +31,11 @@ import UserEntity from "../../../domain/users/UserEntity";
 @Route("/auth")
 @Tags("Authentification Controller")
 export class AuthentificationHttp extends Controller {
-    private setCookie(req: ExpressRequest, user) {
+    private getCookieOption(): CookieOptions {
         const cookieOption: CookieOptions = {
             secure: true,
             sameSite: "strict",
             domain: DOMAIN,
-            expires: user.jwt.expirateDate,
             httpOnly: true,
         };
 
@@ -46,7 +45,14 @@ export class AuthentificationHttp extends Controller {
             cookieOption.sameSite = "lax";
         }
 
-        req.res?.cookie("token", user.jwt.token, cookieOption);
+        return cookieOption;
+    }
+
+    private setCookie(req: ExpressRequest, user) {
+        req.res?.cookie("token", user.jwt.token, {
+            ...this.getCookieOption(),
+            expires: user.jwt.expirateDate,
+        });
     }
 
     /**
@@ -170,6 +176,7 @@ export class AuthentificationHttp extends Controller {
             url = null;
         }
         await userAuthService.logout(new UserEntity(req.user as UserEntity));
+        req.res?.clearCookie("token", this.getCookieOption());
         return url;
     }
 
