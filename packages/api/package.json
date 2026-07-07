@@ -85,6 +85,8 @@
         "express-winston": "^4.2.0",
         "fast-xml-parser": "^4.3.5",
         "fuse.js": "^7.0.0",
+        "hyparquet": "^1.26.0",
+        "hyparquet-compressors": "^1.1.1",
         "iconv-lite": "^0.6.3",
         "jest-environment-jsdom": "^29.7.0",
         "jschardet": "^3.1.4",

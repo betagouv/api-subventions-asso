@@ -133,4 +133,11 @@ describe("SireneUniteLegaleService", () => {
             expect(actual).toBe(expected);
         });
     });
+
+    describe("findSirens", () => {
+        it("should call port", async () => {
+            await sireneUniteLegaleService.findSirens(["123456789"]);
+            expect(sireneUniteLegaleAdapter.findSirens).toHaveBeenCalledWith(["123456789"]);
+        });
+    });
 });

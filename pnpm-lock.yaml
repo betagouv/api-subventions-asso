@@ -58,7 +58,7 @@ importers:
         version: 5.9.3
       typescript-eslint:
         specifier: ^8.31.0
-        version: 8.59.2(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3)
+        version: 8.59.2(eslint@9.39.4(supports-color@5.5.0))(typescript@5.9.3)
 
   packages/api:
     dependencies:
@@ -179,6 +179,12 @@ importers:
       fuse.js:
         specifier: ^7.0.0
         version: 7.3.0
+      hyparquet:
+        specifier: ^1.26.0
+        version: 1.26.0
+      hyparquet-compressors:
+        specifier: ^1.1.1
+        version: 1.1.1
       iconv-lite:
         specifier: ^0.6.3
         version: 0.6.3
@@ -4731,6 +4737,9 @@ packages:
     resolution: {integrity: sha512-plz8RVjfcDedTGfVngWH1jmJvBvAwi1v2jecfDerbEnMcmOYUEEwKFTHbNoCiYyzaK2Ws8lABkTCcRSqCY1q4w==}
     engines: {node: '>=10'}
 
+  fzstd@0.1.1:
+    resolution: {integrity: sha512-dkuVSOKKwh3eas5VkJy1AW1vFpet8TA/fGmVA5krThl8YcOVE/8ZIoEA1+U1vEn5ckxxhLirSdY837azmbaNHA==}
+
   gauge@3.0.2:
     resolution: {integrity: sha512-+5J6MS/5XksCuXq++uFRsnUd7Ovu1XenbeuIuNRJxYWjgQbPuFhT14lAvsWfqfAmnwluf1OwMjz39HjfLPci0Q==}
     engines: {node: '>=10'}
@@ -4971,6 +4980,15 @@ packages:
     resolution: {integrity: sha512-vbaCKN2QLtP/vD4yvs6iz6hBEo6wkSzs8HpRah1Z6aGmF2KW5PdYuAd7uX5a+OyBZHBhd+TFLqgjUgytQr4RvQ==}
     engines: {node: '>=12'}
     hasBin: true
+
+  hyparquet-compressors@1.1.1:
+    resolution: {integrity: sha512-yx7aA3Rhj0YycbdV71+XznQSLAefa4cT0urpgNXy4aM6eSeCknaVDNne8y45Uz74Fb15yyXUzOStlceOJBan7A==}
+
+  hyparquet@1.26.0:
+    resolution: {integrity: sha512-yxUiViPZ+z5h+xdX4rA1G+k30jXoEsG9I2xEpjaM84imGznbKjZzxuZFsdzqg6C4LxNnnAlDFvzpk4uxQWTbTQ==}
+
+  hysnappy@1.0.0:
+    resolution: {integrity: sha512-MNrC4NfwDGPb889O6gIfEtbvEZCSWUsSEhsz4Oq2FRcpGtXHfeVz3KciSPp5Pnnz1NjFMgDQNfxdJozymJEDDA==}
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -7832,7 +7850,7 @@ snapshots:
       '@aws-sdk/util-user-agent-browser': 3.972.10
       '@aws-sdk/util-user-agent-node': 3.973.24
       '@smithy/config-resolver': 4.5.0
-      '@smithy/core': 3.23.17
+      '@smithy/core': 3.24.0
       '@smithy/fetch-http-handler': 5.4.0
       '@smithy/hash-node': 4.3.0
       '@smithy/invalid-dependency': 4.3.0
@@ -8074,7 +8092,7 @@ snapshots:
       '@aws-sdk/nested-clients': 3.997.6
       '@aws-sdk/types': 3.973.8
       '@smithy/config-resolver': 4.5.0
-      '@smithy/core': 3.23.17
+      '@smithy/core': 3.24.0
       '@smithy/credential-provider-imds': 4.3.0
       '@smithy/node-config-provider': 4.4.0
       '@smithy/property-provider': 4.3.0
@@ -8195,7 +8213,7 @@ snapshots:
       '@aws-sdk/util-user-agent-browser': 3.972.10
       '@aws-sdk/util-user-agent-node': 3.973.24
       '@smithy/config-resolver': 4.5.0
-      '@smithy/core': 3.23.17
+      '@smithy/core': 3.24.0
       '@smithy/fetch-http-handler': 5.4.0
       '@smithy/hash-node': 4.3.0
       '@smithy/invalid-dependency': 4.3.0
@@ -10806,12 +10824,12 @@ snapshots:
       '@types/node': 24.10.1
     optional: true
 
-  '@typescript-eslint/eslint-plugin@8.59.2(@typescript-eslint/parser@8.59.2(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3))(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3)':
+  '@typescript-eslint/eslint-plugin@8.59.2(@typescript-eslint/parser@8.59.2(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3))(eslint@9.39.4(supports-color@5.5.0))(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
       '@typescript-eslint/parser': 8.59.2(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3)
       '@typescript-eslint/scope-manager': 8.59.2
-      '@typescript-eslint/type-utils': 8.59.2(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3)
+      '@typescript-eslint/type-utils': 8.59.2(eslint@9.39.4(supports-color@5.5.0))(typescript@5.9.3)
       '@typescript-eslint/utils': 8.59.2(eslint@9.39.4(supports-color@5.5.0))(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 8.59.2
       eslint: 9.39.4(supports-color@5.5.0)
@@ -10882,7 +10900,7 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  '@typescript-eslint/type-utils@8.59.2(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3)':
+  '@typescript-eslint/type-utils@8.59.2(eslint@9.39.4(supports-color@5.5.0))(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/types': 8.59.2
       '@typescript-eslint/typescript-estree': 8.59.2(supports-color@5.5.0)(typescript@5.9.3)
@@ -11200,6 +11218,8 @@ snapshots:
       express-winston: 4.2.0(winston@3.19.0)
       fast-xml-parser: 4.5.6
       fuse.js: 7.3.0
+      hyparquet: 1.26.0
+      hyparquet-compressors: 1.1.1
       iconv-lite: 0.6.3
       jest-environment-jsdom: 29.7.0
       jschardet: 3.1.4
@@ -13309,6 +13329,8 @@ snapshots:
 
   fuse.js@7.3.0: {}
 
+  fzstd@0.1.1: {}
+
   gauge@3.0.2:
     dependencies:
       aproba: 2.1.0
@@ -13568,6 +13590,15 @@ snapshots:
   human-signals@4.3.1: {}
 
   husky@7.0.4: {}
+
+  hyparquet-compressors@1.1.1:
+    dependencies:
+      fzstd: 0.1.1
+      hysnappy: 1.0.0
+
+  hyparquet@1.26.0: {}
+
+  hysnappy@1.0.0: {}
 
   iconv-lite@0.4.24:
     dependencies:
@@ -16267,9 +16298,9 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typescript-eslint@8.59.2(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3):
+  typescript-eslint@8.59.2(eslint@9.39.4(supports-color@5.5.0))(typescript@5.9.3):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 8.59.2(@typescript-eslint/parser@8.59.2(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3))(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3)
+      '@typescript-eslint/eslint-plugin': 8.59.2(@typescript-eslint/parser@8.59.2(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3))(eslint@9.39.4(supports-color@5.5.0))(typescript@5.9.3)
       '@typescript-eslint/parser': 8.59.2(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3)
       '@typescript-eslint/typescript-estree': 8.59.2(supports-color@5.5.0)(typescript@5.9.3)
       '@typescript-eslint/utils': 8.59.2(eslint@9.39.4(supports-color@5.5.0))(typescript@5.9.3)

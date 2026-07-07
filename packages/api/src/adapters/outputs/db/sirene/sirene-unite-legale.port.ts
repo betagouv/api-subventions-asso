@@ -10,6 +10,7 @@ export interface SireneUniteLegalePort {
     updateOne(entity: SireneUniteLegaleEntity): Promise<void>;
     findAll(): Promise<SireneUniteLegaleEntity[]>;
     findOneBySiren(siren: Siren): Promise<SireneUniteLegaleEntity | null>;
+    findSirens(sirens: string[]): Promise<string[]>;
     findOneByRna(rna: Rna): Promise<SireneUniteLegaleEntity | null>;
     deleteAll(): Promise<void>;
 }

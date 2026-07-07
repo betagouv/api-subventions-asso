@@ -22,6 +22,7 @@ import { initIndexes } from "./shared/MongoInit";
 import GeoCli from "./adapters/inputs/cli/geo.cli";
 import DataBretagneCli from "./adapters/inputs/cli/data-bretagne.cli";
 import SireneStockUniteLegaleCli from "./adapters/inputs/cli/sirene-stock-unite-legale.cli";
+import SireneStockEtablissementCli from "./adapters/inputs/cli/sirene-stock-etablissement.cli";
 import AmountsVsProgramRegionCli from "./adapters/inputs/cli/amounts-vs-program-region.cli";
 import ScdlBatchCli from "./adapters/inputs/cli/scdl-batch.cli";
 import HeliosCli from "./adapters/inputs/cli/helios/helios.cli";
@@ -54,6 +55,7 @@ async function main() {
         GeoCli,
         DataBretagneCli,
         SireneStockUniteLegaleCli,
+        SireneStockEtablissementCli,
         AmountsVsProgramRegionCli,
         ScdlBatchCli,
         HeliosCli,

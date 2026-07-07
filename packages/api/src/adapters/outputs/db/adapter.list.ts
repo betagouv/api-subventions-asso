@@ -27,6 +27,7 @@ import depositLogAdapter from "./deposit-log/deposit-log.adapter";
 import chorusFseAdapter from "./providers/chorus/chorus-fse.adapter";
 import chorusAdapter from "./providers/chorus/chorus.adapter";
 import sireneUniteLegaleAdapter from "./sirene/sirene-unite-legale.adapter";
+import sireneEtablissementAdapter from "./sirene/sirene-etablissement.adapter";
 
 export const adaptersWithIndexes = [
     // TODO: handle adapter initialization from within and remove this file
@@ -55,6 +56,7 @@ export const adaptersWithIndexes = [
     uniteLegalNameAdapter,
     paymentFlatAdapter,
     sireneUniteLegaleAdapter,
+    sireneEtablissementAdapter,
     amountsVsProgramRegionAdapter,
     dataLogAdapter,
     applicationFlatAdapter,
