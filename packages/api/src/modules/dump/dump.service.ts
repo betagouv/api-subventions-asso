@@ -40,12 +40,9 @@ export class DumpService {
 
         const lastAssociationVisits = await statsService.getAssociationsVisitsOnPeriod(lastExecution, now);
 
-        console.log("visits: ", lastAssociationVisits.length);
-
         if (lastAssociationVisits.length) await metabaseDumpAdapter.addVisits(lastAssociationVisits);
 
         const users = await userCrudService.find();
-        console.log("users: ", users.length);
 
         if (users.length) {
             await metabaseDumpAdapter.upsertUsers(users);

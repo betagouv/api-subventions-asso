@@ -33,7 +33,6 @@ export class ScdlDepositCronService {
     // user that started a desposit 7 days ago
     async getUsersToMail() {
         const sevenDaysAgo = addDaysToDate(new Date(), -7);
-        console.log("seven", new Date());
         const usersId = await this.getDepositsUserIdFromDate(sevenDaysAgo);
         if (!usersId) return null;
         return await userCrudService.findUsersByIdList(usersId);

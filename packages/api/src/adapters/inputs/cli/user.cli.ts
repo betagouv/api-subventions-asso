@@ -6,6 +6,8 @@ import userCrudService from "../../../modules/user/services/crud/user.crud.servi
 import userRgpdService from "../../../modules/user/services/rgpd/user.rgpd.service";
 import { RoleEnum } from "../../../domain/users/@types/UserRoles";
 import NewUserEntity from "../../../domain/users/NewUserEntity";
+import notifyService from "../../../modules/notify/notify.service";
+import { NotificationType } from "../../../modules/notify/@types/NotificationType";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCli {
@@ -38,5 +40,13 @@ export default class UserCli {
 
     removeInactiveUsers() {
         return userRgpdService.bulkDisableInactive();
+    }
+
+    // add to debug brevo transac email on preprod
+    async testBrevoMail() {
+        notifyService.notify(NotificationType.USER_FORGET_PASSWORD, {
+            email: "foo.bar@beta.gouv.fr",
+            url: "https://fake.url/activate/fake-token",
+        });
     }
 }

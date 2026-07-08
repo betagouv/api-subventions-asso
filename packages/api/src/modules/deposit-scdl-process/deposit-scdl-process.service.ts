@@ -284,7 +284,6 @@ export class DepositScdlProcessService {
     }
 
     async parseAndPersistScdlFile(user: UserEntity) {
-        console.log("DEBUG", user);
         const userId = user.id;
         const existingDepositLog = await this.getDepositLog(userId);
         if (!existingDepositLog) {

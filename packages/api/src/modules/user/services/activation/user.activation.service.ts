@@ -50,7 +50,6 @@ export class UserActivationService {
     }
 
     public isResetExpired(reset: UserResetEntity) {
-        console.log(typeof reset.createdAt, Date.now());
         return reset.createdAt.getTime() + UserActivationService.RESET_TIMEOUT < Date.now();
     }
 
