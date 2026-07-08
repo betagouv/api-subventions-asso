@@ -15,12 +15,14 @@
     // used to type data
     const modalData = data as Store<ApplicationModalData>;
 
-    let osirisDetails: Promise<OsirisActions>;
+    let osirisDetails: Promise<OsirisActions> | null = null;
 
     $: {
         const appData = $data as ApplicationModalData;
         if (appData?.application.fournisseur === ProviderName.osiris) {
             osirisDetails = (appData as ApplicationModalData<OsirisActions>).details;
+        } else {
+            osirisDetails = null;
         }
     }
 </script>
@@ -56,19 +58,23 @@
 {/if}
 
 <!-- OSIRIS APPLICATION DETAILS -->
-{#await osirisDetails}
-    <Spinner></Spinner>
-{:then details}
-    <section>
-        <h4 class="fr-icon-arrow-right-line">Actions de la subvention</h4>
-        {#each details.actions as action (action.intitule)}
-            <div>
-                <h5>{action.intitule}</h5>
-                <p>{action.description}</p>
-            </div>
-        {/each}
-    </section>
-{/await}
+{#if osirisDetails}
+    {#await osirisDetails}
+        <Spinner></Spinner>
+    {:then details}
+        {#if details?.actions?.length}
+            <section>
+                <h4 class="fr-icon-arrow-right-line">Actions de la subvention</h4>
+                {#each details.actions as action (action.intitule)}
+                    <div>
+                        <h5>{action.intitule}</h5>
+                        <p>{action.description}</p>
+                    </div>
+                {/each}
+            </section>
+        {/if}
+    {/await}
+{/if}
 
 <style>
     section h4 {
