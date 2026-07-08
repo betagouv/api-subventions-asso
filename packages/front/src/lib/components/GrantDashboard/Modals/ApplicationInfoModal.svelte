@@ -5,6 +5,7 @@
     import type { ApplicationFlatDto, OsirisActions } from "dto";
     import Spinner from "$lib/components/Spinner.svelte";
     import { ProviderName, type ProviderDetailsMap } from "$lib/resources/grant/grant.port";
+    import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
 
     // @TODO: put this somewhere else ?
     type ApplicationModalData<T = ProviderDetailsMap[ProviderName]> = {
@@ -43,12 +44,12 @@
     {#if $modalData.application.dateDepotDemande}
         <p class="fr-text--lg">
             <span class="fr-text--bold">Date de dépôt de la demande :</span>
-            {$modalData.application.dateDepotDemande}
+            {dateToDDMMYYYY($modalData.application.dateDepotDemande)}
         </p>{/if}
     {#if $modalData.application.dateDecision}
         <p class="fr-text--lg">
             <span class="fr-text--bold">Date de décision du service instructeur :</span>
-            {$modalData.application.dateDecision}
+            {dateToDDMMYYYY($modalData.application.dateDecision)}
         </p>{/if}
 </section>
 {#if $modalData.application?.objet}
