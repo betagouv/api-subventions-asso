@@ -23,7 +23,3 @@ allowBuilds:
   puppeteer: true # Required for scraping in tools
   tsc: true
   unrs-resolver: false # Not critical
-
-# Exclude packages from the security window (updated on pnpm install)
-minimumReleaseAgeExclude:
-  - prettier-plugin-svelte@3.5.2
