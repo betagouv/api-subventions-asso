@@ -63,7 +63,7 @@ export default class ApiAssoDtoMapper {
             new Date(structure.identite!.date_modif_siren),
         );
 
-        const establishmentSiret = this.formatEstablishementSiret(structure.etablissement);
+        const establishmentSiret = this.formatEstablishementSiret(structure.etablissements);
 
         return {
             denomination_siren: toPvs(structure.identite.nom),

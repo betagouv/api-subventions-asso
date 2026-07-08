@@ -62,7 +62,7 @@ export const sirenStructureFixture: SirenStructureDto = {
         },
     },
     nbEtabsActifs: 1,
-    etablissement: [
+    etablissements: [
         SIREN_STRUCTURE_ESTABLISHMENT,
         {
             actif: false,

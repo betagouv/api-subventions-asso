@@ -106,7 +106,7 @@ describe("AdminController, /admin", () => {
     });
 
     describe("GET /user/list-users", () => {
-        it.only("should return UserRequestsSuccessResponse", async () => {
+        it("should return UserRequestsSuccessResponse", async () => {
             const TODAY = new Date();
             const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";
             await createAndActiveUser(ACTIVE_USER_EMAIL);

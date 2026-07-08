@@ -86,9 +86,7 @@ export interface StructureDacDocumentDto {
 }
 
 export interface StructureDocumentDto {
-    asso: {
-        documents: DocumentsDto;
-    };
+    documents: DocumentsDto;
 }
 
 export interface DocumentsDto {
@@ -261,7 +259,7 @@ export default interface StructureDto {
         resultat: number;
         id_siret: number;
     }[];
-    etablissement: StructureEstablishmentDto[];
+    etablissements: StructureEstablishmentDto[];
     rib: StructureRibDto[];
     commentaire?: {
         note: string;

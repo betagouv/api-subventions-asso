@@ -1,4 +1,4 @@
-import { Association, EstablishmentWithProviderValues } from "dto";
+import { AssociationWithProviderValues, EstablishmentWithProviderValues } from "dto";
 import ApiAssoDtoMapper from "./mappers/api-asso.dto.mapper";
 import { ApiAssoService } from "./api-asso.service";
 import { DacDtoDocument, RnaDtoDocument } from "./__fixtures__/DtoDocumentFixture";
@@ -79,7 +79,9 @@ describe("ApiAssoService", () => {
 
             it("should return many associations", async () => {
                 const expected = 2;
+                // @ts-expect-error mock fake data
                 findAssociationBySirenMock.mockResolvedValueOnce({ data: true });
+                // @ts-expect-error mock fake data
                 findAssociationByRnaMock.mockResolvedValueOnce({ data: true });
                 const actual = await service.getAssociationsWithProviderValues(ASSOCIATION_ID);
                 expect(actual).toHaveLength(expected);
@@ -126,11 +128,11 @@ describe("ApiAssoService", () => {
 
         describe("findAssociationBySiren", () => {
             const SIREN = new Siren("000000000");
-            const ASSO_WITH_STRUCTURES: Association = {
-                // @ts-expect-error: incomplete fixture
+            const ASSO_WITH_STRUCTURES: AssociationWithProviderValues = {
                 data: true,
                 identite: { date_modif_siren: "smthg" },
-                etablissement: { length: 1 },
+                // @ts-expect-error: incomplete fixture
+                etablissements: [{}],
             };
             let mockGetDefaultDateModifSiren: jest.SpyInstance;
 
@@ -163,11 +165,10 @@ describe("ApiAssoService", () => {
 
             it("should return null if structure identite has empty properties", async () => {
                 mockedObjectHelper.hasEmptyProperties.mockReturnValueOnce(true);
-                const STRUCTURE: SirenStructureDto = {
-                    etablissement: [SIREN_STRUCTURE_ESTABLISHMENT],
-                    // @ts-expect-error: mock wrong api response
+                const STRUCTURE = {
+                    etablissements: [SIREN_STRUCTURE_ESTABLISHMENT],
                     identite: { date_modif_siren: null, nom: null, id_rna: null },
-                };
+                } as unknown as SirenStructureDto;
                 mockAdapter.getSirenStructure.mockResolvedValueOnce(STRUCTURE);
                 const actual = await service.findAssociationBySiren(SIREN);
                 expect(actual).toBe(null);
@@ -316,7 +317,7 @@ describe("ApiAssoService", () => {
             it("maps structure to establishment", async () => {
                 mockAdapter.getStructure.mockResolvedValue(fixtureAsso);
                 await service.findEstablishmentsBySiren(SIREN);
-                expect(toEstablishmentMock).toHaveBeenCalledTimes(fixtureAsso.etablissement.length);
+                expect(toEstablishmentMock).toHaveBeenCalledTimes(fixtureAsso.etablissements.length);
             });
 
             it("should call getDefaultDateModifSiren()", async () => {
@@ -502,14 +503,12 @@ describe("ApiAssoService", () => {
 
             it("return documents", async () => {
                 const API_ASSO_RESPONSE = {
-                    asso: {
-                        documents: {
-                            document_dac: [],
-                            document_rna: [],
-                        },
+                    documents: {
+                        document_dac: [],
+                        document_rna: [],
                     },
                 };
-                const expected = API_ASSO_RESPONSE.asso.documents;
+                const expected = API_ASSO_RESPONSE.documents;
                 mockAdapter.getDocuments.mockResolvedValue(API_ASSO_RESPONSE);
                 // @ts-expect-error: private method
                 const actual = await service.fetchDocuments(ASSOCIATION_ID);
@@ -522,11 +521,9 @@ describe("ApiAssoService", () => {
                     document_rna: ["else"],
                 };
                 mockAdapter.getDocuments.mockResolvedValue({
-                    asso: {
-                        documents: {
-                            document_dac: "something",
-                            document_rna: "else",
-                        },
+                    documents: {
+                        document_dac: "something",
+                        document_rna: "else",
                     },
                 });
                 // @ts-expect-error: private method

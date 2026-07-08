@@ -88,7 +88,7 @@ export const fixtureAsso: StructureDto = {
         },
     },
     ribs: { rib: fixtureRib },
-    etablissement: fixtureEstablishments,
+    etablissements: fixtureEstablishments,
     document_rna: fixtureDocumentRna,
     document_dac: fixtureDocumentDac,
     reseau_affiliation: [],

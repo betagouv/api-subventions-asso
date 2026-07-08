@@ -151,7 +151,7 @@ describe("ApiAsso DTO Mapper", () => {
     describe("sirenStructureToAssociation", () => {
         // @ts-expect-error: protected
         const originalFormatEstablishementSiret = ApiAssoDtoMapper.formatEstablishementSiret;
-        const mockedFormatEstablishementSiret = jest.fn().mockReturnValue(sirenStructureFixture.etablissement);
+        const mockedFormatEstablishementSiret = jest.fn().mockReturnValue(sirenStructureFixture.etablissements);
 
         const mockHasIdentity = jest.fn();
 

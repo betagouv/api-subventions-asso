@@ -57,7 +57,7 @@ export class ApiAssoService
 
     public async findAssociationBySiren(siren: Siren): Promise<AssociationWithProviderValues | null> {
         const sirenStructure = await this.apiAssoAdapter.getSirenStructure(siren);
-        const isSirenStructureValid = structure => structure.etablissement && structure.etablissement.length;
+        const isSirenStructureValid = structure => structure.etablissements && structure.etablissements.length;
 
         if (!sirenStructure || !isSirenStructureValid(sirenStructure)) {
             const structure = await this.apiAssoAdapter.getStructure(siren);
@@ -85,7 +85,7 @@ export class ApiAssoService
         if (!structure.identite.date_modif_siren)
             structure.identite.date_modif_siren = this.getDefaultDateModifSiren(structure);
 
-        const establishments = structure.etablissement || [];
+        const establishments = structure.etablissements || [];
 
         const ribs = structure.rib || [];
 
@@ -201,8 +201,8 @@ export class ApiAssoService
         if (typeof result == "string") {
             const parser = new XMLParser();
             const jsonResult = parser.parse(result) as StructureDocumentDto;
-            docs = jsonResult?.asso?.documents;
-        } else docs = result?.asso?.documents;
+            docs = jsonResult?.documents;
+        } else docs = result?.documents;
 
         if (docs?.document_rna && !Array.isArray(docs?.document_rna)) docs.document_rna = [docs.document_rna];
         if (docs?.document_dac && !Array.isArray(docs?.document_dac)) docs.document_dac = [docs.document_dac];
