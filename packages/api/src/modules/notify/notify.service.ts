@@ -30,6 +30,10 @@ export class NotifyService {
     private shouldSkipNotification(type: NotificationType): boolean {
         const allowedEnvs = NOTIFICATION_ENV_CONFIG[type];
 
+        if (type === NotificationType.USER_FORGET_PASSWORD) {
+            console.log(`try to push notify on ${ENV} with allowedEnvs ${allowedEnvs}`);
+        }
+
         if (allowedEnvs) {
             return !allowedEnvs.some(env => env === ENV);
         } else {

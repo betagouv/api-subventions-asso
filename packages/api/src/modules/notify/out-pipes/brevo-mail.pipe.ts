@@ -62,6 +62,7 @@ export class BrevoMailPipe implements NotifyOutPipe {
     }
 
     private async sendForgetPasswordMail(data: NotificationDataTypes[NotificationType.USER_FORGET_PASSWORD]) {
+        console.log("supposed to send a mail", data.url, data.email);
         return this.sendMail(data.email, { url: data.url }, TemplateEnum.forgetPassword);
     }
 

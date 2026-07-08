@@ -88,10 +88,6 @@ export class UserActivationService {
         await userResetAdapter.remove(reset);
         const date = new Date();
 
-        // TODO maybe send another signal with another email, the one from USER_ACTIVATED sounds weird
-        notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
-        notifyService.notify(NotificationType.USER_LOGGED, { email: user.email, date });
-
         const userUpdated = await userAdapter.update(
             new UserEntity({
                 ...user,
@@ -103,6 +99,8 @@ export class UserActivationService {
             true,
         );
 
+        // TODO maybe send another signal with another email, the one from USER_ACTIVATED sounds weird
+        notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
         notifyService.notify(NotificationType.USER_LOGGED, {
             email: user.email,
             date: new Date(),
