@@ -50,7 +50,7 @@ export default class ApiAssoDtoMapper {
     private static hasIdentity<T extends SirenStructureDto | RnaStructureDto | StructureDto>(
         structure: T,
     ): structure is T & { identite: NonNullable<T["identite"]> } {
-        return !!hasEmptyProperties(structure.identite);
+        return !hasEmptyProperties(structure.identite);
     }
 
     static sirenStructureToAssociation(
