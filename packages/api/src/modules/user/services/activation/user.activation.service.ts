@@ -135,6 +135,7 @@ export class UserActivationService {
 
             const resetResult = await this.resetUser(user);
 
+            console.log("log before notify");
             notifyService.notify(NotificationType.USER_FORGET_PASSWORD, {
                 email: email.toLocaleLowerCase(),
                 url: this.buildResetPwdUrl(resetResult.token),

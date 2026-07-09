@@ -61,6 +61,7 @@ export class AuthentificationHttp extends Controller {
     @Example<{ success: boolean }>({ success: true })
     @Post("/forget-password")
     public async forgetPassword(@Body() body: { email: string }): Promise<{ success: boolean }> {
+        console.log("log from forget-password");
         await userActivationService.forgetPassword(body.email.toLocaleLowerCase());
         return { success: true };
     }

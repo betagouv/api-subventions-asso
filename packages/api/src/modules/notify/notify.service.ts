@@ -12,6 +12,7 @@ export class NotifyService {
     // this is used to avoid using notify()() syntax
     get notify(): NotifierMethodType {
         return (type, data) => {
+            console.log("should notify");
             if (this.shouldSkipNotification(type)) {
                 return Promise.resolve(true);
             }
