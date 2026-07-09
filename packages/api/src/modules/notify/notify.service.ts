@@ -30,8 +30,6 @@ export class NotifyService {
     private shouldSkipNotification(type: NotificationType): boolean {
         const allowedEnvs = NOTIFICATION_ENV_CONFIG[type];
 
-        console.log(`try to push notify of type ${type} with allowedEnvs ${allowedEnvs}`);
-
         if (allowedEnvs) {
             return !allowedEnvs.some(env => env === ENV);
         } else {
