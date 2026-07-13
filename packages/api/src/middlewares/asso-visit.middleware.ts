@@ -7,7 +7,6 @@ import Siret from "../identifier-objects/Siret";
 const regexPath = new RegExp("/(association|etablissement)/([W0-9]{9,10}|\\d{14})$");
 
 export default async function assoVisitMiddleware(req: IdentifiedRequest, res: Response) {
-    console.log(req.user, req.statusCode, isRequestFromAdmin(req));
     if (!req.user || res.statusCode >= 400 || isRequestFromAdmin(req)) return;
     const regexResult = regexPath.exec(req.originalUrl);
     if (!regexResult || !regexResult[2]) return;

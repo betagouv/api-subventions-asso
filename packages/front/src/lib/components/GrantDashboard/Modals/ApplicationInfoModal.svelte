@@ -5,6 +5,7 @@
     import type { ApplicationFlatDto, OsirisActions } from "dto";
     import Spinner from "$lib/components/Spinner.svelte";
     import { ProviderName, type ProviderDetailsMap } from "$lib/resources/grant/grant.port";
+    import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
 
     // @TODO: put this somewhere else ?
     type ApplicationModalData<T = ProviderDetailsMap[ProviderName]> = {
@@ -15,12 +16,14 @@
     // used to type data
     const modalData = data as Store<ApplicationModalData>;
 
-    let osirisDetails: Promise<OsirisActions>;
+    let osirisDetails: Promise<OsirisActions> | null = null;
 
     $: {
         const appData = $data as ApplicationModalData;
         if (appData?.application.fournisseur === ProviderName.osiris) {
             osirisDetails = (appData as ApplicationModalData<OsirisActions>).details;
+        } else {
+            osirisDetails = null;
         }
     }
 </script>
@@ -41,12 +44,12 @@
     {#if $modalData.application.dateDepotDemande}
         <p class="fr-text--lg">
             <span class="fr-text--bold">Date de dépôt de la demande :</span>
-            {$modalData.application.dateDepotDemande}
+            {dateToDDMMYYYY($modalData.application.dateDepotDemande)}
         </p>{/if}
     {#if $modalData.application.dateDecision}
         <p class="fr-text--lg">
             <span class="fr-text--bold">Date de décision du service instructeur :</span>
-            {$modalData.application.dateDecision}
+            {dateToDDMMYYYY($modalData.application.dateDecision)}
         </p>{/if}
 </section>
 {#if $modalData.application?.objet}
@@ -56,19 +59,23 @@
 {/if}
 
 <!-- OSIRIS APPLICATION DETAILS -->
-{#await osirisDetails}
-    <Spinner></Spinner>
-{:then details}
-    <section>
-        <h4 class="fr-icon-arrow-right-line">Actions de la subvention</h4>
-        {#each details.actions as action (action.intitule)}
-            <div>
-                <h5>{action.intitule}</h5>
-                <p>{action.description}</p>
-            </div>
-        {/each}
-    </section>
-{/await}
+{#if osirisDetails}
+    {#await osirisDetails}
+        <Spinner></Spinner>
+    {:then details}
+        {#if details?.actions?.length}
+            <section>
+                <h4 class="fr-icon-arrow-right-line">Actions de la subvention</h4>
+                {#each details.actions as action (action.intitule)}
+                    <div>
+                        <h5>{action.intitule}</h5>
+                        <p>{action.description}</p>
+                    </div>
+                {/each}
+            </section>
+        {/if}
+    {/await}
+{/if}
 
 <style>
     section h4 {

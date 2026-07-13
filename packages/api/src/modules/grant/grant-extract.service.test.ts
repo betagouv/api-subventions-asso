@@ -10,6 +10,7 @@ import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdent
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import Siren from "../../identifier-objects/Siren";
 import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
+import { NotFoundError } from "core";
 
 jest.mock("./grant.service");
 jest.mock("../associations/associations.service");
@@ -106,6 +107,27 @@ describe("GrantExtractService", () => {
             jest.mocked(csvStringifier.stringify).mockReturnValueOnce(expected);
             const actual = (await grantExtractService.buildCsv(IDENTIFIER)).fileName;
             expect(actual).toBe(expected);
+        });
+
+        it("returns csv even if association details are not found", async () => {
+            jest.mocked(associationsService.getAssociation).mockRejectedValueOnce(new NotFoundError());
+            jest.mocked(csvStringifier.stringify).mockReturnValueOnce("csv");
+
+            const actual = await grantExtractService.buildCsv(IDENTIFIER);
+
+            expect(actual).toMatchObject({
+                csv: "csv",
+                fileName: expect.stringContaining("DataSubvention-12345678912345-"),
+            });
+        });
+
+        it("returns csv even if establishment details are not found", async () => {
+            jest.mocked(associationsService.getEstablishments).mockRejectedValueOnce(new NotFoundError());
+            jest.mocked(csvStringifier.stringify).mockReturnValueOnce("csv");
+
+            const actual = await grantExtractService.buildCsv(IDENTIFIER);
+
+            expect(actual.csv).toBe("csv");
         });
     });
 });
