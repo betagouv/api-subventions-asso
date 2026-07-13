@@ -1,5 +1,5 @@
-import { RnaImportDto } from "./RnaImportDto";
+import RnaDbo from "./rna.dbo";
 
 export interface RnaPort {
-    insertMany(lines: RnaImportDto[]): Promise<void>;
+    insertMany(lines: RnaDbo[]): Promise<void>;
 }
