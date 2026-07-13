@@ -37,7 +37,6 @@ export class DemarchesSimplifieesDataAdapter
 
     async bulkUpsert(entities: DemarchesSimplifieesDataEntity[]): Promise<void> {
         fs.writeFileSync("dn-fixture.json", JSON.stringify(entities, null, 2), "utf-8");
-        console.log(entities[0]);
         const bulk = entities.map(entity => {
             return {
                 updateOne: {

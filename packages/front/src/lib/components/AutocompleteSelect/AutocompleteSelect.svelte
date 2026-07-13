@@ -44,9 +44,12 @@
 
     onMount(() => (ctrl = new ComboboxAutocomplete(inputElement, buttonElement, listElement, storeValue)));
 
-    // TODO: #3374
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    $: options, tick().then(() => ctrl.initOptionsEvents());
+    $: if (ctrl) {
+        // TODO: #3374
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        options;
+        tick().then(() => ctrl?.initOptionsEvents());
+    }
 </script>
 
 <div class="combobox combobox-list">

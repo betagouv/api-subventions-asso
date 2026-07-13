@@ -1,6 +1,6 @@
-import { EstablishmentSimplifiedWithProviderValues } from "dto";
+import { AssociationWithProviderValues, EstablishmentSimplifiedWithProviderValues } from "dto";
 import * as csvStringifier from "csv-stringify/sync";
-import { BadRequestError } from "core";
+import { BadRequestError, NotFoundError } from "core";
 import associationsService from "../associations/associations.service";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
@@ -18,14 +18,23 @@ class GrantExtractService {
 
         const [grants, asso, estabs] = await Promise.all([
             grantService.getGrants(identifier),
-            associationsService.getAssociation(assoIdentifier),
-            associationsService.getEstablishments(assoIdentifier),
+            associationsService.getAssociation(assoIdentifier).catch((error): AssociationWithProviderValues => {
+                if (error instanceof NotFoundError) return {};
+                throw error;
+            }),
+            associationsService
+                .getEstablishments(assoIdentifier)
+                .catch((error): EstablishmentSimplifiedWithProviderValues[] => {
+                    if (error instanceof NotFoundError) return [];
+                    throw error;
+                }),
         ]);
 
         const estabBySiret: Record<string, EstablishmentSimplifiedWithProviderValues> = {};
         estabs.forEach(estab => (estabBySiret[estab.siret?.[0]?.value] = estab));
 
-        const assoName = asso.denomination_rna?.[0]?.value ?? asso.denomination_siren?.[0]?.value;
+        const assoName =
+            asso.denomination_rna?.[0]?.value ?? asso.denomination_siren?.[0]?.value ?? identifier.toString();
 
         return {
             csv: csvStringifier.stringify(

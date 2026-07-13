@@ -72,7 +72,6 @@ export class RawGrantService {
             if (grant?.payments?.length) {
                 exercise = paymentService.getPaymentExercise(grant.payments[0]);
             } else {
-                console.log(grant.application);
                 exercise = grant.application?.annee_demande?.value;
 
                 // not sure if possible but because DemandeSubventionDTO as annee_demande as optionnal it could occur

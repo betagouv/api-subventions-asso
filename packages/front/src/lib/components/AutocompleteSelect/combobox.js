@@ -172,13 +172,14 @@ export class ComboboxAutocomplete {
         var filter = this.filter.toLowerCase();
 
         this.filteredOptions = [];
-        this.listboxNode.innerHTML = "";
 
-        for (var i = 0; i < this.allOptions.length; i++) {
-            option = this.allOptions[i];
-            if (filter.length === 0 || this.getLowercaseContent(option).indexOf(filter) !== -1) {
+        for (const option of this.allOptions) {
+            var matches = filter.length === 0 || this.getLowercaseContent(option).indexOf(filter) !== -1;
+            // fix #3996 introduced by bumping from svelte 4 to 5
+            // toggle visibility instead of moving nodes
+            option.style.display = matches ? "" : "none";
+            if (matches) {
                 this.filteredOptions.push(option);
-                this.listboxNode.appendChild(option);
             }
         }
 

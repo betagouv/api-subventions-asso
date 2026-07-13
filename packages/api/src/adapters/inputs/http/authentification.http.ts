@@ -76,14 +76,9 @@ export class AuthentificationHttp extends Controller {
         @Body() body: { password: string; token: string },
         @Request() req,
     ): Promise<ResetPasswordDtoResponse> {
-        try {
-            const user = (await userActivationService.resetPassword(body.password, body.token)) as UserDto;
-            this.setCookie(req, user);
-            return { user };
-        } catch (e) {
-            console.log("ici", e);
-            throw e;
-        }
+        const user = (await userActivationService.resetPassword(body.password, body.token)) as UserDto;
+        this.setCookie(req, user);
+        return { user };
     }
 
     private _login(req) {
