@@ -30,6 +30,7 @@ import createHeliosCli from "./adapters/inputs/cli/helios/helios.cli.factory";
 import DepositLogCli from "./adapters/inputs/cli/scdl-deposit.cli";
 import chorusImport from "./adapters/inputs/pipeline/import/chorus/chorus.import";
 import updateFlatByExercise from "./modules/providers/chorus/use-cases/update-flat-by-exercise";
+import { RnaCli } from "./adapters/inputs/cli/rna.cli";
 
 async function main() {
     await connectDB();
@@ -60,6 +61,7 @@ async function main() {
         ScdlBatchCli,
         HeliosCli,
         DepositLogCli,
+        RnaCli,
     ];
 
     const factoryMap = new Map([
