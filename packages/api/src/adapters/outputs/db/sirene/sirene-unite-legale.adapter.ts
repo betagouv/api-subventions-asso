@@ -43,7 +43,7 @@ export class SireneUniteLegaleAdapter extends MongoAdapter<SireneUniteLegaleDbo>
         return dbo ? SireneUniteLegaleMapper.dboToEntity(dbo) : null;
     }
 
-    public async findSirens(sirens: string[]): Promise<string[]> {
+    public async filterExistingSirens(sirens: string[]): Promise<string[]> {
         const uniqueSirens = [...new Set(sirens)];
         if (!uniqueSirens.length) return [];
 
@@ -51,6 +51,13 @@ export class SireneUniteLegaleAdapter extends MongoAdapter<SireneUniteLegaleDbo>
             .find({ siren: { $in: uniqueSirens } }, { projection: { siren: 1 } })
             .toArray();
         return dbos.map(dbo => dbo.siren);
+    }
+
+    public async collectionIsNotEmpty(): Promise<boolean> {
+        return this.collection
+            .find({}, { projection: { _id: 1 } })
+            .limit(1)
+            .hasNext();
     }
 
     public async findOneByRna(rna: Rna): Promise<SireneUniteLegaleEntity | null> {

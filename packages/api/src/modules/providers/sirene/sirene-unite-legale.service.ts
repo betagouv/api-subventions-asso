@@ -47,8 +47,12 @@ export class SireneUniteLegaleService {
         return sireneUniteLegaleAdapter.findAll();
     }
 
-    public findSirens(sirens: string[]) {
-        return sireneUniteLegaleAdapter.findSirens(sirens);
+    public filterExistingSirens(sirens: string[]) {
+        return sireneUniteLegaleAdapter.filterExistingSirens(sirens);
+    }
+
+    public collectionIsNotEmpty() {
+        return sireneUniteLegaleAdapter.collectionIsNotEmpty();
     }
 }
 

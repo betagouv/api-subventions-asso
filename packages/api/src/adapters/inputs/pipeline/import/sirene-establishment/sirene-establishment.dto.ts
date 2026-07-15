@@ -1,4 +1,4 @@
-export default interface SireneEtablissementDto {
+export interface SireneStockEtablissementDto {
     siren: string;
     nic: string;
     siret: string;
@@ -55,10 +55,11 @@ export default interface SireneEtablissementDto {
     activitePrincipaleNAF25Etablissement: string | null;
 }
 
-export const SIRENE_ETABLISSEMENT_DTO_FIELDS = [
+export const SIRENE_ESTABLISHMENT_DTO_FIELDS = [
     "siren",
     "nic",
     "siret",
+    "dateDernierTraitementEtablissement",
     "etablissementSiege",
     "numeroVoieEtablissement",
     "typeVoieEtablissement",
@@ -68,4 +69,13 @@ export const SIRENE_ETABLISSEMENT_DTO_FIELDS = [
     "codeCommuneEtablissement",
     "codePaysEtrangerEtablissement",
     "libellePaysEtrangerEtablissement",
-] satisfies (keyof SireneEtablissementDto)[];
+] satisfies (keyof SireneStockEtablissementDto)[];
+
+type SireneEstablishmentDto = Omit<
+    Pick<SireneStockEtablissementDto, (typeof SIRENE_ESTABLISHMENT_DTO_FIELDS)[number]>,
+    "dateDernierTraitementEtablissement"
+> & {
+    dateDernierTraitementEtablissement: Date;
+};
+
+export default SireneEstablishmentDto;
