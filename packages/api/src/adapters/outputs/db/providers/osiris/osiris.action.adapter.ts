@@ -11,11 +11,11 @@ export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> implem
 
     async createIndexes() {
         // TODO: desactivate/activate this before/after (pre-)production migration
-        await this.collection.createIndex({ "dossier.uniqueId": 1 }, { unique: true });
-        await this.collection.createIndex({ "dossier.osirisActionId": 1 });
-        await this.collection.createIndex({ "dossier.requestUniqueId": 1 });
-        await this.collection.createIndex({ "dossier.compteAssoId": 1 });
-        await this.collection.createIndex({ "beneficiaire.siret": 1 });
+        // await this.collection.createIndex({ "dossier.uniqueId": 1 }, { unique: true });
+        // await this.collection.createIndex({ "dossier.osirisActionId": 1 });
+        // await this.collection.createIndex({ "dossier.requestUniqueId": 1 });
+        // await this.collection.createIndex({ "dossier.compteAssoId": 1 });
+        // await this.collection.createIndex({ "beneficiaire.siret": 1 });
     }
 
     joinIndexes = {
