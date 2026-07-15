@@ -62,7 +62,7 @@ class ApiAssoAdapter implements ApiAssoPort {
     }
 
     getDocuments(identifier: Rna | Siren) {
-        const route = `${this.basePath}/proxy_db_asso/documents/${identifier.value}`;
+        const route = `${this.basePath}/api/structure/${identifier.value}`;
         return this.send<StructureDocumentDto>(route);
     }
 }
