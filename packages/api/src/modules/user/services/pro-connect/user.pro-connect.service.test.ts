@@ -236,15 +236,17 @@ describe("userProConnectService", () => {
 
         it("creates user with userCrudService", async () => {
             await userProConnectService.createUserFromProConnect(PRO_CONNECT_USER);
-            expect(userCrudService.createUser).toHaveBeenCalledWith(
-                new NewUserEntity({
+            expect(userCrudService.createUser).toHaveBeenCalledWith({
+                ...new NewUserEntity({
                     email: PRO_CONNECT_USER.email,
                     firstName: PRO_CONNECT_USER.given_name.split(" ")[0],
                     lastName: PRO_CONNECT_USER.usual_name,
                     proConnectId: PRO_CONNECT_USER.uid,
                     roles: [UserRoles.USER],
                 }),
-            );
+                lastActivityDate: expect.any(Date),
+                signupAt: expect.any(Date),
+            });
         });
 
         it("returns user from userCrudService", async () => {
