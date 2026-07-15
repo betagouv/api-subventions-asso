@@ -1,6 +1,6 @@
 {
     "name": "api-subventions-asso",
-    "version": "0.84.11",
+    "version": "0.85.1",
     "description": "Projet monorepo de Data.Subvention",
     "main": "index.js",
     "engines": {

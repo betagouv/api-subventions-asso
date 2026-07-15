@@ -7,11 +7,27 @@
     ],
     "bumpFiles": [
         {
+            "filename": "package.json",
+            "type": "json"
+        },
+        {
             "filename": "packages/api/package.json",
             "type": "json"
         },
         {
             "filename": "packages/front/package.json",
+            "type": "json"
+        },
+        {
+            "filename": "packages/dto/package.json",
+            "type": "json"
+        },
+        {
+            "filename": "packages/core/package.json",
+            "type": "json"
+        },
+        {
+            "filename": "packages/tools/package.json",
             "type": "json"
         }
     ]
