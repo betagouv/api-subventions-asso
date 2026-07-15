@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-Those three bumps where added to test the new library switching from lerna to pnpm
+## [0.84.12](https://github.com/betagouv/api-subventions-asso/compare/v0.85.0...v0.84.12) (2026-07-15)
+
+
+### Bug Fixes
+
+* **api, front:** [#3996](https://github.com/betagouv/api-subventions-asso/issues/3996)  fixes for v0.85.0 ([#3997](https://github.com/betagouv/api-subventions-asso/issues/3997)) ([87c894a](https://github.com/betagouv/api-subventions-asso/commit/87c894a983c73ba3f9b1b1708f886048936b4561))
+* **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) fix getDocuments in api-asso adapter ([bdb0eeb](https://github.com/betagouv/api-subventions-asso/commit/bdb0eeb868b7eda7cdc72fd10ca7afc1febb9dce))
+* **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) update api-asso establishments and documents contract ([#3989](https://github.com/betagouv/api-subventions-asso/issues/3989)) ([f29e5cc](https://github.com/betagouv/api-subventions-asso/commit/f29e5cc2ac1325f8a7b72eb57fb5c4fe3b8a1730))
 
 ## [0.84.12](https://github.com/betagouv/api-subventions-asso/compare/v0.85.0...v0.84.12) (2026-07-07)
 
