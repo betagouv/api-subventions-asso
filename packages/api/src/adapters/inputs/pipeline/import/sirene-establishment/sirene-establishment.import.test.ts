@@ -3,13 +3,13 @@ import { SireneEstablishmentImport } from "./sirene-establishment.import";
 
 describe("SireneEstablishmentImport", () => {
     const parser = { parse: jest.fn() };
-    const establishmentPort = { saveNewer: jest.fn() };
+    const establishmentPort = { insertMany: jest.fn() };
     const sireneUniteLegale = { collectionIsNotEmpty: jest.fn(), filterExistingSirens: jest.fn() };
 
     beforeEach(() => {
         jest.clearAllMocks();
         parser.parse.mockImplementation(async (_filePath, onBatch) => onBatch([SIRENE_ESTABLISHMENT_DTO]));
-        establishmentPort.saveNewer.mockResolvedValue(1);
+        establishmentPort.insertMany.mockResolvedValue(1);
         sireneUniteLegale.collectionIsNotEmpty.mockResolvedValue(true);
         sireneUniteLegale.filterExistingSirens.mockResolvedValue([SIRENE_ESTABLISHMENT_DTO.siren]);
     });
@@ -29,7 +29,7 @@ describe("SireneEstablishmentImport", () => {
             establishmentPort as never,
             sireneUniteLegale as never,
         ).run("file.parquet");
-        expect(establishmentPort.saveNewer).toHaveBeenCalledWith([SIRENE_ESTABLISHMENT_DTO]);
+        expect(establishmentPort.insertMany).toHaveBeenCalledWith([SIRENE_ESTABLISHMENT_DTO]);
     });
 
     it("returns import report", async () => {
@@ -39,15 +39,5 @@ describe("SireneEstablishmentImport", () => {
             sireneUniteLegale as never,
         ).run("file.parquet");
         expect(actual).toEqual({ parsedCount: 1, importedCount: 1, errorCount: 0 });
-    });
-
-    it("does not count ignored establishments as errors", async () => {
-        establishmentPort.saveNewer.mockResolvedValueOnce(0);
-        const actual = await new SireneEstablishmentImport(
-            parser as never,
-            establishmentPort as never,
-            sireneUniteLegale as never,
-        ).run("file.parquet");
-        expect(actual).toEqual({ parsedCount: 1, importedCount: 0, errorCount: 0 });
     });
 });

@@ -29,7 +29,7 @@ export class SireneEstablishmentImport {
             report.parsedCount += batch.length;
 
             const associationDtos = await this.filterAssociationEstablishments(batch);
-            const importedCount = await this.establishmentPort.saveNewer(associationDtos);
+            const importedCount = await this.establishmentPort.insertMany(associationDtos);
 
             report.importedCount += importedCount;
         });
