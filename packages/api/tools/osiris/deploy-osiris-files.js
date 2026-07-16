@@ -59,6 +59,8 @@ if (!skipZip) {
     execSync(zipCmd);
 }
 
+//,zip -j ${~/Downloads/SuiviActions}/../${actions}.zip ${~/Downloads/SuiviActions}/* ; zip ${~/Downloads/SuiviActions}/../${actions}.zip --out ${~/Downloads/SuiviActions}/../${actions}-split.zip -s 80m
+
 const zipDir = skipZip ? osirisDir : `${osirisDir}/../`;
 
 console.log(`Finding files in ${zipDir} ...
