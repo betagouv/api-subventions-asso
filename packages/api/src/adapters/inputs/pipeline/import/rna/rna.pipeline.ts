@@ -5,6 +5,7 @@ import rnaAdapter, { RnaAdapter } from "../../../../outputs/db/rna/rna.adapter";
 import { Readable, Transform, Writable } from "stream";
 import { RnaWaldecDto } from "./rna.dto";
 import RnaDbo from "../../../../outputs/db/rna/rna.dbo";
+import { ImportReport } from "../../../../../@types/ImportReport";
 
 export class RnaPipeline {
     constructor(
@@ -14,14 +15,20 @@ export class RnaPipeline {
     ) {}
 
     async run(filePath: string) {
+        const report: ImportReport = {
+            parsedCount: 0,
+            importedCount: 0,
+            errorCount: 0, // no validation or format error here
+        };
+
         await pipeline(
             Readable.from(this.parser.parse(filePath)),
             new Transform({
                 objectMode: true,
                 transform: (batch: RnaWaldecDto[], _enc, callback) => {
+                    report.parsedCount += batch.length;
                     try {
                         const dbos = batch.map(row => this.mapper.map(row));
-                        console.log("transformed batch", dbos[0]);
                         callback(null, dbos);
                     } catch (err) {
                         callback(err as Error);
@@ -33,8 +40,8 @@ export class RnaPipeline {
                 write: async (dbos: RnaDbo[], _enc, callback) => {
                     try {
                         if (dbos.length > 0) {
-                            console.log(dbos[0]);
                             await this.adapter.insertMany(dbos);
+                            report.importedCount += dbos.length;
                             console.log(`inserted ${dbos.length} new Rna documents`);
                         }
                         callback();
@@ -44,6 +51,8 @@ export class RnaPipeline {
                 },
             }),
         );
+
+        return report;
     }
 }
 const rnaPipeline = new RnaPipeline(rnaParser, rnaMapper, rnaAdapter);

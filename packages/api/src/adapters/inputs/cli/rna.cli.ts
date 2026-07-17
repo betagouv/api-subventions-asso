@@ -1,3 +1,4 @@
+import { ImportReport } from "../../../@types/ImportReport";
 import CliController from "../../../shared/CliController";
 import { RnaPipeline } from "../pipeline/import/rna/rna.pipeline";
 
@@ -14,7 +15,7 @@ export class RnaCli extends CliController {
         this._serviceMeta = { id: "rna", name: "RNA" };
     }
 
-    async _parse(filePath: string) {
-        await this.pipeline.run(filePath);
+    async _parse(filePath: string): Promise<ImportReport> {
+        return await this.pipeline.run(filePath);
     }
 }
