@@ -22,6 +22,7 @@ import { initIndexes } from "./shared/MongoInit";
 import GeoCli from "./adapters/inputs/cli/geo.cli";
 import DataBretagneCli from "./adapters/inputs/cli/data-bretagne.cli";
 import SireneStockUniteLegaleCli from "./adapters/inputs/cli/sirene-stock-unite-legale.cli";
+import EstablishmentCli, { createEstablishmentCli } from "./adapters/inputs/cli/establishment.cli";
 import AmountsVsProgramRegionCli from "./adapters/inputs/cli/amounts-vs-program-region.cli";
 import ScdlBatchCli from "./adapters/inputs/cli/scdl-batch.cli";
 import HeliosCli from "./adapters/inputs/cli/helios/helios.cli";
@@ -54,6 +55,7 @@ async function main() {
         GeoCli,
         DataBretagneCli,
         SireneStockUniteLegaleCli,
+        EstablishmentCli,
         AmountsVsProgramRegionCli,
         ScdlBatchCli,
         HeliosCli,
@@ -63,6 +65,7 @@ async function main() {
     const factoryMap = new Map([
         [HeliosCli.cmdName, { factory: createHeliosCli }],
         [ChorusCli.cmdName, { factory: () => new ChorusCli(chorusImport, updateFlatByExercise) }],
+        [EstablishmentCli.cmdName, { factory: createEstablishmentCli }],
     ]);
 
     const args = process.argv.slice(2);

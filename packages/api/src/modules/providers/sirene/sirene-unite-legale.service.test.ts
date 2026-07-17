@@ -133,4 +133,18 @@ describe("SireneUniteLegaleService", () => {
             expect(actual).toBe(expected);
         });
     });
+
+    describe("filterExistingSirens", () => {
+        it("should call port", async () => {
+            await sireneUniteLegaleService.filterExistingSirens(["123456789"]);
+            expect(sireneUniteLegaleAdapter.filterExistingSirens).toHaveBeenCalledWith(["123456789"]);
+        });
+    });
+
+    describe("collectionIsNotEmpty", () => {
+        it("should call port", async () => {
+            await sireneUniteLegaleService.collectionIsNotEmpty();
+            expect(sireneUniteLegaleAdapter.collectionIsNotEmpty).toHaveBeenCalled();
+        });
+    });
 });
