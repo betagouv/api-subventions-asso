@@ -1,5 +1,5 @@
-import { ObjectId } from "mongodb";
-import UserDbo from "../../../../src/adapters/outputs/db/user/@types/UserDbo";
+import { ObjectId, WithId } from "mongodb";
+import { UserDbo } from "../../../../src/adapters/outputs/db/user/user.dbo";
 
 export default [
     {
@@ -98,4 +98,4 @@ export default [
         nbVisits: 16,
         lastActivityDate: new Date("2022-12-16T16:05:54.145Z"),
     },
-] as UserDbo[];
+] as WithId<UserDbo>[];

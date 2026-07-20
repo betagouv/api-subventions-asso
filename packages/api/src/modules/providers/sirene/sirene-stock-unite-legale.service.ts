@@ -2,8 +2,8 @@ import * as fs from "fs";
 import { Readable } from "stream";
 import StreamZip from "node-stream-zip";
 import sireneUniteLegaleService from "./sirene-unite-legale.service";
-import sireneStockUniteLegaleAdapter from "../../../adapters/outputs/api/sirene/sirene-stock-unite-legale.adapter";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
+import { sireneStockUniteLegaleAdapter } from "../../../adapters/outputs/api/data-gouv/data-gouv.adapter";
 
 export class SireneStockUniteLegaleService {
     private directory_path;
@@ -30,7 +30,7 @@ export class SireneStockUniteLegaleService {
 
     public async getAndSaveZip() {
         const writeFile = fs.createWriteStream(this.directory_path + "/sirene-stock-unite-legale.zip");
-        const readFile = (await sireneStockUniteLegaleAdapter.getZip()) as RequestResponse<Readable>;
+        const readFile = (await sireneStockUniteLegaleAdapter.getFileStream()) as RequestResponse<Readable>;
 
         console.info(`Start downloading the file`);
 

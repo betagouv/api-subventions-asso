@@ -4,7 +4,7 @@ import fs from "fs";
 import StreamZip from "node-stream-zip";
 import SireneStockUniteLegaleParser from "./parser/sirene-stock-unite-legale.parser";
 import sireneUniteLegaleService from "./sirene-unite-legale.service";
-import sireneStockUniteLegaleAdapter from "../../../adapters/outputs/api/sirene/sirene-stock-unite-legale.adapter";
+import { sireneStockUniteLegaleAdapter } from "../../../adapters/outputs/api/data-gouv/data-gouv.adapter";
 
 jest.mock("node-stream-zip", () => {
     const mockExtract = jest.fn();
@@ -18,7 +18,7 @@ jest.mock("node-stream-zip", () => {
     };
 });
 jest.mock("./sirene-unite-legale.service");
-jest.mock("../../../adapters/outputs/api/sirene/sirene-stock-unite-legale.adapter");
+jest.mock("../../../adapters/outputs/api/data-gouv/data-gouv.adapter");
 
 const ZIP_PATH = "path/to/zip";
 const DIRECTORY_PATH = "path/to/destination";
@@ -94,9 +94,9 @@ describe("SireneStockUniteLegaleService", () => {
     });
 
     describe("getAndSaveZip", () => {
-        let getZipMock: jest.SpyInstance;
+        let getFileMock: jest.SpyInstance;
         beforeAll(() => {
-            getZipMock = jest.spyOn(sireneStockUniteLegaleAdapter, "getZip").mockResolvedValue({
+            getFileMock = jest.spyOn(sireneStockUniteLegaleAdapter, "getFile").mockResolvedValue({
                 data: new Readable({
                     read() {
                         this.push("chunk1");
@@ -143,9 +143,9 @@ describe("SireneStockUniteLegaleService", () => {
             expect(fs.createWriteStream).toHaveBeenCalledWith(expect.stringContaining("sirene-stock-unite-legale.zip"));
         });
 
-        it("should call getZip", async () => {
+        it("should call getFile", async () => {
             await sireneStockUniteLegaleFileService.getAndSaveZip();
-            expect(sireneStockUniteLegaleAdapter.getZip).toHaveBeenCalledTimes(1);
+            expect(sireneStockUniteLegaleAdapter.getFile).toHaveBeenCalledTimes(1);
         });
 
         it("should download and write the data to the file without errors", async () => {
@@ -154,7 +154,7 @@ describe("SireneStockUniteLegaleService", () => {
         });
 
         it("should throw an error if the response data emits an error", async () => {
-            getZipMock.mockResolvedValueOnce({
+            getFileMock.mockResolvedValueOnce({
                 data: new Readable({
                     read() {
                         this.emit("error", new Error("simulated error during reading"));

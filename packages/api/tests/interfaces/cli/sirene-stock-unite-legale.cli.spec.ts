@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import sireneStockUniteLegaleApiAdapter from "../../../src/adapters/outputs/api/sirene/sirene-stock-unite-legale.adapter";
+import sireneStockUniteLegaleApiAdapter from "../../../src/adapters/outputs/api/data-gouv/data-gouv.adapter";
 import SireneStockUniteLegaleCli from "../../../src/adapters/inputs/cli/sirene-stock-unite-legale.cli";
 import { ObjectId } from "mongodb";
 import uniteLegalNameAdapter from "../../../src/adapters/outputs/db/unite-legale-name/unite-legale-name.adapter";
@@ -11,7 +11,7 @@ const ZIP_PATH = path.resolve(__dirname, "../../../src/modules/providers/sirene/
 
 describe("SireneStockUniteLegaleCli", () => {
     beforeAll(() => {
-        jest.spyOn(sireneStockUniteLegaleApiAdapter, "getZip").mockImplementation(() =>
+        jest.spyOn(sireneStockUniteLegaleApiAdapter, "getFile").mockImplementation(() =>
             Promise.resolve({
                 data: fs.createReadStream(ZIP_PATH + "/StockUniteLegale_utf8.zip"),
                 status: 200,
