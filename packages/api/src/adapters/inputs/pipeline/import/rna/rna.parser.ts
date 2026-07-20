@@ -4,7 +4,6 @@ import { RnaWaldecDto } from "./rna.dto";
 export class RnaParser {
     async *parse(filePath: string): AsyncGenerator<RnaWaldecDto[]> {
         const { asyncBufferFromFile, parquetMetadataAsync, parquetReadObjects, compressors } = await loadHyparquet();
-        console.log(asyncBufferFromFile);
 
         const file = await asyncBufferFromFile(filePath);
         const metadata = await parquetMetadataAsync(file);
