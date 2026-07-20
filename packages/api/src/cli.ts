@@ -70,8 +70,6 @@ async function main() {
         [ChorusCli.cmdName, { factory: () => new ChorusCli(chorusImport, updateFlatByExercise) }],
         [EstablishmentCli.cmdName, { factory: createEstablishmentCli }],
         [RnaCli.cmdName, { factory: () => new RnaCli(rnaPipeline) }],
-        [EstablishmentCli.cmdName, { factory: createEstablishmentCli }],
-        [RnaCli.cmdName, { factory: () => new RnaCli(rnaPipeline) }],
     ]);
 
     const args = process.argv.slice(2);

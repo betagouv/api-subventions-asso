@@ -1,17 +1,18 @@
 import { pipeline } from "stream/promises";
 import rnaParser, { RnaParser } from "./rna.parser";
 import rnaMapper, { RnaMapper } from "./rna.mapper";
-import rnaAdapter, { RnaAdapter } from "../../../../outputs/db/rna/rna.adapter";
+import rnaAdapter from "../../../../outputs/db/rna/rna.adapter";
 import { Readable, Transform, Writable } from "stream";
 import { RnaWaldecDto } from "./rna.dto";
 import RnaDbo from "../../../../outputs/db/rna/rna.dbo";
 import { ImportReport } from "../../../../../@types/ImportReport";
+import { RnaPort } from "../../../../outputs/db/rna/rna.port";
 
 export class RnaPipeline {
     constructor(
         public parser: RnaParser,
         public mapper: RnaMapper,
-        public adapter: RnaAdapter,
+        public adapter: RnaPort,
     ) {}
 
     async run(filePath: string) {
