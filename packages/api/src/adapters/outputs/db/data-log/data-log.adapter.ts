@@ -31,22 +31,13 @@ export class DataLogAdapter extends MongoAdapter<DataLogEntity> implements DataL
         return cursor.map(removeMongoId);
     }
 
-    async getLastImportByProvider(providerId: string): Promise<Date> {
-        return (
-            await this.collection
-                .aggregate([
-                    {
-                        $match: {
-                            providerId,
-                        },
-                    },
-                    {
-                        $sort: { integrationDate: -1 },
-                    },
-                    { $limit: 1 },
-                ])
-                .toArray()
-        )[0].integrationDate;
+    async getLastImportByProvider(providerId: string) {
+        const result = await this.collection.findOne(
+            { providerId },
+            { projection: { _id: 0 }, sort: { integrationDate: -1 } },
+        );
+        if (result) return result.integrationDate;
+        return null;
     }
 
     async getLastEditionDateByProvider(providerId: string): Promise<Date | null> {
