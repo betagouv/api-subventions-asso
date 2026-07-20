@@ -4,6 +4,7 @@ import rnaPipeline from "../../../../src/adapters/inputs/pipeline/import/rna/rna
 import db from "./../../../../src/shared/MongoConnection";
 import notifyService from "../../../../src/modules/notify/notify.service";
 import { NotificationType } from "../../../../src/modules/notify/@types/NotificationType";
+import RnaDbo from "../../../../src/adapters/outputs/db/rna/rna.dbo";
 
 describe("RNA CLI", () => {
     const cli = new RnaCli(rnaPipeline);
@@ -13,11 +14,11 @@ describe("RNA CLI", () => {
             await cli.parse(path.resolve(__dirname, "../__fixtures__/rna-waldec.parquet"), "2026-07-17");
 
             // sample only 5 documents to snapshot
-            const documents = await db
+            const documents = (await db
                 .collection("rna")
                 .find({}, { limit: 5, projection: { _id: 0 } })
-                .toArray();
-            expect(documents).toMatchSnapshot();
+                .toArray()) as unknown as RnaDbo[];
+            expect(documents.map(doc => ({ ...doc, "maj-time": expect.any(Date) }))).toMatchSnapshot();
         });
 
         it("logs import in data-log", async () => {
