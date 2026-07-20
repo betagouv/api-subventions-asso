@@ -28,6 +28,7 @@ import chorusFseAdapter from "./providers/chorus/chorus-fse.adapter";
 import chorusAdapter from "./providers/chorus/chorus.adapter";
 import sireneUniteLegaleAdapter from "./sirene/sirene-unite-legale.adapter";
 import sireneEstablishmentAdapter from "./sirene/sirene-establishment.adapter";
+import rnaAdapter from "./rna/rna.adapter";
 
 export const adaptersWithIndexes = [
     // TODO: handle adapter initialization from within and remove this file
@@ -63,4 +64,5 @@ export const adaptersWithIndexes = [
     depositLogAdapter,
     gisproAdapter,
     dauphinAdapter,
+    rnaAdapter,
 ];

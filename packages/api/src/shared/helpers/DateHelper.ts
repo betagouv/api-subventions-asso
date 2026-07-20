@@ -129,3 +129,7 @@ export function lastDayInMonth(date: Date) {
     }
     return lastDay;
 }
+
+export function stringToDateOrNull(str: Date | string | null | undefined) {
+    return str ? new Date(str) : null;
+}
