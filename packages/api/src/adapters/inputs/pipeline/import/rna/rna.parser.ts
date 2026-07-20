@@ -19,7 +19,6 @@ export class RnaParser {
             const batch = (await parquetReadObjects({
                 file,
                 compressors,
-                rowFormat: "object",
                 metadata,
                 rowStart,
                 rowEnd,
