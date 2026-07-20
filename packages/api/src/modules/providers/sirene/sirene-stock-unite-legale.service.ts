@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import StreamZip from "node-stream-zip";
 import sireneUniteLegaleService from "./sirene-unite-legale.service";
-import sireneStockUniteLegaleAdapter from "../../../adapters/outputs/api/sirene/sirene-stock-unite-legale.adapter";
+import { sireneStockUniteLegaleAdapter } from "../../../adapters/outputs/api/data-gouv/data-gouv.adapter";
 
 export class SireneStockUniteLegaleService {
     private directory_path;
@@ -28,12 +28,12 @@ export class SireneStockUniteLegaleService {
 
     public async getAndSaveZip() {
         const file = fs.createWriteStream(this.directory_path + "/sirene-stock-unite-legale.zip");
-        const response = await sireneStockUniteLegaleAdapter.getZip();
+        const response = await sireneStockUniteLegaleAdapter.getFile();
 
         console.info(`Start downloading the file`);
 
         return new Promise<string>((resolve, reject) => {
-            // @ts-expect-error: TODO: handle getZip return type #3393
+            // @ts-expect-error: TODO: handle getFile return type #3393
             response.data.pipe(file);
 
             let currentLength = 0;
@@ -41,13 +41,13 @@ export class SireneStockUniteLegaleService {
                 console.info(`Downloading: ${(currentLength / 1_000_000).toFixed(2)} MB`);
             }, 5000);
 
-            // @ts-expect-error: TODO: handle getZip return type #3393
+            // @ts-expect-error: TODO: handle getFile return type #3393
             response.data.on("data", chunk => {
                 currentLength += chunk.length;
             });
             let hasErrorOccured = false;
 
-            // @ts-expect-error: TODO: handle getZip return type #3393
+            // @ts-expect-error: TODO: handle getFile return type #3393
             response.data.on("error", error => {
                 clearInterval(interval);
                 hasErrorOccured = true;
