@@ -49,6 +49,14 @@ class DataLogAdapter extends MongoAdapter<DataLogEntity> implements DataLogPort 
         )[0].integrationDate;
     }
 
+    async getLastEditionDateByProvider(providerId: string): Promise<Date | null> {
+        const result = await this.collection.findOne(
+            { providerId, editionDate: { $exists: true } },
+            { sort: { editionDate: -1 }, projection: { editionDate: 1 } },
+        );
+        return result?.editionDate || null;
+    }
+
     getProvidersLogOverview(): Promise<ProducerLogEntity[]> {
         return this.collection
             .aggregate([

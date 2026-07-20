@@ -4,7 +4,7 @@ import sireneEstablishmentAdapter from "./sirene-establishment.adapter";
 
 describe("SireneEstablishmentAdapter", () => {
     const mockCreateIndex = jest.fn();
-    const mockInsertMany = jest.fn();
+    const mockBulkWrite = jest.fn();
 
     beforeAll(() => {
         jest
@@ -13,7 +13,7 @@ describe("SireneEstablishmentAdapter", () => {
             // @ts-expect-error: test
             .mockReturnValue({
                 createIndex: mockCreateIndex,
-                insertMany: mockInsertMany,
+                bulkWrite: mockBulkWrite,
             });
     });
 
@@ -28,15 +28,26 @@ describe("SireneEstablishmentAdapter", () => {
         });
     });
 
-    describe("insertMany", () => {
-        it("does not call insertMany with empty batch", async () => {
-            await sireneEstablishmentAdapter.insertMany([]);
-            expect(mockInsertMany).not.toHaveBeenCalled();
+    describe("upsertMany", () => {
+        it("does not call bulkWrite with empty batch", async () => {
+            await sireneEstablishmentAdapter.upsertMany([]);
+            expect(mockBulkWrite).not.toHaveBeenCalled();
         });
 
-        it("inserts unordered establishments", async () => {
-            await sireneEstablishmentAdapter.insertMany([SIRENE_ESTABLISHMENT_DTO]);
-            expect(mockInsertMany).toHaveBeenCalledWith([SIRENE_ESTABLISHMENT_DTO], { ordered: false });
+        it("upserts unordered establishments by siret", async () => {
+            await sireneEstablishmentAdapter.upsertMany([SIRENE_ESTABLISHMENT_DTO]);
+            expect(mockBulkWrite).toHaveBeenCalledWith(
+                [
+                    {
+                        updateOne: {
+                            filter: { siret: SIRENE_ESTABLISHMENT_DTO.siret },
+                            update: { $set: SIRENE_ESTABLISHMENT_DTO },
+                            upsert: true,
+                        },
+                    },
+                ],
+                { ordered: false },
+            );
         });
     });
 });

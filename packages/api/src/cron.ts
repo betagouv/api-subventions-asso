@@ -6,7 +6,7 @@ import { DEV } from "./configurations/env.conf";
 import { RgpdCron } from "./adapters/inputs/cron/rgpd.cron";
 import { StatsCron } from "./adapters/inputs/cron/stats.cron";
 import { SearchCacheCron } from "./adapters/inputs/cron/search-cache.cron";
-import { SireneStockUniteLegaleCron } from "./adapters/inputs/cron/sirene-stock-unite-legale.cron";
+import { SireneStockCron } from "./adapters/inputs/cron/sirene-stock.cron";
 import { ScdlDepositCron } from "./adapters/inputs/cron/scdl-deposit.cron";
 import chorusCron from "./adapters/inputs/cron/chorus.cron";
 
@@ -14,7 +14,7 @@ import chorusCron from "./adapters/inputs/cron/chorus.cron";
 const controllers: CronController[] = [
     DemarchesSimplifieesCron,
     DumpCron,
-    SireneStockUniteLegaleCron,
+    SireneStockCron,
     RgpdCron,
     SearchCacheCron,
     StatsCron,

@@ -13,10 +13,19 @@ export class SireneEstablishmentAdapter
         await this.collection.createIndex({ siret: 1 }, { unique: true });
     }
 
-    public async insertMany(dtos: SireneEstablishmentDto[]): Promise<number> {
+    public async upsertMany(dtos: SireneEstablishmentDto[]): Promise<number> {
         if (!dtos.length) return 0;
 
-        await this.collection.insertMany(dtos, { ordered: false });
+        await this.collection.bulkWrite(
+            dtos.map(dto => ({
+                updateOne: {
+                    filter: { siret: dto.siret },
+                    update: { $set: dto },
+                    upsert: true,
+                },
+            })),
+            { ordered: false },
+        );
         return dtos.length;
     }
 }
