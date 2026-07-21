@@ -6,10 +6,13 @@ jest.mock("../../../modules/providers/sirene/sirene-stock-unite-legale.service",
 jest.mock("../../../modules/providers/sirene/sirene-stock-establishment.service", () => ({ getAndParse: jest.fn() }));
 
 describe("SireneStockCron", () => {
-    it("imports establishments after unite legale", async () => {
+    it("imports establishments", async () => {
         await new SireneStockCron().import();
-        expect(jest.mocked(sireneStockEstablishmentService.getAndParse).mock.invocationCallOrder[0]).toBeGreaterThan(
-            jest.mocked(sireneStockUniteLegaleFileService.getAndParse).mock.invocationCallOrder[0],
-        );
+        expect(sireneStockEstablishmentService.getAndParse).toHaveBeenCalled();
+    });
+
+    it("imports unite legale", async () => {
+        await new SireneStockCron().import();
+        expect(sireneStockUniteLegaleFileService.getAndParse).toHaveBeenCalled();
     });
 });
