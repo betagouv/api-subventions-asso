@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Establishment CLI parse it persist data in collection 1`] = `
+[
+  {
+    "codeCommuneEtablissement": "75101",
+    "codePaysEtrangerEtablissement": null,
+    "codePostalEtablissement": "75001",
+    "dateDernierTraitementEtablissement": Any<Date>,
+    "etablissementSiege": true,
+    "libelleCommuneEtablissement": "PARIS",
+    "libellePaysEtrangerEtablissement": null,
+    "libelleVoieEtablissement": "RIRI",
+    "nic": "00001",
+    "numeroVoieEtablissement": "1",
+    "siren": "100000000",
+    "siret": "10000000000001",
+    "typeVoieEtablissement": "RUE",
+  },
+  {
+    "codeCommuneEtablissement": "75102",
+    "codePaysEtrangerEtablissement": null,
+    "codePostalEtablissement": "75002",
+    "dateDernierTraitementEtablissement": Any<Date>,
+    "etablissementSiege": false,
+    "libelleCommuneEtablissement": "PARIS",
+    "libellePaysEtrangerEtablissement": null,
+    "libelleVoieEtablissement": "FIFI",
+    "nic": "00002",
+    "numeroVoieEtablissement": "2",
+    "siren": "100000000",
+    "siret": "10000000000002",
+    "typeVoieEtablissement": "RUE",
+  },
+]
+`;
+
+exports[`Establishment CLI parse logs import in data-log 1`] = `
+{
+  "editionDate": 2026-07-21T00:00:00.000Z,
+  "fileName": "sirene-establishment.parquet",
+  "integrationDate": Any<Date>,
+  "providerId": "sirene-establishment",
+  "providerName": "SIRENE Establishment",
+  "source": "FILE",
+}
+`;
