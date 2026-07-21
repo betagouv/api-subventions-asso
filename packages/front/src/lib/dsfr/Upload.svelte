@@ -1,26 +1,40 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import { type FileFormat, formatMap } from "$lib/helpers/fileHelper";
 
-    const dispatch = createEventDispatcher<{ fileChange: { files: FileList | null } }>();
+    interface Props {
+        label: string;
+        hint: string;
+        disabled?: boolean;
+        multiple?: boolean;
+        error?: boolean;
+        errorMessage?: string;
+        id?: string;
+        name?: string;
+        acceptedFormats?: FileFormat[];
+        onfileChange?: (detail: { files: FileList | null }) => void;
+    }
 
-    export let label: string;
-    export let hint: string;
-    export let disabled: boolean = false;
-    export let multiple: boolean = false;
-    export let error: boolean = false;
-    export let errorMessage: string = "";
-    export let id: string = "upload";
-    export let name: string = "upload";
-    export let acceptedFormats: FileFormat[] = [];
+    let {
+        label,
+        hint,
+        disabled = false,
+        multiple = false,
+        error = false,
+        errorMessage = "",
+        id = "upload",
+        name = "upload",
+        acceptedFormats = [],
+        onfileChange = () => {},
+    }: Props = $props();
 
-    $: acceptValue =
-        acceptedFormats.length > 0 ? acceptedFormats.flatMap(format => formatMap[format] || []).join(",") : null;
+    let acceptValue = $derived(
+        acceptedFormats.length > 0 ? acceptedFormats.flatMap(format => formatMap[format] || []).join(",") : null,
+    );
 
     function handleFileChange(event: Event) {
         const target = event.target as HTMLInputElement;
         const files = target.files;
-        dispatch("fileChange", { files });
+        onfileChange({ files });
     }
 </script>
 
@@ -38,7 +52,7 @@
         {id}
         {name}
         {...acceptValue ? { accept: acceptValue } : {}}
-        on:change={handleFileChange} />
+        onchange={handleFileChange} />
     <div class="fr-messages-group" id="{id}-messages" aria-live="polite">
         {#if error}
             <p class="fr-message fr-message--error" id="{id}-message-error">{errorMessage}</p>

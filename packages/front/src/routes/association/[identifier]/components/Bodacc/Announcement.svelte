@@ -4,7 +4,11 @@
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
     import type { BodaccRecord } from "dto";
 
-    export let announcement: BodaccRecord;
+    interface Props {
+        announcement: BodaccRecord;
+    }
+
+    let { announcement }: Props = $props();
 
     const controller = new AnnouncementController(announcement);
 </script>

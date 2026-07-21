@@ -29,12 +29,12 @@
             {/if}
             <div class="fr-mb-2w">
                 <ActionGroup>
-                    <svelte:fragment slot="content">
+                    {#snippet content()}
                         <Input bind:value={$newDomain} label="Ajouter un nom de domaine" />
-                    </svelte:fragment>
-                    <svelte:fragment slot="action">
-                        <Button on:click={() => ctrl.addDomain()}>Ajouter</Button>
-                    </svelte:fragment>
+                    {/snippet}
+                    {#snippet action()}
+                        <Button onclick={() => ctrl.addDomain()}>Ajouter</Button>
+                    {/snippet}
                 </ActionGroup>
             </div>
         </div>
@@ -50,7 +50,7 @@
                     </div>
                     <div class="fr-col fr-col-md-6">
                         <div class="fr-grid-row fr-grid-row--right">
-                            <Button on:click={() => ctrl.downloadUsersCsv()}>Télécharger la liste en CSV</Button>
+                            <Button onclick={() => ctrl.downloadUsersCsv()}>Télécharger la liste en CSV</Button>
                         </div>
                     </div>
                 </div>

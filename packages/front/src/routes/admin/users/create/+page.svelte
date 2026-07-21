@@ -5,8 +5,8 @@
     import Button from "$lib/dsfr/Button.svelte";
     import Input from "$lib/dsfr/Input.svelte";
 
-    let email;
-    let error = false;
+    let email = $state();
+    let error = $state(false);
 
     const createUser = () => {
         error = false;
@@ -22,7 +22,7 @@
 <div class="input-layout">
     <Input label="Email" bind:value={email} />
 </div>
-<Button on:click={createUser}>Envoyer</Button>
+<Button onclick={createUser}>Envoyer</Button>
 
 <style>
     .input-layout {

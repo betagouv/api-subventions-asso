@@ -12,11 +12,15 @@
     import DownloadButton from "$lib/components/Documents/components/DownloadButton.svelte";
     import DocumentSection from "$lib/components/Documents/components/DocumentSection.svelte";
 
-    // TODO: replace unknown with EstablishmentEntity when created | linked to #2078
-    export let resource: AssociationEntity | unknown;
-    export let resourceType: ResourceType = "association";
+    interface Props {
+        // TODO: replace unknown with EstablishmentEntity when created | linked to #2078
+        resource: AssociationEntity | unknown;
+        resourceType?: ResourceType;
+    }
 
-    const controller = new DocumentsController(resourceType, resource, $currentIdentifiers);
+    let { resource, resourceType = "association" }: Props = $props();
+
+    const controller = $state(new DocumentsController(resourceType, resource, $currentIdentifiers));
     const documentsPromise = controller.documentsPromise;
     const zipPromise = controller.zipPromise;
     const { selectedDocsOrNull } = controller;
@@ -45,8 +49,8 @@
                 <div class="fr-ml-auto">
                     <DownloadButton
                         docsStore={controller.flatSelectedDocs}
-                        on:download={() => controller.download()}
-                        on:reset={() => controller.resetSelection()} />
+                        ondownload={() => controller.download()}
+                        onreset={() => controller.resetSelection()} />
                 </div>
             </div>
 
@@ -79,8 +83,8 @@
                 <div class="fr-ml-auto">
                     <DownloadButton
                         docsStore={controller.flatSelectedDocs}
-                        on:download={() => controller.download()}
-                        on:reset={() => controller.resetSelection()} />
+                        ondownload={() => controller.download()}
+                        onreset={() => controller.resetSelection()} />
                 </div>
             </div>
         {:else}

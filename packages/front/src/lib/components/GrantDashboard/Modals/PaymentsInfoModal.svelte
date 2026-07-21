@@ -1,22 +1,29 @@
-<script>
+<script lang="ts">
     import Table from "$lib/dsfr/Table.svelte";
     import TableRow from "$lib/dsfr/TableRow.svelte";
 
     import { data } from "$lib/store/modal.store";
     import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper.js";
     import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
+    interface Props {
+        children?: import("svelte").Snippet;
+    }
 
-    const headers = ["Montant", "Domaine fonctionnel", "Activité", "Centre financier", "Date", "Programme"];
+    let { children }: Props = $props();
+
+    const headerLabels = ["Montant", "Domaine fonctionnel", "Activité", "Centre financier", "Date", "Programme"];
     const tableId = "payments-modal";
 </script>
 
 {#if $data.payments}
     <Table id={tableId}>
-        <slot slot="headers">
-            {#each headers as header (header)}
-                <th>{header}</th>
-            {/each}
-        </slot>
+        {#snippet headers()}
+            {#if children}{@render children()}{:else}
+                {#each headerLabels as header (header)}
+                    <th>{header}</th>
+                {/each}
+            {/if}
+        {/snippet}
         {#each $data.payments as payment, index (index)}
             <TableRow id={tableId} {index} title="Détail des versements" hideTitle={true}>
                 <td class="primary">{valueOrHyphen(numberToEuro(payment.montant))}</td>

@@ -2,7 +2,7 @@
     import { MainInfoBannerController } from "./MainInfoBanner.controller";
     import InformationBanner from "$lib/dsfr/InformationBanner.svelte";
 
-    const ctrl = new MainInfoBannerController();
+    const ctrl = $state(new MainInfoBannerController());
     const { mainInfoBanner } = ctrl;
     const promise = ctrl.init();
 </script>
@@ -12,7 +12,7 @@
         {#if $mainInfoBanner.title || $mainInfoBanner.desc}
             <InformationBanner
                 bind:this={ctrl.component}
-                on:close={() => ctrl.close()}
+                onclose={() => ctrl.close()}
                 closeBtn={true}
                 title={$mainInfoBanner.title}
                 desc={$mainInfoBanner.desc} />

@@ -1,19 +1,29 @@
-<script>
+<script lang="ts">
     import Button from "./Button.svelte";
 
-    export let confirmLabel = "Confirmer";
-    export let confirmAction = console.warn("You must define a confirm action");
-    export let disableConfirm = false;
+    interface Props {
+        confirmLabel?: string;
+        confirmAction?: () => void;
+        disableConfirm?: boolean;
+        children?: import("svelte").Snippet;
+    }
+
+    let {
+        confirmLabel = "Confirmer",
+        confirmAction = console.warn("You must define a confirm action"),
+        disableConfirm = false,
+        children,
+    }: Props = $props();
 </script>
 
 <div class="fr-modal__footer">
-    <slot>
+    {#if children}{@render children()}{:else}
         <div
             class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
             <Button ariaControls="fr-modal" type="secondary">Annuler</Button>
-            <Button on:click={confirmAction} ariaControls="fr-modal" disabled={disableConfirm}>
+            <Button onclick={confirmAction} ariaControls="fr-modal" disabled={disableConfirm}>
                 {confirmLabel}
             </Button>
         </div>
-    </slot>
+    {/if}
 </div>

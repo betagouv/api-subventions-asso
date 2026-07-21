@@ -1,15 +1,13 @@
-<script>
-    import { createEventDispatcher } from "svelte";
-
+<script lang="ts">
     import ConfirmDeleteUserModal from "./ConfirmDeleteUserModal.svelte";
     import { action, modal } from "$lib/store/modal.store";
     import Button from "$lib/dsfr/Button.svelte";
 
-    const dispatch = createEventDispatcher();
+    let { onDeleteUser = () => {} } = $props();
 
     function openConfirmationModal() {
         modal.update(() => ConfirmDeleteUserModal);
-        action.update(() => () => dispatch("delete-user"));
+        action.update(() => onDeleteUser);
     }
 </script>
 
@@ -20,7 +18,7 @@
     </p>
     <p>La suppression de votre compte entraine une suppression de toutes vos données et historique de recherche.</p>
     <Button
-        on:click={openConfirmationModal}
+        onclick={openConfirmationModal}
         type="tertiary"
         ariaControls="fr-modal"
         trackerName="profile.delete-user.remove-account">

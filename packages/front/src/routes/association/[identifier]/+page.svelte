@@ -9,7 +9,7 @@
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import StructureTitle from "$lib/components/StructureTitle/StructureTitle.svelte";
 
-    export let data;
+    let { data } = $props();
     const { identifier } = data.params;
 
     const controller = new AssociationController(identifier);

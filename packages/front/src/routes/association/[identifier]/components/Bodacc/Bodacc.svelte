@@ -5,8 +5,12 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import type { BodaccRecord } from "dto";
 
-    export let bodacc: BodaccRecord[];
-    let element;
+    interface Props {
+        bodacc: BodaccRecord[];
+    }
+
+    let { bodacc }: Props = $props();
+    let element = $state<HTMLElement>();
 
     const ctrl = new BodaccController(bodacc);
     const { announcements } = ctrl;

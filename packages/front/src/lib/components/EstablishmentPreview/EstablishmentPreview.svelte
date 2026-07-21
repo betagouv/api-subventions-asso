@@ -1,8 +1,13 @@
 <script lang="ts">
     import { EstablishmentPreviewController } from "$lib/components/EstablishmentPreview/EstablishmentPreviewController";
+    import type { SimplifiedEstablishment } from "$lib/resources/establishments/types/establishment.types";
 
-    export let establishment;
-    export let small = false;
+    interface Props {
+        establishment: SimplifiedEstablishment;
+        small?: boolean;
+    }
+
+    let { establishment, small = false }: Props = $props();
 
     const { siret, status, address } = new EstablishmentPreviewController(establishment);
 </script>

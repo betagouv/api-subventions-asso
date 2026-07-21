@@ -2,7 +2,11 @@
     import DuplicateAlertController from "./DuplicateAlert.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
 
-    export let duplicates: string[];
+    interface Props {
+        duplicates: string[];
+    }
+
+    let { duplicates }: Props = $props();
 
     const ctrl = new DuplicateAlertController(duplicates);
     const title = `Attention, plusieurs ${ctrl.duplicateType} seraient liés au ${ctrl.otherType}`;

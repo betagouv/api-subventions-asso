@@ -98,7 +98,7 @@
                             {#if $user}
                                 <li>
                                     <Button
-                                        on:click={controller.logout}
+                                        onclick={controller.logout}
                                         type="tertiary"
                                         outline={false}
                                         trackerName="header.logout">
@@ -107,7 +107,7 @@
                                 </li>
                                 <li>
                                     <Button
-                                        on:click={controller.goToProfile}
+                                        onclick={controller.goToProfile}
                                         type="tertiary"
                                         icon="user-fill"
                                         trackerName="header.profil">

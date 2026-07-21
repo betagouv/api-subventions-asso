@@ -4,7 +4,11 @@
     import AmountsVsYearPlot from "./AmountsVsYearPlot.svelte";
     import Select from "$lib/dsfr/Select.svelte";
 
-    export let elements: AmountsVsProgramRegionDto[];
+    interface Props {
+        elements: AmountsVsProgramRegionDto[];
+    }
+
+    let { elements }: Props = $props();
 
     const controller = new AmountsVsYearController(elements);
     const { selectedRegion, selectedProgram, regionOptions, programOptions, filteredData, dataAll } = controller;

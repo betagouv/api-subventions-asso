@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
     import Alert from "$lib/dsfr/Alert.svelte";
 
-    export let message;
+    let { message } = $props();
 </script>
 
 <Alert type="error" title="Une erreur est survenue">

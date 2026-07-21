@@ -7,12 +7,6 @@ import geoService from "$lib/resources/externals/geo/geo.service";
 
 vi.mock("$lib/resources/auth/subscriptionForm/subscriptionForm.service");
 vi.mock("$lib/resources/externals/geo/geo.service");
-vi.mock("$lib/core/Dispatch", () => ({
-    default: {
-        getDispatcher: () => vi.fn(),
-    },
-}));
-
 describe("DecentralizedSubStep", () => {
     let ctrl: DecentralizedSubStepController;
     const REGION_STRUCTURE = {

@@ -1,7 +1,7 @@
 <script lang="ts">
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
-    export let link;
+    let { link } = $props();
 </script>
 
 <div class="fr-connect-group">

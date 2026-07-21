@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import { ResetPwdModuleController } from "./ResetPwdModule.controller";
     import Button from "$lib/dsfr/Button.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
 
-    export let email;
+    let { email } = $props();
 
     const ctrl = new ResetPwdModuleController(email);
     const { status } = ctrl;
@@ -27,7 +27,7 @@
         type="tertiary"
         disabled={$status === "success"}
         htmlType="button"
-        on:click={() => ctrl.onClick()}>
+        onclick={() => ctrl.onClick()}>
         Réinitialiser votre mot de passe
     </Button>
 </div>

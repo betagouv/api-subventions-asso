@@ -8,15 +8,27 @@
 
     // when we will do validation, the substep will send the conclusion
     // about allowing to submit in this variable that should be bound by the parent
-    // export let valid
 
-    export let values = {
-        decentralizedLevel: "",
-        decentralizedTerritory: "",
-        structure: "",
-    };
+    interface Props {
+        // export let valid
+        values?: {
+            decentralizedLevel: string;
+            decentralizedTerritory: string;
+            structure: string;
+        };
+        onchange?: () => void;
+    }
 
-    const ctrl = new DecentralizedSubStepController();
+    let {
+        values = $bindable({
+            decentralizedLevel: "",
+            decentralizedTerritory: "",
+            structure: "",
+        }),
+        onchange = () => {},
+    }: Props = $props();
+
+    const ctrl = new DecentralizedSubStepController(onchange);
     const { departmentOptions, structureOptions } = ctrl;
 
     ctrl.init(values);
@@ -26,7 +38,7 @@
     options={ctrl.levelOptions}
     label="Sélectionnez votre périmètre :"
     bind:value={values.decentralizedLevel}
-    on:change={({ detail }) => ctrl.onChoosingLevel(detail)} />
+    onchange={detail => ctrl.onChoosingLevel(detail)} />
 
 <fieldset class="fr-fieldset">
     {#if values.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
@@ -35,7 +47,7 @@
                 options={$departmentOptions}
                 bind:value={values.decentralizedTerritory}
                 label="Quel est votre département ?"
-                on:change
+                {onchange}
                 placeholder="Ex : 01 - Ain" />
         </div>
     {:else if values.decentralizedLevel === AdminTerritorialLevel.REGIONAL}
@@ -50,7 +62,7 @@
                 options={$structureOptions}
                 bind:value={values.structure}
                 label="Quelle est votre administration ?"
-                on:change
+                {onchange}
                 placeholder="Ex : DDETS59, Préfecture" />
         {:else}
             <Input
@@ -58,7 +70,7 @@
                 type="text"
                 bind:value={values.structure}
                 label="Quelle est votre administration ?"
-                on:change
+                {onchange}
                 placeholder="Ex : DDETS59, Préfecture" />
         {/if}
     </div>

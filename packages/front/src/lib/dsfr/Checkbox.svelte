@@ -1,25 +1,33 @@
 <script lang="ts">
     import { nanoid } from "nanoid";
-    import Dispatch from "$lib/core/Dispatch";
 
-    export let value: string[] = [];
+    type CheckboxOption = { label: string; value: string; hint?: string; withHtml?: boolean };
 
-    export let label: string | null = null;
-    export let options: { label: string; value: string; hint?: string; withHtml?: boolean }[] = [];
-    export let id = nanoid(7);
-    export let name = `checkbox-${id}`;
-    export let required = false;
-    export let inline = false;
-    export let errorMsg = "";
+    interface Props {
+        value?: string[];
+        label?: string | null;
+        options?: CheckboxOption[];
+        id?: string;
+        name?: string;
+        required?: boolean;
+        inline?: boolean;
+        errorMsg?: string;
+        onchange?: (option: CheckboxOption) => void;
+    }
+
+    let {
+        value = $bindable([]),
+        label = null,
+        options = [],
+        id = nanoid(7),
+        name = `checkbox-${id}`,
+        required = false,
+        inline = false,
+        errorMsg = "",
+        onchange = () => {},
+    }: Props = $props();
 
     const descErrorElement = `${id}-desc-error`;
-
-    const dispatch = Dispatch.getDispatcher<{
-        label: string;
-        value: string;
-        hint?: string | undefined;
-        withHtml?: boolean | undefined;
-    }>();
 
     // if hints are necessary refer to radio component
 </script>
@@ -42,7 +50,7 @@
                     aria-required={required}
                     bind:group={value}
                     aria-describedby="{id}-messages"
-                    on:change={() => dispatch("change", option)}
+                    onchange={() => onchange(option)}
                     aria-invalid={errorMsg ? "true" : undefined}
                     aria-errormessage={errorMsg ? descErrorElement : undefined} />
                 <label class="fr-label" for="{id}-{i}">

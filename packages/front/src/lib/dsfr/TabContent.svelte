@@ -1,6 +1,5 @@
-<script>
-    export let selected;
-    export let index;
+<script lang="ts">
+    let { selected, index, children } = $props();
 </script>
 
 <div
@@ -9,5 +8,5 @@
     role="tabpanel"
     aria-labelledby={`tabpanel-${index}`}
     tabindex="0">
-    <slot />
+    {@render children?.()}
 </div>

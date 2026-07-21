@@ -5,7 +5,11 @@
     import TableRow from "$lib/dsfr/TableRow.svelte";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
 
-    export let elements: AmountsVsProgramRegionDto[]; // amountsVsProgramRegion
+    interface Props {
+        elements: AmountsVsProgramRegionDto[]; // amountsVsProgramRegion
+    }
+
+    let { elements }: Props = $props();
 
     const tableId = "table-amounts-vs-program-region";
 

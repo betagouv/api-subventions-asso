@@ -1,19 +1,39 @@
 <script lang="ts">
     import { uuid } from "$lib/helpers/stringHelper";
 
-    export let id: string = uuid();
-    export let title = "";
-    export let hideTitle = false;
-    export let size: "sm" | "md" | "lg" = "md";
-    export let rows: string[][] = [];
-    export let scrollable = true;
-    export let bordered = true;
-    // use custom layout (see CSS in the style)
-    export let custom = false;
-    export let multiline = false;
-    // remove outer border
-    export let customLight = false;
-    export let titleClass = "";
+    interface Props {
+        id?: string;
+        title?: string;
+        hideTitle?: boolean;
+        size?: "sm" | "md" | "lg";
+        rows?: string[][];
+        scrollable?: boolean;
+        bordered?: boolean;
+        // use custom layout (see CSS in the style)
+        custom?: boolean;
+        multiline?: boolean;
+        // remove outer border
+        customLight?: boolean;
+        titleClass?: string;
+        headers?: import("svelte").Snippet;
+        children?: import("svelte").Snippet;
+    }
+
+    let {
+        id = uuid(),
+        title = "",
+        hideTitle = false,
+        size = "md",
+        rows = [],
+        scrollable = true,
+        bordered = true,
+        custom = false,
+        multiline = false,
+        customLight = false,
+        titleClass = "",
+        headers,
+        children,
+    }: Props = $props();
 
     let tableClasses: string[] = ["fr-table", `fr-table--${size}`];
     if (!scrollable) tableClasses.push("fr-table--no-scroll");
@@ -28,11 +48,11 @@
                     <caption class:fr-sr-only={hideTitle} class={titleClass} aria-hidden={hideTitle}>{title}</caption>
                     <thead>
                         <tr>
-                            <slot name="headers"></slot>
+                            {@render headers?.()}
                         </tr>
                     </thead>
                     <tbody>
-                        <slot>
+                        {#if children}{@render children()}{:else}
                             {#each rows as row, index (index)}
                                 <tr id="table-{id}-row-key-{index}" data-row-key={index}>
                                     {#each row as cell, index (index)}
@@ -40,7 +60,7 @@
                                     {/each}
                                 </tr>
                             {/each}
-                        </slot>
+                        {/if}
                     </tbody>
                 </table>
             </div>

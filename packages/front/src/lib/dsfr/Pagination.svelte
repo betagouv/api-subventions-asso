@@ -1,23 +1,25 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import Store from "$lib/core/Store";
 
-    const dispatch = createEventDispatcher<{ change: number }>();
+    interface Props {
+        totalPages: number;
+        currentPage: Store<number>;
+        onchange?: (page: number) => void;
+    }
 
-    export let totalPages: number;
-    export let currentPage: Store<number>;
+    let { totalPages, currentPage, onchange = () => {} }: Props = $props();
 
     const changePage = (page: number) => {
         if (page < 1 || page > totalPages) return;
         currentPage.set(page);
-        dispatch("change", page);
+        onchange(page);
     };
 
     function numbersBetween(a: number, b: number) {
         return Array.from({ length: b - a + 1 }, (_, index) => index + a);
     }
 
-    let visibleLinks: (number | null)[] = [];
+    let visibleLinks: (number | null)[] = $state([]);
 
     currentPage.subscribe(currentPage => (visibleLinks = definePages(currentPage)));
 
@@ -60,7 +62,7 @@
     }
 </script>
 
-<!-- svelte-ignore a11y-no-redundant-roles -->
+<!-- svelte-ignore a11y_no_redundant_roles -->
 <nav role="navigation" class="fr-pagination" aria-label="Pagination">
     <ul class="fr-pagination__list">
         {#if $currentPage !== 1}
@@ -68,7 +70,7 @@
                 <a
                     class="fr-pagination__link fr-pagination__link--prev fr-pagination__link--lg-label"
                     href="#{$currentPage}"
-                    on:click={() => changePage($currentPage - 1)}>
+                    onclick={() => changePage($currentPage - 1)}>
                     Page précédente
                 </a>
             </li>
@@ -81,7 +83,7 @@
                         aria-current={visibleLink === $currentPage ? "page" : null}
                         title="Page {visibleLink}"
                         href="#{visibleLink}"
-                        on:click={() => {
+                        onclick={() => {
                             if (visibleLink) changePage(visibleLink);
                         }}>
                         {visibleLink}
@@ -98,7 +100,7 @@
                 <a
                     class="fr-pagination__link fr-pagination__link--next fr-pagination__link--lg-label"
                     href="#{$currentPage + 1}"
-                    on:click={() => changePage($currentPage + 1)}>
+                    onclick={() => changePage($currentPage + 1)}>
                     Page suivante
                 </a>
             </li>
