@@ -15,6 +15,7 @@ describe("DataGouvAdapter", () => {
     beforeEach(() => {
         port = new DataGouvAdapter("825f4199-cadd-486c-ac46-a65a8ea1a047");
     });
+
     describe("constructor", () => {
         it("should call ProviderRequestFactory", async () => {
             expect(ProviderRequestFactory).toHaveBeenCalledWith("data-gouv");

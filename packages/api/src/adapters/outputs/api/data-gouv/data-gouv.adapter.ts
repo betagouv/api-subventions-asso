@@ -1,3 +1,4 @@
+import { Readable } from "stream";
 import ProviderRequestFactory, {
     ProviderRequestService,
 } from "../../../../modules/provider-request/provider-request.service";
@@ -13,8 +14,8 @@ export class DataGouvAdapter implements DataGouvPort {
         this.http = ProviderRequestFactory("data-gouv");
     }
 
-    getFile(): Promise<unknown> {
-        return this.http.get(this.url, { responseType: "stream" });
+    getFile() {
+        return this.http.get<Readable>(this.url, { responseType: "stream" });
     }
 }
 
