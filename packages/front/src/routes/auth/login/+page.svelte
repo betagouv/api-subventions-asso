@@ -57,7 +57,7 @@
         </div>
     </div>
     <div class="fr-grid-row fr-my-4w">
-        <div class="text-separator" />
+        <div class="text-separator"></div>
     </div>
     <form
         onsubmit={event => {

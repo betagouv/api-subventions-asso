@@ -65,14 +65,14 @@
                 title="Pièces provenant de l’INSEE et du RNA"
                 bind:selectedDocs={$selectedDocsOrNull.assoDocs} />
 
-            <div class="fr-mt-6w" />
+            <div class="fr-mt-6w"></div>
 
             <DocumentSection
                 documents={documents.estabDocs}
                 title="Pièces complémentaires déposées par l’établissement secondaire"
                 bind:selectedDocs={$selectedDocsOrNull.estabDocs} />
 
-            <div class="fr-mt-6w" />
+            <div class="fr-mt-6w"></div>
 
             <DocumentSection
                 documents={documents.headDocs}

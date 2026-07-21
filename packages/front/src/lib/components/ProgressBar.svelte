@@ -15,7 +15,7 @@
 <div class="progress-container">
     <div class="progress-bar">
         <span class="bar">
-            <span class="progress" style="width: {percent}%" />
+            <span class="progress" style="width: {percent}%"></span>
         </span>
     </div>
     <img src={logo} class="spinner" alt="Chargement en cours" />

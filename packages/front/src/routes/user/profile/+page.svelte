@@ -34,7 +34,8 @@
                     data-fr-opened="false"
                     hidden
                     aria-controls="fr-modal"
-                    bind:this={modalCtrlButton} />
+                    bind:this={modalCtrlButton}>
+                </button>
                 <div bind:this={saveAlertElement}>
                     {#if $saveStatus === "changed"}
                         <Alert type="warning" small={true}>
@@ -63,7 +64,7 @@
           </div>-->
                 </fieldset>
 
-                <div class="separator fr-mb-6w fr-mt-4w" />
+                <div class="separator fr-mb-6w fr-mt-4w"></div>
 
                 <fieldset class="fr-fieldset">
                     <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">

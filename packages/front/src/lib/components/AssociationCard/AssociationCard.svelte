@@ -41,7 +41,7 @@
         <!-- if history was created before we saved the address, do not display -->
         {#if simplifiedAsso.address}
             <div>
-                <span class="icon-address fr-mr-1w fr-icon-map-pin-2-line" />
+                <span class="icon-address fr-mr-1w fr-icon-map-pin-2-line"></span>
             </div>
             <div class="ellipsis">
                 <span class="fr-text--bold ellipsis">{ctrl.street}</span>

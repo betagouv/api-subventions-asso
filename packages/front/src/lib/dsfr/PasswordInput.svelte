@@ -46,7 +46,7 @@
             <p id={descErrorElement} class="fr-error-text">{errorMsg}</p>
         {/if}
     </div>
-    <div class="fr-messages-group" id="password-input-messages-{id}" aria-live="polite" />
+    <div class="fr-messages-group" id="password-input-messages-{id}" aria-live="polite"></div>
     <div class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm">
         <input aria-label="Afficher le mot de passe" id="password-show" type="checkbox" />
         <label class="fr-label" for="password-show">Afficher</label>
