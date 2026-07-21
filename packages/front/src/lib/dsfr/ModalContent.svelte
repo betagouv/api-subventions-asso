@@ -1,5 +1,5 @@
-<script>
-    export let title;
+<script lang="ts">
+    let { title, children } = $props();
 </script>
 
 <div class="fr-modal__content">
@@ -7,5 +7,5 @@
         <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true" />
         {title}
     </h1>
-    <slot />
+    {@render children?.()}
 </div>

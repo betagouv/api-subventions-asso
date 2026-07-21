@@ -1,11 +1,15 @@
 <script lang="ts">
-    export let type: "success" | "error" | "info" | "warning" | "new" = "success";
-    export let label = "";
-    export let color = undefined;
-    export let small = false;
-    export let noIcon = false;
+    interface Props {
+        type?: "success" | "error" | "info" | "warning" | "new";
+        label?: string;
+        color?: string;
+        small?: boolean;
+        noIcon?: boolean;
+    }
 
-    let otherClasses = "fr-badge ";
+    let { type = "success", label = "", color = undefined, small = false, noIcon = false }: Props = $props();
+
+    let otherClasses = $state("fr-badge ");
 
     if (type) otherClasses += `fr-badge--${type} `;
     if (color) otherClasses += `fr-badge--${color} `;

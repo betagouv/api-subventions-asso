@@ -1,10 +1,9 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import InfoBox from "$lib/components/InfoBox.svelte";
     import { goToUrl } from "$lib/services/router.service";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
-    const dispatch = createEventDispatcher<{ restartNewForm: void }>();
+    let { onrestartNewForm = () => {} } = $props();
 </script>
 
 <div>
@@ -31,9 +30,9 @@
     </InfoBox>
 
     <div style="text-align: center;">
-        <button on:click={() => goToUrl("/")} class="fr-btn fr-btn fr-mr-3v" type="button">Voir sur le portail</button>
+        <button onclick={() => goToUrl("/")} class="fr-btn fr-btn fr-mr-3v" type="button">Voir sur le portail</button>
 
-        <button on:click={() => dispatch("restartNewForm")} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
+        <button onclick={onrestartNewForm} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
             Déposer un nouveau fichier
         </button>
     </div>

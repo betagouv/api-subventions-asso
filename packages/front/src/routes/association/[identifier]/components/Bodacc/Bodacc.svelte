@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import Announcement from "./Announcement.svelte";
     import BodaccController from "./Bodacc.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
 
-    export let bodacc;
-    let element;
+    let { bodacc } = $props();
+    let element = $state();
 
     const ctrl = new BodaccController(bodacc);
     const { announcements } = ctrl;

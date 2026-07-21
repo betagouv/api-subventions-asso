@@ -4,7 +4,6 @@ import OperatorSubStep from "./OperatorSubStep/OperatorSubStep.svelte";
 import CentralSubStep from "./CentralSubStep/CentralSubStep.svelte";
 import TerritorialCollectivitySubStep from "./TerritorialCollectivitySubStep/TerritorialCollectivitySubStep.svelte";
 import DecentralizedSubStep from "./DecentralizedSubStep/DecentralizedSubStep.svelte";
-import Dispatch from "$lib/core/Dispatch";
 import Store from "$lib/core/Store";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";
 import type { Option } from "$lib/types/FieldOption";
@@ -19,7 +18,7 @@ interface SubStep {
 }
 
 export default class StructureFormStepController {
-    private readonly dispatch: (_: string) => void;
+    private readonly dispatch: (_: "change" | "error" | "valid") => void;
 
     public readonly errors: Store<{ [key: string]: string | undefined }>;
     // private static errorMandatory = "Ce champ est obligatoire";
@@ -70,8 +69,8 @@ export default class StructureFormStepController {
     public subStepValues: Store<Record<AgentTypeEnum, Record<string, string | undefined>>>;
     private currentAgentType: AgentTypeEnum | undefined;
 
-    constructor() {
-        this.dispatch = Dispatch.getDispatcher();
+    constructor(dispatch: (_: "change" | "error" | "valid") => void = () => {}) {
+        this.dispatch = dispatch;
         this.subStep = new Store(undefined);
         this.subStepValues = new Store({
             [AgentTypeEnum.CENTRAL_ADMIN]: {},

@@ -3,18 +3,29 @@
     import Card from "$lib/dsfr/Card.svelte";
     import { valueOrNotFound } from "$lib/helpers/dataHelper";
 
-    export let simplifiedAsso;
-    // only used for search page
-    // TODO: make AssociationCard component a dumb component and pass the redirection action to parent component ?
-    export let searchKey: string | undefined = undefined;
+    type SimplifiedAssociation = {
+        name: string;
+        rna?: string;
+        siren?: string;
+        address?: Parameters<typeof valueOrNotFound>[0];
+        nbEtabs?: number;
+    };
+
+    interface Props {
+        simplifiedAsso: SimplifiedAssociation;
+        // TODO: make AssociationCard component a dumb component and pass the redirection action to parent component ?
+        searchKey?: string | undefined;
+    }
+
+    let { simplifiedAsso, searchKey = undefined }: Props = $props();
 
     const ctrl = new AssociationCardController(simplifiedAsso, searchKey);
 </script>
 
 <Card title={simplifiedAsso.name} url={ctrl.url} titleStyle="h6" keepSpaceForTitle={true}>
-    <svelte:fragment slot="card-start">
+    {#snippet cardStart()}
         <p class="card-start fr-card__detail fr-text--sm fr-icon-community-line">Association</p>
-    </svelte:fragment>
+    {/snippet}
     <div class="flex">
         <p>
             <b>RNA</b>
@@ -39,14 +50,14 @@
             </div>
         {/if}
     </div>
-    <div slot="card-end">
+    {#snippet cardEnd()}
         <!-- if history was created before we saved the nb of estabs, do not display -->
         {#if simplifiedAsso.nbEtabs}
             <p class="info fr-card__detail fr-icon-info-fill fr-text--sm">
                 {ctrl.nbEtabsLabel}
             </p>
         {/if}
-    </div>
+    {/snippet}
 </Card>
 
 <style>

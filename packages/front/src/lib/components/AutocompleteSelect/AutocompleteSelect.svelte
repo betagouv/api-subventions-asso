@@ -18,38 +18,49 @@
     import { onMount, tick } from "svelte";
     import Store from "$lib/core/Store";
     import { ComboboxAutocomplete } from "$lib/components/AutocompleteSelect/combobox.js";
-    import Dispatch from "$lib/core/Dispatch";
 
-    const dispatch = Dispatch.getDispatcher();
+    interface Props {
+        value?: string; // to be bound by parent
+        id?: string;
+        name?: string;
+        options: { value: string; label: string }[];
+        label?: string;
+        placeholder?: string;
+        hint?: string;
+        onchange?: () => void;
+    }
 
-    export let value = ""; // to be bound by parent
-
-    export let id = nanoid(7);
-    export let name = id;
-    export let options: { value: string; label: string }[];
-    export let label = "";
-    export let placeholder = "";
-    export let hint = "";
+    let {
+        value = $bindable(""),
+        id = nanoid(7),
+        name = id,
+        options,
+        label = "",
+        placeholder = "",
+        hint = "",
+        onchange = () => {},
+    }: Props = $props();
 
     const listId = `list-${id}`;
-    let inputElement: HTMLElement, buttonElement: HTMLElement, listElement: HTMLElement;
+    let inputElement: HTMLElement = $state(),
+        buttonElement: HTMLElement = $state(),
+        listElement: HTMLElement = $state();
 
     const storeValue = new Store(value);
     storeValue.subscribe(newV => {
         value = newV; // cannot be in controller so that binding works
-        dispatch("change");
+        onchange();
     });
 
-    let ctrl: ComboboxAutocomplete;
+    let ctrl: ComboboxAutocomplete = $state();
 
     onMount(() => (ctrl = new ComboboxAutocomplete(inputElement, buttonElement, listElement, storeValue)));
 
-    $: if (ctrl) {
-        // TODO: #3374
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        options;
+    $effect(() => {
+        if (!ctrl) return;
+        void options;
         tick().then(() => ctrl?.initOptionsEvents());
-    }
+    });
 </script>
 
 <div class="combobox combobox-list">
@@ -69,7 +80,7 @@
                 aria-autocomplete="both"
                 aria-expanded="false"
                 aria-controls={listId}
-                on:change
+                {onchange}
                 bind:this={inputElement} />
             <button
                 type="button"

@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
     import ActivateAccount from "./ActivateAccount.controller";
     import PasswordErrorAlert from "$lib/components/DefinePassword/PasswordErrorAlert.svelte";
     import MultiStepForm from "$lib/components/MultiStepForm/MultiStepForm.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
 
-    export let data;
+    let { data } = $props();
 
     const { token } = data.params;
 

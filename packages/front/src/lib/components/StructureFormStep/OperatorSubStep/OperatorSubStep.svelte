@@ -4,12 +4,23 @@
 
     // when we will do validation, the substep will send the conclusion
     // about allowing to submit in this variable that should be bound by the parent
-    // export let valid
 
-    export let values = {
-        structure: "",
-        region: "",
-    };
+    interface Props {
+        // export let valid
+        values?: {
+            structure: string;
+            region: string;
+        };
+        onchange?: () => void;
+    }
+
+    let {
+        values = $bindable({
+            structure: "",
+            region: "",
+        }),
+        onchange = () => {},
+    }: Props = $props();
 </script>
 
 <fieldset class="fr-fieldset">
@@ -19,7 +30,7 @@
             type="text"
             label="Pour quel opérateur de l’État travaillez-vous ?"
             bind:value={values.structure}
-            on:change
+            {onchange}
             placeholder="Ex : ANCT" />
     </div>
 

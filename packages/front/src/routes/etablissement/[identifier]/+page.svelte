@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import TabsEtab from "./components/TabsEtab.svelte";
     import { EstablishmentController } from "./Establishment.controller";
     import DataNotFound from "$lib/components/DataNotFound.svelte";
@@ -8,7 +8,7 @@
     import StructureTitle from "$lib/components/StructureTitle/StructureTitle.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
 
-    export let data;
+    let { data } = $props();
     const { identifier: id } = data.params;
 
     const controller = new EstablishmentController(id);

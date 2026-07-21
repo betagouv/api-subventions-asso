@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Establishments from "./Establishments/Establishments.svelte";
     import Bodacc from "./Bodacc/Bodacc.svelte";
     import Tabs from "$lib/dsfr/Tabs.svelte";
@@ -6,14 +6,18 @@
     import Documents from "$lib/components/Documents/Documents.svelte";
     import { currentAssociation } from "$lib/store/association.store";
     import GrantDashboard from "$lib/components/GrantDashboard/GrantDashboard.svelte";
-    // import Stats from "./Stats/Stats.svelte";
 
-    export let titles;
-    export let associationIdentifier;
+    interface Props {
+        // import Stats from "./Stats/Stats.svelte";
+        titles: string[];
+        associationIdentifier: string;
+    }
+
+    let { titles, associationIdentifier }: Props = $props();
 </script>
 
 <Tabs {titles}>
-    <svelte:fragment slot="tab-content">
+    {#snippet tabContent()}
         {#each titles as _title, index (_title)}
             <TabContent selected={index === 0} {index}>
                 {#if index === 0}
@@ -29,5 +33,5 @@
                 {/if}
             </TabContent>
         {/each}
-    </svelte:fragment>
+    {/snippet}
 </Tabs>

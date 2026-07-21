@@ -1,27 +1,43 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
-    // build a unique id from timestamp if not given
-    export let id = Date.now().toString();
-    export let large = true;
-    export let placeholder = "Nom, n°RNA, n°SIREN ou SIRET";
-    export let disableIfEmpty = true;
-    export let value: string | undefined = undefined;
-    export let label = undefined;
+    interface Props {
+        // build a unique id from timestamp if not given
+        id?: string;
+        large?: boolean;
+        placeholder?: string;
+        disableIfEmpty?: boolean;
+        value?: string | undefined;
+        label?: string;
+        onsubmit?: (value: string | undefined) => void;
+        onreset?: () => void;
+    }
 
-    const dispatch = createEventDispatcher<{ submit: string | undefined; reset: null }>();
+    let {
+        id = Date.now().toString(),
+        large = true,
+        placeholder = "Nom, n°RNA, n°SIREN ou SIRET",
+        disableIfEmpty = true,
+        value = $bindable(undefined),
+        label = undefined,
+        onsubmit = () => {},
+        onreset = () => {},
+    }: Props = $props();
 
     async function handleReset() {
-        if (value === "") dispatch("reset");
+        if (value === "") onreset();
     }
 
     function handleSubmit() {
-        dispatch("submit", value);
+        onsubmit(value);
     }
 </script>
 
 <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
     <div class="fr-col fr-col-lg-12">
-        <form on:submit|preventDefault={handleSubmit}>
+        <form
+            onsubmit={event => {
+                event.preventDefault();
+                handleSubmit();
+            }}>
             <div class="fr-search-bar" class:fr-search-bar--lg={large} id="search-input-{id}">
                 {#if label}
                     <label class="fr-label" for="search-input-{id}">
@@ -35,7 +51,7 @@
                     id="search-input-{id}"
                     name="search-input"
                     bind:value
-                    on:input={handleReset} />
+                    oninput={handleReset} />
                 <button class="fr-btn" title="Rechercher" disabled={!value && disableIfEmpty}>Rechercher</button>
             </div>
         </form>

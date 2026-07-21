@@ -1,12 +1,18 @@
 <script lang="ts">
     import StepIndicatorController from "$lib/dsfr/StepIndicator/StepIndicator.controller";
 
-    export let currentStep: number;
-    export let stepsDesc: string[];
+    interface Props {
+        currentStep: number;
+        stepsDesc: string[];
+    }
 
-    const controller = new StepIndicatorController(currentStep, stepsDesc);
+    let { currentStep, stepsDesc }: Props = $props();
 
-    $: controller.currentStep = currentStep;
+    const controller = $state(new StepIndicatorController(currentStep, stepsDesc));
+
+    $effect(() => {
+        controller.currentStep = currentStep;
+    });
 </script>
 
 <div class="fr-stepper">

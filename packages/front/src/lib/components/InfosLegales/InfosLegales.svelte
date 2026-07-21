@@ -3,8 +3,7 @@
     import Button from "$lib/dsfr/Button.svelte";
     import Badge from "$lib/dsfr/Badge.svelte";
 
-    export let association;
-    export let establishment = undefined;
+    let { association, establishment = undefined } = $props();
 
     const controller = new InfosLegalesController(association, establishment);
 </script>
@@ -51,7 +50,7 @@
                 iconPosition="left"
                 ariaControls="fr-modal"
                 trackerName="association-etablissement.more-legal-info-modal"
-                on:click={() => controller.displayModal()}>
+                onclick={() => controller.displayModal()}>
                 Voir les informations du RNA / Siren
             </Button>
         {:else}

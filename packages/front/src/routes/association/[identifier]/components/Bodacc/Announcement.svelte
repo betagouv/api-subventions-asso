@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import AnnouncementController from "./Announcement.controller";
     import Callout from "$lib/dsfr/Callout.svelte";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
-    export let announcement;
+    let { announcement } = $props();
 
     const controller = new AnnouncementController(announcement);
 </script>

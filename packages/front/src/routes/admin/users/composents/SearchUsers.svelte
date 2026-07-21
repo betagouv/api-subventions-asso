@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import { compareTwoStrings } from "string-similarity";
 
-    export let users;
+    let { users = $bindable() } = $props();
 
-    let search = "";
+    let search = $state("");
     const updateSearch = () => {
         if (search.length < 2) return;
 
@@ -20,9 +20,10 @@
             );
         });
     };
-    // TODO: #3374
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    $: search, updateSearch();
+    $effect(() => {
+        void search;
+        updateSearch();
+    });
 </script>
 
 <div class="fr-col fr-col-lg-12">

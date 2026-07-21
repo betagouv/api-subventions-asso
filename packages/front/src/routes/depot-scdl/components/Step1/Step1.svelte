@@ -1,23 +1,22 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import InfoBox from "$lib/components/InfoBox.svelte";
     import Step1Controller from "./Step1.controller";
     import Input from "$lib/dsfr/Input.svelte";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
+    let { onnextStep = () => {}, onprevStep = () => {}, onresumeForm = () => {} } = $props();
+
     const ctrl = new Step1Controller();
     const { inputValue, hasError, isDisabled } = ctrl;
-
-    const dispatch = createEventDispatcher<{ nextStep: void; prevStep: void; resumeForm: void }>();
 
     const infoBoxTitle = "💡 Vous ne connaissez pas le SIRET de l’attribuant ?";
 
     async function handleValidate() {
         const result = await ctrl.handleValidate();
         if (result === "success") {
-            dispatch("nextStep");
+            onnextStep();
         } else if (result === "resume") {
-            dispatch("resumeForm");
+            onresumeForm();
         }
     }
 </script>
@@ -30,8 +29,8 @@
         bind:value={$inputValue}
         label="Indiquez le SIRET de l’attribuant :"
         hint="La collectivité ou l’organisme qui attribue les subventions dans ce fichier."
-        on:change
-        on:blur={() => ctrl.setTouch(true)}
+        onchange
+        onblur={() => ctrl.setTouch(true)}
         error={$hasError ? "true" : ""}
         errorMsg="Le SIRET doit contenir 14 chiffres" />
 
@@ -51,11 +50,9 @@
     </div>
 
     <div>
-        <button on:click={() => dispatch("prevStep")} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
-            Retour
-        </button>
+        <button onclick={onprevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
-        <button on:click={() => handleValidate()} disabled={$isDisabled} class="fr-btn fr-mr-3v" type="button">
+        <button onclick={() => handleValidate()} disabled={$isDisabled} class="fr-btn fr-mr-3v" type="button">
             Valider
         </button>
     </div>
