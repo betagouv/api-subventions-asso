@@ -19,7 +19,7 @@
     <br />
 </p>
 <p>
-    {#if !small}<span class="fr-mr-1w fr-icon-map-pin-2-line color" />{/if}
+    {#if !small}<span class="fr-mr-1w fr-icon-map-pin-2-line color"></span>{/if}
     <span class:fr-text--bold={!small}>{address}</span>
 </p>
 

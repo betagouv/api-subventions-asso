@@ -60,7 +60,7 @@
                         {option.label}
                     {/if}
                 </label>
-                <div class="fr-messages-group" id="checkboxes-1-messages" aria-live="polite" />
+                <div class="fr-messages-group" id="checkboxes-1-messages" aria-live="polite"></div>
             </div>
         </div>
     {/each}

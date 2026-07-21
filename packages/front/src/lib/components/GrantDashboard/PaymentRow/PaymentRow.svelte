@@ -33,7 +33,7 @@
 {:else if granted}
     <td colspan={cellsLength} class="fr-cell--center">Nous ne disposons pas encore de cette information.</td>
 {:else}
-    <td colspan={cellsLength} />
+    <td colspan={cellsLength}></td>
 {/if}
 
 <style>

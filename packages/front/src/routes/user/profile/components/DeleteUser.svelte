@@ -13,7 +13,7 @@
 
 <div class="bordered-frame">
     <p class="red">
-        <span class="fr-icon-close-line" />
+        <span class="fr-icon-close-line"></span>
         Vous souhaitez supprimer votre compte ?
     </p>
     <p>La suppression de votre compte entraine une suppression de toutes vos données et historique de recherche.</p>

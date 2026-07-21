@@ -40,7 +40,8 @@
                 <span class="fr-stepper__state">Étape {$currentStep.positionLabel} sur {steps.length}</span>
             {/if}
         </h2>
-        <div class="fr-stepper__steps" data-fr-current-step={$currentStep.positionLabel} data-fr-steps={steps.length} />
+        <div class="fr-stepper__steps" data-fr-current-step={$currentStep.positionLabel} data-fr-steps={steps.length}>
+        </div>
         {#if !$currentStep.isLastStep}
             <p class="fr-stepper__details">
                 <span class="fr-text--bold">Étape suivante :</span>
