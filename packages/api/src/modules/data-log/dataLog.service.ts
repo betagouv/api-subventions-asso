@@ -10,7 +10,6 @@ export interface DataLogService {
     addFromApi(log: Omit<ApiDataLogEntity, "source" | "integrationDate">): Promise<void>;
     add(log: Omit<FileDataLogEntity, "integrationDate"> | Omit<ApiDataLogEntity, "integrationDate">): Promise<void>;
     getProvidersLogOverview(): Promise<DataLogDto[]>;
-    getLastEditionDateByProvider(providerId: string): Promise<Date | null>;
     findAllCursor(): AsyncIterable<DataLogEntity>;
 }
 
@@ -40,10 +39,6 @@ class DataLogServiceImpl implements DataLogService {
     async getProvidersLogOverview(): Promise<DataLogDto[]> {
         const overviews = await dataLogAdapter.getProvidersLogOverview();
         return overviews.map(overview => DataLogMapper.overviewToDto(overview));
-    }
-
-    getLastEditionDateByProvider(providerId: string): Promise<Date | null> {
-        return dataLogAdapter.getLastEditionDateByProvider(providerId);
     }
 
     findAllCursor() {

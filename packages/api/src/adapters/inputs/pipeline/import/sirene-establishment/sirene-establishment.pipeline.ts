@@ -4,18 +4,18 @@ import { SireneEstablishmentPort } from "../../../../outputs/db/sirene/sirene-es
 import sireneUniteLegaleService, {
     SireneUniteLegaleService,
 } from "../../../../../modules/providers/sirene/sirene-unite-legale.service";
-import dataLogService, { DataLogService } from "../../../../../modules/data-log/dataLog.service";
 import SireneEstablishmentDto from "./sirene-establishment.dto";
 import SireneEstablishmentParser from "./sirene-establishment.parser";
+import dataLogAdapter, { DataLogAdapter } from "../../../../outputs/db/data-log/data-log.adapter";
 
 const SIRENE_ESTABLISHMENT_PROVIDER_ID = "sirene-establishment";
 
-export class SireneEstablishmentImport {
+export class SireneEstablishmentPipeline {
     constructor(
         private parser: SireneEstablishmentParser,
         private establishmentPort: SireneEstablishmentPort,
         private sireneUniteLegale: SireneUniteLegaleService,
-        private dataLog: Pick<DataLogService, "getLastEditionDateByProvider">,
+        private logAdapter: DataLogAdapter,
     ) {}
 
     public async run(filePath: string): Promise<ImportReport> {
@@ -28,7 +28,8 @@ export class SireneEstablishmentImport {
             importedCount: 0,
             errorCount: 0,
         };
-        const lastEditionDate = await this.dataLog.getLastEditionDateByProvider(SIRENE_ESTABLISHMENT_PROVIDER_ID);
+
+        const lastEditionDate = await this.logAdapter.getLastEditionDateByProvider(SIRENE_ESTABLISHMENT_PROVIDER_ID);
 
         await this.parser.parse(filePath, async batch => {
             report.parsedCount += batch.length;
@@ -61,10 +62,10 @@ export class SireneEstablishmentImport {
     }
 }
 
-const sireneEstablishmentImport = new SireneEstablishmentImport(
+const sireneEstablishmentPipeline = new SireneEstablishmentPipeline(
     new SireneEstablishmentParser(),
     sireneEstablishmentAdapter,
     sireneUniteLegaleService,
-    dataLogService,
+    dataLogAdapter,
 );
-export default sireneEstablishmentImport;
+export default sireneEstablishmentPipeline;

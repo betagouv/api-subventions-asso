@@ -163,21 +163,6 @@ describe("dataLogService", () => {
         });
     });
 
-    describe("getLastEditionDateByProvider", () => {
-        it("returns the port value", async () => {
-            const expected = new Date("2026-07-01");
-            jest.mocked(dataLogAdapter.getLastEditionDateByProvider).mockResolvedValueOnce(expected);
-            const actual = await dataLogService.getLastEditionDateByProvider("provider");
-            expect(actual).toBe(expected);
-        });
-
-        it("returns null when the port has no log", async () => {
-            jest.mocked(dataLogAdapter.getLastEditionDateByProvider).mockResolvedValueOnce(null);
-            const actual = await dataLogService.getLastEditionDateByProvider("provider");
-            expect(actual).toBeNull();
-        });
-    });
-
     describe("findAllCursor", () => {
         let mockCursor: Partial<FindCursor<WithId<DataLogEntity>>>;
 

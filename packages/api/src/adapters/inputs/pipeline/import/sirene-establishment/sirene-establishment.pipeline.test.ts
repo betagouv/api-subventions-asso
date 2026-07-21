@@ -1,11 +1,12 @@
+import { DataLogAdapter } from "../../../../outputs/db/data-log/data-log.adapter";
 import { SIRENE_ESTABLISHMENT_DTO } from "./sirene-establishment.fixture";
-import { SireneEstablishmentImport } from "./sirene-establishment.import";
+import { SireneEstablishmentPipeline } from "./sirene-establishment.pipeline";
 
-describe("SireneEstablishmentImport", () => {
+describe("SireneEstablishmentPipeline", () => {
     const parser = { parse: jest.fn() };
     const establishmentPort = { upsertMany: jest.fn() };
     const sireneUniteLegale = { collectionIsNotEmpty: jest.fn(), filterExistingSirens: jest.fn() };
-    const dataLog = { getLastEditionDateByProvider: jest.fn() };
+    const dataLog = { getLastEditionDateByProvider: jest.fn() } as unknown as DataLogAdapter;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -13,13 +14,13 @@ describe("SireneEstablishmentImport", () => {
         establishmentPort.upsertMany.mockResolvedValue(1);
         sireneUniteLegale.collectionIsNotEmpty.mockResolvedValue(true);
         sireneUniteLegale.filterExistingSirens.mockResolvedValue([SIRENE_ESTABLISHMENT_DTO.siren]);
-        dataLog.getLastEditionDateByProvider.mockResolvedValue(null);
+        jest.mocked(dataLog.getLastEditionDateByProvider).mockResolvedValue(null);
     });
 
     it("throws when sirene collection is empty", async () => {
         sireneUniteLegale.collectionIsNotEmpty.mockResolvedValueOnce(false);
         await expect(
-            new SireneEstablishmentImport(
+            new SireneEstablishmentPipeline(
                 parser as never,
                 establishmentPort as never,
                 sireneUniteLegale as never,
@@ -29,7 +30,7 @@ describe("SireneEstablishmentImport", () => {
     });
 
     it("filters establishments with existing association sirens", async () => {
-        await new SireneEstablishmentImport(
+        await new SireneEstablishmentPipeline(
             parser as never,
             establishmentPort as never,
             sireneUniteLegale as never,
@@ -39,8 +40,8 @@ describe("SireneEstablishmentImport", () => {
     });
 
     it("filters establishments older than previous import edition date", async () => {
-        dataLog.getLastEditionDateByProvider.mockResolvedValueOnce(new Date("2026-07-09"));
-        await new SireneEstablishmentImport(
+        jest.mocked(dataLog.getLastEditionDateByProvider).mockResolvedValueOnce(new Date("2026-07-09"));
+        await new SireneEstablishmentPipeline(
             parser as never,
             establishmentPort as never,
             sireneUniteLegale as never,
@@ -50,7 +51,7 @@ describe("SireneEstablishmentImport", () => {
     });
 
     it("returns import report", async () => {
-        const actual = await new SireneEstablishmentImport(
+        const actual = await new SireneEstablishmentPipeline(
             parser as never,
             establishmentPort as never,
             sireneUniteLegale as never,

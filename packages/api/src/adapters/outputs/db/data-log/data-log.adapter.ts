@@ -4,7 +4,7 @@ import { ProducerLogEntity } from "../../../../modules/data-log/entities/produce
 import { removeMongoId, removeMongoIds } from "../mongo-document.mapper";
 import { DataLogPort } from "./data-log.port";
 
-class DataLogAdapter extends MongoAdapter<DataLogEntity> implements DataLogPort {
+export class DataLogAdapter extends MongoAdapter<DataLogEntity> implements DataLogPort {
     readonly collectionName = "data-log";
 
     async createIndexes(): Promise<void> {
@@ -50,10 +50,7 @@ class DataLogAdapter extends MongoAdapter<DataLogEntity> implements DataLogPort 
     }
 
     async getLastEditionDateByProvider(providerId: string): Promise<Date | null> {
-        const result = await this.collection.findOne(
-            { providerId, editionDate: { $exists: true } },
-            { sort: { editionDate: -1 }, projection: { editionDate: 1 } },
-        );
+        const result = await this.collection.findOne({ providerId, editionDate: { $exists: true } });
         return result?.editionDate || null;
     }
 

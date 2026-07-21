@@ -1,9 +1,9 @@
 import { CliStaticInterface } from "../../../@types";
 import { StaticImplements } from "../../../decorators/static-implements.decorator";
-import sireneEstablishmentImport, {
-    SireneEstablishmentImport,
-} from "../pipeline/import/sirene-establishment/sirene-establishment.import";
 import CliController from "../../../shared/CliController";
+import sireneEstablishmentPipeline, {
+    SireneEstablishmentPipeline,
+} from "../pipeline/import/sirene-establishment/sirene-establishment.pipeline";
 
 @StaticImplements<CliStaticInterface>()
 export default class EstablishmentCli extends CliController {
@@ -12,7 +12,7 @@ export default class EstablishmentCli extends CliController {
     protected logFileParsePath = "./logs/establishment.parse.log.txt";
     protected _serviceMeta = { id: "sirene-establishment", name: "SIRENE Establishment" };
 
-    constructor(private establishmentImport: SireneEstablishmentImport) {
+    constructor(private establishmentImport: SireneEstablishmentPipeline) {
         super();
     }
 
@@ -21,4 +21,4 @@ export default class EstablishmentCli extends CliController {
     }
 }
 
-export const createEstablishmentCli = () => new EstablishmentCli(sireneEstablishmentImport);
+export const createEstablishmentCli = () => new EstablishmentCli(sireneEstablishmentPipeline);
