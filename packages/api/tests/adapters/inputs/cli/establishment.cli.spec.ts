@@ -12,8 +12,11 @@ describe("Establishment CLI", () => {
     const seedSirene = () => db.collection("sirene").insertOne({ siren: "100000000" });
 
     describe("parse", () => {
-        it("it persist data in collection", async () => {
+        beforeEach(async () => {
             await seedSirene();
+        });
+
+        it("it persist data in collection", async () => {
             await cli.parse(path.resolve(__dirname, "../__fixtures__/sirene-establishment.parquet"), "2026-07-21");
 
             const documents = (await db
@@ -31,7 +34,6 @@ describe("Establishment CLI", () => {
         });
 
         it("logs import in data-log", async () => {
-            await seedSirene();
             await cli.parse(path.resolve(__dirname, "../__fixtures__/sirene-establishment.parquet"), "2026-07-21");
 
             expect(await db.collection("data-log").findOne({}, { projection: { _id: 0 } })).toMatchSnapshot({
@@ -43,7 +45,6 @@ describe("Establishment CLI", () => {
             const EXPORT_DATE_STR = "2026-07-21";
             const spyNotify = jest.spyOn(notifyService, "notify");
 
-            await seedSirene();
             await cli.parse(
                 path.resolve(__dirname, "../__fixtures__/multiple-batch.sirene-establishment.parquet"),
                 EXPORT_DATE_STR,
