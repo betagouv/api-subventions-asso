@@ -27,7 +27,7 @@ export class SireneStockEstablishmentService {
         this.getOrCreateDirectory();
 
         const writeFile = fs.createWriteStream(this.directory_path + "/StockEtablissement.parquet");
-        const readFile = (await sireneStockEstablishmentAdapter.getFile()) as RequestResponse<Readable>;
+        const readFile = (await sireneStockEstablishmentAdapter.getFileStream()) as RequestResponse<Readable>;
 
         console.info(`Start downloading the file`);
 

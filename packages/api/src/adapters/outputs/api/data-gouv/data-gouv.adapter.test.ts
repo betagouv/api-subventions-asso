@@ -27,7 +27,7 @@ describe("DataGouvAdapter", () => {
 
     describe("getFile", () => {
         it("should make a GET request for the file", async () => {
-            await port.getFile();
+            await port.getFileStream();
             expect(port.http.get).toHaveBeenCalledWith(
                 "https://www.data.gouv.fr/api/1/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047",
                 { responseType: "stream" },

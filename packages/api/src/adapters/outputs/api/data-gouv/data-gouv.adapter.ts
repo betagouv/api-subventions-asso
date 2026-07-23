@@ -1,20 +1,17 @@
 import { Readable } from "stream";
-import ProviderRequestFactory, {
-    ProviderRequestService,
-} from "../../../../modules/provider-request/provider-request.service";
-import { DataGouvPort } from "./data-gouv.port";
+import FileStreamPort from "../../file-stream.port";
+import { HttpAdapter } from "../../../http.adapter";
 
-export class DataGouvAdapter implements DataGouvPort {
-    private http: ProviderRequestService;
+export class DataGouvAdapter extends HttpAdapter implements FileStreamPort {
     private baseUrl = "https://www.data.gouv.fr/api/1/datasets/r/";
     private url: string;
 
     constructor(resourceId: string) {
+        super("data-gouv");
         this.url = this.baseUrl + resourceId;
-        this.http = ProviderRequestFactory("data-gouv");
     }
 
-    getFile() {
+    getFileStream() {
         return this.http.get<Readable>(this.url, { responseType: "stream" });
     }
 }

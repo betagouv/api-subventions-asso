@@ -8,6 +8,7 @@ export default class RequestResponseMapper {
             data: response.data,
             status: response.status,
             statusText: response.statusText,
+            contentType: response.headers ? (response.headers["Content-Type"] as string | undefined) : undefined,
         };
     }
 }
