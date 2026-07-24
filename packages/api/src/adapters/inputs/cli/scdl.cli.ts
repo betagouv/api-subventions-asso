@@ -79,10 +79,14 @@ export default class ScdlCli {
                 durationMs: Date.now() - startAt,
             });
         } catch (error) {
-            await notifyImportFailureUseCase.execute(producer?.name ?? allocatorSiret, error as Error, {
-                durationMs: Date.now() - startAt,
-                fileName: path.basename(filePath),
-                report: importReport,
+            await notifyImportFailureUseCase.execute({
+                providerName: producer?.name ?? allocatorSiret,
+                error: error as Error,
+                context: {
+                    durationMs: Date.now() - startAt,
+                    fileName: path.basename(filePath),
+                    report: importReport,
+                },
             });
             throw error;
         }
@@ -144,10 +148,14 @@ export default class ScdlCli {
                 durationMs: Date.now() - startAt,
             });
         } catch (error) {
-            await notifyImportFailureUseCase.execute(producer?.name ?? allocatorSiret, error as Error, {
-                durationMs: Date.now() - startAt,
-                fileName: path.basename(filePath),
-                report: importReport,
+            await notifyImportFailureUseCase.execute({
+                providerName: producer?.name ?? allocatorSiret,
+                error: error as Error,
+                context: {
+                    durationMs: Date.now() - startAt,
+                    fileName: path.basename(filePath),
+                    report: importReport,
+                },
             });
             throw error;
         }
@@ -180,11 +188,16 @@ export default class ScdlCli {
         ]);
 
         if (importReport) {
-            await notifyImportSuccessUseCase.execute(producer.name, file, importReport, {
-                durationMs: durationMs ?? 0,
-                providerSiret: producer.siret,
-                exportDate,
-                fileCount: 1,
+            await notifyImportSuccessUseCase.execute({
+                providerName: producer.name,
+                file,
+                report: importReport,
+                context: {
+                    durationMs: durationMs ?? 0,
+                    providerSiret: producer.siret,
+                    exportDate,
+                    fileCount: 1,
+                },
             });
         }
     }

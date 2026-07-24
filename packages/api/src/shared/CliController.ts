@@ -5,13 +5,19 @@ import CliLogger from "./CliLogger";
 import { GenericParser } from "./GenericParser";
 import { validateDate } from "./helpers/CliHelper";
 import { ImportReport } from "../@types/ImportReport";
-import { notifyImportFailureUseCase } from "../modules/notify/use-cases/notify-import-failure.use-case";
-import { notifyImportSuccessUseCase } from "../modules/notify/use-cases/notify-import-success.use-case";
+import importNotifier, { type ImportNotifier } from "../adapters/inputs/pipeline/import/import-notifier";
 
-export default class CliController {
+export default abstract class CliController {
     protected logFileParsePath = "";
     protected logger = new CliLogger();
     protected _serviceMeta = { id: "", name: "" };
+    protected readonly notifier: ImportNotifier;
+
+    constructor(notifier?: ImportNotifier) {
+        // @TODO: remove this after editing all CLI to inject import notifier
+        if (!notifier) this.notifier = importNotifier;
+        else this.notifier = notifier;
+    }
 
     private validParseFile(file: string): boolean {
         if (typeof file != "string") {
@@ -75,7 +81,16 @@ export default class CliController {
                     errorCount: reportsWithCounts.reduce((sum, r) => sum + r.errorCount, 0),
                 };
                 const totalDuration = fileReports.reduce((sum, { duration }) => sum + duration, 0);
-                await this._notifyImportSuccess(file, exportDate, aggregated, totalDuration, files.length);
+                await this.notifier.notifySuccess({
+                    providerName: this._serviceMeta.name,
+                    file,
+                    report: aggregated,
+                    context: {
+                        durationMs: totalDuration,
+                        exportDate,
+                        fileCount: files.length,
+                    },
+                });
             }
         } catch (error) {
             const partialReport: ImportReport = {
@@ -83,27 +98,17 @@ export default class CliController {
                 importedCount: fileReports.reduce((sum, { report }) => sum + (report?.importedCount ?? 0), 0),
                 errorCount: fileReports.reduce((sum, { report }) => sum + (report?.errorCount ?? 0), 0),
             };
-            await this._notifyImportFailure(file, error as Error, exportDate, Date.now() - startAt, partialReport);
+            await this.notifier.notifyFailure({
+                providerName: this._serviceMeta.name,
+                error: error as Error,
+                context: { fileName: file, exportDate, durationMs: Date.now() - startAt, report: partialReport },
+            });
             throw error;
         }
     }
 
     protected async _parse(_file: string, _logs: unknown[], _exportDate: Date, ..._args): Promise<ImportReport | void> {
         throw new Error("_parse() need to be implemented by the child class");
-    }
-
-    public async compare(previousFile: string, newFile: string) {
-        this.validParseFile(previousFile);
-        this.validParseFile(newFile);
-        this.validFileExists(previousFile);
-        this.validFileExists(newFile);
-
-        this._compare(previousFile, newFile);
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async _compare(previousFile: string, newFile: string): Promise<boolean> {
-        throw new Error("_compare() need to be implemented by the child class");
     }
 
     protected async _logImportSuccess(editionDate: Date, fileName: string) {
@@ -116,20 +121,6 @@ export default class CliController {
         });
     }
 
-    protected async _notifyImportSuccess(
-        file: string,
-        exportDate: Date,
-        report: ImportReport,
-        durationMs: number,
-        fileCount: number,
-    ): Promise<void> {
-        return notifyImportSuccessUseCase.execute(this._serviceMeta.name, file, report, {
-            durationMs,
-            exportDate,
-            fileCount,
-        });
-    }
-
     protected async _notifyImportFailure(
         file: string,
         error: Error,
@@ -137,11 +128,15 @@ export default class CliController {
         durationMs: number,
         partialReport?: ImportReport,
     ): Promise<void> {
-        return notifyImportFailureUseCase.execute(this._serviceMeta.name, error, {
-            exportDate,
-            durationMs,
-            fileName: path.basename(file),
-            report: partialReport,
+        return this.notifier.notifyFailure({
+            providerName: this._serviceMeta.name,
+            error,
+            context: {
+                exportDate,
+                durationMs,
+                fileName: path.basename(file),
+                report: partialReport,
+            },
         });
     }
 }

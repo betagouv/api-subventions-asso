@@ -1,6 +1,7 @@
 import { CliStaticInterface } from "../../../@types";
 import { StaticImplements } from "../../../decorators/static-implements.decorator";
 import CliController from "../../../shared/CliController";
+import importNotifier, { type ImportNotifier } from "../pipeline/import/import-notifier";
 import sireneEstablishmentPipeline, {
     SireneEstablishmentPipeline,
 } from "../pipeline/import/sirene-establishment/sirene-establishment.pipeline";
@@ -12,13 +13,16 @@ export default class EstablishmentCli extends CliController {
     protected logFileParsePath = "./logs/establishment.parse.log.txt";
     protected _serviceMeta = { id: "sirene-establishment", name: "SIRENE Establishment" };
 
-    constructor(private establishmentImport: SireneEstablishmentPipeline) {
-        super();
+    constructor(
+        private establishmentPipeline: SireneEstablishmentPipeline,
+        notifier: ImportNotifier,
+    ) {
+        super(notifier);
     }
 
     protected async _parse(file: string) {
-        return this.establishmentImport.run(file);
+        return this.establishmentPipeline.run(file);
     }
 }
 
-export const createEstablishmentCli = () => new EstablishmentCli(sireneEstablishmentPipeline);
+export const createEstablishmentCli = () => new EstablishmentCli(sireneEstablishmentPipeline, importNotifier);
