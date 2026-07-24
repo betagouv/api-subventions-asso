@@ -12,7 +12,6 @@ import {
 
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3Error } from "./@errors/S3Error";
-import { S3FileData } from "../../../@types/S3FileData";
 import { S3Port } from "./s3.port";
 import {
     S3_SCDL_BUCKET,
@@ -23,12 +22,19 @@ import {
     S3_PROVIDERS_BUCKET,
 } from "../../../configurations/s3.conf";
 import FileTags from "../../../modules/s3-file/@types/FileTags";
+import { Readable } from "stream";
+import { STATUS_CODES } from "http";
+import { RequestResponse } from "../../../modules/provider-request/@types/RequestResponse";
 
 export class S3Adapter implements S3Port {
+    public name: string;
+
     constructor(
         private s3Client: S3Client,
         private bucketName: string,
-    ) {}
+    ) {
+        this.name = `s3-${bucketName}`;
+    }
 
     /**
      *  Uploads a file to S3 bucket.
@@ -102,7 +108,7 @@ export class S3Adapter implements S3Port {
      * @param key - Key of the file in S3 bucket (path).
      * @returns File data object containing buffer, content type and key, or null if not found.
      */
-    async getFile(key: string): Promise<S3FileData | null> {
+    async getFileStream(key: string) {
         try {
             const command = new GetObjectCommand({
                 Bucket: this.bucketName,
@@ -112,24 +118,22 @@ export class S3Adapter implements S3Port {
             const response = await this.s3Client.send(command);
 
             if (!response.Body) {
-                return null;
+                throw new S3Error(`File was not found for the given key : ${key}`);
             }
 
-            const stream = response.Body as NodeJS.ReadableStream;
-            const chunks: Buffer[] = [];
-
-            for await (const chunk of stream) {
-                const buffer = chunk as Buffer;
-                chunks.push(buffer);
-            }
+            const stream = response.Body as Readable;
 
             return {
-                buffer: Buffer.concat(chunks),
+                data: stream,
+                status: response.$metadata.httpStatusCode,
+                statusText: response.$metadata.httpStatusCode
+                    ? STATUS_CODES[response.$metadata.httpStatusCode]
+                    : undefined,
                 contentType: response.ContentType,
-                key,
-            };
+            } as RequestResponse<Readable>;
         } catch (error) {
-            console.error(error);
+            console.log(error);
+            if (error instanceof S3Error) throw error;
             throw new S3Error("Failed to get file");
         }
     }

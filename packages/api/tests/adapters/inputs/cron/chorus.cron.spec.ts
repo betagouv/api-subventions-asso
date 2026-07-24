@@ -6,7 +6,6 @@ import path from "path";
 import { readFileSync } from "fs";
 import { Readable } from "stream";
 import { GetNewS3File } from "../../../../src/modules/s3-file/use-cases/get-new-s3-file";
-import { GetFileData } from "../../../../src/modules/s3-file/use-cases/get-file-data";
 import { ChorusImport } from "../../../../src/adapters/inputs/pipeline/import/chorus/chorus.import";
 import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
 import stateBudgetProgramAdapter from "../../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
@@ -30,6 +29,7 @@ import saveChorusEntities from "../../../../src/modules/providers/chorus/use-cas
 import saveChorusFseEntities from "../../../../src/modules/providers/chorus/use-cases/save-fse-entities";
 import updateFlatByExercise from "../../../../src/modules/providers/chorus/use-cases/update-flat-by-exercise";
 import { TagImportedFile } from "../../../../src/modules/s3-file/use-cases/tag-imported-file";
+import DownloadFile from "../../../../src/usecases/download-file";
 
 jest.mock("../../../../src/modules/providers/api-asso/api-asso.service");
 
@@ -47,7 +47,9 @@ describe("Chorus CRON", () => {
             },
         ]),
     } as unknown as GetNewS3File;
-    const mockGetFileData = { execute: jest.fn().mockResolvedValue({ buffer: fileBuffer }) } as unknown as GetFileData;
+    const mockDownloadFile = {
+        execute: jest.fn().mockResolvedValue({ filePath: PATH }),
+    } as unknown as jest.Mocked<DownloadFile>;
     const mockTagImportedFile = { execute: jest.fn() } as unknown as TagImportedFile;
 
     jest.spyOn(apiAssoService, "findAssociationBySiren").mockImplementation((siren: Siren) => {
@@ -74,7 +76,7 @@ describe("Chorus CRON", () => {
     // mock file access but not import process
     const cron = new ChorusCron(
         mockGetFile,
-        mockGetFileData,
+        mockDownloadFile,
         new ChorusImport(
             saveChorusEntities,
             saveChorusFseEntities,

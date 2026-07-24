@@ -16,10 +16,10 @@ jest.mock("../../../modules/notify/use-cases/notify-import-success.use-case", ()
 jest.mock("../../../modules/notify/use-cases/notify-import-failure.use-case", () => ({
     notifyImportFailureUseCase: { execute: jest.fn().mockResolvedValue(undefined) },
 }));
-jest.mock("../pipeline/import/sirene-establishment/sirene-establishment.import", () => ({
+jest.mock("../pipeline/import/sirene-establishment/sirene-establishment.pipeline", () => ({
     __esModule: true,
     default: {},
-    SireneEstablishmentImport: class {},
+    SireneEstablishmentPipeline: class {},
 }));
 
 describe("EstablishmentCli", () => {

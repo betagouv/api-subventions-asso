@@ -1,5 +1,5 @@
 import SireneEstablishmentDto from "../../../inputs/pipeline/import/sirene-establishment/sirene-establishment.dto";
 
 export interface SireneEstablishmentPort {
-    insertMany(dtos: SireneEstablishmentDto[]): Promise<number>;
+    upsertMany(dtos: SireneEstablishmentDto[]): Promise<number>;
 }

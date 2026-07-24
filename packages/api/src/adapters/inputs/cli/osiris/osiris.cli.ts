@@ -109,12 +109,16 @@ export default class OsirisCli implements ApplicationFlatCli {
                 importedCount: fileReports.reduce((sum, r) => sum + r.importedCount, 0),
                 errorCount: fileReports.reduce((sum, r) => sum + r.errorCount, 0),
             };
-            await notifyImportFailureUseCase.execute(osirisService.meta.name, error as Error, {
-                durationMs: Date.now() - startAt,
-                fileName: path.basename(file),
-                exerciseYear: year,
-                fileCount: files.length,
-                report: partialReport,
+            await notifyImportFailureUseCase.execute({
+                providerName: osirisService.meta.name,
+                error: error as Error,
+                context: {
+                    durationMs: Date.now() - startAt,
+                    fileName: path.basename(file),
+                    exerciseYear: year,
+                    fileCount: files.length,
+                    report: partialReport,
+                },
             });
             throw error;
         }
@@ -125,10 +129,15 @@ export default class OsirisCli implements ApplicationFlatCli {
                 importedCount: fileReports.reduce((sum, r) => sum + r.importedCount, 0),
                 errorCount: fileReports.reduce((sum, r) => sum + r.errorCount, 0),
             };
-            await notifyImportSuccessUseCase.execute(osirisService.meta.name, file, aggregated, {
-                durationMs: Date.now() - startAt,
-                fileCount: files.length,
-                exerciseYear: year,
+            await notifyImportSuccessUseCase.execute({
+                providerName: osirisService.meta.name,
+                file,
+                report: aggregated,
+                context: {
+                    durationMs: Date.now() - startAt,
+                    fileCount: files.length,
+                    exerciseYear: year,
+                },
             });
         }
     }

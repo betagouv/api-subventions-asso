@@ -1,40 +1,33 @@
 import { S3StorageService } from "./s3-storage.service";
-import { S3FileData } from "../../@types/S3FileData";
+import { S3Adapter } from "../../adapters/outputs/s3/s3.adapter";
+import DownloadFile, { DownloadFileReturn } from "../../usecases/download-file";
 
-jest.mock("../../adapters/outputs/s3/s3.adapter", () => ({
-    scdlS3Adapter: {
+jest.mock("../../adapters/outputs/s3/s3.adapter");
+import * as FileHelper from "../../shared/helpers/FileHelper";
+jest.mock("../../shared/helpers/FileHelper", () => ({
+    bufferToMulterFile: jest.fn(),
+}));
+
+const BUFFER = Buffer.from([]);
+
+jest.mock("fs", () => ({
+    promises: {
+        readFile: jest.fn().mockImplementation(() => BUFFER),
+    },
+}));
+
+describe("S3Fileservice", () => {
+    const mockS3Adapter = {
+        getFileStream: jest.fn(),
         listFiles: jest.fn(),
         deleteFile: jest.fn(),
         uploadFile: jest.fn(),
         getDownloadUrl: jest.fn(),
         getFile: jest.fn(),
-    },
-}));
-import { scdlS3Adapter } from "../../adapters/outputs/s3/s3.adapter";
+    } as unknown as jest.Mocked<S3Adapter>;
+    const mockDownloadFile = { execute: jest.fn() } as unknown as jest.Mocked<DownloadFile>;
 
-jest.mock("../../shared/helpers/FileHelper", () => ({
-    bufferToMulterFile: jest.fn(),
-}));
-import { bufferToMulterFile } from "../../shared/helpers/FileHelper";
-import { NotFoundError } from "core";
-
-const mockS3ClientPort = scdlS3Adapter as jest.Mocked<typeof scdlS3Adapter>;
-
-const createMockFile = (originalname: string, buffer: Buffer = Buffer.from("test")): Express.Multer.File => ({
-    fieldname: "file",
-    originalname,
-    encoding: "7bit",
-    mimetype: "text/csv",
-    buffer,
-    size: buffer.length,
-    destination: "",
-    filename: "",
-    path: "",
-    stream: {} as never,
-});
-
-describe("S3FileService", () => {
-    let service: S3StorageService;
+    const service = new S3StorageService(mockS3Adapter, mockDownloadFile);
     let mockFile: Express.Multer.File;
 
     let USER_ID: string;
@@ -49,7 +42,6 @@ describe("S3FileService", () => {
         UPLOAD_KEY = "user123/test.csv";
         USER_ID = "user123";
 
-        service = new S3StorageService();
         mockFile = {
             originalname: "test.csv",
             buffer: Buffer.from("test content"),
@@ -60,40 +52,40 @@ describe("S3FileService", () => {
 
     describe("uploadAndReplaceUserFile", () => {
         it("should call listFiles", async () => {
-            mockS3ClientPort.listFiles.mockResolvedValue(EXISTING_FILES);
-            mockS3ClientPort.deleteFile.mockResolvedValue(undefined);
-            mockS3ClientPort.uploadFile.mockResolvedValue(UPLOAD_KEY);
+            mockS3Adapter.listFiles.mockResolvedValue(EXISTING_FILES);
+            mockS3Adapter.deleteFile.mockResolvedValue(undefined);
+            mockS3Adapter.uploadFile.mockResolvedValue(UPLOAD_KEY);
 
             await service.uploadAndReplaceUserFile(mockFile, USER_ID);
 
-            expect(mockS3ClientPort.listFiles).toHaveBeenCalledWith(USER_ID);
+            expect(mockS3Adapter.listFiles).toHaveBeenCalledWith(USER_ID);
         });
 
         it("should call delete files", async () => {
-            mockS3ClientPort.listFiles.mockResolvedValue(EXISTING_FILES);
-            mockS3ClientPort.deleteFile.mockResolvedValue(undefined);
-            mockS3ClientPort.uploadFile.mockResolvedValue(UPLOAD_KEY);
+            mockS3Adapter.listFiles.mockResolvedValue(EXISTING_FILES);
+            mockS3Adapter.deleteFile.mockResolvedValue(undefined);
+            mockS3Adapter.uploadFile.mockResolvedValue(UPLOAD_KEY);
 
             await service.uploadAndReplaceUserFile(mockFile, USER_ID);
 
-            expect(mockS3ClientPort.deleteFile).toHaveBeenCalledWith("user123/old1.csv");
-            expect(mockS3ClientPort.deleteFile).toHaveBeenCalledWith("user123/old2.csv");
+            expect(mockS3Adapter.deleteFile).toHaveBeenCalledWith("user123/old1.csv");
+            expect(mockS3Adapter.deleteFile).toHaveBeenCalledWith("user123/old2.csv");
         });
 
         it("should call uploadUserFile files", async () => {
-            mockS3ClientPort.listFiles.mockResolvedValue(EXISTING_FILES);
-            mockS3ClientPort.deleteFile.mockResolvedValue(undefined);
-            mockS3ClientPort.uploadFile.mockResolvedValue(UPLOAD_KEY);
+            mockS3Adapter.listFiles.mockResolvedValue(EXISTING_FILES);
+            mockS3Adapter.deleteFile.mockResolvedValue(undefined);
+            mockS3Adapter.uploadFile.mockResolvedValue(UPLOAD_KEY);
 
             await service.uploadAndReplaceUserFile(mockFile, USER_ID);
 
-            expect(mockS3ClientPort.uploadFile).toHaveBeenCalledWith(mockFile, "user123/test.csv");
+            expect(mockS3Adapter.uploadFile).toHaveBeenCalledWith(mockFile, "user123/test.csv");
         });
 
         it("should return uploaded file key", async () => {
-            mockS3ClientPort.listFiles.mockResolvedValue(EXISTING_FILES);
-            mockS3ClientPort.deleteFile.mockResolvedValue(undefined);
-            mockS3ClientPort.uploadFile.mockResolvedValue(UPLOAD_KEY);
+            mockS3Adapter.listFiles.mockResolvedValue(EXISTING_FILES);
+            mockS3Adapter.deleteFile.mockResolvedValue(undefined);
+            mockS3Adapter.uploadFile.mockResolvedValue(UPLOAD_KEY);
 
             const result = await service.uploadAndReplaceUserFile(mockFile, USER_ID);
 
@@ -103,11 +95,11 @@ describe("S3FileService", () => {
 
     describe("uploadUserFile", () => {
         it("upload file with correct key format", async () => {
-            mockS3ClientPort.uploadFile.mockResolvedValue(UPLOAD_KEY);
+            mockS3Adapter.uploadFile.mockResolvedValue(UPLOAD_KEY);
 
             const result = await service.uploadUserFile(mockFile, USER_ID);
 
-            expect(mockS3ClientPort.uploadFile).toHaveBeenCalledWith(mockFile, UPLOAD_KEY);
+            expect(mockS3Adapter.uploadFile).toHaveBeenCalledWith(mockFile, UPLOAD_KEY);
             expect(result).toBe(UPLOAD_KEY);
         });
     });
@@ -118,11 +110,11 @@ describe("S3FileService", () => {
             const expectedKey = "user123/document.csv";
             const expectedUrl = "https://presigned-url.com/1234569874";
 
-            mockS3ClientPort.getDownloadUrl.mockResolvedValue(expectedUrl);
+            mockS3Adapter.getDownloadUrl.mockResolvedValue(expectedUrl);
 
             const result = await service.getUserFileDownloadUrl(USER_ID, fileName);
 
-            expect(mockS3ClientPort.getDownloadUrl).toHaveBeenCalledWith(expectedKey);
+            expect(mockS3Adapter.getDownloadUrl).toHaveBeenCalledWith(expectedKey);
             expect(result).toBe(expectedUrl);
         });
     });
@@ -132,64 +124,44 @@ describe("S3FileService", () => {
             const fileName = "toDelete.csv";
             const expectedKey = "user123/toDelete.csv";
 
-            mockS3ClientPort.deleteFile.mockResolvedValue(undefined);
+            mockS3Adapter.deleteFile.mockResolvedValue(undefined);
 
             await service.deleteUserFile(USER_ID, fileName);
 
-            expect(mockS3ClientPort.deleteFile).toHaveBeenCalledWith(expectedKey);
+            expect(mockS3Adapter.deleteFile).toHaveBeenCalledWith(expectedKey);
         });
     });
 
     describe("getUserFile", () => {
-        const bufferToMulterFileMock = jest.spyOn({ bufferToMulterFile }, "bufferToMulterFile");
+        const bufferToMulterFileMock = jest.spyOn(FileHelper, "bufferToMulterFile");
+
+        const FILE_NAME = "test.csv";
+        const FILE_INFO: DownloadFileReturn = {
+            filePath: `/path/to/${FILE_NAME}`,
+            status: 200,
+            statusText: "OK",
+            contentType: FILE_NAME,
+        };
+
+        beforeAll(() => {
+            console.log(mockS3Adapter);
+            mockDownloadFile.execute.mockResolvedValue(FILE_INFO);
+        });
 
         afterEach(() => {
             bufferToMulterFileMock.mockRestore();
         });
 
-        it("calls getFile with correct key", async () => {
-            const fileName = "test.csv";
+        it("downloads file", async () => {
+            await service.getUserFile(USER_ID, FILE_NAME);
 
-            const file = createMockFile(fileName);
-            const buffer = Buffer.from(file.buffer);
-            const fileData = {
-                buffer: buffer,
-                contentType: file.mimetype,
-                contentLength: file.size,
-                key: "path/to/file/" + fileName,
-            };
-
-            mockS3ClientPort.getFile.mockResolvedValue(fileData);
-
-            await service.getUserFile(USER_ID, fileName);
-
-            expect(mockS3ClientPort.getFile).toHaveBeenCalledWith(`${USER_ID}/${fileName}`);
+            expect(mockDownloadFile.execute).toHaveBeenCalledWith(`${USER_ID}/${FILE_NAME}`);
         });
 
         it("calls bufferToMulterFile with valid params", async () => {
-            const fileName = "test.csv";
+            await service.getUserFile(USER_ID, FILE_NAME);
 
-            const file = createMockFile(fileName);
-            const buffer = Buffer.from(file.buffer);
-            const fileData: S3FileData = {
-                buffer: buffer,
-                contentType: file.mimetype,
-                key: "path/to/file/" + fileName,
-            };
-
-            mockS3ClientPort.getFile.mockResolvedValue(fileData);
-
-            await service.getUserFile(USER_ID, fileName);
-
-            expect(bufferToMulterFileMock).toHaveBeenCalledWith(fileData.buffer, fileName, fileData.contentType);
-        });
-
-        it("throw error when no file found", async () => {
-            const fileName = "test.csv";
-
-            mockS3ClientPort.getFile.mockResolvedValue(null);
-
-            await expect(service.getUserFile(USER_ID, fileName)).rejects.toThrow(NotFoundError);
+            expect(bufferToMulterFileMock).toHaveBeenCalledWith(BUFFER, FILE_NAME, FILE_INFO.contentType);
         });
     });
 });
