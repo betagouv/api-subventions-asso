@@ -96,7 +96,7 @@ describe("SireneStockUniteLegaleService", () => {
     describe("getAndSaveZip", () => {
         let getFileMock: jest.SpyInstance;
         beforeAll(() => {
-            getFileMock = jest.spyOn(sireneStockUniteLegaleAdapter, "getFile").mockResolvedValue({
+            getFileMock = jest.spyOn(sireneStockUniteLegaleAdapter, "getFileStream").mockResolvedValue({
                 data: new Readable({
                     read() {
                         this.push("chunk1");
@@ -145,7 +145,7 @@ describe("SireneStockUniteLegaleService", () => {
 
         it("should call getFile", async () => {
             await sireneStockUniteLegaleFileService.getAndSaveZip();
-            expect(sireneStockUniteLegaleAdapter.getFile).toHaveBeenCalledTimes(1);
+            expect(sireneStockUniteLegaleAdapter.getFileStream).toHaveBeenCalledTimes(1);
         });
 
         it("should download and write the data to the file without errors", async () => {
