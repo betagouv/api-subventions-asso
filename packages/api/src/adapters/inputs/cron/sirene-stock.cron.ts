@@ -19,8 +19,15 @@ export class SireneStockCron implements CronController {
     // every month on day 2 (00:00)
     @AsyncCron({ cronExpression: "0 0 2 * *" })
     async import() {
-        await sireneStockUniteLegaleFileService.getAndParse();
+        await this.importUniteLegales();
+        await this.importEstablishments();
+    }
 
+    private async importUniteLegales() {
+        return sireneStockUniteLegaleFileService.getAndParse();
+    }
+
+    private async importEstablishments() {
         const infos = await this.downloadEstablishments.execute();
 
         const editionDate = (() => {
@@ -30,7 +37,7 @@ export class SireneStockCron implements CronController {
         })();
 
         await this.cli.parse(infos.filePath, editionDate);
-        this.removeFile.execute(infos.filePath);
+        return this.removeFile.execute(infos.filePath);
     }
 }
 

@@ -19,23 +19,54 @@ describe("SireneStockCron", () => {
 
     jest.spyOn(DateHelper, "formatDateToYYYYMMDDWithSeparator").mockReturnValue(EXPORT_DATE);
 
-    it("imports unite legale", async () => {
-        await cron.import();
-        expect(sireneStockUniteLegaleFileService.getAndParse).toHaveBeenCalled();
+    describe("import", () => {
+        let mockImportEstabs: jest.SpyInstance, mockImportUL: jest.SpyInstance;
+
+        beforeAll(() => {
+            // @ts-expect-error: mock private method
+            mockImportEstabs = jest.spyOn(cron, "importEstablishments").mockResolvedValue();
+            // @ts-expect-error: mock private method
+            mockImportUL = jest.spyOn(cron, "importUniteLegales").mockResolvedValue();
+        });
+
+        afterAll(() => [mockImportEstabs, mockImportUL].forEach(mock => mock.mockRestore()));
+
+        it("imports unite legale", async () => {
+            await cron.import();
+            expect(mockImportUL).toHaveBeenCalled();
+        });
+
+        it("imports establishments", async () => {
+            await cron.import();
+            expect(mockImportEstabs).toHaveBeenCalled();
+        });
     });
 
-    it("downloads establishments file", async () => {
-        await cron.import();
-        expect(mockDownload.execute).toHaveBeenCalled();
+    describe("importUniteLegales", () => {
+        it("gets and parse file", async () => {
+            // @ts-expect-error: test private method
+            await cron.importUniteLegales();
+            expect(sireneStockUniteLegaleFileService.getAndParse).toHaveBeenCalled();
+        });
     });
 
-    it("imports establishments", async () => {
-        await cron.import();
-        expect(mockCli.parse).toHaveBeenCalledWith(FILE_PATH, EXPORT_DATE);
-    });
+    describe("importEstablishments", () => {
+        it("downloads establishments file", async () => {
+            // @ts-expect-error: test private method
+            await cron.importEstablishments();
+            expect(mockDownload.execute).toHaveBeenCalled();
+        });
 
-    it("remove temporary file", async () => {
-        await cron.import();
-        expect(mockRemove.execute).toHaveBeenCalledWith(FILE_PATH);
+        it("imports establishments", async () => {
+            // @ts-expect-error: test private method
+            await cron.importEstablishments();
+            expect(mockCli.parse).toHaveBeenCalledWith(FILE_PATH, EXPORT_DATE);
+        });
+
+        it("remove temporary file", async () => {
+            // @ts-expect-error: test private method
+            await cron.importEstablishments();
+            expect(mockRemove.execute).toHaveBeenCalledWith(FILE_PATH);
+        });
     });
 });
