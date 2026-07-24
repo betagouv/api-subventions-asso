@@ -1,13 +1,14 @@
 import path from "path";
 import EstablishmentCli from "../../../../src/adapters/inputs/cli/establishment.cli";
-import sireneEstablishmentImport from "../../../../src/adapters/inputs/pipeline/import/sirene-establishment/sirene-establishment.import";
 import db from "../../../../src/shared/MongoConnection";
 import notifyService from "../../../../src/modules/notify/notify.service";
 import { NotificationType } from "../../../../src/modules/notify/@types/NotificationType";
 import { SireneEstablishmentDbo } from "../../../../src/adapters/outputs/db/sirene/sirene-establishment.dbo";
+import importNotifier from "../../../../src/adapters/inputs/pipeline/import/import-notifier";
+import sireneEstablishmentPipeline from "../../../../src/adapters/inputs/pipeline/import/sirene-establishment/sirene-establishment.pipeline";
 
 describe("Establishment CLI", () => {
-    const cli = new EstablishmentCli(sireneEstablishmentImport);
+    const cli = new EstablishmentCli(sireneEstablishmentPipeline, importNotifier);
 
     const seedSirene = () => db.collection("sirene").insertOne({ siren: "100000000" });
 
