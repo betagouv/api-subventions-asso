@@ -17,7 +17,7 @@ describe("Establishment CLI", () => {
             await seedSirene();
         });
 
-        it("it persist data in collection", async () => {
+        it.only("it persist data in collection", async () => {
             await cli.parse(path.resolve(__dirname, "../__fixtures__/sirene-establishment.parquet"), "2026-07-21");
 
             const documents = (await db

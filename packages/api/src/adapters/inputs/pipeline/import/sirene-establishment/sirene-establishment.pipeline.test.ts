@@ -5,28 +5,15 @@ import { SireneEstablishmentPipeline } from "./sirene-establishment.pipeline";
 describe("SireneEstablishmentPipeline", () => {
     const parser = { parse: jest.fn() };
     const establishmentPort = { upsertMany: jest.fn() };
-    const sireneUniteLegale = { collectionIsNotEmpty: jest.fn(), filterExistingSirens: jest.fn() };
+    const sireneUniteLegale = { filterExistingSirens: jest.fn() };
     const dataLog = { getLastEditionDateByProvider: jest.fn() } as unknown as DataLogAdapter;
 
     beforeEach(() => {
         jest.clearAllMocks();
         parser.parse.mockImplementation(async (_filePath, onBatch) => onBatch([SIRENE_ESTABLISHMENT_DTO]));
         establishmentPort.upsertMany.mockResolvedValue(1);
-        sireneUniteLegale.collectionIsNotEmpty.mockResolvedValue(true);
         sireneUniteLegale.filterExistingSirens.mockResolvedValue([SIRENE_ESTABLISHMENT_DTO.siren]);
         jest.mocked(dataLog.getLastEditionDateByProvider).mockResolvedValue(null);
-    });
-
-    it("throws when sirene collection is empty", async () => {
-        sireneUniteLegale.collectionIsNotEmpty.mockResolvedValueOnce(false);
-        await expect(
-            new SireneEstablishmentPipeline(
-                parser as never,
-                establishmentPort as never,
-                sireneUniteLegale as never,
-                dataLog,
-            ).run("file.parquet"),
-        ).rejects.toThrow("Sirene unite legale collection must be imported before establishments");
     });
 
     it("filters establishments with existing association sirens", async () => {

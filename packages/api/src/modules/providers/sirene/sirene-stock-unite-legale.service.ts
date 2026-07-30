@@ -1,22 +1,28 @@
 import * as fs from "fs";
+import path from "path";
 import { Readable } from "stream";
 import StreamZip from "node-stream-zip";
 import sireneUniteLegaleService from "./sirene-unite-legale.service";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import { sireneStockUniteLegaleAdapter } from "../../../adapters/outputs/api/data-gouv/data-gouv.adapter";
+import { ENV } from "../../../configurations/env.conf";
 
 export class SireneStockUniteLegaleService {
     private directory_path;
 
     private getOrCreateDirectory() {
-        if (!fs.existsSync(this.directory_path)) {
+        const absolutePath = path.join(__dirname, this.directory_path);
+        console.log("absolutePath", absolutePath, fs.existsSync(absolutePath));
+        if (fs.existsSync(absolutePath)) {
+            this.directory_path = absolutePath;
+            console.log("setting directory path to : ", this.directory_path);
+        } else {
             this.directory_path = fs.mkdtempSync(__dirname + "/tmpSirene");
         }
     }
 
     public async getAndParse() {
         await this.getExtractAndSaveFiles();
-        console.log("start getExtractAndSaveFiles");
         await sireneUniteLegaleService.parse(this.directory_path + "/StockUniteLegale_utf8.csv");
         this.deleteTemporaryFolder();
     }
@@ -74,6 +80,7 @@ export class SireneStockUniteLegaleService {
     }
 
     public async decompressFolder(zipPath: string, destinationDirectoryPath: string) {
+        console.log("ZIP PATH", zipPath, destinationDirectoryPath);
         console.log("Start decompress");
         try {
             const zip = new StreamZip.async({ file: zipPath });
@@ -86,7 +93,7 @@ export class SireneStockUniteLegaleService {
     }
 
     public deleteTemporaryFolder() {
-        fs.rmSync(this.directory_path, { recursive: true });
+        if (!["dev", "test"].includes(ENV)) fs.rmSync(this.directory_path, { recursive: true });
     }
 }
 

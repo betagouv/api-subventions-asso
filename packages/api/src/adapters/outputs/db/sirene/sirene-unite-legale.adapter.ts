@@ -44,20 +44,9 @@ export class SireneUniteLegaleAdapter extends MongoAdapter<SireneUniteLegaleDbo>
     }
 
     public async filterExistingSirens(sirens: string[]): Promise<string[]> {
-        const uniqueSirens = [...new Set(sirens)];
-        if (!uniqueSirens.length) return [];
-
-        const dbos = await this.collection
-            .find({ siren: { $in: uniqueSirens } }, { projection: { siren: 1 } })
-            .toArray();
+        if (!sirens.length) return [];
+        const dbos = await this.collection.find({ siren: { $in: sirens } }, { projection: { siren: 1 } }).toArray();
         return dbos.map(dbo => dbo.siren);
-    }
-
-    public async collectionIsNotEmpty(): Promise<boolean> {
-        return this.collection
-            .find({}, { projection: { _id: 1 } })
-            .limit(1)
-            .hasNext();
     }
 
     public async findOneByRna(rna: Rna): Promise<SireneUniteLegaleEntity | null> {

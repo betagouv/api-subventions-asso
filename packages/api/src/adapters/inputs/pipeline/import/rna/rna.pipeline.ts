@@ -28,7 +28,6 @@ export class RnaPipeline {
         const stages: (Readable | Transform | Writable)[] = [Readable.from(this.parser.parse(filePath))];
 
         const lastImportDate = await this.logPort.getLastImportByProvider("rna");
-        console.log(lastImportDate);
         if (lastImportDate)
             stages.push(
                 new Transform({

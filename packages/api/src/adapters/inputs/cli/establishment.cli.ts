@@ -21,7 +21,8 @@ export default class EstablishmentCli extends CliController {
     }
 
     protected async _parse(file: string) {
-        return this.establishmentPipeline.run(file);
+        // here we got documents
+        return this.establishmentPipeline.run(file); // inside this call we lose documents
     }
 }
 
