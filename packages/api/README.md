@@ -68,6 +68,14 @@ Pour se connecter à DAUPHIN
 
 Pour utiliser le reporting de bug Sentry
 
+- TCHAP_HOMESERVER_URL
+- TCHAP_ACCESS_TOKEN
+- TCHAP_ROOM_ID_DEV
+- TCHAP_ROOM_ID_PRODUCT
+- TCHAP_ROOM_ID_ACCOUNTS
+
+Pour envoyer des notifications dans des salons Tchap privés
+
 - DATA_BRETAGNE_USERNAME
 - DATA_BRETAGNE_PASSWORD
 
@@ -170,7 +178,7 @@ Pour ajouter une tâche récurrente, il faut :
 
 ### En cas d'erreur
 
-Un message mattermost est envoyé automatiquement, avec la stacktrace en détail (cliquer sur le `i` à droite du nom d'utilisateur)
+Un message tchap est envoyé automatiquement avec la stacktrace en détail
 
 ### Option `runImmediately` de l'intervalle
 

@@ -69,20 +69,13 @@ exports[`Rgpd Cron removeInactiveUsers() should disable users that did not use t
 ]
 `;
 
-exports[`Rgpd Cron removeInactiveUsers() should notify through mattermost 1`] = `
+exports[`Rgpd Cron removeInactiveUsers() should notify through tchap 1`] = `
 [
   [
-    "https://mattermost.incubateur.net/hooks/xxx",
-    {
-      "channel": "datasubvention---comptes-app",
-      "icon_emoji": "door",
-      "text": "[prod] Les comptes suivants ont été supprimés pour inactivité trop longue.
-
-- Prénom NOM (old-user1@mail.com)
-- Prénom NOM (old-user2@mail.com) 
-N'oubliez pas de supprimer toutes leurs données !",
-      "username": "Suppression de comptes",
-    },
+    "accounts",
+    "Suppression de comptes",
+    "🚪",
+    "Les comptes suivants ont été supprimés pour inactivité trop longue.<br><ul><li>Prénom NOM (old-user1@mail.com)</li><li>Prénom NOM (old-user2@mail.com)</li></ul><br>N'oubliez pas de supprimer toutes leurs données !",
   ],
 ]
 `;

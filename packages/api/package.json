@@ -92,6 +92,7 @@
         "jschardet": "^3.1.4",
         "jsonwebtoken": "^9.0.2",
         "lodash": "^4.17.21",
+        "matrix-bot-sdk": "0.8.0",
         "migrate-mongo": "^8.2.3",
         "mime-types": "^2.1.35",
         "moment": "^2.29.4",

@@ -1,21 +1,28 @@
 import { RgpdCron } from "../../../src/adapters/inputs/cron/rgpd.cron";
 import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
 import brevoContactNotifyPipe from "../../../src/modules/notify/out-pipes/brevo-contact.pipe";
-import axios from "axios";
 import brevoMailNotifyPipe from "../../../src/modules/notify/out-pipes/brevo-mail.pipe";
 import userResetAdapter from "../../../src/adapters/outputs/db/user/user-reset.adapter";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../src/modules/configurations/configurations.service";
 import { ENV as _ENV, EnvironmentEnum } from "../../../src/configurations/env.conf";
 import { USER_NOT_PERSISTED } from "../../../src/modules/user/__fixtures__/user.fixture";
 import NewUserEntity from "../../../src/domain/users/NewUserEntity";
+import { TchapPipe } from "../../../src/modules/notify/out-pipes/tchap.pipe";
 
 describe("Rgpd Cron", () => {
     const NOW = new Date();
     let cron: RgpdCron;
+    let tchapSendMessageSpy: jest.SpyInstance;
 
     beforeEach(() => {
         // @ts-expect-error: override jest config mock to test notifications pipes
         _ENV = EnvironmentEnum.PROD;
+        // @ts-expect-error: test private method
+        tchapSendMessageSpy = jest.spyOn(TchapPipe.prototype, "sendMessage").mockResolvedValue(true);
+    });
+
+    afterEach(() => {
+        tchapSendMessageSpy.mockRestore();
     });
 
     beforeEach(async () => {
@@ -79,10 +86,9 @@ describe("Rgpd Cron", () => {
             expect(brevoContactNotifyPipe.apiInstance.deleteContact).toHaveBeenCalledTimes(2);
         });
 
-        it("should notify through mattermost", async () => {
+        it("should notify through tchap", async () => {
             await cron.removeInactiveUsers();
-            const actual = jest.mocked(axios.post).mock.calls;
-            expect(actual).toMatchSnapshot();
+            expect(tchapSendMessageSpy.mock.calls).toMatchSnapshot();
         });
 
         it("should notify users through brevo", async () => {
