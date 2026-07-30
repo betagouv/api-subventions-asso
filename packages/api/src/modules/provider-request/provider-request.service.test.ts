@@ -24,7 +24,7 @@ describe("ProviderRequestService", () => {
             const option = { headers: { test: true } };
             await providerRequestService.get(url, option);
 
-            expect(sendRequestSpy).toBeCalledWith("GET", url, option);
+            expect(sendRequestSpy).toHaveBeenCalledWith("GET", url, option);
         });
     });
 
@@ -39,7 +39,7 @@ describe("ProviderRequestService", () => {
             const option = { headers: { test: true }, data: {} };
             await providerRequestService.post(url, {}, option);
 
-            expect(sendRequestSpy).toBeCalledWith("POST", url, option);
+            expect(sendRequestSpy).toHaveBeenCalledWith("POST", url, option);
         });
     });
 
@@ -76,14 +76,17 @@ describe("ProviderRequestService", () => {
             // @ts-expect-error createLog is private method
             createLogSpy = jest.spyOn(providerRequestService, "createLog").mockResolvedValue({});
 
-            (axios.request as jest.Mock).mockResolvedValue({ status: 200 });
+            (axios.request as jest.Mock).mockResolvedValue({
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+            });
         });
 
         it("should call axios request", async () => {
             const url = "/test";
             const method = "GET";
             const headers = {
-                test: true,
+                "Content-Type": "application/json",
             };
 
             // @ts-expect-error sendRequest is private method

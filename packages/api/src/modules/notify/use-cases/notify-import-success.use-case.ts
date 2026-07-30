@@ -5,15 +5,19 @@ import { NotifyImportSuccessContext } from "../../../@types/NotifyImportSuccessC
 import { NotificationType } from "../@types/NotificationType";
 import notifyService, { NotifyService } from "../notify.service";
 
+export interface ImportSuccessPayload {
+    providerName: string;
+    file: string;
+    report: ImportReport;
+    context: NotifyImportSuccessContext;
+}
+
 export default class NotifyImportSuccessUseCase {
     constructor(private notifier: NotifyService) {}
 
-    async execute(
-        providerName: string,
-        file: string,
-        report: ImportReport,
-        context: NotifyImportSuccessContext,
-    ): Promise<void> {
+    async execute(payload: ImportSuccessPayload): Promise<void> {
+        const { providerName, file, report, context } = payload;
+
         const details: ImportNotificationDetails = {
             fileName: path.basename(file),
             parsedCount: report.parsedCount,

@@ -8346,7 +8346,12 @@ snapshots:
 
   '@eslint-community/eslint-utils@4.9.1(eslint@8.57.1)':
     dependencies:
-      eslint: 8.57.1
+      eslint: 8.57.1(supports-color@5.5.0)
+      eslint-visitor-keys: 3.4.3
+
+  '@eslint-community/eslint-utils@4.9.1(eslint@9.39.4(supports-color@5.5.0))':
+    dependencies:
+      eslint: 9.39.4(supports-color@5.5.0)
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/eslint-utils@4.9.1(eslint@9.39.4(supports-color@5.5.0))':
@@ -8420,11 +8425,11 @@ snapshots:
     optionalDependencies:
       '@noble/hashes': 1.8.0
 
-  '@getbrevo/brevo@2.5.0':
+  '@getbrevo/brevo@2.5.0(supports-color@5.5.0)':
     dependencies:
       bluebird: 3.7.2
       request: 2.88.2
-      rewire: 7.0.0
+      rewire: 7.0.0(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -10342,7 +10347,7 @@ snapshots:
     dependencies:
       '@aws-sdk/client-s3': 3.1070.0
       '@aws-sdk/s3-request-presigner': 3.1070.0
-      '@getbrevo/brevo': 2.5.0
+      '@getbrevo/brevo': 2.5.0(supports-color@5.5.0)
       '@inquirer/prompts': 7.10.1(@types/node@24.10.1)
       '@sentry/node': 8.49.0(supports-color@5.5.0)
       '@tsoa/runtime': 5.0.0
@@ -11971,7 +11976,7 @@ snapshots:
 
   eslint-visitor-keys@5.0.1: {}
 
-  eslint@8.57.1:
+  eslint@8.57.1(supports-color@5.5.0):
     dependencies:
       '@eslint-community/eslint-utils': 4.9.1(eslint@8.57.1)
       '@eslint-community/regexpp': 4.12.2
@@ -14794,9 +14799,9 @@ snapshots:
 
   reusify@1.1.0: {}
 
-  rewire@7.0.0:
+  rewire@7.0.0(supports-color@5.5.0):
     dependencies:
-      eslint: 8.57.1
+      eslint: 8.57.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 

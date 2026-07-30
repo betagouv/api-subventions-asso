@@ -1,5 +1,6 @@
 export interface RequestResponse<T> {
     data: T;
-    status: number;
-    statusText: string;
+    status?: number;
+    statusText?: string;
+    contentType?: string;
 }

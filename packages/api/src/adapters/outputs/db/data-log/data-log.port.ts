@@ -9,6 +9,7 @@ export interface DataLogPort {
     findAll(): Promise<DataLogEntity[]>;
     findAllCursor(): AsyncIterable<DataLogEntity>;
     getLastImportByProvider(providerId: string): Promise<Date>;
+    getLastEditionDateByProvider(providerId: string): Promise<Date | null>;
     getProvidersLogOverview(): Promise<ProducerLogEntity[]>;
     findUserFileLogsFromPeriod(start: Date, end: Date): Promise<UserFileDataLogEntity[] | null>;
 }

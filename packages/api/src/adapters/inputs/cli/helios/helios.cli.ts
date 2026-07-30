@@ -25,20 +25,24 @@ export default class HeliosCli extends CliController {
             console.info("start persisting data...");
             await this.saveUseCase.execute(filteredDtos.map(dto => HeliosMapper.toEntity(dto)));
 
-            await notifyImportSuccessUseCase.execute(
-                "Helios",
-                filePath,
-                {
+            await notifyImportSuccessUseCase.execute({
+                providerName: "Helios",
+                file: filePath,
+                report: {
                     parsedCount: dtos.length,
                     importedCount: filteredDtos.length,
                     errorCount: dtos.length - filteredDtos.length,
                 },
-                { durationMs: Date.now() - startAt, exportDate: new Date(), fileCount: 1 },
-            );
+                context: { durationMs: Date.now() - startAt, exportDate: new Date(), fileCount: 1 },
+            });
         } catch (error) {
-            await notifyImportFailureUseCase.execute("Helios", error as Error, {
-                durationMs: Date.now() - startAt,
-                fileName: path.basename(filePath),
+            await notifyImportFailureUseCase.execute({
+                providerName: "Helios",
+                error: error as Error,
+                context: {
+                    durationMs: Date.now() - startAt,
+                    fileName: path.basename(filePath),
+                },
             });
             throw error;
         }

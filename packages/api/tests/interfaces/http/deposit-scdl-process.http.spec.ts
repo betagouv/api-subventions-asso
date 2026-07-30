@@ -457,7 +457,9 @@ describe("/parcours-depot", () => {
             const csvPath = path.join(FILE_PATH, "test-csv-valid.csv");
             const stream: NodeJS.ReadableStream = fs.createReadStream(csvPath);
 
-            s3Mock.on(GetObjectCommand).resolvesOnce({ Body: stream as never, ContentType: "text/csv" });
+            s3Mock
+                .on(GetObjectCommand)
+                .resolvesOnce({ Body: stream as never, $metadata: { httpStatusCode: 200 }, ContentType: "text/csv" });
             s3Mock.on(DeleteObjectCommand).resolvesOnce({});
 
             jest.spyOn(scdlService, "getProducer").mockResolvedValueOnce({
@@ -494,7 +496,9 @@ describe("/parcours-depot", () => {
             const csvPath = path.join(FILE_PATH, "test-csv-invalid.csv");
             const stream: NodeJS.ReadableStream = fs.createReadStream(csvPath);
 
-            s3Mock.on(GetObjectCommand).resolvesOnce({ Body: stream as never, ContentType: "text/csv" });
+            s3Mock
+                .on(GetObjectCommand)
+                .resolvesOnce({ Body: stream as never, $metadata: { httpStatusCode: 200 }, ContentType: "text/csv" });
 
             jest.spyOn(scdlService, "getProducer").mockResolvedValueOnce({
                 siret: "12345676541230",
@@ -519,11 +523,7 @@ describe("/parcours-depot", () => {
                 new DepositScdlLogEntity(userId, 2, undefined, "12345676541230", "fake name", true, uploadFileInfo),
             );
 
-            const response = await request(g.app)
-                .post(`/parcours-depot/depot-fichier-scdl`)
-                .set("x-access-token", token);
-
-            expect(response.statusCode).toBe(400);
+            await request(g.app).post(`/parcours-depot/depot-fichier-scdl`).set("x-access-token", token).expect(400);
             await expect(depositLogAdapter.findOneByUserId(userId)).resolves.not.toBeNull();
             await expect(miscScdlGrantAdapter.findAll()).resolves.toHaveLength(0);
         });
