@@ -8,6 +8,7 @@ import PaymentFlatMapper from "./payment-flat.mapper";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import getPayments, { GetPayments } from "./use-cases/get-payments";
+import { ReadableStream } from "stream/web";
 
 export class PaymentFlatService extends ProviderCore {
     constructor(private getPayments: GetPayments) {

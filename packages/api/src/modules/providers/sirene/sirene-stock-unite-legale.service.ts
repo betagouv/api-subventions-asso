@@ -11,11 +11,11 @@ export class SireneStockUniteLegaleService {
     private directory_path;
 
     private getOrCreateDirectory() {
-        const absolutePath = path.join(__dirname, this.directory_path);
-        console.log("absolutePath", absolutePath, fs.existsSync(absolutePath));
-        if (fs.existsSync(absolutePath)) {
-            this.directory_path = absolutePath;
-            console.log("setting directory path to : ", this.directory_path);
+        // do not remove this as it is at least used in integration tests
+        // this would be easier to test with DI and use cases
+        if (this.directory_path && fs.existsSync(path.join(__dirname, this.directory_path))) {
+            // joining __dirname only works if it is called only once and directory_path does not already contain __dirname
+            this.directory_path = path.join(__dirname, this.directory_path);
         } else {
             this.directory_path = fs.mkdtempSync(__dirname + "/tmpSirene");
         }
@@ -80,7 +80,6 @@ export class SireneStockUniteLegaleService {
     }
 
     public async decompressFolder(zipPath: string, destinationDirectoryPath: string) {
-        console.log("ZIP PATH", zipPath, destinationDirectoryPath);
         console.log("Start decompress");
         try {
             const zip = new StreamZip.async({ file: zipPath });
@@ -94,8 +93,9 @@ export class SireneStockUniteLegaleService {
 
     public deleteTemporaryFolder() {
         if (!["dev", "test"].includes(ENV)) fs.rmSync(this.directory_path, { recursive: true });
+        else return;
     }
 }
 
-const sireneStockUniteLegaleFileService = new SireneStockUniteLegaleService();
-export default sireneStockUniteLegaleFileService;
+const sireneStockUniteLegaleService = new SireneStockUniteLegaleService();
+export default sireneStockUniteLegaleService;

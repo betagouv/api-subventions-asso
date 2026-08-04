@@ -144,7 +144,6 @@ describe("S3Fileservice", () => {
         };
 
         beforeAll(() => {
-            console.log(mockS3Adapter);
             mockDownloadFile.execute.mockResolvedValue(FILE_INFO);
         });
 

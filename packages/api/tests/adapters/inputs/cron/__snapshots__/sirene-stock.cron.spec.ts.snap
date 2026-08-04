@@ -1,11 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Sriene stock CRON importEstablishments imports data 1`] = `[]`;
+exports[`Sriene stock CRON importEstablishments imports data 1`] = `
+[
+  {
+    "codeCommuneEtablissement": "75101",
+    "codePaysEtrangerEtablissement": null,
+    "codePostalEtablissement": "75001",
+    "dateDernierTraitementEtablissement": 2026-07-21T10:00:00.000Z,
+    "etablissementSiege": true,
+    "libelleCommuneEtablissement": "PARIS",
+    "libellePaysEtrangerEtablissement": null,
+    "libelleVoieEtablissement": "RIRI",
+    "nic": "00001",
+    "numeroVoieEtablissement": "1",
+    "siren": "100000000",
+    "siret": "10000000000001",
+    "typeVoieEtablissement": "RUE",
+  },
+  {
+    "codeCommuneEtablissement": "75102",
+    "codePaysEtrangerEtablissement": null,
+    "codePostalEtablissement": "75002",
+    "dateDernierTraitementEtablissement": 2026-07-21T10:00:00.000Z,
+    "etablissementSiege": false,
+    "libelleCommuneEtablissement": "PARIS",
+    "libellePaysEtrangerEtablissement": null,
+    "libelleVoieEtablissement": "FIFI",
+    "nic": "00002",
+    "numeroVoieEtablissement": "2",
+    "siren": "100000000",
+    "siret": "10000000000002",
+    "typeVoieEtablissement": "RUE",
+  },
+]
+`;
 
 exports[`Sriene stock CRON importUnitesLegale imports data 1`] = `
 [
   {
-    "_id": "6a6b5e9e4ca7428c3109fbb1",
     "activitePrincipaleNAF25UniteLegale": "",
     "activitePrincipaleUniteLegale": "85.59A",
     "anneeCategorieEntreprise": "",
@@ -43,7 +75,6 @@ exports[`Sriene stock CRON importUnitesLegale imports data 1`] = `
     "unitePurgeeUniteLegale": "",
   },
   {
-    "_id": "6a6b5e9e4ca7428c3109fbb4",
     "activitePrincipaleNAF25UniteLegale": "",
     "activitePrincipaleUniteLegale": "22.02",
     "anneeCategorieEntreprise": "",
@@ -81,7 +112,6 @@ exports[`Sriene stock CRON importUnitesLegale imports data 1`] = `
     "unitePurgeeUniteLegale": "",
   },
   {
-    "_id": "6a6b5e9e4ca7428c3109fbb6",
     "activitePrincipaleNAF25UniteLegale": "",
     "activitePrincipaleUniteLegale": "79.06",
     "anneeCategorieEntreprise": "",
@@ -119,7 +149,6 @@ exports[`Sriene stock CRON importUnitesLegale imports data 1`] = `
     "unitePurgeeUniteLegale": "",
   },
   {
-    "_id": "6a6b5e9e4ca7428c3109fbb7",
     "activitePrincipaleNAF25UniteLegale": "",
     "activitePrincipaleUniteLegale": "64.42",
     "anneeCategorieEntreprise": "",

@@ -8,6 +8,7 @@ import ChorusEntity from "../providers/chorus/entities/ChorusEntity";
 import dataBretagneService from "../providers/data-bretagne/data-bretagne.service";
 import PaymentFlatProvider from "./@types/paymentFlatProvider";
 import paymentFlatService from "./payment-flat.service";
+import { ReadableStream } from "stream/web";
 
 // TODO: this was only created to extract chorus dependent process from paymentFlatService
 // This should be better thought and refactored

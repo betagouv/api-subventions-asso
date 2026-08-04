@@ -1,10 +1,11 @@
-import sireneStockUniteLegaleFileService from "./sirene-stock-unite-legale.service";
+import sireneStockUniteLegaleService from "./sirene-stock-unite-legale.service";
 import { Readable } from "stream";
 import fs from "fs";
 import StreamZip from "node-stream-zip";
 import SireneStockUniteLegaleParser from "./parser/sirene-stock-unite-legale.parser";
 import sireneUniteLegaleService from "./sirene-unite-legale.service";
 import { sireneStockUniteLegaleAdapter } from "../../../adapters/outputs/api/data-gouv/data-gouv.adapter";
+import { ENV as _ENV } from "../../../configurations/env.conf";
 
 jest.mock("node-stream-zip", () => {
     const mockExtract = jest.fn();
@@ -35,25 +36,34 @@ jest.mock("fs", () => {
 
 describe("SireneStockUniteLegaleService", () => {
     describe("getOrCreateDirectory", () => {
-        it("should check if the directory exists", () => {
+        it("when directory_path is defined, check if the directory exists", () => {
+            // @ts-expect-error: set private property
+            sireneStockUniteLegaleService.directory_path = DIRECTORY_PATH;
             // @ts-expect-error : we are testing a private method
-            sireneStockUniteLegaleFileService.getOrCreateDirectory();
-            // @ts-expect-error : private variable
-            expect(fs.existsSync).toHaveBeenCalledWith(sireneStockUniteLegaleFileService.directory_path);
+            sireneStockUniteLegaleService.getOrCreateDirectory();
+            expect(fs.existsSync).toHaveBeenCalledWith(__dirname + "/" + DIRECTORY_PATH);
+        });
+
+        it("does not set directory_path if given folder does not exists", () => {
+            // @ts-expect-error: set private property
+            sireneStockUniteLegaleService.directory_path = DIRECTORY_PATH;
+            jest.mocked(fs.existsSync).mockReturnValueOnce(true);
+            // @ts-expect-error : we are testing a private method
+            sireneStockUniteLegaleService.getOrCreateDirectory();
+            expect(fs.mkdtempSync).not.toHaveBeenCalled();
+        });
+
+        it("when directo_path is undefined, create temporary folder", () => {
+            // @ts-expect-error : we are testing a private method
+            sireneStockUniteLegaleService.getOrCreateDirectory();
+            expect(fs.mkdtempSync).toHaveBeenCalledWith(__dirname + "/tmpSirene");
         });
 
         it("should create a directory if it does not exist", () => {
             jest.mocked(fs.existsSync).mockReturnValueOnce(false);
             // @ts-expect-error : we are testing a private method
-            sireneStockUniteLegaleFileService.getOrCreateDirectory();
+            sireneStockUniteLegaleService.getOrCreateDirectory();
             expect(fs.mkdtempSync).toHaveBeenCalledWith(expect.stringContaining("/tmpSirene"));
-        });
-
-        it("should not create a directory if it exists", () => {
-            jest.mocked(fs.existsSync).mockReturnValueOnce(true);
-            // @ts-expect-error : we are testing a private method
-            sireneStockUniteLegaleFileService.getOrCreateDirectory();
-            expect(fs.mkdtempSync).not.toHaveBeenCalled();
         });
     });
 
@@ -63,10 +73,10 @@ describe("SireneStockUniteLegaleService", () => {
         beforeAll(() => {
             jest.spyOn(SireneStockUniteLegaleParser, "parseCsvAndInsert").mockResolvedValue();
             getExtractAndSaveFilesMock = jest
-                .spyOn(sireneStockUniteLegaleFileService, "getExtractAndSaveFiles")
+                .spyOn(sireneStockUniteLegaleService, "getExtractAndSaveFiles")
                 .mockResolvedValue();
             deleteTemporaryFolderMock = jest
-                .spyOn(sireneStockUniteLegaleFileService, "deleteTemporaryFolder")
+                .spyOn(sireneStockUniteLegaleService, "deleteTemporaryFolder")
                 .mockReturnValue();
         });
 
@@ -75,20 +85,20 @@ describe("SireneStockUniteLegaleService", () => {
         });
 
         it("should call getExtractAndSaveFiles", async () => {
-            await sireneStockUniteLegaleFileService.getAndParse();
+            await sireneStockUniteLegaleService.getAndParse();
             expect(getExtractAndSaveFilesMock).toHaveBeenCalledTimes(1);
         });
 
         it("should call parseCsvAndInsert", async () => {
-            await sireneStockUniteLegaleFileService.getAndParse();
+            await sireneStockUniteLegaleService.getAndParse();
             expect(sireneUniteLegaleService.parse).toHaveBeenCalledWith(
                 // @ts-expect-error : private variable
-                sireneStockUniteLegaleFileService.directory_path + "/StockUniteLegale_utf8.csv",
+                sireneStockUniteLegaleService.directory_path + "/StockUniteLegale_utf8.csv",
             );
         });
 
         it("should call deleteTemporaryFolder", async () => {
-            await sireneStockUniteLegaleFileService.getAndParse();
+            await sireneStockUniteLegaleService.getAndParse();
             expect(deleteTemporaryFolderMock).toHaveBeenCalledTimes(1);
         });
     });
@@ -139,17 +149,17 @@ describe("SireneStockUniteLegaleService", () => {
         });
 
         it("should call createWriteStream", async () => {
-            await sireneStockUniteLegaleFileService.getAndSaveZip();
+            await sireneStockUniteLegaleService.getAndSaveZip();
             expect(fs.createWriteStream).toHaveBeenCalledWith(expect.stringContaining("sirene-stock-unite-legale.zip"));
         });
 
         it("should call getFile", async () => {
-            await sireneStockUniteLegaleFileService.getAndSaveZip();
+            await sireneStockUniteLegaleService.getAndSaveZip();
             expect(sireneStockUniteLegaleAdapter.getFileStream).toHaveBeenCalledTimes(1);
         });
 
         it("should download and write the data to the file without errors", async () => {
-            const acutal = await sireneStockUniteLegaleFileService.getAndSaveZip();
+            const acutal = await sireneStockUniteLegaleService.getAndSaveZip();
             expect(acutal).toBe("finish");
         });
 
@@ -163,7 +173,7 @@ describe("SireneStockUniteLegaleService", () => {
                 status: 300,
                 statusText: "Not ok",
             });
-            await expect(sireneStockUniteLegaleFileService.getAndSaveZip()).rejects.toThrow(
+            await expect(sireneStockUniteLegaleService.getAndSaveZip()).rejects.toThrow(
                 "simulated error during reading",
             );
         });
@@ -189,7 +199,7 @@ describe("SireneStockUniteLegaleService", () => {
 
             (fs.createWriteStream as jest.Mock).mockReturnValue(mockFileStream);
 
-            await expect(sireneStockUniteLegaleFileService.getAndSaveZip()).rejects.toThrow(
+            await expect(sireneStockUniteLegaleService.getAndSaveZip()).rejects.toThrow(
                 "simulated error during writing",
             );
         });
@@ -197,26 +207,28 @@ describe("SireneStockUniteLegaleService", () => {
 
     describe("decompressFolder", () => {
         it("should call StreamZip", async () => {
-            await sireneStockUniteLegaleFileService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
+            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
             expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
         });
 
         it("should call extract", async () => {
-            await sireneStockUniteLegaleFileService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
+            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
             expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
         });
 
         it("should call close", async () => {
-            await sireneStockUniteLegaleFileService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
+            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
             expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
         });
     });
 
     describe("deleteTemporaryFolder", () => {
         it("should call fs.rmdirSync", () => {
+            // @ts-expect-error: override ENV
+            _ENV = "preprod";
             // @ts-expect-error : private variable
-            sireneStockUniteLegaleFileService.directory_path = DIRECTORY_PATH;
-            sireneStockUniteLegaleFileService.deleteTemporaryFolder();
+            sireneStockUniteLegaleService.directory_path = DIRECTORY_PATH;
+            sireneStockUniteLegaleService.deleteTemporaryFolder();
 
             expect(fs.rmSync).toHaveBeenCalledWith(DIRECTORY_PATH, { recursive: true });
         });

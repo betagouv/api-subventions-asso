@@ -1,4 +1,6 @@
-import sireneStockUniteLegaleFileService from "../../../modules/providers/sirene/sirene-stock-unite-legale.service";
+import sireneStockUniteLegaleService, {
+    SireneStockUniteLegaleService,
+} from "../../../modules/providers/sirene/sirene-stock-unite-legale.service";
 import { SireneStockCron } from "./sirene-stock.cron";
 import * as DateHelper from "../../../shared/helpers/DateHelper";
 import { DownloadAndImport } from "../pipeline/import/download-and-import.pipeline";
@@ -15,7 +17,7 @@ describe("SireneStockCron", () => {
         run: jest.fn(),
     } as unknown as DownloadAndImport;
 
-    const cron = new SireneStockCron(mockPipeline);
+    const cron = new SireneStockCron({} as unknown as SireneStockUniteLegaleService, mockPipeline);
 
     jest.spyOn(DateHelper, "formatDateToYYYYMMDDWithSeparator").mockReturnValue(EXPORT_DATE);
 
@@ -26,7 +28,7 @@ describe("SireneStockCron", () => {
             // @ts-expect-error: mock private method
             mockImportEstabs = jest.spyOn(cron, "importEstablishments").mockResolvedValue();
             // @ts-expect-error: mock private method
-            mockImportUL = jest.spyOn(cron, "importUniteLegales").mockResolvedValue();
+            mockImportUL = jest.spyOn(cron, "importUnitesLegale").mockResolvedValue();
         });
 
         afterAll(() => [mockImportEstabs, mockImportUL].forEach(mock => mock.mockRestore()));
@@ -42,11 +44,11 @@ describe("SireneStockCron", () => {
         });
     });
 
-    describe("importUniteLegales", () => {
+    describe("importUnitesLegale", () => {
         it("gets and parse file", async () => {
             // @ts-expect-error: test private method
-            await cron.importUniteLegales();
-            expect(sireneStockUniteLegaleFileService.getAndParse).toHaveBeenCalled();
+            await cron.importUnitesLegale();
+            expect(sireneStockUniteLegaleService.getAndParse).toHaveBeenCalled();
         });
     });
 
