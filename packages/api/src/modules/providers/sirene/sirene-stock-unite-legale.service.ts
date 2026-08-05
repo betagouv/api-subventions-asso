@@ -5,7 +5,6 @@ import StreamZip from "node-stream-zip";
 import sireneUniteLegaleService from "./sirene-unite-legale.service";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import { sireneStockUniteLegaleAdapter } from "../../../adapters/outputs/api/data-gouv/data-gouv.adapter";
-import { ENV } from "../../../configurations/env.conf";
 
 export class SireneStockUniteLegaleService {
     private directory_path;
@@ -92,8 +91,7 @@ export class SireneStockUniteLegaleService {
     }
 
     public deleteTemporaryFolder() {
-        if (!["dev", "test"].includes(ENV)) fs.rmSync(this.directory_path, { recursive: true });
-        else return;
+        fs.rmSync(this.directory_path, { recursive: true });
     }
 }
 

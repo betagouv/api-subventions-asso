@@ -22,7 +22,7 @@ describe("RNA CRON", () => {
     describe("import", () => {
         it("import RNA", async () => {
             await rnaCron.import();
-            const dbos = db.collection("rna").find({}).toArray();
+            const dbos = await db.collection("rna").find({}).toArray();
             expect(dbos).toMatchSnapshot();
         });
     });

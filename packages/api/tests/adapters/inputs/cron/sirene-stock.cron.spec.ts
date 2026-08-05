@@ -2,40 +2,12 @@ import db from "../../../../src/shared/MongoConnection";
 import fs from "fs";
 import path from "path";
 import axios from "axios";
-import sireneStockUniteLegaleService, {
-    SireneStockUniteLegaleService,
-} from "../../../../src/modules/providers/sirene/sirene-stock-unite-legale.service";
-import { SireneStockCron } from "../../../../src/adapters/inputs/cron/sirene-stock.cron";
-import { createEstablishmentCli } from "../../../../src/adapters/inputs/cli/establishment.cli";
-import { DownloadAndImport } from "../../../../src/adapters/inputs/pipeline/import/download-and-import.pipeline";
-import { sireneStockEstablishmentAdapter } from "../../../../src/adapters/outputs/api/data-gouv/data-gouv.adapter";
-import DownloadFile from "../../../../src/usecases/download-file";
-import { RemoveFile } from "../../../../src/usecases/remove-file";
+import sireneStockCron from "../../../../src/adapters/inputs/cron/sirene-stock.cron";
 
 jest.mock("axios");
-// used to override test environment for the temporary folder deletion
-jest.mock("../../../../src/configurations/env.conf", () => ({
-    ...jest.requireActual("../../../../src/configurations/env.conf"),
-    ENV: "preprod",
-    PROD: false,
-    DEV: false,
-}));
 
 // import() is not tested to avoid a long process as it only calls the two other methods that are tested here
 describe("Sriene stock CRON", () => {
-    let cron: SireneStockCron;
-
-    beforeEach(() => {
-        cron = new SireneStockCron(
-            new SireneStockUniteLegaleService(),
-            new DownloadAndImport(
-                createEstablishmentCli(),
-                new DownloadFile(sireneStockEstablishmentAdapter),
-                new RemoveFile(),
-            ),
-        );
-    });
-
     describe("importUnitesLegale", () => {
         const fixtureStream = fs.createReadStream(
             path.join(__dirname, "../__fixtures__", "remote.sirene-stock-unite-legale.zip"),
@@ -50,11 +22,8 @@ describe("Sriene stock CRON", () => {
         });
 
         it("imports data", async () => {
-            // @ts-expect-error: modify private property
-            sireneStockUniteLegaleService.directory_path = "../../../../tests/adapters/inputs/__fixtures__";
-
             // @ts-expect-error: private method
-            await cron.importUnitesLegale();
+            await sireneStockCron.importUnitesLegale();
             const dbos = await db
                 .collection("sirene")
                 .find({}, { projection: { _id: 0 } })
@@ -80,7 +49,7 @@ describe("Sriene stock CRON", () => {
             // fixture only got lines with siren 100000000
             await db.collection("sirene").insertOne({ siren: "100000000" });
             // @ts-expect-error: private method
-            await cron.importEstablishments();
+            await sireneStockCron.importEstablishments();
             const dbos = await db
                 .collection("etablissement")
                 .find({}, { projection: { _id: 0 } })
