@@ -12,7 +12,12 @@ process.env.PRO_CONNECT_URL = "https://pro-connect.url";
 process.env.API_BREVO_TOKEN = "1FT47%TRADF!";
 process.env.MAIL_USER = "mail-user@datasubvention";
 process.env.RATE_LIMIT = "50"; // 20 in real app but can break integration test. Still limiting to 50 as more than that means we should break routes / test file
-process.env.MATTERMOST_WEBHOOK_URL = "https://mattermost.incubateur.net/hooks/xxx";
+process.env.TCHAP_HOMESERVER_URL = "https://tchap.example.test";
+process.env.TCHAP_ACCESS_TOKEN = "access-token";
+process.env.TCHAP_ROOM_ID_DEV = "!dev-room:tchap.example.test";
+process.env.TCHAP_ROOM_ID_PRODUCT = "!product-room:tchap.example.test";
+process.env.TCHAP_ROOM_ID_ACCOUNTS = "!accounts-room:tchap.example.test";
+
 /**
  *
  *      MODULE IMPORTATION
@@ -40,6 +45,11 @@ import { S3Client } from "@aws-sdk/client-s3";
 
 jest.spyOn(console, "info").mockImplementation(() => {});
 jest.mock("axios");
+jest.mock("matrix-bot-sdk", () => ({
+    MatrixClient: jest.fn().mockImplementation(() => ({
+        sendHtmlText: jest.fn().mockResolvedValue("event-id"),
+    })),
+}));
 jest.mock("./src/configurations/env.conf", () => ({
     ENV: "test", // do not change this or it will break connectDB()
     EnvironmentEnum: {

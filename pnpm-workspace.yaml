@@ -14,6 +14,7 @@ minimumReleaseAge: 43200 # 30 days in minutes (30 * 24 * 60)
 savePrefix: '~'
 
 allowBuilds:
+  '@matrix-org/matrix-sdk-crypto-nodejs': true
   '@scarf/scarf': false # Analytics, not required
   '@sentry/cli': true # Required for Sentry error tracking
   bcrypt: true

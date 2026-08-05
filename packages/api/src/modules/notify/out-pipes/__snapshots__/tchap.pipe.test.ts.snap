@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TchapPipe badEmailDomain sends message with proper payload 1`] = `
+[
+  "accounts",
+  "Nom de domaine rejeté",
+  "⛔",
+  "L'inscription de l'utilisateur some@email.fr a échouée car le nom de domaine de l'adresse mail n'est pas accepté.",
+]
+`;
+
+exports[`TchapPipe batchUsersDeleted sends message with proper payload 1`] = `
+[
+  "accounts",
+  "Suppression de comptes",
+  "🚪",
+  "Les comptes suivants ont été supprimés pour inactivité trop longue.<br><ul><li>Prénom  (some@email.fr)</li><li> Nom (some-other@email.fr)</li></ul><br>N'oubliez pas de supprimer toutes leurs données !",
+]
+`;
+
+exports[`TchapPipe connectionLost sends message 1`] = `
+[
+  "dev",
+  "Docteur Connector",
+  "🧨",
+  "La connexion au serveur mongoDB a été perdue<br><br><pre><code>connectionClosed</code></pre>",
+]
+`;
+
+exports[`TchapPipe dataImportFailure sends failure message 1`] = `
+[
+  "product",
+  "Import de données échoué",
+  "❌",
+  "Échec d'import pour le fournisseur <strong>Chorus</strong> (export du <strong>2025-09-03</strong>).<br><strong>Erreur</strong> : File could not be parsed<br><strong>Fichier</strong> : <code>chorus-data.csv</code><br><strong>Durée</strong> : 4s",
+]
+`;
+
+exports[`TchapPipe dataImportFailure sends failure message with all details fields 1`] = `
+[
+  "product",
+  "Import de données échoué",
+  "❌",
+  "Échec d'import pour le fournisseur <strong>Osiris</strong> (export du <strong>2025-09-03</strong>).<br><strong>Erreur</strong> : Parse error on line 42<br><strong>Fichier</strong> : <code>SuiviDossiers.csv</code><br><strong>Année</strong> : 2023<br><strong>Durée</strong> : 5s<br><strong>Fichiers traités</strong> : 2<br><strong>Counts partiels</strong><br><ul><li>Lignes parsées : 100</li><li>Données importées : 80</li><li>Erreurs : 20</li></ul>",
+]
+`;
+
+exports[`TchapPipe dataImportSuccess sends message for single file 1`] = `
+[
+  "product",
+  "Import de données réussi",
+  "✅",
+  "Import de données réussi pour le fournisseur <strong>Ville de Rennes</strong> (SIRET : <code>12345678900012</code>) avec une date d'export au <strong>2025-09-03</strong>.<br><br><strong>Fichier</strong> : <code>SCDL.csv</code><br><strong>Durée</strong> : 1s<br><strong>Counts</strong><br><ul><li>Lignes parsées : 100</li><li>Données importées : 99 (99.00%)</li><li>Erreurs : 1 (1.00%)</li></ul>",
+]
+`;
+
+exports[`TchapPipe dataImportSuccess shows exerciseYear when provided 1`] = `
+[
+  "product",
+  "Import de données réussi",
+  "✅",
+  "Import de données réussi pour le fournisseur <strong>Osiris</strong>.<br><br><strong>Fichier</strong> : <code>SuiviDossiers</code><br><strong>Durée</strong> : 60s<br><strong>Année</strong> : 2023<br><strong>Counts</strong><br><ul><li>Lignes parsées : 247931</li><li>Données importées : 122892 (49.57%)</li><li>Erreurs : 125039 (50.43%)</li></ul>",
+]
+`;
+
+exports[`TchapPipe depositScdlSuccess sends message 1`] = `
+[
+  "product",
+  "Dépôt de données SCDL",
+  "✅",
+  "Nouveau dépôt SCDL réalisé pour le fournisseur <strong>Ville d'Angers</strong> (SIRET : <code>12345678900013</code>) pour l'exercice 2023.<br>123 données de subventions ont été déposées.",
+]
+`;
+
+exports[`TchapPipe depositUnfinished sends message with proper payload 1`] = `
+[
+  "accounts",
+  "Relance de dépôt de données",
+  "📑",
+  "Bonjour Data.Subvention !<br><br>Voici la liste du jour des utilisateurs à relancer pour finaliser leur dépôt de données :<br><ul><li>some@email.fr (John Doe)</li><li>griffin@email.fr (Petter Griffin)</li></ul>",
+]
+`;
+
+exports[`TchapPipe externalApiError sends message 1`] = `
+[
+  "dev",
+  "Erreur API externe",
+  "🧨",
+  "L'API <strong>api-entreprise</strong> rencontre un problème : API unavailable<br><br><strong>Informations complémentaires</strong> :<br><strong>Paramètre(s) d'URL utilisé</strong> : siret-12345678900012<br><strong>Query HTTP utilisée(s)</strong> :<br>recipient: Data.Subvention<br><pre><code>{"status":500,"message":"Internal error"}</code></pre>",
+]
+`;
+
+exports[`TchapPipe failedCron sends message 1`] = `
+[
+  "dev",
+  "Police du Cron",
+  "⏰",
+  "Le cron <code>daily-job</code> a échoué<br><br><pre><code>Error: boom</code></pre>",
+]
+`;
+
+exports[`TchapPipe userDeleted sends message with proper payload with false selfDeleted 1`] = `
+[
+  "accounts",
+  "Suppression de compte",
+  "🚪",
+  "Le compte de Prénom NOM (email) a été supprimé par un administrateur. N'oubliez pas de supprimer toutes ses données !",
+]
+`;
+
+exports[`TchapPipe userDeleted sends message with proper payload with truthy selfDeleted 1`] = `
+[
+  "accounts",
+  "Suppression de compte",
+  "🚪",
+  "Prénom NOM (email) a supprimé son compte, veuillez supprimer toutes ses données !",
+]
+`;

@@ -1,6 +1,6 @@
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
 import brevoMailNotifyPipe from "./brevo-mail.pipe";
 import brevoContactNotifyPipe from "./brevo-contact.pipe";
-import mattermostNotifyPipe from "./mattermost.pipe";
+import tchapNotifyPipe from "./tchap.pipe";
 
-export default [brevoMailNotifyPipe, brevoContactNotifyPipe, mattermostNotifyPipe] as NotifyOutPipe[];
+export default [brevoMailNotifyPipe, brevoContactNotifyPipe, tchapNotifyPipe] as NotifyOutPipe[];

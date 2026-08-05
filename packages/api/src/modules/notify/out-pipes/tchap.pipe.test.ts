@@ -1,48 +1,49 @@
-import axios from "axios";
+import { MatrixClient } from "matrix-bot-sdk";
 import { NotificationType } from "../@types/NotificationType";
-import { MattermostPipe } from "./mattermost.pipe";
+import { TchapPipe } from "./tchap.pipe";
 
-jest.mock("axios");
+const mockSendHtmlText = jest.fn();
+
+jest.mock("matrix-bot-sdk", () => ({
+    MatrixClient: jest.fn().mockImplementation(() => ({
+        sendHtmlText: mockSendHtmlText,
+    })),
+}));
 jest.mock("../../../configurations/env.conf", () => ({ ENV: "test" }));
 
-const WEBHOOK_URL = "https://mattermost.example.com/hooks/test";
+const HOMESERVER_URL = "https://tchap.example.test";
+const ACCESS_TOKEN = "access-token";
+const ROOM_ID_ACCOUNTS = "!accounts-room:tchap.example.test";
+const ROOM_ID_PRODUCT = "!product-room:tchap.example.test";
+const ROOM_ID_DEV = "!dev-room:tchap.example.test";
 
-describe("MattermostPipe", () => {
-    let notifyPipe: MattermostPipe;
+describe("TchapPipe", () => {
+    let notifyPipe: TchapPipe;
     const USER_DELETED_PAYLOAD = {
         email: "email",
         firstname: "Prénom",
         lastname: "NOM",
     };
-    const MATTERMOST_MESSAGE = {
-        text: "some text",
-    };
 
-    beforeAll(() => {
-        process.env.MATTERMOST_WEBHOOK_URL = WEBHOOK_URL;
-        notifyPipe = new MattermostPipe();
+    beforeEach(() => {
+        process.env.TCHAP_HOMESERVER_URL = HOMESERVER_URL;
+        process.env.TCHAP_ACCESS_TOKEN = ACCESS_TOKEN;
+        process.env.TCHAP_ROOM_ID_ACCOUNTS = ROOM_ID_ACCOUNTS;
+        process.env.TCHAP_ROOM_ID_PRODUCT = ROOM_ID_PRODUCT;
+        process.env.TCHAP_ROOM_ID_DEV = ROOM_ID_DEV;
+
+        jest.clearAllMocks();
+        mockSendHtmlText.mockResolvedValue("event-id");
+        notifyPipe = new TchapPipe();
     });
 
-    afterAll(() => {
-        delete process.env.MATTERMOST_WEBHOOK_URL;
-    });
-
-    describe("constructor", () => {
-        it("warns if MATTERMOST_WEBHOOK_URL is not defined", () => {
-            const consoleSpy = jest.spyOn(console, "warn").mockImplementation(() => undefined);
-            const originalUrl = process.env.MATTERMOST_WEBHOOK_URL;
-            delete process.env.MATTERMOST_WEBHOOK_URL;
-            new MattermostPipe();
-            expect(consoleSpy).toHaveBeenCalledWith("MATTERMOST_WEBHOOK_URL is not defined in environment variables");
-            process.env.MATTERMOST_WEBHOOK_URL = originalUrl;
-            consoleSpy.mockRestore();
-        });
-
-        it("sets apiUrl from env variable", () => {
-            const pipe = new MattermostPipe();
-            // @ts-expect-error -- private attribute
-            expect(pipe.apiUrl).toBe(WEBHOOK_URL);
-        });
+    afterEach(() => {
+        delete process.env.TCHAP_HOMESERVER_URL;
+        delete process.env.TCHAP_ACCESS_TOKEN;
+        delete process.env.TCHAP_ROOM_ID_ACCOUNTS;
+        delete process.env.TCHAP_ROOM_ID_PRODUCT;
+        delete process.env.TCHAP_ROOM_ID_DEV;
+        jest.restoreAllMocks();
     });
 
     describe("notify", () => {
@@ -61,63 +62,83 @@ describe("MattermostPipe", () => {
     });
 
     describe("sendMessage", () => {
-        it("calls axios post with apiUrl from service", async () => {
-            const notifyPipeHere = new MattermostPipe();
-            const URL = "URL";
-            // @ts-expect-error -- private attribute
-            notifyPipeHere.apiUrl = URL;
+        it("creates a Matrix client with Tchap env variables", async () => {
             // @ts-expect-error -- private method
-            await notifyPipeHere.sendMessage(MATTERMOST_MESSAGE);
-            const expected = URL;
-            const actual = jest.mocked(axios.post).mock.calls[0][0];
-            expect(actual).toBe(expected);
+            await notifyPipe.sendMessage("accounts", "Title", "✅", "message");
+            expect(MatrixClient).toHaveBeenCalledWith(HOMESERVER_URL, ACCESS_TOKEN);
         });
 
-        it("calls axios post with payload with updated text payload", async () => {
+        it("calls sendHtmlText with room id and html text", async () => {
             // @ts-expect-error -- private method
-            await notifyPipe.sendMessage({ text: "something", somethingElse: "value" });
-            const actual = jest.mocked(axios.post).mock.calls[0][1];
+            await notifyPipe.sendMessage("accounts", "Title", "✅", "message");
+            const actual = mockSendHtmlText.mock.calls[0];
             expect(actual).toMatchInlineSnapshot(`
-                {
-                  "somethingElse": "value",
-                  "text": "[test] something",
-                }
+                [
+                  "!accounts-room:tchap.example.test",
+                  "[test] ✅ <strong>Title</strong><br><br>message",
+                ]
             `);
         });
 
-        it("returns true if axios succeeds", async () => {
-            jest.mocked(axios.post).mockResolvedValue(true);
+        it("returns true if sendHtmlText succeeds", async () => {
             const expected = true;
             // @ts-expect-error -- private method
-            const actual = await notifyPipe.sendMessage(MATTERMOST_MESSAGE);
+            const actual = await notifyPipe.sendMessage("accounts", "Title", "✅", "message");
             expect(actual).toBe(expected);
         });
 
-        it("returns false if error in axios", async () => {
-            jest.mocked(axios.post).mockRejectedValueOnce("error");
+        it("returns false if error in sendHtmlText", async () => {
+            jest.spyOn(console, "error").mockImplementation(() => undefined);
+            mockSendHtmlText.mockRejectedValueOnce("error");
             const expected = false;
             // @ts-expect-error -- private method
-            const actual = await notifyPipe.sendMessage(MATTERMOST_MESSAGE);
+            const actual = await notifyPipe.sendMessage("accounts", "Title", "✅", "message");
             expect(actual).toBe(expected);
         });
 
-        it("returns false when apiUrl is empty", async () => {
-            const pipe = new MattermostPipe();
-            // @ts-expect-error -- private attribute
-            pipe.apiUrl = "";
+        it("returns false when credentials are missing", async () => {
+            delete process.env.TCHAP_HOMESERVER_URL;
+            delete process.env.TCHAP_ACCESS_TOKEN;
+            jest.spyOn(console, "warn").mockImplementation(() => undefined);
+            const expected = false;
             // @ts-expect-error -- private method
-            const actual = await pipe.sendMessage(MATTERMOST_MESSAGE);
-            expect(actual).toBe(false);
+            const actual = await notifyPipe.sendMessage("accounts", "Title", "✅", "message");
+            expect(actual).toBe(expected);
         });
 
-        it("does not call axios when apiUrl is empty", async () => {
-            const pipe = new MattermostPipe();
-            // @ts-expect-error -- private attribute
-            pipe.apiUrl = "";
-            jest.mocked(axios.post).mockClear();
+        it("does not create Matrix client when credentials are missing", async () => {
+            delete process.env.TCHAP_ACCESS_TOKEN;
+            jest.spyOn(console, "warn").mockImplementation(() => undefined);
+            jest.clearAllMocks();
             // @ts-expect-error -- private method
-            await pipe.sendMessage(MATTERMOST_MESSAGE);
-            expect(axios.post).not.toHaveBeenCalled();
+            await notifyPipe.sendMessage("accounts", "Title", "✅", "message");
+            expect(MatrixClient).not.toHaveBeenCalled();
+        });
+
+        it("warns when credentials are missing", async () => {
+            delete process.env.TCHAP_HOMESERVER_URL;
+            delete process.env.TCHAP_ACCESS_TOKEN;
+            const consoleSpy = jest.spyOn(console, "warn").mockImplementation(() => undefined);
+            // @ts-expect-error -- private method
+            await notifyPipe.sendMessage("accounts", "Title", "✅", "message");
+            expect(consoleSpy).toHaveBeenCalledWith("Missing Tchap environment configuration");
+        });
+
+        it("returns false when room id is missing", async () => {
+            delete process.env.TCHAP_ROOM_ID_PRODUCT;
+            jest.spyOn(console, "warn").mockImplementation(() => undefined);
+            const expected = false;
+            // @ts-expect-error -- private method
+            const actual = await notifyPipe.sendMessage("product", "Title", "✅", "message");
+            expect(actual).toBe(expected);
+        });
+
+        it("does not send message when room id is missing", async () => {
+            delete process.env.TCHAP_ROOM_ID_PRODUCT;
+            jest.spyOn(console, "warn").mockImplementation(() => undefined);
+            // @ts-expect-error -- private method
+            await notifyPipe.sendMessage("product", "Title", "✅", "message");
+            expect(mockSendHtmlText).not.toHaveBeenCalled();
         });
     });
 
@@ -127,7 +148,7 @@ describe("MattermostPipe", () => {
             const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
             // @ts-expect-error -- private method
             await notifyPipe.userDeleted(USER_DELETED_PAYLOAD);
-            const actual = sendMessageSpy.mock.calls[0][0];
+            const actual = sendMessageSpy.mock.calls[0];
             expect(actual).toMatchSnapshot();
         });
 
@@ -136,7 +157,7 @@ describe("MattermostPipe", () => {
             const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
             // @ts-expect-error -- private method
             await notifyPipe.userDeleted({ ...USER_DELETED_PAYLOAD, selfDeleted: true });
-            const actual = sendMessageSpy.mock.calls[0][0];
+            const actual = sendMessageSpy.mock.calls[0];
             expect(actual).toMatchSnapshot();
         });
     });
@@ -147,7 +168,7 @@ describe("MattermostPipe", () => {
             const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
             // @ts-expect-error -- private method
             await notifyPipe.badEmailDomain({ email: "some@email.fr" });
-            const actual = sendMessageSpy.mock.calls[0][0];
+            const actual = sendMessageSpy.mock.calls[0];
             expect(actual).toMatchSnapshot();
         });
     });
@@ -163,7 +184,7 @@ describe("MattermostPipe", () => {
                     { email: "some-other@email.fr", lastname: "Nom" },
                 ],
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
+            const actual = sendMessageSpy.mock.calls[0];
             expect(actual).toMatchSnapshot();
         });
     });
@@ -183,7 +204,7 @@ describe("MattermostPipe", () => {
                     },
                 ],
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
+            const actual = sendMessageSpy.mock.calls[0];
             expect(actual).toMatchSnapshot();
         });
     });
@@ -206,7 +227,7 @@ describe("MattermostPipe", () => {
                     durationMs: 1234,
                 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
+            const actual = sendMessageSpy.mock.calls[0];
             expect(actual).toMatchSnapshot();
         });
 
@@ -225,8 +246,8 @@ describe("MattermostPipe", () => {
                     durationMs: 5000,
                 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).toContain("**Batch** : `helios-data` (4 fichiers)");
+            const actual = sendMessageSpy.mock.calls[0][3];
+            expect(actual).toContain("<strong>Batch</strong> : <code>helios-data</code> (4 fichiers)");
         });
 
         it("shows exerciseYear when provided", async () => {
@@ -245,7 +266,7 @@ describe("MattermostPipe", () => {
                     exerciseYear: 2023,
                 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
+            const actual = sendMessageSpy.mock.calls[0];
             expect(actual).toMatchSnapshot();
         });
 
@@ -264,8 +285,8 @@ describe("MattermostPipe", () => {
                     durationMs: 60000,
                 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).toContain("- Données importées : 122892 (49.57%)");
+            const actual = sendMessageSpy.mock.calls[0][3];
+            expect(actual).toContain("<li>Données importées : 122892 (49.57%)</li>");
         });
 
         it("shows error count with percentage", async () => {
@@ -283,8 +304,8 @@ describe("MattermostPipe", () => {
                     durationMs: 60000,
                 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).toContain("- Erreurs : 125039 (50.43%)");
+            const actual = sendMessageSpy.mock.calls[0][3];
+            expect(actual).toContain("<li>Erreurs : 125039 (50.43%)</li>");
         });
 
         it("does not show percentages when parsedCount is 0", async () => {
@@ -302,8 +323,8 @@ describe("MattermostPipe", () => {
                     durationMs: 1000,
                 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).not.toContain("%");
+            const actual = sendMessageSpy.mock.calls[0][3];
+            expect(actual).not.toContain("%");
         });
     });
 
@@ -318,7 +339,7 @@ describe("MattermostPipe", () => {
                 error: "File could not be parsed",
                 details: { fileName: "chorus-data.csv", durationMs: 3500 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
+            const actual = sendMessageSpy.mock.calls[0];
             expect(actual).toMatchSnapshot();
         });
 
@@ -331,8 +352,8 @@ describe("MattermostPipe", () => {
                 error: "File could not be parsed",
                 details: { fileName: "chorus-data.csv", durationMs: 3500 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).not.toContain("export du");
+            const actual = sendMessageSpy.mock.calls[0][3];
+            expect(actual).not.toContain("export du");
         });
 
         it("sends failure message with all details fields", async () => {
@@ -353,7 +374,7 @@ describe("MattermostPipe", () => {
                     errorCount: 20,
                 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
+            const actual = sendMessageSpy.mock.calls[0];
             expect(actual).toMatchSnapshot();
         });
 
@@ -372,8 +393,8 @@ describe("MattermostPipe", () => {
                     errorCount: 20,
                 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).toContain("**Counts partiels**");
+            const actual = sendMessageSpy.mock.calls[0][3];
+            expect(actual).toContain("<strong>Counts partiels</strong>");
         });
 
         it("shows parsed count in counts partiels section", async () => {
@@ -391,8 +412,8 @@ describe("MattermostPipe", () => {
                     errorCount: 20,
                 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).toContain("- Lignes parsées : 50");
+            const actual = sendMessageSpy.mock.calls[0][3];
+            expect(actual).toContain("<li>Lignes parsées : 50</li>");
         });
 
         it("shows imported count in counts partiels section", async () => {
@@ -410,8 +431,8 @@ describe("MattermostPipe", () => {
                     errorCount: 20,
                 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).toContain("- Données importées : 30");
+            const actual = sendMessageSpy.mock.calls[0][3];
+            expect(actual).toContain("<li>Données importées : 30</li>");
         });
 
         it("shows error count in counts partiels section", async () => {
@@ -429,8 +450,8 @@ describe("MattermostPipe", () => {
                     errorCount: 20,
                 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).toContain("- Erreurs : 20");
+            const actual = sendMessageSpy.mock.calls[0][3];
+            expect(actual).toContain("<li>Erreurs : 20</li>");
         });
 
         it("omits partial counts section when no count fields are provided", async () => {
@@ -442,8 +463,8 @@ describe("MattermostPipe", () => {
                 error: "File could not be parsed",
                 details: { fileName: "chorus-data.csv", durationMs: 3500 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).not.toContain("**Counts partiels**");
+            const actual = sendMessageSpy.mock.calls[0][3];
+            expect(actual).not.toContain("<strong>Counts partiels</strong>");
         });
 
         it("omits année line when exerciseYear is absent", async () => {
@@ -455,8 +476,8 @@ describe("MattermostPipe", () => {
                 error: "File could not be parsed",
                 details: { fileName: "chorus-data.csv", durationMs: 3500 },
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
-            expect(actual.text).not.toContain("**Année**");
+            const actual = sendMessageSpy.mock.calls[0][3];
+            expect(actual).not.toContain("<strong>Année</strong>");
         });
     });
 
@@ -471,7 +492,51 @@ describe("MattermostPipe", () => {
                 parsedLines: 123,
                 grantCoverageYears: [2023],
             });
-            const actual = sendMessageSpy.mock.calls[0][0];
+            const actual = sendMessageSpy.mock.calls[0];
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("failedCron", () => {
+        it("sends message", async () => {
+            // @ts-expect-error -- private method
+            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
+            // @ts-expect-error -- private method
+            await notifyPipe.failedCron({ cronName: "daily-job", error: "boom" });
+            const actual = [
+                ...sendMessageSpy.mock.calls[0].slice(0, 3),
+                sendMessageSpy.mock.calls[0][3].replace(/Error: boom[\s\S]*/, "Error: boom</code></pre>"),
+            ];
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("connectionLost", () => {
+        it("sends message", async () => {
+            // @ts-expect-error -- private method
+            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
+            // @ts-expect-error -- private method
+            await notifyPipe.connectionLost({ eventName: "connectionClosed" });
+            const actual = sendMessageSpy.mock.calls[0];
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("externalApiError", () => {
+        it("sends message", async () => {
+            // @ts-expect-error -- private method
+            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
+            // @ts-expect-error -- private method
+            await notifyPipe.externalApiError({
+                message: "API unavailable",
+                details: {
+                    apiName: "api-entreprise",
+                    pathParams: ["siret", "12345678900012"],
+                    queryParams: [{ name: "recipient", value: "Data.Subvention" }],
+                    examples: [{ status: 500, message: "Internal error" }],
+                },
+            });
+            const actual = sendMessageSpy.mock.calls[0];
             expect(actual).toMatchSnapshot();
         });
     });
