@@ -1,4 +1,6 @@
 #!/bin/bash
+# Script pour récupérer le jeton d'accès d'un compte Tchap (pour nous bot-notifications)
+# c.f: https://aide.tchap.beta.gouv.fr/fr/article/nouveau-service-de-login-de-tchap-matrix-authentication-service-mas-msibh/#3-pour-les-developpeurs-de-bot
 
 MATRIX_ID="${1:-}"
 PASSWORD="${2:-}"
