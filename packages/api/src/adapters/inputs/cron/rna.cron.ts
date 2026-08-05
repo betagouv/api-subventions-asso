@@ -15,7 +15,7 @@ export class RnaCron implements CronController {
     // each 3 of the month at 5 am
     @AsyncCron({ cronExpression: "0 5 3 * *" })
     async import() {
-        this.pipeline.run();
+        return this.pipeline.run();
     }
 }
 
