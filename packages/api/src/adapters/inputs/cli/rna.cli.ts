@@ -1,6 +1,5 @@
 import { ImportReport } from "../../../@types/ImportReport";
 import CliController from "../../../shared/CliController";
-import rnaCron from "../cron/rna.cron";
 import { RnaPipeline } from "../pipeline/import/rna/rna.pipeline";
 
 export class RnaCli extends CliController {
@@ -18,10 +17,5 @@ export class RnaCli extends CliController {
 
     async _parse(filePath: string): Promise<ImportReport> {
         return await this.pipeline.run(filePath);
-    }
-
-    // remove this when tested on preprod/prod
-    async testCron() {
-        return await rnaCron.import();
     }
 }
