@@ -63,7 +63,7 @@
         "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"
     },
     "devDependencies": {
-        "@vitest/eslint-plugin": "^1.6.21",
+        "@vitest/eslint-plugin": "^1.6.22",
         "eslint-plugin-svelte": "^3.20.0",
         "eslint-plugin-vitest-globals": "^1.6.1",
         "prettier-plugin-svelte": "^3.5.2",

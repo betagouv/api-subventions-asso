@@ -70,13 +70,13 @@ importers:
         version: 3.1080.0
       '@getbrevo/brevo':
         specifier: ^2.5.0
-        version: 2.5.0(supports-color@5.5.0)
+        version: 2.5.0
       '@inquirer/prompts':
         specifier: ^7.10.1
         version: 7.10.1(@types/node@24.10.1)
       '@sentry/node':
         specifier: ~8.49.0
-        version: 8.49.0(supports-color@5.5.0)
+        version: 8.49.0
       '@tsoa/runtime':
         specifier: 5.0.0
         version: 5.0.0
@@ -2624,8 +2624,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@vitest/eslint-plugin@1.6.21':
-    resolution: {integrity: sha512-5nu7QuW5Dg9v4I9t9ZiU1Hh91BoG0x3lOzOWYTsr1bqpIqcHYzFSQ052LvZwGtEm7Trh+Mr2heYEmZ4LkDjfaA==}
+  '@vitest/eslint-plugin@1.6.22':
+    resolution: {integrity: sha512-SDHPcido/3V5NdQh1rmOIMTHSixtjUBdV3a/8aE/A3Iwx/EZtVuLRC+e0g1uenh4Yd1fjps0JIN5HUNmhdIpQQ==}
     engines: {node: '>=18'}
     peerDependencies:
       '@typescript-eslint/eslint-plugin': '*'
@@ -9081,7 +9081,7 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
 
-  '@eslint/eslintrc@2.1.4(supports-color@5.5.0)':
+  '@eslint/eslintrc@2.1.4':
     dependencies:
       ajv: 6.15.0
       debug: 4.4.3(supports-color@5.5.0)
@@ -9148,14 +9148,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@getbrevo/brevo@2.5.0(supports-color@5.5.0)':
-    dependencies:
-      bluebird: 3.7.2
-      request: 2.88.2
-      rewire: 7.0.0(supports-color@5.5.0)
-    transitivePeerDependencies:
-      - supports-color
-
   '@gouvfr/dsfr@1.14.4': {}
 
   '@humanfs/core@0.19.2':
@@ -9170,7 +9162,7 @@ snapshots:
 
   '@humanfs/types@0.15.0': {}
 
-  '@humanwhocodes/config-array@0.13.0(supports-color@5.5.0)':
+  '@humanwhocodes/config-array@0.13.0':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
       debug: 4.4.3(supports-color@5.5.0)
@@ -10135,7 +10127,7 @@ snapshots:
       - '@opentelemetry/exporter-trace-otlp-http'
       - supports-color
 
-  '@sentry/node@8.49.0(supports-color@5.5.0)':
+  '@sentry/node@8.49.0':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/context-async-hooks': 1.30.1(@opentelemetry/api@1.9.1)
@@ -11140,7 +11132,7 @@ snapshots:
       '@aws-sdk/s3-request-presigner': 3.1080.0
       '@getbrevo/brevo': 2.5.0(supports-color@5.5.0)
       '@inquirer/prompts': 7.10.1(@types/node@24.10.1)
-      '@sentry/node': 8.49.0(supports-color@5.5.0)
+      '@sentry/node': 8.49.0
       '@tsoa/runtime': 5.0.0
       '@types/bcrypt': 5.0.2
       '@types/cors': 2.8.19
@@ -13489,7 +13481,7 @@ snapshots:
     dependencies:
       '@eslint-community/eslint-utils': 4.9.1(eslint@8.57.1)
       '@eslint-community/regexpp': 4.12.2
-      '@eslint/eslintrc': 2.1.4(supports-color@5.5.0)
+      '@eslint/eslintrc': 2.1.4
       '@eslint/js': 8.57.1
       '@humanwhocodes/config-array': 0.13.0(supports-color@5.5.0)
       '@humanwhocodes/module-importer': 1.0.1
@@ -16273,12 +16265,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  rewire@7.0.0(supports-color@5.5.0):
-    dependencies:
-      eslint: 8.57.1(supports-color@5.5.0)
-    transitivePeerDependencies:
-      - supports-color
-
   rfdc@1.4.1: {}
 
   rimraf@3.0.2:
@@ -17134,7 +17120,7 @@ snapshots:
   typescript-eslint@8.63.0(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3):
     dependencies:
       '@typescript-eslint/eslint-plugin': 8.63.0(@typescript-eslint/parser@8.63.0(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3))(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3)
-      '@typescript-eslint/parser': 8.63.0(eslint@9.39.4(supports-color@5.5.0))(supports-color@5.5.0)(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.63.0(eslint@9.39.4(supports-color@5.5.0))(typescript@5.9.3)
       '@typescript-eslint/typescript-estree': 8.63.0(supports-color@5.5.0)(typescript@5.9.3)
       '@typescript-eslint/utils': 8.63.0(eslint@9.39.4(supports-color@5.5.0))(typescript@5.9.3)
       eslint: 9.39.4(supports-color@5.5.0)
