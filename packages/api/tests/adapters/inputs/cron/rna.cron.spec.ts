@@ -23,7 +23,10 @@ describe("RNA CRON", () => {
         it("import RNA", async () => {
             await rnaCron.import();
             const dbos = await db.collection("rna").find({}).toArray();
-            expect(dbos).toMatchSnapshot();
+            // snapshot a sample to avoid storing the 5001 documents
+            // only take the first lines and the last one to ensure the process did more than one batch
+            const sample = [...dbos.slice(0, 5), dbos.at(-1)];
+            expect(sample).toMatchSnapshot();
         });
     });
 });
