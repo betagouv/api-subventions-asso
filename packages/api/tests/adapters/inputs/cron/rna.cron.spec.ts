@@ -29,7 +29,7 @@ describe("RNA CRON", () => {
             // snapshot a sample to avoid storing the 5001 documents
             // only take the first lines and the last one to ensure the process did more than one batch
             const sample = [...dbos.slice(0, 5), dbos.at(-1)];
-            expect(sample).toMatchSnapshot();
+            expect(sample.map(dbo => ({ ...dbo, "maj-time": expect.any(Date) }))).toMatchSnapshot();
         });
     });
 });
