@@ -22,7 +22,10 @@ describe("RNA CRON", () => {
     describe("import", () => {
         it("import RNA", async () => {
             await rnaCron.import();
-            const dbos = await db.collection("rna").find({}).toArray();
+            const dbos = await db
+                .collection("rna")
+                .find({}, { projection: { _id: 0 } })
+                .toArray();
             // snapshot a sample to avoid storing the 5001 documents
             // only take the first lines and the last one to ensure the process did more than one batch
             const sample = [...dbos.slice(0, 5), dbos.at(-1)];

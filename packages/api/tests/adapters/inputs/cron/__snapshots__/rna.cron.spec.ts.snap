@@ -3,7 +3,6 @@
 exports[`RNA CRON import import RNA 1`] = `
 [
   {
-    "_id": "6a7472c2b926b11196a586e9",
     "adrg-achemine": "LARAJASSE",
     "adrg-codepostal": "69590",
     "adrg-complemgeo": null,
@@ -45,7 +44,6 @@ exports[`RNA CRON import import RNA 1`] = `
     "titre-court": "LUSINE DIGITALE",
   },
   {
-    "_id": "6a7472c2b926b11196a586ea",
     "adrg-achemine": "ST JUST ST RAMBERT",
     "adrg-codepostal": "42170",
     "adrg-complemgeo": null,
@@ -87,7 +85,6 @@ exports[`RNA CRON import import RNA 1`] = `
     "titre-court": "TEAM QUAD 42",
   },
   {
-    "_id": "6a7472c2b926b11196a586eb",
     "adrg-achemine": "ST GALMIER",
     "adrg-codepostal": "42330",
     "adrg-complemgeo": null,
@@ -129,7 +126,6 @@ exports[`RNA CRON import import RNA 1`] = `
     "titre-court": "COMITE DEPARTEMENTAL PARACHUTISTE D...",
   },
   {
-    "_id": "6a7472c2b926b11196a586ec",
     "adrg-achemine": "ST SIXTE",
     "adrg-codepostal": "42130",
     "adrg-complemgeo": null,
@@ -171,7 +167,6 @@ exports[`RNA CRON import import RNA 1`] = `
     "titre-court": "COMITE DES FETES ET DANIMATION DE...",
   },
   {
-    "_id": "6a7472c2b926b11196a586ed",
     "adrg-achemine": "BOISSET LES MONTROND",
     "adrg-codepostal": "42210",
     "adrg-complemgeo": null,
@@ -213,7 +208,6 @@ exports[`RNA CRON import import RNA 1`] = `
     "titre-court": "ASSOCIATION DES PARENTS DELEVES D...",
   },
   {
-    "_id": "6a7472c2b926b11196a59a71",
     "adrg-achemine": "FEURS",
     "adrg-codepostal": "42110",
     "adrg-complemgeo": "RESIDENCE LES REMPARTS",
