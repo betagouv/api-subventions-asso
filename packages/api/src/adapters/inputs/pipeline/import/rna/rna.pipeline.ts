@@ -7,12 +7,15 @@ import { RnaWaldecDto } from "./rna.dto";
 import RnaDbo from "../../../../outputs/db/rna/rna.dbo";
 import { ImportReport } from "../../../../../@types/ImportReport";
 import { RnaPort } from "../../../../outputs/db/rna/rna.port";
+import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
+import dataLogAdapter from "../../../../outputs/db/data-log/data-log.adapter";
 
 export class RnaPipeline {
     constructor(
         public parser: RnaParser,
         public mapper: RnaMapper,
-        public adapter: RnaPort,
+        public rnaPort: RnaPort,
+        public logPort: DataLogPort,
     ) {}
 
     async run(filePath: string) {
@@ -22,8 +25,27 @@ export class RnaPipeline {
             errorCount: 0, // no validation or format error here
         };
 
-        await pipeline(
-            Readable.from(this.parser.parse(filePath)),
+        const stages: (Readable | Transform | Writable)[] = [Readable.from(this.parser.parse(filePath))];
+
+        const lastImportDate = await this.logPort.getLastImportByProvider("rna");
+        if (lastImportDate)
+            stages.push(
+                new Transform({
+                    objectMode: true,
+                    transform: (batch: RnaWaldecDto[], _enc, callback) => {
+                        try {
+                            callback(
+                                null,
+                                batch.filter(dto => new Date(dto.maj_time!) > lastImportDate),
+                            );
+                        } catch (err) {
+                            callback(err as Error);
+                        }
+                    },
+                }),
+            );
+
+        stages.push(
             new Transform({
                 objectMode: true,
                 transform: (batch: RnaWaldecDto[], _enc, callback) => {
@@ -41,7 +63,7 @@ export class RnaPipeline {
                 write: async (dbos: RnaDbo[], _enc, callback) => {
                     try {
                         if (dbos.length > 0) {
-                            await this.adapter.insertMany(dbos);
+                            await this.rnaPort.insertMany(dbos);
                             report.importedCount += dbos.length;
                             console.log(`inserted ${dbos.length} new Rna documents`);
                         }
@@ -53,8 +75,11 @@ export class RnaPipeline {
             }),
         );
 
+        await pipeline(stages);
+
         return report;
     }
 }
-const rnaPipeline = new RnaPipeline(rnaParser, rnaMapper, rnaAdapter);
+
+const rnaPipeline = new RnaPipeline(rnaParser, rnaMapper, rnaAdapter, dataLogAdapter);
 export default rnaPipeline;

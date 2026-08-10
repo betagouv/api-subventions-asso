@@ -1,12 +1,12 @@
 import { ImportReport } from "../../../../../@types/ImportReport";
 import sireneEstablishmentAdapter from "../../../../outputs/db/sirene/sirene-establishment.adapter";
 import { SireneEstablishmentPort } from "../../../../outputs/db/sirene/sirene-establishment.port";
-import sireneUniteLegaleService, {
-    SireneUniteLegaleService,
-} from "../../../../../modules/providers/sirene/sirene-unite-legale.service";
 import SireneEstablishmentDto from "./sirene-establishment.dto";
 import SireneEstablishmentParser from "./sirene-establishment.parser";
 import dataLogAdapter, { DataLogAdapter } from "../../../../outputs/db/data-log/data-log.adapter";
+import sireneUniteLegaleAdapter, {
+    SireneUniteLegaleAdapter,
+} from "../../../../outputs/db/sirene/sirene-unite-legale.adapter";
 
 const SIRENE_ESTABLISHMENT_PROVIDER_ID = "sirene-establishment";
 
@@ -14,15 +14,11 @@ export class SireneEstablishmentPipeline {
     constructor(
         private parser: SireneEstablishmentParser,
         private establishmentPort: SireneEstablishmentPort,
-        private sireneUniteLegale: SireneUniteLegaleService,
+        private uniteLegalePort: SireneUniteLegaleAdapter,
         private logAdapter: DataLogAdapter,
     ) {}
 
     public async run(filePath: string): Promise<ImportReport> {
-        if (!(await this.sireneUniteLegale.collectionIsNotEmpty())) {
-            throw new Error("Sirene unite legale collection must be imported before establishments");
-        }
-
         const report: ImportReport = {
             parsedCount: 0,
             importedCount: 0,
@@ -45,7 +41,7 @@ export class SireneEstablishmentPipeline {
     }
 
     private async filterAssociationEstablishments(batch: SireneEstablishmentDto[]): Promise<SireneEstablishmentDto[]> {
-        const existingSirens = new Set(await this.sireneUniteLegale.filterExistingSirens(this.extractSirens(batch)));
+        const existingSirens = new Set(await this.uniteLegalePort.filterExistingSirens(this.extractSirens(batch)));
         return batch.filter(dto => existingSirens.has(dto.siren));
     }
 
@@ -65,7 +61,7 @@ export class SireneEstablishmentPipeline {
 const sireneEstablishmentPipeline = new SireneEstablishmentPipeline(
     new SireneEstablishmentParser(),
     sireneEstablishmentAdapter,
-    sireneUniteLegaleService,
+    sireneUniteLegaleAdapter,
     dataLogAdapter,
 );
 export default sireneEstablishmentPipeline;

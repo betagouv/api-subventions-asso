@@ -17,3 +17,5 @@ export class DataGouvAdapter extends HttpAdapter implements FileStreamPort {
 }
 
 export const sireneStockEstablishmentAdapter = new DataGouvAdapter("a29c1297-1f92-4e2a-8f6b-8c902ce96c5f");
+export const sireneStockUniteLegaleAdapter = new DataGouvAdapter("825f4199-cadd-486c-ac46-a65a8ea1a047");
+export const rnaWaldecAdapter = new DataGouvAdapter("cc7b8f0c-45ea-4444-8b55-55d30bc34ac5");

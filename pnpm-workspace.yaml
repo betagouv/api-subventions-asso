@@ -24,3 +24,7 @@ allowBuilds:
   puppeteer: true # Required for scraping in tools
   tsc: true
   unrs-resolver: false # Not critical
+
+minimumReleaseAgeExclude:
+  # bumping version was needed on 08-08-2026 - try to remove this a fast as possible
+  - '@vitest/eslint-plugin@1.6.22'

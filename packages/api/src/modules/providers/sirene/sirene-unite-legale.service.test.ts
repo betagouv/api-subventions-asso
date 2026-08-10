@@ -70,7 +70,7 @@ describe("SireneUniteLegaleService", () => {
         let insertSpy: jest.SpyInstance;
 
         beforeAll(() => {
-            insertSpy = jest.spyOn(sireneUniteLegaleService, "upsertMany").mockResolvedValue(true);
+            insertSpy = jest.spyOn(sireneUniteLegaleService, "upsertMany").mockResolvedValue();
 
             jest.mocked(SireneStockUniteLegaleMapper.entityToDbo).mockImplementation(
                 i => i.toString() as unknown as SireneUniteLegaleDbo,
@@ -131,20 +131,6 @@ describe("SireneUniteLegaleService", () => {
             jest.mocked(sireneUniteLegaleAdapter.findOneBySiren).mockResolvedValueOnce(expected);
             const actual = await sireneUniteLegaleService.findOneBySiren(SIREN);
             expect(actual).toBe(expected);
-        });
-    });
-
-    describe("filterExistingSirens", () => {
-        it("should call port", async () => {
-            await sireneUniteLegaleService.filterExistingSirens(["123456789"]);
-            expect(sireneUniteLegaleAdapter.filterExistingSirens).toHaveBeenCalledWith(["123456789"]);
-        });
-    });
-
-    describe("collectionIsNotEmpty", () => {
-        it("should call port", async () => {
-            await sireneUniteLegaleService.collectionIsNotEmpty();
-            expect(sireneUniteLegaleAdapter.collectionIsNotEmpty).toHaveBeenCalled();
         });
     });
 });

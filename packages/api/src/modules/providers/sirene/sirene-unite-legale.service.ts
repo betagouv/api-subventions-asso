@@ -46,14 +46,6 @@ export class SireneUniteLegaleService {
     public findAll() {
         return sireneUniteLegaleAdapter.findAll();
     }
-
-    public filterExistingSirens(sirens: string[]) {
-        return sireneUniteLegaleAdapter.filterExistingSirens(sirens);
-    }
-
-    public collectionIsNotEmpty() {
-        return sireneUniteLegaleAdapter.collectionIsNotEmpty();
-    }
 }
 
 const sireneUniteLegaleService = new SireneUniteLegaleService();

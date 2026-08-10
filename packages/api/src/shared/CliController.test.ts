@@ -29,7 +29,6 @@ describe("CliController", () => {
         _serviceMeta = SERVICE_META;
 
         async _parse(_filePath: string) {
-            console.log("inside _parse");
             return Promise.resolve(IMPORT_RESULT);
         }
     }

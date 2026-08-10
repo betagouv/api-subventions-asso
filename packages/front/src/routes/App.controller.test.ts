@@ -53,6 +53,7 @@ describe("AppController", () => {
             controller = new AppController({ matomo: MATOMO_CONFIG });
         });
         afterEach(() => mockHandleBannerDisplay.mockRestore());
+
         it("should call initContext()", () => {
             expect(vi.mocked(setContext)).toHaveBeenCalledWith("app", expect.any(Object));
         });

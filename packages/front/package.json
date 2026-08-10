@@ -45,7 +45,7 @@
         "@sentry/sveltekit": "^10.63.0",
         "@sveltejs/adapter-auto": "^7.0.1",
         "@sveltejs/adapter-node": "^5.5.7",
-        "@sveltejs/kit": "^2.70.2",
+        "@sveltejs/kit": "^2.69.2",
         "@sveltejs/vite-plugin-svelte": "^6.2.4",
         "axios": "^1.18.1",
         "chart.js": "^4.5.1",
@@ -63,7 +63,7 @@
         "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"
     },
     "devDependencies": {
-        "@vitest/eslint-plugin": "^1.6.21",
+        "@vitest/eslint-plugin": "^1.6.22",
         "eslint-plugin-svelte": "^3.20.0",
         "eslint-plugin-vitest-globals": "^1.6.1",
         "prettier-plugin-svelte": "^3.5.2",

@@ -49,7 +49,6 @@ describe("RnaParser", () => {
                 expect(mockParquetReadObjects).toHaveBeenNthCalledWith(index + 1, {
                     file: BUFFER,
                     compressors: mockCompressors,
-                    rowFormat: "object",
                     metadata: METADATA,
                     rowStart: 0 + index * 5000,
                     rowEnd: 5000 + index * 1, // trick to simulate 5001 lines with two batch (last with only one row)

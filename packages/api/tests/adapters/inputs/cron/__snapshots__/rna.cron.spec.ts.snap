@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RNA CLI parse it persist data in collection 1`] = `
+exports[`RNA CRON import import RNA 1`] = `
 [
   {
     "adrg-achemine": "LARAJASSE",
@@ -207,62 +207,46 @@ exports[`RNA CLI parse it persist data in collection 1`] = `
     "titre": "ASSOCIATION DES PARENTS DELEVES DE LECOLE COMMUNALE DE BOISSET LES MONTROND",
     "titre-court": "ASSOCIATION DES PARENTS DELEVES D...",
   },
-]
-`;
-
-exports[`RNA CLI parse logs import in data-log 1`] = `
-{
-  "editionDate": 2026-07-17T00:00:00.000Z,
-  "fileName": "multiple-batch.rna-waldec.parquet",
-  "integrationDate": Any<Date>,
-  "providerId": "rna",
-  "providerName": "RNA",
-  "source": "FILE",
-}
-`;
-
-exports[`RNA CLI parse only imports updated rows 1`] = `
-[
   {
-    "adrg-achemine": "RENNES",
-    "adrg-codepostal": "35700",
-    "adrg-complemgeo": null,
+    "adrg-achemine": "FEURS",
+    "adrg-codepostal": "42110",
+    "adrg-complemgeo": "RESIDENCE LES REMPARTS",
     "adrg-complemid": null,
     "adrg-declarant": null,
-    "adrg-distrib": "35700",
-    "adrg-libvoie": "Rue Alexandre Lefas",
+    "adrg-distrib": null,
+    "adrg-libvoie": "2  RUE JOANNES MOLLON",
     "adrg-pays": "FRANCE",
-    "adrs-codeinsee": null,
-    "adrs-codepostal": "35700",
-    "adrs-complement": null,
-    "adrs-distrib": null,
-    "adrs-libcommune": "Rennes",
-    "adrs-libvoie": "Rue Alexandre Lefas",
-    "adrs-numvoie": null,
-    "adrs-repetition": " ",
-    "adrs-typevoie": null,
-    "date-creat": 2020-02-19T00:00:00.000Z,
-    "date-decla": 2020-02-24T00:00:00.000Z,
-    "date-disso": null,
-    "date-publi": 2020-02-27T00:00:00.000Z,
-    "dir-civilite": "PF",
-    "gestion": "691P",
+    "adrs-codeinsee": "42094",
+    "adrs-codepostal": "42110",
+    "adrs-complement": "Residence les Remparts",
+    "adrs-distrib": "42110",
+    "adrs-libcommune": "Feurs",
+    "adrs-libvoie": "Joannes Mollon",
+    "adrs-numvoie": "2",
+    "adrs-repetition": null,
+    "adrs-typevoie": "RUE",
+    "date-creat": 2020-10-23T00:00:00.000Z,
+    "date-decla": 2023-04-11T00:00:00.000Z,
+    "date-disso": 2023-04-03T00:00:00.000Z,
+    "date-publi": 2020-11-17T00:00:00.000Z,
+    "dir-civilite": "PM",
+    "gestion": "421S",
     "groupement": "S",
-    "id": "W000000003",
-    "id-ex": "0421005762",
-    "maj-time": 2026-12-15T14:07:21.000Z,
+    "id": "W421008114",
+    "id-ex": null,
+    "maj-time": Any<Date>,
     "nature": "D",
-    "objet": "object association 3",
-    "objet-social1": null,
-    "objet-social2": null,
+    "objet": "promouvoir et former a losteopathie integrative",
+    "objet-social1": "017135",
+    "objet-social2": "000000",
     "observation": null,
     "position": "D",
-    "publiweb": "1",
+    "publiweb": "0",
     "rup-mi": null,
     "siret": null,
     "siteweb": null,
-    "titre": "ASSOCIATION 3",
-    "titre-court": "ASSO 3",
+    "titre": "OCTOVIAMES",
+    "titre-court": "OCTOVIAMES",
   },
 ]
 `;

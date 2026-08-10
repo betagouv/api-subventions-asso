@@ -1,22 +1,27 @@
 import * as fs from "fs";
+import path from "path";
 import { Readable } from "stream";
 import StreamZip from "node-stream-zip";
 import sireneUniteLegaleService from "./sirene-unite-legale.service";
-import sireneStockUniteLegaleAdapter from "../../../adapters/outputs/api/sirene/sirene-stock-unite-legale.adapter";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
+import { sireneStockUniteLegaleAdapter } from "../../../adapters/outputs/api/data-gouv/data-gouv.adapter";
 
 export class SireneStockUniteLegaleService {
     private directory_path;
 
     private getOrCreateDirectory() {
-        if (!fs.existsSync(this.directory_path)) {
+        // do not remove this as it is at least used in integration tests
+        // this would be easier to test with DI and use cases
+        if (this.directory_path && fs.existsSync(path.join(__dirname, this.directory_path))) {
+            // joining __dirname only works if it is called only once and directory_path does not already contain __dirname
+            this.directory_path = path.join(__dirname, this.directory_path);
+        } else {
             this.directory_path = fs.mkdtempSync(__dirname + "/tmpSirene");
         }
     }
 
     public async getAndParse() {
         await this.getExtractAndSaveFiles();
-        console.log("start getExtractAndSaveFiles");
         await sireneUniteLegaleService.parse(this.directory_path + "/StockUniteLegale_utf8.csv");
         this.deleteTemporaryFolder();
     }
@@ -30,7 +35,7 @@ export class SireneStockUniteLegaleService {
 
     public async getAndSaveZip() {
         const writeFile = fs.createWriteStream(this.directory_path + "/sirene-stock-unite-legale.zip");
-        const readFile = (await sireneStockUniteLegaleAdapter.getZip()) as RequestResponse<Readable>;
+        const readFile = (await sireneStockUniteLegaleAdapter.getFileStream()) as RequestResponse<Readable>;
 
         console.info(`Start downloading the file`);
 
@@ -90,5 +95,5 @@ export class SireneStockUniteLegaleService {
     }
 }
 
-const sireneStockUniteLegaleFileService = new SireneStockUniteLegaleService();
-export default sireneStockUniteLegaleFileService;
+const sireneStockUniteLegaleService = new SireneStockUniteLegaleService();
+export default sireneStockUniteLegaleService;

@@ -9,6 +9,7 @@ import { SearchCacheCron } from "./adapters/inputs/cron/search-cache.cron";
 import sireneStockCron from "./adapters/inputs/cron/sirene-stock.cron";
 import { ScdlDepositCron } from "./adapters/inputs/cron/scdl-deposit.cron";
 import chorusCron from "./adapters/inputs/cron/chorus.cron";
+import rnaCron from "./adapters/inputs/cron/rna.cron";
 
 // @DEPRECATED: do not add any more cron here
 const controllers: CronController[] = [
@@ -25,6 +26,7 @@ const crons: CronController[] = [
     // @TODO: rework CRON orchestration and only import here instances of CRON
     chorusCron,
     sireneStockCron,
+    rnaCron,
 ];
 
 export const scheduler = new ToadScheduler();
