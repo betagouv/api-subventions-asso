@@ -27,10 +27,9 @@ const rnaCron = new RnaCron(
 export default rnaCron;
 
 // used to manually test cron task
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function main() {
     await connectDB();
     await initIndexes();
     await rnaCron.import();
 }
-
-main();
