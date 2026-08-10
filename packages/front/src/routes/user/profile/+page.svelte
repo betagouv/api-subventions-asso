@@ -8,8 +8,8 @@
     import Button from "$lib/dsfr/Button.svelte";
     import Select from "$lib/dsfr/Select.svelte";
 
-    let saveAlertElement;
-    let modalCtrlButton;
+    let saveAlertElement = $state();
+    let modalCtrlButton = $state();
 
     const controller = new ProfileController();
     const { deleteError, user, saveStatus, isSubmitBlocked } = controller;
@@ -22,14 +22,20 @@
     <div class=" fr-col-offset-2 fr-col-8">
         <h1 class="fr-h2">Bienvenue sur votre compte</h1>
         <div class="fr-grid-row">
-            <form on:submit|preventDefault={() => controller.onSubmit($user)} class="bordered-frame">
+            <form
+                onsubmit={event => {
+                    event.preventDefault();
+                    controller.onSubmit($user);
+                }}
+                class="bordered-frame">
                 <h2 class="fr-h5">Vos informations de profil</h2>
                 <button
                     type="button"
                     data-fr-opened="false"
                     hidden
                     aria-controls="fr-modal"
-                    bind:this={modalCtrlButton} />
+                    bind:this={modalCtrlButton}>
+                </button>
                 <div bind:this={saveAlertElement}>
                     {#if $saveStatus === "changed"}
                         <Alert type="warning" small={true}>
@@ -47,7 +53,7 @@
                 <fieldset class="fr-fieldset fr-mt-6w">
                     <SignupModule
                         bind:user={$user}
-                        on:change={() => controller.onChange()}
+                        onchange={() => controller.onChange()}
                         readOnly={$user.proConnectId} />
                     <!--<div class="fr-fieldset__element fr-mt-4v">
               <ResetPwdModule email={$user.email} />
@@ -58,7 +64,7 @@
           </div>-->
                 </fieldset>
 
-                <div class="separator fr-mb-6w fr-mt-4w" />
+                <div class="separator fr-mb-6w fr-mt-4w"></div>
 
                 <fieldset class="fr-fieldset">
                     <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
@@ -67,15 +73,15 @@
                             label="Vous êtes : "
                             bind:selected={$user.agentType}
                             required={true}
-                            on:change={() => controller.onChange()} />
+                            onchange={() => controller.onChange()} />
                     </div>
                 </fieldset>
                 <StructureFormStep
                     bind:values={$user}
                     context={{ agentType: $user.agentType }}
-                    on:change={() => controller.onChange()}
-                    on:valid={() => controller.updateValidation(true)}
-                    on:error={() => controller.updateValidation(false)} />
+                    onchange={() => controller.onChange()}
+                    onvalid={() => controller.updateValidation(true)}
+                    onerror={() => controller.updateValidation(false)} />
                 <Button trakerName="profile.save" disabled={$isSubmitBlocked} htmlType="submit">
                     Enregistrer les modifications
                 </Button>
@@ -86,7 +92,7 @@
             {#if $deleteError}
                 <Alert title="La suppression a échouée, veuillez réessayer plus tard ou nous contacter." />
             {/if}
-            <DeleteUser on:delete-user={() => controller.deleteUser()} />
+            <DeleteUser onDeleteUser={() => controller.deleteUser()} />
         </div>
     </div>
 </div>

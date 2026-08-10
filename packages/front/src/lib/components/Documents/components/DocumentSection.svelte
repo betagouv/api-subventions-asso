@@ -1,9 +1,7 @@
 <script lang="ts">
     import DocumentCard from "$lib/components/Documents/components/DocumentCard.svelte";
 
-    export let documents;
-    export let selectedDocs;
-    export let title;
+    let { documents, selectedDocs = $bindable(), title } = $props();
 </script>
 
 {#if documents.length}

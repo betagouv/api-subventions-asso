@@ -1,18 +1,19 @@
 <script lang="ts">
     import Alert from "$lib/dsfr/Alert.svelte";
     import OverwriteExercicesController from "./OverwriteExercices.controller";
-    import { createEventDispatcher } from "svelte";
     import Table from "$lib/dsfr/Table.svelte";
     import TableRow from "$lib/dsfr/TableRow.svelte";
     import NeedHelpInfoBox from "../NeedHelpInfoBox.svelte";
+    interface Props {
+        children?: import("svelte").Snippet;
+        ontoFileSelect?: () => void;
+        onvalidate?: (detail: { checkedExercises: number[] }) => void;
+    }
 
-    const headers = ["Exercice", "Lignes actuellement en base", "Lignes traitées dans votre fichier"];
+    let { children, ontoFileSelect = () => {}, onvalidate = () => {} }: Props = $props();
+
+    const headerLabels = ["Exercice", "Lignes actuellement en base", "Lignes traitées dans votre fichier"];
     const tableId = "grant-by-exercice-table";
-
-    const dispatch = createEventDispatcher<{
-        toFileSelect: void;
-        validate: { checkedExercises: number[] };
-    }>();
 
     const ctrl = new OverwriteExercicesController();
     const { allocatorSiret, allocatorName, filename, tableContent, checkedExercices } = ctrl;
@@ -38,7 +39,10 @@
         <a
             class="fr-link fr-link--download"
             href="/packages/front/static"
-            on:click|preventDefault={() => ctrl.generateDownloadUrl()}>
+            onclick={event => {
+                event.preventDefault();
+                ctrl.generateDownloadUrl();
+            }}>
             {filename}
         </a>
 
@@ -50,14 +54,16 @@
                     bordered={false}
                     title="Sélectionnez les années que vous souhaitez importer :"
                     titleClass="fr-h6">
-                    <slot slot="headers">
-                        <th class="fr-cell--fixed" role="columnheader">
-                            <span class="fr-sr-only">Sélectionner</span>
-                        </th>
-                        {#each headers as header (header)}
-                            <th>{header}</th>
-                        {/each}
-                    </slot>
+                    {#snippet headers()}
+                        {#if children}{@render children()}{:else}
+                            <th class="fr-cell--fixed" role="columnheader">
+                                <span class="fr-sr-only">Sélectionner</span>
+                            </th>
+                            {#each headerLabels as header (header)}
+                                <th>{header}</th>
+                            {/each}
+                        {/if}
+                    {/snippet}
                     {#each tableContent as exercice, index (index)}
                         <TableRow id={tableId} {index} selected={$checkedExercices.includes(exercice.exercice)}>
                             <th class="fr-cell--fixed" scope="row">
@@ -67,7 +73,7 @@
                                         id="table-select-checkbox--{index}"
                                         type="checkbox"
                                         checked={$checkedExercices.includes(exercice.exercice)}
-                                        on:change={() => ctrl.toggleOne(exercice.exercice)} />
+                                        onchange={() => ctrl.toggleOne(exercice.exercice)} />
                                     <label class="fr-label" for="table-select-checkbox--{index}">
                                         Sélectionner {exercice.exercice}
                                     </label>
@@ -85,7 +91,10 @@
         <a
             class="fr-link fr-link--download"
             href="/packages/front/static"
-            on:click|preventDefault={() => ctrl.downloadGrantsCsv()}>
+            onclick={event => {
+                event.preventDefault();
+                ctrl.downloadGrantsCsv();
+            }}>
             Télécharger les données existantes
         </a>
 
@@ -102,12 +111,10 @@
         </div>
 
         <div class="fr-mt-4v">
-            <button on:click={() => dispatch("toFileSelect")} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
-                Retour
-            </button>
+            <button onclick={ontoFileSelect} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
             <button
-                on:click={() => dispatch("validate", { checkedExercises: [...$checkedExercices] })}
+                onclick={() => onvalidate({ checkedExercises: [...$checkedExercices] })}
                 disabled={$checkedExercices.length === 0}
                 class="fr-btn fr-mr-3v"
                 type="button">

@@ -3,10 +3,14 @@
     import type { PartialAmountsVsProgramRegionDto } from "../../@types/AmountsVsYear.types";
     import { updateChart } from "./AmountsVsYear.helper";
 
-    export let data_all: PartialAmountsVsProgramRegionDto[];
-    export let data_selected: PartialAmountsVsProgramRegionDto[];
+    interface Props {
+        data_all: PartialAmountsVsProgramRegionDto[];
+        data_selected: PartialAmountsVsProgramRegionDto[];
+    }
 
-    let svg: SVGSVGElement;
+    let { data_all, data_selected }: Props = $props();
+
+    let svg: SVGSVGElement = $state();
     const width = 800;
     const height = 400;
 
@@ -14,7 +18,9 @@
 
     onMount(() => updateChart(svg, data_all, data_selected, width, height, margin));
 
-    $: updateChart(svg, data_all, data_selected, width, height, margin);
+    $effect(() => {
+        updateChart(svg, data_all, data_selected, width, height, margin);
+    });
 </script>
 
 <svg bind:this={svg} />

@@ -98,7 +98,7 @@
                             {#if $user}
                                 <li>
                                     <Button
-                                        on:click={controller.logout}
+                                        onclick={controller.logout}
                                         type="tertiary"
                                         outline={false}
                                         trackerName="header.logout">
@@ -107,7 +107,7 @@
                                 </li>
                                 <li>
                                     <Button
-                                        on:click={controller.goToProfile}
+                                        onclick={controller.goToProfile}
                                         type="tertiary"
                                         icon="user-fill"
                                         trackerName="header.profil">
@@ -125,7 +125,7 @@
     <div class="fr-header__menu fr-modal" id="modal-menu" aria-labelledby="header__menu__button">
         <div class="fr-container">
             <button class="fr-link--close fr-link" aria-controls="modal-menu">Fermer</button>
-            <div class="fr-header__menu-links" />
+            <div class="fr-header__menu-links"></div>
         </div>
     </div>
 

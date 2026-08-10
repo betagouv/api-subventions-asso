@@ -1,7 +1,13 @@
-<script>
+<script lang="ts">
+    import type { Snippet } from "svelte";
     import Tab from "./Tab.svelte";
 
-    export let titles;
+    interface Props {
+        titles: string[];
+        tabContent?: Snippet;
+    }
+
+    let { titles, tabContent }: Props = $props();
 </script>
 
 <div class="fr-tabs">
@@ -10,5 +16,5 @@
             <Tab {title} {index} selected={index == 0} />
         {/each}
     </ul>
-    <slot name="tab-content" />
+    {@render tabContent?.()}
 </div>

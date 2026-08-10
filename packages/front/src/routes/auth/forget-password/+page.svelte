@@ -43,7 +43,13 @@
             </Alert>
         {/await}
 
-        <form action="#" method="GET" on:submit|preventDefault={() => ctrl.onSubmit()}>
+        <form
+            action="#"
+            method="GET"
+            onsubmit={event => {
+                event.preventDefault();
+                ctrl.onSubmit();
+            }}>
             <fieldset class="fr-fieldset fr-my-4w">
                 <div class="fr-fieldset__element">
                     <Input

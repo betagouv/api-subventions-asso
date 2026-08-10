@@ -3,10 +3,14 @@
     import AutocompleteSelect from "$lib/components/AutocompleteSelect/AutocompleteSelect.svelte";
     import RegionFieldController from "$lib/components/StructureFormStep/RegionField/RegionFieldController.js";
 
-    export let value;
-    export let label = "Quelle est votre région ?";
-    export let hint = "";
-    let element;
+    interface Props {
+        value: string;
+        label?: string;
+        hint?: string;
+    }
+
+    let { value = $bindable(), label = "Quelle est votre région ?", hint = "" }: Props = $props();
+    let element = $state();
 
     const ctrl = new RegionFieldController();
     const { regionOptions } = ctrl;
@@ -15,5 +19,5 @@
 </script>
 
 <div class="container" bind:this={element}>
-    <AutocompleteSelect options={$regionOptions} bind:value {label} on:change placeholder="Ex : Occitanie" {hint} />
+    <AutocompleteSelect options={$regionOptions} bind:value {label} onchange placeholder="Ex : Occitanie" {hint} />
 </div>

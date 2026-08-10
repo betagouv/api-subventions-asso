@@ -1,15 +1,19 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import ConfirmDataAddController from "./ConfirmDataAdd.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
     import Table from "$lib/dsfr/Table.svelte";
     import TableRow from "$lib/dsfr/TableRow.svelte";
+    interface Props {
+        children?: import("svelte").Snippet;
+        onprevStep?: () => void;
+        onsubmitDatas?: () => void;
+    }
 
-    const headers = ["Exercice", "Lignes actuellement en base", "Lignes traitées dans votre fichier"];
+    let { children, onprevStep = () => {}, onsubmitDatas = () => {} }: Props = $props();
+
+    const headerLabels = ["Exercice", "Lignes actuellement en base", "Lignes traitées dans votre fichier"];
     const tableId = "grant-by-exercice-table";
-
-    const dispatch = createEventDispatcher<{ prevStep: void; submitDatas: void }>();
 
     const checkboxOptions = [
         {
@@ -18,7 +22,7 @@
             withHtml: true,
         },
     ];
-    let selectedValues: string[] = [];
+    let selectedValues: string[] = $state([]);
 
     const ctrl = new ConfirmDataAddController();
     const {
@@ -56,7 +60,10 @@
     <a
         class="fr-link fr-link--download"
         href="/packages/front/static"
-        on:click|preventDefault={() => ctrl.generateDownloadUrl()}>
+        onclick={event => {
+            event.preventDefault();
+            ctrl.generateDownloadUrl();
+        }}>
         {filename}
     </a>
 
@@ -69,11 +76,13 @@
     {#if tableContent.length > 0}
         <div class="table-wrap">
             <Table id={tableId} size="sm" bordered={false} title="Comparaison des données :" titleClass="fr-text-lg">
-                <slot slot="headers">
-                    {#each headers as header (header)}
-                        <th>{header}</th>
-                    {/each}
-                </slot>
+                {#snippet headers()}
+                    {#if children}{@render children()}{:else}
+                        {#each headerLabels as header (header)}
+                            <th>{header}</th>
+                        {/each}
+                    {/if}
+                {/snippet}
                 {#each tableContent as exercice, index (index)}
                     <TableRow id={tableId} {index}>
                         <td class="primary">{exercice.exercice}</td>
@@ -88,7 +97,10 @@
     <a
         class="fr-link fr-link--download"
         href="/packages/front/static"
-        on:click|preventDefault={() => ctrl.downloadGrantsCsv()}>
+        onclick={event => {
+            event.preventDefault();
+            ctrl.downloadGrantsCsv();
+        }}>
         Télécharger les données existantes
     </a>
 
@@ -123,12 +135,10 @@
     </div>
 
     <div class="fr-mt-4v">
-        <button on:click={() => dispatch("prevStep")} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
-            Retour
-        </button>
+        <button onclick={onprevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
         <button
-            on:click={() => dispatch("submitDatas")}
+            onclick={onsubmitDatas}
             class="fr-btn fr-mr-3v"
             type="button"
             disabled={!selectedValues.includes(checkboxOptions[0].value)}>

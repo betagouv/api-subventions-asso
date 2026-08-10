@@ -1,16 +1,16 @@
-<script>
+<script lang="ts">
     import GrantsStatistiqueController from "./GrantsStatistique.controller";
 
-    export let grants;
-    export let year;
+    let { grants, year } = $props();
 
     const controller = new GrantsStatistiqueController(grants);
 
     const { paymentsAmount, paymentsRepartition } = controller;
 
-    // TODO: #3374
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    $: (grants, controller.updateElements(grants));
+    $effect(() => {
+        void grants;
+        controller.updateElements(grants);
+    });
 </script>
 
 <p class="text--xxl fr-mb-1w">

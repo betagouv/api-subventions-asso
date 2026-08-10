@@ -1,7 +1,11 @@
-<script>
-    export let title;
-    export let index;
-    export let selected = false;
+<script lang="ts">
+    interface Props {
+        title: string;
+        index: number;
+        selected?: boolean;
+    }
+
+    let { title, index, selected = false }: Props = $props();
 </script>
 
 <li role="presentation">

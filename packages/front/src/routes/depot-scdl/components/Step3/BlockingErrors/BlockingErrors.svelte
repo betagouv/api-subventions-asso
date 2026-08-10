@@ -1,11 +1,10 @@
 <script lang="ts">
     import Alert from "$lib/dsfr/Alert.svelte";
-    import { createEventDispatcher } from "svelte";
     import BlockingErrorsController from "./BlockingErrors.controller";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
     import InfoBox from "$lib/components/InfoBox.svelte";
 
-    const dispatch = createEventDispatcher<{ prevStep: void }>();
+    let { onprevStep = () => {} } = $props();
     const ctrl = new BlockingErrorsController();
 </script>
 
@@ -46,19 +45,18 @@
     <a
         class="fr-link fr-link--download"
         href="/packages/front/static"
-        on:click|preventDefault={() => ctrl.downloadErrorFile()}>
+        onclick={event => {
+            event.preventDefault();
+            ctrl.downloadErrorFile();
+        }}>
         Télécharger le rapport d'erreurs
     </a>
 
     <p>Ce fichier contient le détail des lignes concernées, les colonnes en erreur, et les corrections attendues.</p>
 
     <div class="fr-mt-4v">
-        <button on:click={() => dispatch("prevStep")} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
-            Retour
-        </button>
+        <button onclick={onprevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
-        <button on:click={() => dispatch("prevStep")} class="fr-btn fr-mr-3v" type="button">
-            Réimporter mon fichier
-        </button>
+        <button onclick={onprevStep} class="fr-btn fr-mr-3v" type="button">Réimporter mon fichier</button>
     </div>
 </div>

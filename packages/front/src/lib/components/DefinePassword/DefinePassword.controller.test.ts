@@ -1,12 +1,6 @@
 import DefinePasswordController from "./DefinePassword.controller";
 import * as ValidatorService from "$lib/services/validator.service";
 vi.mock("$lib/services/validator.service");
-vi.mock("$lib/core/Dispatch", () => ({
-    default: {
-        getDispatcher: () => vi.fn(),
-    },
-}));
-
 describe("DefinePasswordController", () => {
     const VALUES = {
         password: "",

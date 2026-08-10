@@ -20,7 +20,7 @@
     import errorService from "$lib/services/error.service";
     import { onMount } from "svelte";
 
-    export let data;
+    let { data, children } = $props();
 
     const ctrl = new AppController({ matomo: data.matomo });
     const { displayBanner } = ctrl;
@@ -31,9 +31,11 @@
         mode: "runtime",
     };
 
-    $: if ($page.url) {
-        errorService.clearError();
-    }
+    $effect(() => {
+        if ($page.url) {
+            errorService.clearError();
+        }
+    });
 
     onMount(() => {
         return ctrl.setupGlobalEventListeners();
@@ -72,7 +74,7 @@
                                 </Alert>
                             </div>
                         {/if}
-                        <slot />
+                        {@render children?.()}
                     </main>
                 </div>
             </div>

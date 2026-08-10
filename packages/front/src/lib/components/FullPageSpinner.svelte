@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
     import Spinner from "./Spinner.svelte";
 
-    export let description;
+    let { description } = $props();
 </script>
 
 <div class="fill-space">

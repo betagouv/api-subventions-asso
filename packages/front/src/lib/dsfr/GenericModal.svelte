@@ -1,6 +1,8 @@
 <script>
     import Button from "./Button.svelte";
     import { modal } from "$lib/store/modal.store";
+
+    const SvelteComponent = $derived($modal);
 </script>
 
 <dialog aria-labelledby="fr-modal-title" id="fr-modal" class="fr-modal">
@@ -21,7 +23,7 @@
                         </Button>
                     </div>
                     <div class="child-modal">
-                        <svelte:component this={$modal} />
+                        <SvelteComponent />
                     </div>
                 </div>
             </div>

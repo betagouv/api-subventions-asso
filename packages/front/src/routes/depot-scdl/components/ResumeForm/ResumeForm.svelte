@@ -1,15 +1,15 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import ResumeFormController from "./ResumeForm.controller";
+
+    let { onresume = () => {}, onrestart = () => {} } = $props();
 
     const ctrl = new ResumeFormController();
     const { fileInfos, currentView, subTitle, descState, allocatorSiret, formattedDate, filename } = ctrl;
-    const dispatch = createEventDispatcher<{ resume: void; restart: void }>();
 
     async function handleRestartDeposit() {
         const success = await ctrl.handleRestartDeposit();
         if (success) {
-            dispatch("restart");
+            onrestart();
         }
     }
 </script>
@@ -38,7 +38,13 @@
             📅 Le {formattedDate}
             <br />
             📄 Fichier déposé :
-            <a class="fr-link fr-link--download" href="/" on:click|preventDefault={() => ctrl.generateDownloadUrl()}>
+            <a
+                class="fr-link fr-link--download"
+                href="/"
+                onclick={event => {
+                    event.preventDefault();
+                    ctrl.generateDownloadUrl();
+                }}>
                 {filename}
             </a>
         </p>
@@ -49,16 +55,22 @@
             Veuillez télécharger le rapport pour consulter les erreurs, corriger votre fichier, puis le déposer à
             nouveau.
             <br />
-            <a class="fr-link fr-link--download" href="/" on:click|preventDefault={() => ctrl.downloadErrorFile()}>
+            <a
+                class="fr-link fr-link--download"
+                href="/"
+                onclick={event => {
+                    event.preventDefault();
+                    ctrl.downloadErrorFile();
+                }}>
                 Télécharger le rapport d'erreurs
             </a>
         </p>
     {/if}
 
     <div>
-        <button on:click={() => dispatch("resume")} class="fr-btn fr-mr-3v" type="button">Reprendre mon dépôt</button>
+        <button onclick={onresume} class="fr-btn fr-mr-3v" type="button">Reprendre mon dépôt</button>
 
-        <button on:click={handleRestartDeposit} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
+        <button onclick={handleRestartDeposit} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
             Commencer un nouveau dépôt
         </button>
     </div>
