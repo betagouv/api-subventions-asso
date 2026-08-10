@@ -1,5 +1,7 @@
 import { CronController } from "../../../@types/CronController";
 import { AsyncCron } from "../../../decorators/cron.decorator";
+import { connectDB } from "../../../shared/MongoConnection";
+import { initIndexes } from "../../../shared/MongoInit";
 import DownloadFile from "../../../usecases/download-file";
 import { RemoveFile } from "../../../usecases/remove-file";
 import { rnaWaldecAdapter } from "../../outputs/api/data-gouv/data-gouv.adapter";
@@ -23,3 +25,12 @@ const rnaCron = new RnaCron(
     new DownloadAndImport(new RnaCli(rnaPipeline), new DownloadFile(rnaWaldecAdapter), new RemoveFile()),
 );
 export default rnaCron;
+
+// used to manually test cron task
+async function main() {
+    await connectDB();
+    await initIndexes();
+    await rnaCron.import();
+}
+
+main();
