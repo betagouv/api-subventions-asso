@@ -32,7 +32,7 @@ import {
 } from "tsoa";
 import { HttpErrorInterface, NotAssociationError } from "core";
 
-import associationService from "../../../modules/associations/associations.service";
+import associationsService from "../../../modules/associations/associations.service";
 import grantService from "../../../modules/grant/grant.service";
 import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";
 import grantExtractService from "../../../modules/grant/grant-extract.service";
@@ -44,6 +44,7 @@ import { PAYMENT_DTO_EXAMPLE, APPLICATION_DTO_EXAMPLE } from "./examples/Grants"
 import { OLD_APPLICATON_DTO, OLD_PAYMENT_DTO } from "./examples/OldGrants";
 import { DOCUMENT_DTO } from "./examples/Documents";
 import rawGrantService from "../../../modules/grant/raw-grant.service";
+import getAssociationUseCase from "../../../modules/associations/use-cases/get-association";
 
 export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
     /*
@@ -129,7 +130,8 @@ export class AssociationHttp extends Controller {
         @Request() req,
     ): Promise<GetAssociationResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
-        const association = await associationService.getAssociation(associationIdentifiers);
+        const association = await getAssociationUseCase.execute(associationIdentifiers);
+        console.log(association);
         return { association };
     }
 
@@ -151,7 +153,7 @@ export class AssociationHttp extends Controller {
         @Request() req,
     ): Promise<GetSubventionsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
-        const subventions = await associationService.getDemandes(associationIdentifiers);
+        const subventions = await associationsService.getDemandes(associationIdentifiers);
         return { subventions };
     }
 
@@ -173,7 +175,7 @@ export class AssociationHttp extends Controller {
     ): Promise<GetPaymentsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
 
-        const payments = await associationService.getPaiements(associationIdentifiers);
+        const payments = await associationsService.getPaiements(associationIdentifiers);
         return { versements: payments };
     }
 
@@ -330,7 +332,7 @@ export class AssociationHttp extends Controller {
     ): Promise<GetDocumentsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
 
-        const documents = await associationService.getDocuments(associationIdentifiers);
+        const documents = await associationsService.getDocuments(associationIdentifiers);
         return { documents };
     }
 
@@ -387,7 +389,7 @@ export class AssociationHttp extends Controller {
     ): Promise<GetEstablishmentsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
 
-        const establishments = await associationService.getEstablishments(associationIdentifiers);
+        const establishments = await associationsService.getEstablishments(associationIdentifiers);
         return { etablissements: establishments };
     }
 

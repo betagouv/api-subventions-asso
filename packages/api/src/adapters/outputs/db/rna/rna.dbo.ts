@@ -37,5 +37,5 @@ export default interface RnaDbo {
     publiweb: string | null;
     observation: string | null;
     position: string | null;
-    "maj-time": Date | null;
+    "maj-time": Date;
 }

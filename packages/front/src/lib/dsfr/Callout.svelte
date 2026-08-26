@@ -1,13 +1,13 @@
-<script>
+<script lang="ts">
     import { getIconClass } from "./helper";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     export let title;
     // possible values for titleSize : [2, 3, 4, 5, 6, "p"]
-    export let titleSize = 3;
-    export let href = null;
-    export let labelAction = null;
-    export let labelIcon = undefined;
+    export let titleSize: number | string = 3;
+    export let href: string | null = null;
+    export let labelAction: string | null = null;
+    export let labelIcon: string | undefined = undefined;
     export let icon = undefined;
 
     const titleTag = titleSize === "p" ? "p" : `h${titleSize}`;

@@ -1,17 +1,8 @@
-import { AssociationWithProviderValues } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import ProviderCore from "../provider.core";
-import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
-import Siren from "../../../identifier-objects/Siren";
-import BodaccMapper from "./mappers/bodacc.mapper";
-import { BodaccDto } from "./dto/BodaccDto";
 
-export class BodaccService extends ProviderCore implements AssociationsProvider {
-    isAssociationsProvider = true;
-
-    apiUrl = "https://bodacc-datadila.opendatasoft.com/api/v2";
-
+// Empty shell the time to find a solutions to the /providers route
+export class BodaccService extends ProviderCore {
     constructor() {
         super({
             type: ProviderEnum.api,
@@ -19,28 +10,6 @@ export class BodaccService extends ProviderCore implements AssociationsProvider 
             id: "bodacc",
             description: "Le bulletin officiel des annonces civiles et commerciales",
         });
-    }
-
-    async sendRequest(siren: Siren) {
-        try {
-            const result = await this.http.get<BodaccDto>(
-                `${this.apiUrl}/catalog/datasets/annonces-commerciales/records?order_by=dateparution DESC&refine=registre:${siren.value}`,
-            );
-            return result.data;
-        } catch (e) {
-            console.log(e);
-            return null;
-        }
-    }
-    async getAssociationsWithProviderValues(
-        identifier: AssociationIdentifier,
-    ): Promise<AssociationWithProviderValues[]> {
-        if (!identifier.siren) return [];
-
-        const bodaccDto = await this.sendRequest(identifier.siren);
-        if (!bodaccDto || bodaccDto.total_count === 0) return [];
-
-        return [BodaccMapper.toAssociation(bodaccDto)];
     }
 }
 

@@ -1,3 +1,5 @@
+export type AssociationNature = "Simplement déclarée" | "Reconnue d'utilité publique";
+
 export interface RnaStructureDto {
     identite: {
         nom: string;
@@ -6,7 +8,7 @@ export interface RnaStructureDto {
         date_pub_jo: string;
         date_modif_rna: string;
         active: boolean;
-        nature: string;
+        nature: AssociationNature;
         util_publique: boolean;
         date_publication_util_publique: string;
     };

@@ -1,7 +1,12 @@
+import type { BodaccRecord } from "dto";
+
 const MAX_ANNOUCEMENT_NUMBER_SIZE = 5;
 
 export default class AnnouncementController {
-    constructor(announcement) {
+    public announcement: BodaccRecord;
+    public judgmentObj;
+
+    constructor(announcement: BodaccRecord) {
         this.announcement = announcement;
 
         this.judgmentObj = JSON.parse(this.announcement.jugement);

@@ -1,6 +1,5 @@
 export * from "./AssociationWithProviderValues";
 export * from "./AssociationNature";
-export * from "./BodaccRecord";
 export * from "./ExtraitRcs";
 export * from "./GetAssociationResponseDto";
 export * from "./GetEstablishmentResponseDto";
@@ -11,3 +10,4 @@ export * from "./GetPaymentsResponseDto";
 export * from "./GetPaymentsFlatResponseDto";
 export * from "./GetApplicationsFlatResponseDto";
 export * from "./GetGrantsResponseDto";
+export * from "./BodaccRecord";

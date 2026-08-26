@@ -1,7 +1,5 @@
 import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import associationsService from "../../../src/modules/associations/associations.service";
-import { BadRequestError } from "core";
 import DEFAULT_ASSOCIATION, {
     API_ASSO_ESTABLISHMENTS_FROM_SIREN,
     LONELY_RNA,
@@ -103,7 +101,7 @@ describe("/etablissement", () => {
             });
         });
 
-        it("should not add one visits on stats AssociationsVisit beacause user is admin", async () => {
+        it("should not add one visits on stats AssociationsVisit because user is admin", async () => {
             const beforeRequestTime = new Date();
             await request(g.app)
                 .get(`/etablissement/${SIRET_STR}`)
@@ -114,7 +112,7 @@ describe("/etablissement", () => {
             expect(actual).toHaveLength(0);
         });
 
-        it("should not add one visits on stats AssociationsVisit beacause user is not authentified", async () => {
+        it("should not add one visits on stats AssociationsVisit because user is not authentified", async () => {
             const beforeRequestTime = new Date();
             await request(g.app).get(`/etablissement/${SIRET_STR}`).set("Accept", "application/json");
 
@@ -122,11 +120,9 @@ describe("/etablissement", () => {
             expect(actual).toHaveLength(0);
         });
 
-        it("should not add one visits on stats AssociationsVisit beacause status is not 200", async () => {
+        it("should not add one visits on stats AssociationsVisit because status is not 200", async () => {
             const beforeRequestTime = new Date();
-            jest.spyOn(associationsService, "getAssociation").mockImplementationOnce(() => {
-                throw new BadRequestError();
-            });
+
             await request(g.app).get(`/etablissement/${SIRET_STR}`).set("Accept", "application/json");
 
             const actual = await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date());
