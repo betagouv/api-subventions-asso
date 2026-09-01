@@ -15,7 +15,6 @@ process.env.DATA_BRETAGNE_USERNAME = JEST_DATA_BRETAGNE_USERNAME;
 process.env.DATA_BRETAGNE_PASSWORD = JEST_DATA_BRETAGNE_PASSWORD;
 process.env.FRONT_OFFICE_URL = JEST_FRONT_OFFICE_URL;
 process.env.SCDL_FILE_PROCESSING_PATH = JEST_SCDL_FILE_PROCESSING_PATH;
-process.env.MATTERMOST_WEBHOOK_URL = "https://mattermost.incubateur.net/hooks/xxx";
 
 jest.mock("axios");
 
