@@ -1396,6 +1396,31 @@ exports[`/association /{structure_identifier} should return an association 1`] =
         },
       },
     ],
+    "bodacc": [
+      {
+        "last_update": Any<String>,
+        "provider": "bodacc",
+        "type": "object",
+        "value": [
+          {
+            "dateParution": "2020-03-09",
+            "departement": {
+              "nom": "Ile-et-Vilaine",
+              "numero": 35,
+            },
+            "famille": "Procédures collectives",
+            "id": "A202400353292",
+            "jugement": "",
+            "region": {
+              "nom": "Bretagne",
+              "numero": 53,
+            },
+            "tribunal": "Greffe du Tribunal Judiciaire de Rennes",
+            "type": "Avis initial",
+          },
+        ],
+      },
+    ],
     "categorie_juridique": [
       {
         "last_update": "2025-06-25T00:00:00.000Z",

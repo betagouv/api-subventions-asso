@@ -1,0 +1,282 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Association Use Cases GetRnaStructureData returns data from rna 1`] = `
+{
+  "adresse_siege_rna": [
+    {
+      "last_update": 2023-03-04T00:00:00.000Z,
+      "provider": "rna",
+      "type": "object",
+      "value": {
+        "code_postal": "35000",
+        "commune": "Rennes",
+        "numero": "18",
+        "type_voie": undefined,
+        "voie": "Alexandre Lefas",
+      },
+    },
+  ],
+  "code_objet_social_1": [
+    {
+      "last_update": 2023-03-04T00:00:00.000Z,
+      "provider": "rna",
+      "type": "string",
+      "value": "015045",
+    },
+  ],
+  "date_creation_rna": [
+    {
+      "last_update": 2023-03-04T00:00:00.000Z,
+      "provider": "rna",
+      "type": "object",
+      "value": 2006-03-04T00:00:00.000Z,
+    },
+  ],
+  "date_modification_rna": [
+    {
+      "last_update": 2023-03-04T00:00:00.000Z,
+      "provider": "rna",
+      "type": "object",
+      "value": 2023-03-04T00:00:00.000Z,
+    },
+  ],
+  "denomination_rna": [
+    {
+      "last_update": 2023-03-04T00:00:00.000Z,
+      "provider": "rna",
+      "type": "string",
+      "value": "DEFAULT_ASSOCIATION",
+    },
+  ],
+  "nature": [
+    {
+      "last_update": 2023-03-04T00:00:00.000Z,
+      "provider": "rna",
+      "type": "string",
+      "value": "R",
+    },
+  ],
+  "objet_social": [
+    {
+      "last_update": 2023-03-04T00:00:00.000Z,
+      "provider": "rna",
+      "type": "string",
+      "value": "Lorem ipsum",
+    },
+  ],
+  "rna": [
+    {
+      "last_update": 2023-03-04T00:00:00.000Z,
+      "provider": "rna",
+      "type": "string",
+      "value": "W000000000",
+    },
+  ],
+  "rup": [
+    {
+      "last_update": 2023-03-04T00:00:00.000Z,
+      "provider": "rna",
+      "type": "boolean",
+      "value": true,
+    },
+  ],
+}
+`;
+
+exports[`Association Use Cases GetSirenStructureData returns api asso data when no unite legale found 1`] = `
+{
+  "activites": {
+    "annee_activite_principale": 0,
+    "annee_effectif_salarie_cent": 0,
+    "appartenance_ess": "O",
+    "effectif_salarie_cent": 0,
+    "id_activite_principale": "94.99Z",
+    "id_tranche_effectif": "NN",
+  },
+  "bodacc": [
+    {
+      "last_update": Any<Date>,
+      "provider": "bodacc",
+      "type": "object",
+      "value": {
+        "dateParution": "2020-03-09",
+        "departement": {
+          "nom": "Ile-et-Vilaine",
+          "numero": 35,
+        },
+        "famille": "Procédures collectives",
+        "id": "A202400353292",
+        "jugement": "",
+        "region": {
+          "nom": "Bretagne",
+          "numero": 53,
+        },
+        "tribunal": "Greffe du Tribunal Judiciaire de Rennes",
+        "type": "Avis initial",
+      },
+    },
+  ],
+  "coordonnees": {
+    "adresse_gestion": {
+      "code_insee": 42424,
+      "commune": "Londre",
+      "cp": 42424,
+      "cplt_1": "Place des orties",
+      "num_voie": 18,
+      "type_voie": "RUE",
+      "voie": "MEURIS",
+    },
+    "adresse_siege": {
+      "code_insee": 42424,
+      "commune": "Londre",
+      "cp": 42424,
+      "cplt_1": "Place des orties",
+      "num_voie": 18,
+      "type_voie": "RUE",
+      "voie": "MEURIS",
+    },
+  },
+  "etablissements": [
+    {
+      "actif": true,
+      "adresse": {
+        "code_insee": 42424,
+        "commune": "Londre",
+        "cp": 42424,
+        "cplt_1": "Place des orties",
+        "num_voie": 18,
+        "type_voie": "RUE",
+        "voie": "MEURIS",
+      },
+      "annee_activite_principale": 0,
+      "annee_effectif_salarie_cent": 0,
+      "date_actif": "2019-01-02",
+      "effectif_salarie_cent": 0,
+      "est_siege": true,
+      "id_activite_principale": "94.99Z",
+      "id_siret": 12300464800021,
+    },
+    {
+      "actif": false,
+      "adresse": {
+        "code_insee": 77777,
+        "commune": "London",
+        "cp": 77777,
+        "num_voie": 221,
+        "type_voie": "St",
+        "voie": "Baker",
+      },
+      "annee_activite_principale": 0,
+      "annee_effectif_salarie_cent": 0,
+      "date_actif": "1993-01-10",
+      "effectif_salarie_cent": 0,
+      "est_siege": false,
+      "id_activite_principale": "94.99Z",
+      "id_siret": 12300464800013,
+      "id_tranche_effectif": "NN",
+    },
+  ],
+  "identite": {
+    "active": true,
+    "active_sirene": true,
+    "date_creation_sirene": "1993-01-11",
+    "date_modif_siren": "2019-11-28",
+    "id_forme_juridique": 9220,
+    "id_siren": 123004648,
+    "id_siret_siege": 12300464800021,
+    "nom": "Je suis un fause asso",
+    "nom_sirene": "Je suis un fause asso",
+    "regime": "loi1901",
+  },
+  "nbEtabsActifs": 1,
+}
+`;
+
+exports[`Association Use Cases GetSirenStructureData returns association data 1`] = `
+{
+  "address": {
+    "city": "Rennes",
+    "complement": null,
+    "name": "Alexandre Lefas",
+    "number": "18",
+    "postalCode": "35000",
+    "type": "rue",
+  },
+  "bodacc": [
+    {
+      "last_update": Any<Date>,
+      "provider": "bodacc",
+      "type": "object",
+      "value": {
+        "dateParution": "2020-03-09",
+        "departement": {
+          "nom": "Ile-et-Vilaine",
+          "numero": 35,
+        },
+        "famille": "Procédures collectives",
+        "id": "A202400353292",
+        "jugement": "",
+        "region": {
+          "nom": "Bretagne",
+          "numero": 53,
+        },
+        "tribunal": "Greffe du Tribunal Judiciaire de Rennes",
+        "type": "Avis initial",
+      },
+    },
+  ],
+  "categorie_juridique": [
+    {
+      "last_update": 2026-03-13T00:00:00.000Z,
+      "provider": "sirene",
+      "type": "string",
+      "value": "",
+    },
+  ],
+  "date_creation_siren": [
+    {
+      "last_update": 2026-03-13T00:00:00.000Z,
+      "provider": "sirene",
+      "type": "object",
+      "value": Date { NaN },
+    },
+  ],
+  "date_modification_siren": [
+    {
+      "last_update": 2026-03-13T00:00:00.000Z,
+      "provider": "sirene",
+      "type": "object",
+      "value": 2026-03-13T00:00:00.000Z,
+    },
+  ],
+  "denomination_siren": [
+    {
+      "last_update": 2026-03-13T00:00:00.000Z,
+      "provider": "sirene",
+      "type": "string",
+      "value": "",
+    },
+  ],
+  "lastUpdate": 2026-05-20T00:00:00.000Z,
+  "nic_siege": [
+    {
+      "last_update": 2026-03-13T00:00:00.000Z,
+      "provider": "sirene",
+      "type": "string",
+      "value": "00001",
+    },
+  ],
+  "siege": true,
+  "siren": [
+    {
+      "last_update": 2026-03-13T00:00:00.000Z,
+      "provider": "sirene",
+      "type": "string",
+      "value": "100000000",
+    },
+  ],
+  "siret": Siret {
+    "identifier": "10000000000001",
+  },
+}
+`;

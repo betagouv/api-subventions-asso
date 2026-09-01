@@ -8,8 +8,10 @@ import GrantMapper from "./grant.mapper";
 import { ExtractHeaderLabel } from "./@types/GrantToExtract";
 import grantService from "./grant.service";
 import { StructureIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
+import getAssociation, { GetAssociation } from "../associations/use-cases/get-association";
 
-class GrantExtractService {
+export class GrantExtractService {
+    constructor(private getAssociation: GetAssociation) {}
     async buildCsv(identifier: StructureIdentifier): Promise<{ csv: string; fileName: string }> {
         let assoIdentifier: AssociationIdentifier | undefined;
         if (identifier instanceof AssociationIdentifier) assoIdentifier = identifier;
@@ -18,7 +20,7 @@ class GrantExtractService {
 
         const [grants, asso, estabs] = await Promise.all([
             grantService.getGrants(identifier),
-            associationsService.getAssociation(assoIdentifier).catch((error): AssociationWithProviderValues => {
+            this.getAssociation.execute(assoIdentifier).catch((error): AssociationWithProviderValues => {
                 if (error instanceof NotFoundError) return {};
                 throw error;
             }),
@@ -54,5 +56,5 @@ class GrantExtractService {
     }
 }
 
-const grantExtractService = new GrantExtractService();
+const grantExtractService = new GrantExtractService(getAssociation);
 export default grantExtractService;

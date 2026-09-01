@@ -2,8 +2,6 @@ import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__
 import osirisRequestAdapter from "../../../src/adapters/outputs/db/providers/osiris/osiris.request.adapter";
 import request from "supertest";
 import { OSIRIS_REQUEST_ENTITY, OSIRIS_ACTION_ENTITY } from "../cli/__fixtures__/OsirisEntities";
-import { BadRequestError } from "core";
-import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenAdapter from "../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
 import demarchesSimplifieesDataAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter";
 
@@ -57,6 +55,9 @@ import {
     DATA_ENTITIES as DS_DATA_ENTITIES,
     SCHEMAS as DS_SCHEMAS,
 } from "../../adapters/outputs/db/__fixtures__/demarches-simplifiees.fixtures";
+import getAssociation from "../../../src/modules/associations/use-cases/get-association";
+import bodaccAdapter from "../../../src/adapters/outputs/api/bodacc/bodacc.adapter";
+import { BODACC_ENTITY } from "../../../src/domain/__fixtures__/bodacc.fixture";
 
 jest.mock("../../../src/modules/provider-request/provider-request.service");
 
@@ -108,6 +109,7 @@ describe("/association", () => {
         mockGetEstablishmentsBySiren = jest
             .spyOn(apiAssoService, "findEstablishmentsBySiren")
             .mockResolvedValue(API_ASSO_ESTABLISHMENTS_FROM_SIREN);
+        jest.spyOn(bodaccAdapter, "getRecordsBySiren").mockResolvedValue([BODACC_ENTITY]);
     });
 
     afterAll(() => mockGetEstablishmentsBySiren.mockRestore());
@@ -119,12 +121,22 @@ describe("/association", () => {
 
     describe("/{structure_identifier}", () => {
         it("should return an association", async () => {
-            const response = await request(g.app)
+            await request(g.app)
                 .get(`/association/${SIREN_STR}`)
                 .set("x-access-token", await createAndGetUserToken())
-                .set("Accept", "application/json");
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot();
+                .set("Accept", "application/json")
+                .expect(200)
+                .expect(response =>
+                    expect(response.body).toMatchSnapshot({
+                        association: {
+                            bodacc: [
+                                {
+                                    last_update: expect.any(String),
+                                },
+                            ],
+                        },
+                    }),
+                );
         });
 
         it("should add one visit on stats AssociationsVisit", async () => {
@@ -164,14 +176,11 @@ describe("/association", () => {
 
         it("should not add one visits on stats AssociationsVisit because status is not 200", async () => {
             const beforeRequestTime = new Date();
-            const getAssoSpy = jest.spyOn(associationsService, "getAssociation").mockImplementationOnce(() => {
-                throw new BadRequestError();
-            });
+
             await request(g.app).get(`/association/${SIREN_STR}`).set("Accept", "application/json");
 
             const actual = await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
-            getAssoSpy.mockRestore();
         });
     });
 
@@ -301,7 +310,7 @@ describe("/association", () => {
         const API_RE_SIREN = "900000000";
         let spyGetAssociation: jest.SpyInstance;
         beforeEach(() => {
-            spyGetAssociation = jest.spyOn(associationsService, "getAssociation");
+            spyGetAssociation = jest.spyOn(getAssociation, "execute");
             // set Recherche Entreprise to only search for one page
             jest.spyOn(rechercheEntreprisesAdapter, "search").mockResolvedValue({
                 ...RECHERCHE_ENTREPRISES_DTO,

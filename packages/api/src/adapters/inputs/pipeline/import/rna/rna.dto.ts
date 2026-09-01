@@ -45,5 +45,5 @@ export interface RnaWaldecDto {
     publiweb: string | null;
     observation: string | null;
     position: string | null;
-    maj_time: string | null;
+    maj_time: string;
 }

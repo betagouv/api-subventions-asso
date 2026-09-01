@@ -6,9 +6,8 @@ import { SiretDto } from "../shared/Siret";
 import { DemandeSubvention } from "../demandeSubvention";
 import { Payment } from "../payments/Payment";
 import { ExtraitRcsDtoSnakeCase } from "./ExtraitRcs";
-import { BodaccRecordDtoSnakeCase } from "./BodaccRecord";
-import { AssociationNature } from "./AssociationNature";
 import { EstablishmentWithProviderValues } from "../establishments";
+import { BodaccRecord } from "./BodaccRecord";
 
 export interface AssociationWithProviderValues {
     siren?: ProviderValues<SirenDto>;
@@ -27,7 +26,7 @@ export interface AssociationWithProviderValues {
     etablisements_siret?: ProviderValues<SiretDto[]>;
     adresse_siege_rna?: ProviderValues<Adresse>;
     adresse_siege_siren?: ProviderValues<Adresse>;
-    nature?: ProviderValues<AssociationNature>;
+    nature?: ProviderValues<string>;
     // Association reconnue d'utilité publique (RUP)
     rup?: ProviderValues<boolean>;
     // Date de reconnaissance
@@ -59,5 +58,5 @@ export interface AssociationWithProviderValues {
     versements?: Payment[];
     etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & EstablishmentWithProviderValues)[] | null;
     extrait_rcs?: ProviderValues<ExtraitRcsDtoSnakeCase> | null;
-    bodacc?: ProviderValues<BodaccRecordDtoSnakeCase[]>;
+    bodacc?: ProviderValues<BodaccRecord[]>;
 }

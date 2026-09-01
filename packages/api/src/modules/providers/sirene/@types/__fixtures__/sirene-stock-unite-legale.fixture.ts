@@ -18,7 +18,7 @@ export const STOCK_UNITE_LEGALE_ENTITY: SireneUniteLegaleEntity = {
     identifiantAssociationUniteLegale: "",
     trancheEffectifsUniteLegale: "",
     anneeEffectifsUniteLegale: "",
-    dateDernierTraitementUniteLegale: "",
+    dateDernierTraitementUniteLegale: "2026-03-13",
     nombrePeriodesUniteLegale: "",
     categorieEntreprise: "",
     anneeCategorieEntreprise: "",

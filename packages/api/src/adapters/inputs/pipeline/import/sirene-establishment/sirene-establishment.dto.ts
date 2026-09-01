@@ -7,8 +7,8 @@ export interface SireneStockEtablissementDto {
     trancheEffectifsEtablissement: string | null;
     anneeEffectifsEtablissement: bigint | null;
     activitePrincipaleRegistreMetiersEtablissement: string | null;
-    dateDernierTraitementEtablissement: Date | null;
-    etablissementSiege: boolean | null;
+    dateDernierTraitementEtablissement: Date;
+    etablissementSiege: boolean;
     nombrePeriodesEtablissement: bigint | null;
     complementAdresseEtablissement: string | null;
     numeroVoieEtablissement: string | null;

@@ -43,7 +43,7 @@ export class RnaMapper {
             publiweb: dto.publiweb,
             observation: dto.observation,
             position: dto.position,
-            "maj-time": stringToDateOrNull(dto.maj_time),
+            "maj-time": new Date(dto.maj_time),
         };
     }
 }

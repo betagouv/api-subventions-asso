@@ -1,62 +1,13 @@
-import { ProviderValues, AssociationWithProviderValues } from "dto";
-
-import * as Sentry from "@sentry/node";
-import { NotFoundError } from "core";
-import { DefaultObject } from "../../@types";
-
-import providers from "../providers";
-import ApiAssoDtoMapper from "../providers/api-asso/mappers/api-asso.dto.mapper";
-
-import FormaterHelper from "../../shared/helpers/FormaterHelper";
-
 import documentsService from "../documents/documents.service";
 import paymentService from "../payments/payments.service";
 import establishmentService from "../establishments/establishment.service";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
-import AssociationsProvider from "./@types/AssociationsProvider";
 import getSubventionsByIdentifier, {
     GetSubventionsByIdentifier,
 } from "../application-flat/use-cases/get-subventions-by-identifier";
 
 export class AssociationsService {
     constructor(private getSubventions: GetSubventionsByIdentifier) {}
-
-    private provider_score: DefaultObject<number> = {
-        [ApiAssoDtoMapper.providerNameSiren]: 1,
-        [ApiAssoDtoMapper.providerNameRna]: 1,
-    };
-
-    async getAssociation(associationIdentifier: AssociationIdentifier): Promise<AssociationWithProviderValues> {
-        const data = await this.aggregate(associationIdentifier);
-        if (!data.length) throw new NotFoundError("Association not found");
-        return FormaterHelper.formatData(
-            data as DefaultObject<ProviderValues>[],
-            this.provider_score,
-        ) as AssociationWithProviderValues;
-    }
-
-    private async aggregate(associationIdentifier: AssociationIdentifier) {
-        const associationProviders = this.getAssociationProviders();
-        const promises = associationProviders.map(async provider => {
-            try {
-                const assos = await provider.getAssociationsWithProviderValues(associationIdentifier);
-                if (assos) return assos;
-            } catch (e) {
-                Sentry.captureException(e);
-                console.error(provider, e);
-            }
-            return null;
-        });
-        return (await Promise.all(promises)).flat().filter(asso => asso) as AssociationWithProviderValues[];
-    }
-
-    public isAssociationsProvider(provider: unknown): provider is AssociationsProvider {
-        return (provider as AssociationsProvider).isAssociationsProvider;
-    }
-
-    private getAssociationProviders() {
-        return Object.values(providers).filter(p => this.isAssociationsProvider(p)) as AssociationsProvider[];
-    }
 
     /**
      * ESTABLISHMENTS INFO

@@ -1,19 +1,31 @@
 import MongoAdapter from "../MongoAdapter";
 import { SIRENE_ESTABLISHMENT_DTO } from "../../../inputs/pipeline/import/sirene-establishment/sirene-establishment.fixture";
 import sireneEstablishmentAdapter from "./sirene-establishment.adapter";
+import { toEntity } from "./sirene-establishment.mapper";
+import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
+import { Siren } from "../../../../identifier-objects";
+import { SireneEstablishmentDbo } from "./sirene-establishment.dbo";
+
+jest.mock("./sirene-establishment.mapper");
 
 describe("SireneEstablishmentAdapter", () => {
     const mockCreateIndex = jest.fn();
     const mockBulkWrite = jest.fn();
+    const mockFind = jest.fn();
+
+    const DBO = { siren: DEFAULT_ASSOCIATION.siren } as unknown as SireneEstablishmentDbo;
 
     beforeAll(() => {
         jest
             // @ts-expect-error: test
             .spyOn(MongoAdapter.prototype, "collection", "get")
-            // @ts-expect-error: test
             .mockReturnValue({
+                // @ts-expect-error: test
                 createIndex: mockCreateIndex,
                 bulkWrite: mockBulkWrite,
+                find: mockFind.mockImplementation(() => ({
+                    toArray: async () => [DBO],
+                })),
             });
     });
 
@@ -48,6 +60,13 @@ describe("SireneEstablishmentAdapter", () => {
                 ],
                 { ordered: false },
             );
+        });
+    });
+
+    describe("getAllBySiren", () => {
+        it("maps dbos to entities", async () => {
+            await sireneEstablishmentAdapter.getAllBySiren(new Siren(DEFAULT_ASSOCIATION.siren));
+            expect(toEntity).toHaveBeenCalledWith(DBO);
         });
     });
 });

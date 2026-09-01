@@ -1,8 +1,8 @@
 import { Adresse, RnaDto, SirenDto, SiretDto } from "../shared";
 import { AssociationNature } from "./AssociationNature";
-import { BodaccRecord } from "./BodaccRecord";
 import { ExtraitRcs } from "./ExtraitRcs";
 import { EstablishmentIdentifiers, UniteLegaleIdentifiers } from "../shared/Identifiers";
+import { BodaccRecord } from "./BodaccRecord";
 
 export default interface Association {
     // fields from schema

@@ -27,8 +27,6 @@ describe("associationsService", () => {
 
     const mockGetSubventions = { execute: jest.fn() } as unknown as GetSubventionsByIdentifier;
     const service = new AssociationsService(mockGetSubventions);
-    // @ts-expect-error: mock private method
-    const aggregateMock: jest.SpyInstance = jest.spyOn(service, "aggregate");
 
     beforeAll(() => {
         // @ts-expect-error: mock
@@ -42,61 +40,6 @@ describe("associationsService", () => {
     // Could not find a way to restore manual mock (from __mocks__) after being changed in a single test (cf: getAssociationBySiren)
 
     afterEach(() => (providers.default = DEFAULT_PROVIDERS));
-
-    describe("getAssociation()", () => {
-        it("should call aggregate", async () => {
-            aggregateMock.mockImplementationOnce(async () => [{}]);
-            await service.getAssociation(IDENTIFIER);
-            expect(aggregateMock).toHaveBeenCalledTimes(1);
-        });
-
-        it("should throw not found error if aggregates return an empty array", async () => {
-            aggregateMock.mockImplementationOnce(() => []);
-            const factoryTest = () => service.getAssociation(IDENTIFIER);
-            expect(factoryTest).rejects.toThrow(new NotFoundError("Association not found"));
-        });
-
-        it("should call FormaterHelper.formatData()", async () => {
-            aggregateMock.mockImplementationOnce(() => [{}]);
-            const expected = 1;
-            await service.getAssociation(IDENTIFIER);
-            expect(formatDataMock).toHaveBeenCalledTimes(expected);
-        });
-    });
-
-    describe("isAssociationsProvider()", () => {
-        it("should return true", () => {
-            const actual = service.isAssociationsProvider({
-                isAssociationsProvider: true,
-            });
-            expect(actual).toBeTruthy();
-        });
-        it("should return false", () => {
-            const actual = service.isAssociationsProvider({
-                isAssociationsProvider: false,
-            });
-            expect(actual).toBeFalsy();
-        });
-    });
-
-    describe("aggregate", () => {
-        let getAssociationProvidersMock: jest.SpyInstance;
-
-        beforeAll(() => {
-            getAssociationProvidersMock = jest
-                // @ts-expect-error: getAssociationProviders is private
-                .spyOn(service, "getAssociationProviders")
-                // @ts-expect-error: [] is considered as a valid return value
-                .mockReturnValue([]);
-        });
-
-        it("should call getAssociationProviders", async () => {
-            const expected = 1;
-            // @ts-expect-error: aggregate is private
-            await service.aggregate(IDENTIFIER);
-            expect(getAssociationProvidersMock).toHaveBeenCalledTimes(expected);
-        });
-    });
 
     describe("getDemandes()", () => {
         it("fetches demandes", async () => {
