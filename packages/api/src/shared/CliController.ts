@@ -63,6 +63,7 @@ export default abstract class CliController {
                 });
             }, Promise.resolve());
 
+            fs.mkdirSync(path.dirname(this.logFileParsePath), { recursive: true });
             // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
             fs.writeFileSync(this.logFileParsePath, this.logger.getLogs() + logs.join(""), {
                 flag: "w",

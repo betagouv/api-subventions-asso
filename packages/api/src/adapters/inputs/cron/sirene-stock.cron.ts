@@ -24,11 +24,11 @@ export class SireneStockCron implements CronController {
         await this.importEstablishments();
     }
 
-    private async importUnitesLegale() {
+    async importUnitesLegale() {
         return sireneStockUniteLegaleService.getAndParse();
     }
 
-    private async importEstablishments() {
+    async importEstablishments() {
         return this.estabPipeline.run();
     }
 }
