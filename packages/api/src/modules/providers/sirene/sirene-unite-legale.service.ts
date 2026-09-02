@@ -42,6 +42,10 @@ export class SireneUniteLegaleService {
     public findOneBySiren(siren: Siren) {
         return sireneUniteLegaleAdapter.findOneBySiren(siren);
     }
+
+    public findAll() {
+        return sireneUniteLegaleAdapter.findAll();
+    }
 }
 
 const sireneUniteLegaleService = new SireneUniteLegaleService();

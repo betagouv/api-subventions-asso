@@ -14,6 +14,7 @@ minimumReleaseAge: 43200 # 30 days in minutes (30 * 24 * 60)
 savePrefix: '~'
 
 allowBuilds:
+  '@matrix-org/matrix-sdk-crypto-nodejs': true
   '@scarf/scarf': false # Analytics, not required
   '@sentry/cli': true # Required for Sentry error tracking
   bcrypt: true
@@ -23,3 +24,7 @@ allowBuilds:
   puppeteer: true # Required for scraping in tools
   tsc: true
   unrs-resolver: false # Not critical
+
+minimumReleaseAgeExclude:
+  # bumping version was needed on 08-08-2026 - try to remove this a fast as possible
+  - '@vitest/eslint-plugin@1.6.22'

@@ -1,16 +1,22 @@
-import { scdlS3Adapter } from "../../adapters/outputs/s3/s3.adapter";
+import { S3Adapter, scdlS3Adapter } from "../../adapters/outputs/s3/s3.adapter";
 import { bufferToMulterFile } from "../../shared/helpers/FileHelper";
-import { NotFoundError } from "core";
+import fs from "fs";
+import DownloadFile from "../../usecases/download-file";
 
 export class S3StorageService {
+    constructor(
+        private s3Adapter: S3Adapter,
+        private downloadFile: DownloadFile,
+    ) {}
+
     /**
      * Delete all files of a user and upload a new one.
      * */
     public async uploadAndReplaceUserFile(file: Express.Multer.File, userId: string): Promise<string> {
-        const existingFiles = await scdlS3Adapter.listFiles(userId);
+        const existingFiles = await this.s3Adapter.listFiles(userId);
 
         for (const file of existingFiles) {
-            await scdlS3Adapter.deleteFile(file.path);
+            await this.s3Adapter.deleteFile(file.path);
         }
 
         return this.uploadUserFile(file, userId);
@@ -18,31 +24,30 @@ export class S3StorageService {
 
     public async uploadUserFile(file: Express.Multer.File, userId: string): Promise<string> {
         const key = `${userId}/${file.originalname}`;
-        return scdlS3Adapter.uploadFile(file, key);
+        return this.s3Adapter.uploadFile(file, key);
     }
 
     public async getUserFileDownloadUrl(userId: string, fileName: string): Promise<string> {
         const key = `${userId}/${fileName}`;
-        return await scdlS3Adapter.getDownloadUrl(key);
+        return await this.s3Adapter.getDownloadUrl(key);
     }
 
     public async deleteUserFile(userId: string, fileName: string): Promise<void> {
         const key = `${userId}/${fileName}`;
-        return await scdlS3Adapter.deleteFile(key);
+        return await this.s3Adapter.deleteFile(key);
     }
 
     public async getUserFile(userId: string, fileName: string): Promise<Express.Multer.File> {
         const key = `${userId}/${fileName}`;
-        const fileData = await scdlS3Adapter.getFile(key);
 
-        if (!fileData) {
-            throw new NotFoundError("No file found for this user");
-        }
+        const fileInfo = await this.downloadFile.execute(key);
 
-        return bufferToMulterFile(fileData.buffer, fileName, fileData.contentType);
+        const buffer = await fs.promises.readFile(fileInfo.filePath);
+
+        return bufferToMulterFile(buffer, fileName, fileInfo.contentType);
     }
 }
 
-const s3FileService = new S3StorageService();
+const s3FileService = new S3StorageService(scdlS3Adapter, new DownloadFile(scdlS3Adapter));
 
 export default s3FileService;

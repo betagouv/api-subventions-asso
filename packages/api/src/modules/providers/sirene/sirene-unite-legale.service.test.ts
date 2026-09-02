@@ -70,7 +70,7 @@ describe("SireneUniteLegaleService", () => {
         let insertSpy: jest.SpyInstance;
 
         beforeAll(() => {
-            insertSpy = jest.spyOn(sireneUniteLegaleService, "upsertMany").mockResolvedValue(true);
+            insertSpy = jest.spyOn(sireneUniteLegaleService, "upsertMany").mockResolvedValue();
 
             jest.mocked(SireneStockUniteLegaleMapper.entityToDbo).mockImplementation(
                 i => i.toString() as unknown as SireneUniteLegaleDbo,

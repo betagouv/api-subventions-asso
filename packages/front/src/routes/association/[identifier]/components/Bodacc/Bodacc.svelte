@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import Announcement from "./Announcement.svelte";
     import BodaccController from "./Bodacc.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
+    import type { BodaccRecord } from "dto";
 
-    export let bodacc;
+    export let bodacc: BodaccRecord[];
     let element;
 
     const ctrl = new BodaccController(bodacc);

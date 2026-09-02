@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Establishment Mapper toEntity returns EstablishmentEntity 1`] = `
+EstablishmentEntity {
+  "address": {
+    "city": "SAINT-NAZAIRE",
+    "complement": null,
+    "name": "VIVANT LACOUR",
+    "number": "69",
+    "postalCode": "44600",
+    "type": "RUE",
+  },
+  "lastUpdate": 2025-12-05T00:00:00.000Z,
+  "siege": true,
+  "siret": Siret {
+    "identifier": "10000000000001",
+  },
+}
+`;

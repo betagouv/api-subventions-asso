@@ -31,6 +31,7 @@ export default [
     prettier,
     {
         languageOptions: {
+            ecmaVersion: "latest",
             globals: {
                 ...globals.node,
                 ...globals.browser,
@@ -45,6 +46,7 @@ export default [
     },
     {
         rules: {
+            "import/named": "off", // makes it hard to import ES modules
             "no-unused-vars": [
                 "error",
                 {

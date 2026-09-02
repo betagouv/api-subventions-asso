@@ -10,6 +10,7 @@ import grantExtractService from "../../../modules/grant/grant-extract.service";
 import { errorHandler } from "../../../middlewares/error.middleware";
 import associationHelper from "../../../modules/associations/associations.helper";
 import rawGrantService from "../../../modules/grant/raw-grant.service";
+import getAssociation from "../../../modules/associations/use-cases/get-association";
 
 jest.mock("../../../modules/grant/grant.service");
 jest.mock("../../../modules/grant/raw-grant.service");
@@ -125,7 +126,8 @@ describe("AssociationHttp", () => {
     });
 
     describe("getAssociation", () => {
-        const getAssociationSpy = jest.spyOn(associationsService, "getAssociation");
+        const getAssociationSpy = jest.spyOn(getAssociation, "execute");
+
         it("should call service with args", async () => {
             getAssociationSpy.mockImplementationOnce(jest.fn());
             await controller.getAssociation(IDENTIFIER.value, REQ);

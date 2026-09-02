@@ -6,15 +6,15 @@ import { DEV } from "./configurations/env.conf";
 import { RgpdCron } from "./adapters/inputs/cron/rgpd.cron";
 import { StatsCron } from "./adapters/inputs/cron/stats.cron";
 import { SearchCacheCron } from "./adapters/inputs/cron/search-cache.cron";
-import { SireneStockUniteLegaleCron } from "./adapters/inputs/cron/sirene-stock-unite-legale.cron";
+import sireneStockCron from "./adapters/inputs/cron/sirene-stock.cron";
 import { ScdlDepositCron } from "./adapters/inputs/cron/scdl-deposit.cron";
 import chorusCron from "./adapters/inputs/cron/chorus.cron";
+import rnaCron from "./adapters/inputs/cron/rna.cron";
 
 // @DEPRECATED: do not add any more cron here
 const controllers: CronController[] = [
     DemarchesSimplifieesCron,
     DumpCron,
-    SireneStockUniteLegaleCron,
     RgpdCron,
     SearchCacheCron,
     StatsCron,
@@ -25,6 +25,8 @@ const crons: CronController[] = [
     // quick workarround with the add of dependance injection
     // @TODO: rework CRON orchestration and only import here instances of CRON
     chorusCron,
+    sireneStockCron,
+    rnaCron,
 ];
 
 export const scheduler = new ToadScheduler();

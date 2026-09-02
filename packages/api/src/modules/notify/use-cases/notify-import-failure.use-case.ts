@@ -2,10 +2,18 @@ import { NotifyImportFailureContext } from "../../../@types/NotifyImportFailureC
 import { NotificationType } from "../@types/NotificationType";
 import notifyService, { NotifyService } from "../notify.service";
 
+export interface ImportFailurePayload {
+    providerName: string;
+    error: Error | string;
+    context: NotifyImportFailureContext;
+}
+
 export default class NotifyImportFailureUseCase {
     constructor(private notifier: NotifyService) {}
 
-    async execute(providerName: string, error: Error | string, context: NotifyImportFailureContext): Promise<void> {
+    async execute(payload: ImportFailurePayload): Promise<void> {
+        const { providerName, context, error } = payload;
+
         const details = {
             fileName: context.fileName,
             durationMs: context.durationMs,

@@ -1,22 +1,19 @@
-<script>
+<script lang="ts">
     import AnnouncementController from "./Announcement.controller";
     import Callout from "$lib/dsfr/Callout.svelte";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
+    import type { BodaccRecord } from "dto";
 
-    export let announcement;
+    export let announcement: BodaccRecord;
 
     const controller = new AnnouncementController(announcement);
 </script>
 
 <div class="announcement">
-    <Callout
-        title={controller.announcement.familleavis_lib}
-        titleSize="5"
-        href={controller.url}
-        labelAction="Voir l'annonce">
+    <Callout title={controller.announcement.famille} titleSize="5" href={controller.url} labelAction="Voir l'annonce">
         <div>
             <p class="fr-text--lead fr-mb-2v">
-                {controller.announcement.dateparution} - {controller.announcement.typeavis_lib}
+                {controller.announcement.dateParution} - {controller.announcement.type}
             </p>
             <p class="fr-text--lead fr-mb-2v">
                 <b>Annonce déposée au :</b>
@@ -24,11 +21,11 @@
             </p>
             <p class="fr-text--lead fr-mb-2v">
                 <b>Département :</b>
-                {controller.announcement.numerodepartement} - {controller.announcement.departement_nom_officiel}
+                {controller.announcement.departement.numero} - {controller.announcement.departement.nom}
             </p>
             <p class="fr-text--lead fr-mb-2v">
                 <b>Région :</b>
-                {controller.announcement.region_nom_officiel}
+                {controller.announcement.departement.numero}
             </p>
             <p class="fr-text--lead fr-mb-2v">
                 <b>Jugement :</b>

@@ -1,4 +1,4 @@
-import grantExtractService from "./grant-extract.service";
+import { GrantExtractService } from "./grant-extract.service";
 import { Association, EstablishmentSimplifiedWithProviderValues } from "dto";
 import grantService from "./grant.service";
 import associationsService from "../associations/associations.service";
@@ -8,9 +8,9 @@ import { ExtractHeaderLabel, GrantToExtract } from "./@types/GrantToExtract";
 import Siret from "../../identifier-objects/Siret";
 import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
-import Siren from "../../identifier-objects/Siren";
 import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
 import { NotFoundError } from "core";
+import { GetAssociation } from "../associations/use-cases/get-association";
 
 jest.mock("./grant.service");
 jest.mock("../associations/associations.service");
@@ -28,39 +28,34 @@ describe("GrantExtractService", () => {
         const ESTABS = [{ siret: [{ value: SIRET.value }] }] as unknown as EstablishmentSimplifiedWithProviderValues[];
         const ASSO = { denomination_siren: [{ value: "NomAsso" }] } as unknown as Association;
         const ESTABS_BY_SIRET = { [SIRET.value]: ESTABS[0] };
-        let isSirenSpy: jest.SpyInstance;
+
+        const mockGetAssociation = { execute: jest.fn() } as unknown as GetAssociation;
+        let service;
 
         beforeAll(() => {
-            isSirenSpy = jest.spyOn(Siren, "isSiren").mockReturnValue(true);
             jest.mocked(grantService.getGrants).mockResolvedValue(GRANTS);
-            jest.mocked(associationsService.getAssociation).mockResolvedValue(ASSO);
+            jest.mocked(mockGetAssociation.execute).mockResolvedValue(ASSO);
             jest.mocked(associationsService.getEstablishments).mockResolvedValue(ESTABS);
-        });
-
-        afterAll(() => {
-            isSirenSpy.mockRestore();
-            jest.mocked(grantService.getGrants).mockRestore();
-            jest.mocked(associationsService.getAssociation).mockRestore();
-            jest.mocked(associationsService.getEstablishments).mockRestore();
+            service = new GrantExtractService(mockGetAssociation);
         });
 
         it("gets grants", async () => {
-            await grantExtractService.buildCsv(IDENTIFIER);
+            await service.buildCsv(IDENTIFIER);
             expect(grantService.getGrants).toHaveBeenCalledWith(IDENTIFIER);
         });
 
         it("gets association", async () => {
-            await grantExtractService.buildCsv(IDENTIFIER); // TODO modify to handle estab identifier
-            expect(associationsService.getAssociation).toHaveBeenCalledWith(IDENTIFIER.associationIdentifier);
+            await service.buildCsv(IDENTIFIER); // TODO modify to handle estab identifier
+            expect(mockGetAssociation.execute).toHaveBeenCalledWith(IDENTIFIER.associationIdentifier);
         });
 
         it("gets establishments", async () => {
-            await grantExtractService.buildCsv(IDENTIFIER); // TODO modify to handle estab identifier
+            await service.buildCsv(IDENTIFIER); // TODO modify to handle estab identifier
             expect(associationsService.getEstablishments).toHaveBeenCalledWith(IDENTIFIER.associationIdentifier);
         });
 
         it("calls mapper for each separated grant and gotten asso and estabsBySiret", async () => {
-            await grantExtractService.buildCsv(IDENTIFIER);
+            await service.buildCsv(IDENTIFIER);
             expect(GrantMapper.grantToExtractLine).toHaveBeenCalledWith(1, ASSO, ESTABS_BY_SIRET);
             expect(GrantMapper.grantToExtractLine).toHaveBeenCalledWith(2, ASSO, ESTABS_BY_SIRET);
             expect(GrantMapper.grantToExtractLine).toHaveBeenCalledWith(3, ASSO, ESTABS_BY_SIRET);
@@ -70,7 +65,7 @@ describe("GrantExtractService", () => {
             jest.mocked(GrantMapper.grantToExtractLine).mockReturnValueOnce("1" as unknown as GrantToExtract);
             jest.mocked(GrantMapper.grantToExtractLine).mockReturnValueOnce("2" as unknown as GrantToExtract);
             jest.mocked(GrantMapper.grantToExtractLine).mockReturnValueOnce("3" as unknown as GrantToExtract);
-            await grantExtractService.buildCsv(IDENTIFIER);
+            await service.buildCsv(IDENTIFIER);
             expect(csvStringifier.stringify).toHaveBeenCalledWith(expect.any(Array), {
                 header: true,
                 columns: ExtractHeaderLabel,
@@ -84,7 +79,7 @@ describe("GrantExtractService", () => {
             jest.mocked(grantService.getGrants).mockResolvedValueOnce([1 as unknown as GrantFlatEntity]);
             jest.mocked(GrantMapper.grantToExtractLine).mockReturnValueOnce("1" as unknown as GrantToExtract);
 
-            await grantExtractService.buildCsv(IDENTIFIER);
+            await service.buildCsv(IDENTIFIER);
             // @ts-expect-error -- ??
             const converter: (n: number) => string =
                 jest.mocked(csvStringifier.stringify).mock.calls[0][1]?.cast?.number ?? (() => "");
@@ -96,7 +91,7 @@ describe("GrantExtractService", () => {
         it("returns stringified csv", async () => {
             const expected = "csv";
             jest.mocked(csvStringifier.stringify).mockReturnValueOnce(expected);
-            const actual = (await grantExtractService.buildCsv(IDENTIFIER)).csv;
+            const actual = (await service.buildCsv(IDENTIFIER)).csv;
             expect(actual).toBe(expected);
         });
 
@@ -105,15 +100,15 @@ describe("GrantExtractService", () => {
             jest.useFakeTimers().setSystemTime(FAKE_NOW);
             const expected = "DataSubvention-NomAsso-12345678912345-2022-01-01.csv";
             jest.mocked(csvStringifier.stringify).mockReturnValueOnce(expected);
-            const actual = (await grantExtractService.buildCsv(IDENTIFIER)).fileName;
+            const actual = (await service.buildCsv(IDENTIFIER)).fileName;
             expect(actual).toBe(expected);
         });
 
         it("returns csv even if association details are not found", async () => {
-            jest.mocked(associationsService.getAssociation).mockRejectedValueOnce(new NotFoundError());
+            jest.mocked(mockGetAssociation.execute).mockRejectedValueOnce(new NotFoundError());
             jest.mocked(csvStringifier.stringify).mockReturnValueOnce("csv");
 
-            const actual = await grantExtractService.buildCsv(IDENTIFIER);
+            const actual = await service.buildCsv(IDENTIFIER);
 
             expect(actual).toMatchObject({
                 csv: "csv",
@@ -125,7 +120,7 @@ describe("GrantExtractService", () => {
             jest.mocked(associationsService.getEstablishments).mockRejectedValueOnce(new NotFoundError());
             jest.mocked(csvStringifier.stringify).mockReturnValueOnce("csv");
 
-            const actual = await grantExtractService.buildCsv(IDENTIFIER);
+            const actual = await service.buildCsv(IDENTIFIER);
 
             expect(actual.csv).toBe("csv");
         });

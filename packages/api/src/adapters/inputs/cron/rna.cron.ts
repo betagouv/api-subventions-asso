@@ -1,0 +1,26 @@
+import { CronController } from "../../../@types/CronController";
+import { AsyncCron } from "../../../decorators/cron.decorator";
+import DownloadFile from "../../../usecases/download-file";
+import { RemoveFile } from "../../../usecases/remove-file";
+import { rnaWaldecAdapter } from "../../outputs/api/data-gouv/data-gouv.adapter";
+import { RnaCli } from "../cli/rna.cli";
+import { DownloadAndImport } from "../pipeline/import/download-and-import.pipeline";
+import rnaPipeline from "../pipeline/import/rna/rna.pipeline";
+
+export class RnaCron implements CronController {
+    name = "rna";
+
+    constructor(private pipeline: DownloadAndImport) {}
+
+    // each 3 of the month at 5 am
+    @AsyncCron({ cronExpression: "0 5 3 * *" })
+    async import() {
+        console.info("starting import RNA CRON...");
+        return this.pipeline.run();
+    }
+}
+
+const rnaCron = new RnaCron(
+    new DownloadAndImport(new RnaCli(rnaPipeline), new DownloadFile(rnaWaldecAdapter), new RemoveFile()),
+);
+export default rnaCron;

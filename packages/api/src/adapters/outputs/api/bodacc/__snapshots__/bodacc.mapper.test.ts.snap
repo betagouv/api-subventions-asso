@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bodacc Mapper toEntity returns BodaccEntity 1`] = `
+BodaccRecordEntity {
+  "dateParution": "2020-01-02",
+  "departement": {
+    "nom": "Ile-et-Vilaine",
+    "numero": 35,
+  },
+  "famille": "Procédures collectives",
+  "id": "A202400353292",
+  "jugement": "",
+  "region": {
+    "nom": "Bretagne",
+    "numero": 53,
+  },
+  "tribunal": "Greffe du Tribunal Judiciaire de Rennes",
+  "type": "Avis initial",
+}
+`;

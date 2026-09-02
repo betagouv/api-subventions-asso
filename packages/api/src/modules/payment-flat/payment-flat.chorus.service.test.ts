@@ -9,6 +9,7 @@ import { CHORUS_PAYMENT_FLAT_ENTITY } from "./__fixtures__/payment-flat.fixture"
 import paymentFlatChorusService from "./payment-flat.chorus.service";
 import PaymentFlatMapper from "./payment-flat.mapper";
 import paymentFlatService from "./payment-flat.service";
+import { ReadableStream } from "stream/web";
 
 jest.mock("../../adapters/outputs/db/payment-flat/payment-flat.adapter");
 jest.mock("../providers/data-bretagne/data-bretagne.service");
@@ -202,7 +203,6 @@ describe("paymentFlatChorusService", () => {
         });
 
         it("should call chorusCursorFind without exercise", async () => {
-            console.log(paymentFlatChorusService.toAggregatedPaymentFlatEntities);
             await paymentFlatChorusService.toAggregatedPaymentFlatEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,

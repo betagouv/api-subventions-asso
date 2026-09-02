@@ -8,7 +8,8 @@ export interface DataLogPort {
     insertMany(entities: DataLogEntity[]): Promise<void>;
     findAll(): Promise<DataLogEntity[]>;
     findAllCursor(): AsyncIterable<DataLogEntity>;
-    getLastImportByProvider(providerId: string): Promise<Date>;
+    getLastImportByProvider(providerId: string): Promise<Date | null>;
+    getLastEditionDateByProvider(providerId: string): Promise<Date | null>;
     getProvidersLogOverview(): Promise<ProducerLogEntity[]>;
     findUserFileLogsFromPeriod(start: Date, end: Date): Promise<UserFileDataLogEntity[] | null>;
 }

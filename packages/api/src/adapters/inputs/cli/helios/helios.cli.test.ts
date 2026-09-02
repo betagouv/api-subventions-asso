@@ -41,7 +41,7 @@ describe("Helios CLI", () => {
             expect(mockSaveData.execute).toHaveBeenCalledWith([HELIOS_ENTITY]);
         });
 
-        it("notifies Mattermost after import", async () => {
+        it("notifies Tchap after import", async () => {
             await cli.parse(FILE_PATH);
             expect(notifyService.notify).toHaveBeenCalledWith(
                 NotificationType.DATA_IMPORT_SUCCESS,

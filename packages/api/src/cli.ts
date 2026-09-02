@@ -22,6 +22,7 @@ import { initIndexes } from "./shared/MongoInit";
 import GeoCli from "./adapters/inputs/cli/geo.cli";
 import DataBretagneCli from "./adapters/inputs/cli/data-bretagne.cli";
 import SireneStockUniteLegaleCli from "./adapters/inputs/cli/sirene-stock-unite-legale.cli";
+import EstablishmentCli, { createEstablishmentCli } from "./adapters/inputs/cli/establishment.cli";
 import AmountsVsProgramRegionCli from "./adapters/inputs/cli/amounts-vs-program-region.cli";
 import ScdlBatchCli from "./adapters/inputs/cli/scdl-batch.cli";
 import HeliosCli from "./adapters/inputs/cli/helios/helios.cli";
@@ -29,6 +30,8 @@ import createHeliosCli from "./adapters/inputs/cli/helios/helios.cli.factory";
 import DepositLogCli from "./adapters/inputs/cli/scdl-deposit.cli";
 import chorusImport from "./adapters/inputs/pipeline/import/chorus/chorus.import";
 import updateFlatByExercise from "./modules/providers/chorus/use-cases/update-flat-by-exercise";
+import { RnaCli } from "./adapters/inputs/cli/rna.cli";
+import rnaPipeline from "./adapters/inputs/pipeline/import/rna/rna.pipeline";
 
 async function main() {
     await connectDB();
@@ -54,15 +57,19 @@ async function main() {
         GeoCli,
         DataBretagneCli,
         SireneStockUniteLegaleCli,
+        EstablishmentCli,
         AmountsVsProgramRegionCli,
         ScdlBatchCli,
         HeliosCli,
         DepositLogCli,
+        RnaCli,
     ];
 
     const factoryMap = new Map([
         [HeliosCli.cmdName, { factory: createHeliosCli }],
         [ChorusCli.cmdName, { factory: () => new ChorusCli(chorusImport, updateFlatByExercise) }],
+        [EstablishmentCli.cmdName, { factory: createEstablishmentCli }],
+        [RnaCli.cmdName, { factory: () => new RnaCli(rnaPipeline) }],
     ]);
 
     const args = process.argv.slice(2);
