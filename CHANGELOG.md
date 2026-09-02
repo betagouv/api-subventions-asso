@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.86.0](https://github.com/betagouv/api-subventions-asso/compare/v0.86.0-0...v0.86.0) (2026-09-02)
+
+
+### Features
+
+* **api:** make rna and sirene estab cron available from script ([5abd488](https://github.com/betagouv/api-subventions-asso/commit/5abd48841cfb25f3202ea0daebafddf03d079c75))
+
+
+### Bug Fixes
+
+* **front:** bodacc display ([66ae754](https://github.com/betagouv/api-subventions-asso/commit/66ae754ac8a375aa4423b1583c0356ab523ac98c))
+
 ## [0.86.0-0](https://github.com/betagouv/api-subventions-asso/compare/v0.85.1...v0.86.0-0) (2026-09-01)
 
 
