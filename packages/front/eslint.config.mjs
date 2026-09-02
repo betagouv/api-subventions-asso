@@ -6,6 +6,7 @@ import prettier from "eslint-config-prettier";
 import vitest from "@vitest/eslint-plugin";
 import svelte from "eslint-plugin-svelte";
 import svelteConfig from "./svelte.config.js";
+import path from "path";
 
 const ignores = [
     "eslint.config.mjs",
@@ -78,7 +79,7 @@ export default [
             parserOptions: {
                 parser: tseslint.parser,
                 projectService: true,
-                tsconfigRootDir: import.meta.dirname,
+                tsconfigRootDir: path.resolve(),
                 extraFileExtensions: [".svelte"],
                 svelteConfig,
             },

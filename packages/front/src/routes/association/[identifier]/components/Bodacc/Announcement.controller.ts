@@ -9,7 +9,7 @@ export default class AnnouncementController {
     constructor(announcement: BodaccRecord) {
         this.announcement = announcement;
 
-        this.judgmentObj = JSON.parse(this.announcement.jugement);
+        this.judgmentObj = JSON.parse(this.announcement?.jugement) ?? null;
     }
 
     get judgment() {

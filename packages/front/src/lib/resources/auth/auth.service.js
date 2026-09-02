@@ -70,7 +70,6 @@ export class AuthService {
             await userService
                 .getSelfUser()
                 .then(self => {
-                    console.log("prob here");
                     this.setUserInApp(self);
                 })
                 .catch(() => this.redirectToLogin());
