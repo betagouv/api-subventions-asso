@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.86.0-0](https://github.com/betagouv/api-subventions-asso/compare/v0.85.1...v0.86.0-0) (2026-09-01)
+
+
+### Features
+
+* **api:** [#3977](https://github.com/betagouv/api-subventions-asso/issues/3977) migrate mattermost notifications to tchap ([#4018](https://github.com/betagouv/api-subventions-asso/issues/4018)) ([a783340](https://github.com/betagouv/api-subventions-asso/commit/a7833408b8213e386ef8724c47d229896b187a06))
+* **api:** [#3984](https://github.com/betagouv/api-subventions-asso/issues/3984) import rna waldec parquet file ([#4000](https://github.com/betagouv/api-subventions-asso/issues/4000)) ([6d5f569](https://github.com/betagouv/api-subventions-asso/commit/6d5f569f727a275a4bdf4708914c178a5ed47e90))
+* **api:** [#3985](https://github.com/betagouv/api-subventions-asso/issues/3985) rna import automation ([#4005](https://github.com/betagouv/api-subventions-asso/issues/4005)) ([ca4f16f](https://github.com/betagouv/api-subventions-asso/commit/ca4f16f3b4b2efbf71b42a97284fa4d14cf8d7e1))
+* **api:** [#3986](https://github.com/betagouv/api-subventions-asso/issues/3986) integrate sirene-etablissements ([#3995](https://github.com/betagouv/api-subventions-asso/issues/3995)) ([197be13](https://github.com/betagouv/api-subventions-asso/commit/197be137f7e83b3e3ca42a0cbf76821184c39684))
+* **api:** [#3987](https://github.com/betagouv/api-subventions-asso/issues/3987) automatize sirene-establishment import with sirene-stock cron ([#4006](https://github.com/betagouv/api-subventions-asso/issues/4006)) ([87b44da](https://github.com/betagouv/api-subventions-asso/commit/87b44daad5c0bbbc7361125e4b11102442612b8e))
+* **api:** [#4009](https://github.com/betagouv/api-subventions-asso/issues/4009) use rna and sirene collections before api asso ([#4021](https://github.com/betagouv/api-subventions-asso/issues/4021)) ([bbdd5f7](https://github.com/betagouv/api-subventions-asso/commit/bbdd5f74acc66bbc729f739d0212fe07b344004f))
+
 ## [0.85.1](https://github.com/betagouv/api-subventions-asso/compare/v0.84.12...v0.85.1) (2026-07-15)
 
 ## [0.84.12](https://github.com/betagouv/api-subventions-asso/compare/v0.85.0...v0.84.12) (2026-07-15)
