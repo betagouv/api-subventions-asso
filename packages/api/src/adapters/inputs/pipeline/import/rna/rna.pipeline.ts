@@ -28,7 +28,9 @@ export class RnaPipeline {
         const stages: (Readable | Transform | Writable)[] = [Readable.from(this.parser.parse(filePath))];
 
         const lastImportDate = await this.logPort.getLastImportByProvider("rna");
-        if (lastImportDate)
+
+        if (lastImportDate) {
+            console.log(`updating RNA Waldec since ${lastImportDate}`);
             stages.push(
                 new Transform({
                     objectMode: true,
@@ -44,6 +46,7 @@ export class RnaPipeline {
                     },
                 }),
             );
+        } else console.log("starting first RNA waldec importation");
 
         stages.push(
             new Transform({
@@ -63,7 +66,8 @@ export class RnaPipeline {
                 write: async (dbos: RnaDbo[], _enc, callback) => {
                     try {
                         if (dbos.length > 0) {
-                            await this.rnaPort.insertMany(dbos);
+                            if (lastImportDate) await this.rnaPort.upsertMany(dbos);
+                            else await this.rnaPort.insertMany(dbos);
                             report.importedCount += dbos.length;
                             console.log(`inserted ${dbos.length} new Rna documents`);
                         }

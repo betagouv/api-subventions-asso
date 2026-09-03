@@ -33,16 +33,17 @@ describe("RNA pipeline", () => {
 
     const adapter = {
         insertMany: jest.fn().mockResolvedValue(undefined),
+        upsertMany: jest.fn().mockResolvedValue(undefined),
     } as unknown as RnaAdapter;
 
-    const logAdapter = {
+    const mockLogsAdapter = {
         getLastImportByProvider: jest.fn().mockResolvedValue(IMPORT_DATE),
-    } as unknown as DataLogPort;
+    } as unknown as jest.Mocked<DataLogPort>;
 
     let pipeline: RnaPipeline;
 
     beforeEach(() => {
-        pipeline = new RnaPipeline(parser, mapper, adapter, logAdapter);
+        pipeline = new RnaPipeline(parser, mapper, adapter, mockLogsAdapter);
     });
 
     describe("run", () => {
@@ -77,7 +78,19 @@ describe("RNA pipeline", () => {
             });
         });
 
-        it("persists dbos", async () => {
+        it("persists only data that has been updated or added", async () => {
+            await pipeline.run(FILE_PATH);
+
+            BATCHES.forEach((_dto, index) => {
+                expect(adapter.upsertMany).toHaveBeenNthCalledWith(
+                    index + 1,
+                    BATCHES[index].map(_dto => RNA_DBO),
+                );
+            });
+        });
+
+        it("persists all data", async () => {
+            mockLogsAdapter.getLastImportByProvider.mockResolvedValueOnce(null);
             await pipeline.run(FILE_PATH);
 
             BATCHES.forEach((_dto, index) => {
