@@ -87,7 +87,7 @@ export class ApiAssoService
 
         const establishments = structure.etablissements || [];
 
-        const ribs = structure.rib || [];
+        const ribs = structure.ribs || [];
 
         return establishments
             .filter(establishment => establishment)
@@ -95,7 +95,7 @@ export class ApiAssoService
                 ApiAssoDtoMapper.toEstablishment(
                     establishment,
                     ribs,
-                    structure.representant_legal,
+                    structure.representants_legaux,
                     structure.identite!.date_modif_siren,
                 ),
             );

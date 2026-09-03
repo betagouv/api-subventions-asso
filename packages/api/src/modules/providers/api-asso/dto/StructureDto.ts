@@ -224,7 +224,7 @@ export default interface StructureDto {
         siret: number;
         id: number;
     }[];
-    representant_legal: StructureRepresentantLegalDto[];
+    representants_legaux: StructureRepresentantLegalDto[];
     agrement: {
         type: string;
         numero: string;
@@ -260,7 +260,7 @@ export default interface StructureDto {
         id_siret: number;
     }[];
     etablissements: StructureEstablishmentDto[];
-    rib: StructureRibDto[];
+    ribs: StructureRibDto[];
     commentaire?: {
         note: string;
     };

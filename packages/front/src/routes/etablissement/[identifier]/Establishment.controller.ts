@@ -36,16 +36,17 @@ export class EstablishmentController {
             return asso;
         });
 
-        const simplifiedEstablishmentPromise = associationService
-            .getEstablishments(identifierToUse)
-            .then(estabs => currentAssoSimplifiedEtabs.set(estabs));
-
         const establishmentPromise = establishmentService.getBySiret(siret);
 
-        return Promise.all([associationPromise, establishmentPromise, simplifiedEstablishmentPromise]).then(result => ({
-            association: result[0],
-            establishment: result[1],
-        }));
+        return Promise.all([associationPromise, establishmentPromise]).then(result => {
+            // mimic the association view postal code calculation for the application side
+            // even if on establishment view we only have one postal code
+            currentAssoSimplifiedEtabs.set([result[1]]);
+            return {
+                association: result[0],
+                establishment: result[1],
+            };
+        });
     }
 
     get isAssociation() {

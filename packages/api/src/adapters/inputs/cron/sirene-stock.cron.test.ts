@@ -1,6 +1,4 @@
-import sireneStockUniteLegaleService, {
-    SireneStockUniteLegaleService,
-} from "../../../modules/providers/sirene/sirene-stock-unite-legale.service";
+import { SireneStockUniteLegaleService } from "../../../modules/providers/sirene/sirene-stock-unite-legale.service";
 import { SireneStockCron } from "./sirene-stock.cron";
 import * as DateHelper from "../../../shared/helpers/DateHelper";
 import { DownloadAndImport } from "../pipeline/import/download-and-import.pipeline";
@@ -10,14 +8,15 @@ jest.mock("../../../modules/providers/sirene/sirene-stock-unite-legale.service",
 
 describe("SireneStockCron", () => {
     const EXPORT_DATE = "2026-07-20";
-    // const mockCli = { parse: jest.fn() } as unknown as EstablishmentCli;
-    // const mockDownload = { execute: jest.fn().mockResolvedValue({ filePath: FILE_PATH }) } as unknown as DownloadFile;
-    // const mockRemove = { execute: jest.fn() } as unknown as RemoveFile;
-    const mockPipeline = {
+
+    const mockULPipeline = {
+        getAndParse: jest.fn(),
+    } as unknown as SireneStockUniteLegaleService;
+    const mockEstabPipeline = {
         run: jest.fn(),
     } as unknown as DownloadAndImport;
 
-    const cron = new SireneStockCron({} as unknown as SireneStockUniteLegaleService, mockPipeline);
+    const cron = new SireneStockCron(mockULPipeline, mockEstabPipeline);
 
     jest.spyOn(DateHelper, "formatDateToYYYYMMDDWithSeparator").mockReturnValue(EXPORT_DATE);
 
@@ -25,9 +24,7 @@ describe("SireneStockCron", () => {
         let mockImportEstabs: jest.SpyInstance, mockImportUL: jest.SpyInstance;
 
         beforeAll(() => {
-            // @ts-expect-error: mock private method
             mockImportEstabs = jest.spyOn(cron, "importEstablishments").mockResolvedValue();
-            // @ts-expect-error: mock private method
             mockImportUL = jest.spyOn(cron, "importUnitesLegale").mockResolvedValue();
         });
 
@@ -46,17 +43,15 @@ describe("SireneStockCron", () => {
 
     describe("importUnitesLegale", () => {
         it("gets and parse file", async () => {
-            // @ts-expect-error: test private method
             await cron.importUnitesLegale();
-            expect(sireneStockUniteLegaleService.getAndParse).toHaveBeenCalled();
+            expect(mockULPipeline.getAndParse).toHaveBeenCalled();
         });
     });
 
     describe("importEstablishments", () => {
         it("runs download and import pipeline", async () => {
-            // @ts-expect-error: test private method
             await cron.importEstablishments();
-            expect(mockPipeline.run).toHaveBeenCalled();
+            expect(mockEstabPipeline.run).toHaveBeenCalled();
         });
     });
 });

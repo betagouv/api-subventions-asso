@@ -131,7 +131,6 @@ export class AssociationHttp extends Controller {
     ): Promise<GetAssociationResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
         const association = await getAssociationUseCase.execute(associationIdentifiers);
-        console.log(association);
         return { association };
     }
 
