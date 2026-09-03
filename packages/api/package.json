@@ -105,7 +105,7 @@
         "passport-jwt": "^4.0.1",
         "passport-local": "^1.0.0",
         "promise.any": "2.0.6",
-        "qs": "^6.15.3",
+        "qs": "^6.16.0",
         "rand-token": "^1.0.1",
         "reflect-metadata": "^0.1.14",
         "swagger-ui-express": "^4.6.3",
