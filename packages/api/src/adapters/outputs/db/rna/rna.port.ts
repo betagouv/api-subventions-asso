@@ -4,5 +4,6 @@ import RnaDbo from "./rna.dbo";
 
 export interface RnaPort {
     insertMany(lines: RnaDbo[]): Promise<void>;
+    upsertMany(lines: RnaDbo[]): Promise<void>;
     getByRna(rna: Rna): Promise<RnaEntity | null>;
 }
