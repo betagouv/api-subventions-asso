@@ -1,6 +1,6 @@
 {
     "name": "core",
-    "version": "0.86.0",
+    "version": "0.86.1",
     "description": "Core package",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/core#readme",
     "license": "ISC",
