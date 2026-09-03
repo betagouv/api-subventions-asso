@@ -17,10 +17,9 @@ describe("Establishment Controller", () => {
     const SIREN = "123456789";
     const RNA = "W90000001";
 
-    let mockGetEstablishments, mockGetAssociation, mockGetBySiret, mockGetAssociatedIdentifier;
+    let mockGetAssociation, mockGetBySiret, mockGetAssociatedIdentifier;
 
     beforeEach(() => {
-        mockGetEstablishments = vi.spyOn(associationService, "getEstablishments").mockResolvedValue([]);
         // @ts-expect-error: mock
         mockGetAssociation = vi.spyOn(associationService, "getAssociation").mockResolvedValue({});
         mockGetBySiret = vi.spyOn(establishmentService, "getBySiret").mockResolvedValue({});
@@ -57,10 +56,6 @@ describe("Establishment Controller", () => {
             expect(mockGetAssociation).toHaveBeenCalledWith(SIREN);
         });
 
-        it("retrieve establishments information", async () => {
-            await new EstablishmentController(SIRET).promises;
-            expect(mockGetEstablishments).toHaveBeenCalledWith(RNA);
-        });
         it("retrieve establishment information", async () => {
             await new EstablishmentController(SIRET).promises;
             expect(mockGetBySiret).toHaveBeenCalledWith(SIRET);
