@@ -25,7 +25,7 @@ export class SireneStockCron implements CronController {
     }
 
     async importUnitesLegale() {
-        return sireneStockUniteLegaleService.getAndParse();
+        return this.ulPipeline.getAndParse();
     }
 
     async importEstablishments() {
