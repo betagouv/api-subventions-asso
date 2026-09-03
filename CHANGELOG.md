@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.86.1](https://github.com/betagouv/api-subventions-asso/compare/v0.86.0...v0.86.1) (2026-09-03)
+
+
+### Bug Fixes
+
+* **api, front, dto:** [#4032](https://github.com/betagouv/api-subventions-asso/issues/4032) api asso dto changes on ribs and contacts ([#4033](https://github.com/betagouv/api-subventions-asso/issues/4033)) ([797bdaa](https://github.com/betagouv/api-subventions-asso/commit/797bdaadc6b56dcd57e8f035e8ae15b6e81eee33))
+
 ## [0.86.0](https://github.com/betagouv/api-subventions-asso/compare/v0.86.0-0...v0.86.0) (2026-09-02)
 
 
