@@ -84,11 +84,4 @@ describe("UniteLegaleNameService", () => {
             expect(fromPartialSiretStrMock).toHaveBeenCalledWith(SIREN.value);
         });
     });
-
-    describe("upsert", () => {
-        it("should call uniteLegalNamePort.upsert with the provided entity", () => {
-            UniteLegaleNameService.upsert(fakeUniteLegaleNameEntity);
-            expect(mockedUniteLegalNamePort.upsert).toHaveBeenCalledWith(fakeUniteLegaleNameEntity);
-        });
-    });
 });

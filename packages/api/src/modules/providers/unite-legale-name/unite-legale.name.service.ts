@@ -53,10 +53,6 @@ export class UniteLegaleNameService {
         return (await Promise.all(rnaSirenPromises)).flat();
     }
 
-    upsert(entity: UniteLegaleNameEntity) {
-        return uniteLegalNameAdapter.upsert(entity);
-    }
-
     upsertMany(entities: UniteLegaleNameEntity[]) {
         return uniteLegalNameAdapter.upsertMany(entities);
     }

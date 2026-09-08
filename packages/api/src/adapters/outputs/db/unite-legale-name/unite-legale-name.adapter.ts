@@ -40,16 +40,6 @@ export class UniteLegaleNameAdapter extends MongoAdapter<UniteLegaleNameDbo> imp
         return UniteLegalNameMapper.toEntity(dbo);
     }
 
-    async upsert(entity: UniteLegaleNameEntity): Promise<void> {
-        await this.collection.updateOne(
-            { searchKey: entity.searchKey },
-            { $set: UniteLegalNameMapper.toDbo(entity) },
-            {
-                upsert: true,
-            },
-        );
-    }
-
     public async upsertMany(entities: UniteLegaleNameEntity[]): Promise<void> {
         const operations = entities.map(
             e =>

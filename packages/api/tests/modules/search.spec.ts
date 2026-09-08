@@ -19,7 +19,7 @@ describe("/search", () => {
 
     describe("/associations/{input}", () => {
         beforeEach(async () => {
-            Promise.all(AssociationNameFixture.map(fixture => uniteLegalNameAdapter.upsert(fixture)));
+            Promise.all(AssociationNameFixture.map(fixture => uniteLegalNameAdapter.upsertMany([fixture])));
         });
 
         it("should return 200", async () => {
