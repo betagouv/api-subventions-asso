@@ -1,7 +1,7 @@
 import { Controller, Get, Response, Route, Security, Tags, Query, Path, Example } from "tsoa";
 import { PaginatedAssociationNameDto } from "dto";
 import { HttpErrorInterface } from "core";
-
+import searchUseCase from "../../../usecases/search/search";
 import searchService from "../../../modules/search/search.service";
 
 @Route("search")
@@ -33,5 +33,9 @@ export class SearchHttp extends Controller {
     })
     public findAssociations(@Path() input: string, @Query() page = "1"): Promise<PaginatedAssociationNameDto> {
         return searchService.getAssociationsKeys(decodeURIComponent(input), Number.parseInt(page));
+    }
+
+    public search(@Path() input: string, @Query() page = "1"): Promise<unknown> {
+        return searchUseCase.execute({ value: input, page });
     }
 }
