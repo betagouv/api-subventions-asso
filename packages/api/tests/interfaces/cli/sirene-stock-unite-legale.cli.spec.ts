@@ -7,13 +7,13 @@ import uniteLegaleEntrepriseAdapter from "../../../src/adapters/outputs/db/unite
 import sireneUniteLegaleAdapter from "../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import { sireneStockUniteLegaleAdapter } from "../../../src/adapters/outputs/api/data-gouv/data-gouv.adapter";
 
-const ZIP_PATH = path.resolve(__dirname, "../../../src/modules/providers/sirene/__fixtures__");
+const PARQUET_PATH = path.resolve(__dirname, "../../../src/modules/providers/sirene/__fixtures__");
 
 describe("SireneStockUniteLegaleCli", () => {
     beforeAll(() => {
         jest.spyOn(sireneStockUniteLegaleAdapter, "getFileStream").mockImplementation(() =>
             Promise.resolve({
-                data: fs.createReadStream(ZIP_PATH + "/StockUniteLegale_utf8.zip"),
+                data: fs.createReadStream(PARQUET_PATH + "/StockUniteLegale.parquet"),
                 status: 200,
                 statusText: "OK",
             }),

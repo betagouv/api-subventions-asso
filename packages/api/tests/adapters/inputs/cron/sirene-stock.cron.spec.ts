@@ -10,7 +10,7 @@ jest.mock("axios");
 describe("Sriene stock CRON", () => {
     describe("importUnitesLegale", () => {
         const fixtureStream = fs.createReadStream(
-            path.join(__dirname, "../__fixtures__", "remote.sirene-stock-unite-legale.zip"),
+            path.join(__dirname, "../__fixtures__", "remote.sirene-stock-unite-legale.parquet"),
         );
 
         beforeAll(() => {
@@ -22,7 +22,6 @@ describe("Sriene stock CRON", () => {
         });
 
         it("imports data", async () => {
-            // @ts-expect-error: private method
             await sireneStockCron.importUnitesLegale();
             const dbos = await db
                 .collection("sirene")
@@ -48,7 +47,6 @@ describe("Sriene stock CRON", () => {
         it("imports data", async () => {
             // fixture only got lines with siren 100000000
             await db.collection("sirene").insertOne({ siren: "100000000" });
-            // @ts-expect-error: private method
             await sireneStockCron.importEstablishments();
             const dbos = await db
                 .collection("etablissement")

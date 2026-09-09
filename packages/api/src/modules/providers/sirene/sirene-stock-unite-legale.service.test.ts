@@ -1,28 +1,15 @@
 import sireneStockUniteLegaleService from "./sirene-stock-unite-legale.service";
 import { Readable } from "stream";
 import fs from "fs";
-import StreamZip from "node-stream-zip";
-import SireneStockUniteLegaleParser from "./parser/sirene-stock-unite-legale.parser";
 import sireneUniteLegaleService from "./sirene-unite-legale.service";
 import { sireneStockUniteLegaleAdapter } from "../../../adapters/outputs/api/data-gouv/data-gouv.adapter";
-import { ENV as _ENV } from "../../../configurations/env.conf";
 
-jest.mock("node-stream-zip", () => {
-    const mockExtract = jest.fn();
-    const mockClose = jest.fn();
-
-    return {
-        async: jest.fn(() => ({
-            extract: mockExtract,
-            close: mockClose,
-        })),
-    };
-});
 jest.mock("./sirene-unite-legale.service");
 jest.mock("../../../adapters/outputs/api/data-gouv/data-gouv.adapter");
 
-const ZIP_PATH = "path/to/zip";
 const DIRECTORY_PATH = "path/to/destination";
+const PARQUET_FILE_NAME = "sirene-stock-unite-legale.parquet";
+
 jest.mock("fs", () => {
     const actualFs = jest.requireActual("fs");
     return {
@@ -35,6 +22,12 @@ jest.mock("fs", () => {
 });
 
 describe("SireneStockUniteLegaleService", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        // @ts-expect-error: set private property
+        sireneStockUniteLegaleService.directory_path = undefined;
+    });
+
     describe("getOrCreateDirectory", () => {
         it("when directory_path is defined, check if the directory exists", () => {
             // @ts-expect-error: set private property
@@ -68,32 +61,31 @@ describe("SireneStockUniteLegaleService", () => {
     });
 
     describe("getAndParse", () => {
-        let getExtractAndSaveFilesMock: jest.SpyInstance;
+        let getAndSaveFileMock: jest.SpyInstance;
         let deleteTemporaryFolderMock: jest.SpyInstance;
-        beforeAll(() => {
-            jest.spyOn(SireneStockUniteLegaleParser, "parseCsvAndInsert").mockResolvedValue();
-            getExtractAndSaveFilesMock = jest
-                .spyOn(sireneStockUniteLegaleService, "getExtractAndSaveFiles")
-                .mockResolvedValue();
+        beforeEach(() => {
+            // @ts-expect-error: set private property
+            sireneStockUniteLegaleService.directory_path = DIRECTORY_PATH;
+            getAndSaveFileMock = jest.spyOn(sireneStockUniteLegaleService, "getAndSaveFile").mockResolvedValue();
             deleteTemporaryFolderMock = jest
                 .spyOn(sireneStockUniteLegaleService, "deleteTemporaryFolder")
                 .mockReturnValue();
         });
 
-        afterAll(() => {
+        afterEach(() => {
             jest.restoreAllMocks();
         });
 
-        it("should call getExtractAndSaveFiles", async () => {
+        it("should call getAndSaveFile", async () => {
             await sireneStockUniteLegaleService.getAndParse();
-            expect(getExtractAndSaveFilesMock).toHaveBeenCalledTimes(1);
+            expect(getAndSaveFileMock).toHaveBeenCalledTimes(1);
         });
 
-        it("should call parseCsvAndInsert", async () => {
+        it("should parse downloaded parquet file", async () => {
             await sireneStockUniteLegaleService.getAndParse();
             expect(sireneUniteLegaleService.parse).toHaveBeenCalledWith(
                 // @ts-expect-error : private variable
-                sireneStockUniteLegaleService.directory_path + "/StockUniteLegale_utf8.csv",
+                sireneStockUniteLegaleService.directory_path + "/" + PARQUET_FILE_NAME,
             );
         });
 
@@ -103,9 +95,11 @@ describe("SireneStockUniteLegaleService", () => {
         });
     });
 
-    describe("getAndSaveZip", () => {
+    describe("getAndSaveParquet", () => {
         let getFileMock: jest.SpyInstance;
-        beforeAll(() => {
+        beforeEach(() => {
+            // @ts-expect-error: set private property
+            sireneStockUniteLegaleService.directory_path = DIRECTORY_PATH;
             getFileMock = jest.spyOn(sireneStockUniteLegaleAdapter, "getFileStream").mockResolvedValue({
                 data: new Readable({
                     read() {
@@ -126,10 +120,6 @@ describe("SireneStockUniteLegaleService", () => {
                         setImmediate(() => {
                             callback();
                         });
-                    } else if (event === "error") {
-                        setImmediate(() => {
-                            callback(new Error("simulated error during writing"));
-                        });
                     }
                 }),
                 emit: jest.fn(),
@@ -143,24 +133,23 @@ describe("SireneStockUniteLegaleService", () => {
             (fs.createWriteStream as jest.Mock).mockReturnValue(mockFileStream);
         });
 
-        afterAll(() => {
-            jest.clearAllMocks();
+        afterEach(() => {
             jest.restoreAllMocks();
         });
 
         it("should call createWriteStream", async () => {
-            await sireneStockUniteLegaleService.getAndSaveZip();
-            expect(fs.createWriteStream).toHaveBeenCalledWith(expect.stringContaining("sirene-stock-unite-legale.zip"));
+            await sireneStockUniteLegaleService.getAndSaveParquet();
+            expect(fs.createWriteStream).toHaveBeenCalledWith(expect.stringContaining(PARQUET_FILE_NAME));
         });
 
         it("should call getFile", async () => {
-            await sireneStockUniteLegaleService.getAndSaveZip();
+            await sireneStockUniteLegaleService.getAndSaveParquet();
             expect(sireneStockUniteLegaleAdapter.getFileStream).toHaveBeenCalledTimes(1);
         });
 
         it("should download and write the data to the file without errors", async () => {
-            const acutal = await sireneStockUniteLegaleService.getAndSaveZip();
-            expect(acutal).toBe("finish");
+            const actual = await sireneStockUniteLegaleService.getAndSaveParquet();
+            expect(actual).toBe("finish");
         });
 
         it("should throw an error if the response data emits an error", async () => {
@@ -173,7 +162,7 @@ describe("SireneStockUniteLegaleService", () => {
                 status: 300,
                 statusText: "Not ok",
             });
-            await expect(sireneStockUniteLegaleService.getAndSaveZip()).rejects.toThrow(
+            await expect(sireneStockUniteLegaleService.getAndSaveParquet()).rejects.toThrow(
                 "simulated error during reading",
             );
         });
@@ -199,33 +188,14 @@ describe("SireneStockUniteLegaleService", () => {
 
             (fs.createWriteStream as jest.Mock).mockReturnValue(mockFileStream);
 
-            await expect(sireneStockUniteLegaleService.getAndSaveZip()).rejects.toThrow(
+            await expect(sireneStockUniteLegaleService.getAndSaveParquet()).rejects.toThrow(
                 "simulated error during writing",
             );
         });
     });
 
-    describe("decompressFolder", () => {
-        it("should call StreamZip", async () => {
-            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
-            expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
-        });
-
-        it("should call extract", async () => {
-            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
-            expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
-        });
-
-        it("should call close", async () => {
-            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
-            expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
-        });
-    });
-
     describe("deleteTemporaryFolder", () => {
         it("should call fs.rmdirSync", () => {
-            // @ts-expect-error: override ENV
-            _ENV = "preprod";
             // @ts-expect-error : private variable
             sireneStockUniteLegaleService.directory_path = DIRECTORY_PATH;
             sireneStockUniteLegaleService.deleteTemporaryFolder();

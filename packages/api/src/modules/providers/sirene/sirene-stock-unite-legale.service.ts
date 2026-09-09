@@ -1,10 +1,11 @@
 import * as fs from "fs";
 import path from "path";
 import { Readable } from "stream";
-import StreamZip from "node-stream-zip";
 import sireneUniteLegaleService from "./sirene-unite-legale.service";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import { sireneStockUniteLegaleAdapter } from "../../../adapters/outputs/api/data-gouv/data-gouv.adapter";
+
+const SIRENE_STOCK_UNITE_LEGALE_FILE_NAME = "sirene-stock-unite-legale.parquet";
 
 export class SireneStockUniteLegaleService {
     private directory_path;
@@ -21,20 +22,18 @@ export class SireneStockUniteLegaleService {
     }
 
     public async getAndParse() {
-        await this.getExtractAndSaveFiles();
-        await sireneUniteLegaleService.parse(this.directory_path + "/StockUniteLegale_utf8.csv");
+        await this.getAndSaveFile();
+        await sireneUniteLegaleService.parse(path.join(this.directory_path, SIRENE_STOCK_UNITE_LEGALE_FILE_NAME));
         this.deleteTemporaryFolder();
     }
 
-    public async getExtractAndSaveFiles() {
+    public async getAndSaveFile() {
         this.getOrCreateDirectory();
-        await this.getAndSaveZip();
-        const zipPath = this.directory_path + "/sirene-stock-unite-legale.zip";
-        await this.decompressFolder(zipPath, this.directory_path);
+        await this.getAndSaveParquet();
     }
 
-    public async getAndSaveZip() {
-        const writeFile = fs.createWriteStream(this.directory_path + "/sirene-stock-unite-legale.zip");
+    public async getAndSaveParquet() {
+        const writeFile = fs.createWriteStream(path.join(this.directory_path, SIRENE_STOCK_UNITE_LEGALE_FILE_NAME));
         const readFile = (await sireneStockUniteLegaleAdapter.getFileStream()) as RequestResponse<Readable>;
 
         console.info(`Start downloading the file`);
@@ -76,18 +75,6 @@ export class SireneStockUniteLegaleService {
                 reject(error);
             });
         });
-    }
-
-    public async decompressFolder(zipPath: string, destinationDirectoryPath: string) {
-        console.log("Start decompress");
-        try {
-            const zip = new StreamZip.async({ file: zipPath });
-            await zip.extract(null, destinationDirectoryPath);
-            await zip.close();
-            console.log("End decompress");
-        } catch (error) {
-            console.error(`Error decompressing archive: ${error}`);
-        }
     }
 
     public deleteTemporaryFolder() {
