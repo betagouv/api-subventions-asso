@@ -1,15 +1,6 @@
 import { DBOS, DTOS, ENTITIES } from "../__fixtures__/sirene-unite-legale.fixture";
 import SireneUniteLegaleMapper from "./sirene-unite-legale.mapper";
 
-jest.mock("../../../../adapters/outputs/db/unite-legale-name/unite-legale-name.mapper", () => ({
-    default: class UniteLegalNameMapper {
-        static buildSearchKey(a, b) {
-            return `${a} +++ ${b}`;
-        }
-    },
-    __esModule: true,
-}));
-
 describe("SireneUniteLegaleMapper", () => {
     describe("parquetRowToEntity", () => {
         it("maps native parquet values explicitly", () => {
@@ -60,6 +51,20 @@ describe("SireneUniteLegaleMapper", () => {
         });
     });
 
+    describe("toEntity", () => {
+        it("returns SireneUniteLegaleEntity from DTO", () => {
+            const expected = ENTITIES[0];
+            const actual = SireneUniteLegaleMapper.toEntity(DTOS[0]);
+            expect(actual).toEqual(expected);
+        });
+
+        it("returns SireneUniteLegaleEntity from DBO", () => {
+            const expected = ENTITIES[0];
+            const actual = SireneUniteLegaleMapper.toEntity(DBOS[0]);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("entityToDbo", () => {
         it("maps the entity", () => {
             const { _id, ...expected } = DBOS[0];
@@ -68,9 +73,7 @@ describe("SireneUniteLegaleMapper", () => {
             expect(actual).toEqual(expected);
         });
     });
-});
 
-describe("SireneUniteLegaleAdapter", () => {
     describe("entityToUniteLegaleNameEntity", () => {
         it("should return a SireneUniteLegaleEntity", () => {
             const actual = SireneUniteLegaleMapper.entityToUniteLegaleNameEntity(ENTITIES[0]);

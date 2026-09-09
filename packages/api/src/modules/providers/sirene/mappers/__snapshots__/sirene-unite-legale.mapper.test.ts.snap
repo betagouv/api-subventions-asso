@@ -1,13 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SireneUniteLegaleAdapter entityToUniteLegaleNameEntity should return a SireneUniteLegaleEntity 1`] = `
-UniteLegaleNameEntity {
-  "id": undefined,
+{
   "name": "asso coeur",
-  "searchKey": "100000000 +++ asso coeur",
+  "rna": Rna {
+    "identifier": "W000000000",
+  },
+  "searchKey": "100000000 - asso coeur- W000000000",
   "siren": Siren {
     "identifier": "100000000",
   },
-  "updatedDate": 2022-01-01T00:00:00.000Z,
+  "updateDate": Any<Date>,
 }
 `;

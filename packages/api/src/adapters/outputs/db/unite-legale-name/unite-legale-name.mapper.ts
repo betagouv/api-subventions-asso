@@ -2,37 +2,26 @@ import { WithoutId } from "mongodb";
 import UniteLegaleNameEntity from "../../../../entities/UniteLegaleNameEntity";
 import Siren from "../../../../identifier-objects/Siren";
 import UniteLegalNameDbo from "./@types/UniteLegaleNameDbo";
+import Rna from "../../../../identifier-objects/Rna";
 
 export default class UniteLegalNameMapper {
     static toEntity(dbo: UniteLegalNameDbo): UniteLegaleNameEntity {
-        return new UniteLegaleNameEntity(
-            new Siren(dbo.siren),
-            dbo.name,
-            dbo.searchKey,
-            dbo.updatedDate,
-            dbo._id?.toString(),
-        );
+        return new UniteLegaleNameEntity({
+            siren: new Siren(dbo.siren),
+            rna: dbo.rna ? new Rna(dbo.rna) : null,
+            name: dbo.name,
+            searchKey: dbo.searchKey,
+            updateDate: dbo.updateDate,
+        });
     }
 
     static toDbo(entity: UniteLegaleNameEntity): WithoutId<UniteLegalNameDbo> {
         return {
             siren: entity.siren.value,
+            rna: entity.rna ? entity.rna.value : null,
             name: entity.name,
             searchKey: entity.searchKey,
-            updatedDate: entity.updatedDate,
+            updateDate: entity.updateDate,
         };
-    }
-
-    static buildSearchKey(siren: Siren, name: string) {
-        const nameLc = name.toLowerCase();
-        let key = `${siren.value} - ${nameLc}`;
-        const removeAccents = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Remove accent on name for futur search
-        const nameWithoutAccent = removeAccents(nameLc);
-
-        if (nameLc != nameWithoutAccent) {
-            key += ` - ${nameWithoutAccent}`;
-        }
-
-        return key;
     }
 }

@@ -35,12 +35,12 @@ export class SireneUniteLegaleAdapter extends MongoAdapter<SireneUniteLegaleDbo>
 
     public async findAll(): Promise<SireneUniteLegaleEntity[]> {
         const dbos = await this.collection.find().toArray();
-        return dbos.map(dbo => SireneUniteLegaleMapper.dboToEntity(dbo));
+        return dbos.map(dbo => SireneUniteLegaleMapper.toEntity(dbo));
     }
 
     public async findOneBySiren(siren: Siren): Promise<SireneUniteLegaleEntity | null> {
         const dbo = await this.collection.findOne({ siren: siren.value });
-        return dbo ? SireneUniteLegaleMapper.dboToEntity(dbo) : null;
+        return dbo ? SireneUniteLegaleMapper.toEntity(dbo) : null;
     }
 
     public async filterExistingSirens(sirens: string[]): Promise<string[]> {
@@ -51,7 +51,7 @@ export class SireneUniteLegaleAdapter extends MongoAdapter<SireneUniteLegaleDbo>
 
     public async findOneByRna(rna: Rna): Promise<SireneUniteLegaleEntity | null> {
         const dbo = await this.collection.findOne({ identifiantAssociationUniteLegale: rna });
-        return dbo ? SireneUniteLegaleMapper.dboToEntity(dbo) : null;
+        return dbo ? SireneUniteLegaleMapper.toEntity(dbo) : null;
     }
 
     public async deleteAll(): Promise<void> {

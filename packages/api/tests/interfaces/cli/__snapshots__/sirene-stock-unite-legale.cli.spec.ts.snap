@@ -6,13 +6,13 @@ exports[`SireneStockUniteLegaleCli import should persist asso names 1`] = `
     "name": "CENTRE MEDICO PSYCHO PEDAGOGIQUE",
     "searchKey": "300483146 - centre medico psycho pedagogique",
     "siren": "300483146",
-    "updatedDate": 2012-08-01T00:00:00.000Z,
+    "updateDate": 2012-08-01T00:00:00.000Z,
   },
   {
     "name": "EDUCATION POPULAIRE DU FAUBOURG VOSGES",
     "searchKey": "300846177 - education populaire du faubourg vosges",
     "siren": "300846177",
-    "updatedDate": 2008-01-01T00:00:00.000Z,
+    "updateDate": 2008-01-01T00:00:00.000Z,
   },
 ]
 `;

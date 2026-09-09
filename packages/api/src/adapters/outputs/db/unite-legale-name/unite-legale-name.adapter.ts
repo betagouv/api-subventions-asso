@@ -31,7 +31,7 @@ export class UniteLegaleNameAdapter extends MongoAdapter<UniteLegaleNameDbo> imp
      * @returns the latest name associate at the siren
      */
     async findOneBySiren(siren: Siren): Promise<UniteLegaleNameEntity | null> {
-        const cursor = this.collection.find({ siren: siren.value }).sort({ updatedDate: 1 });
+        const cursor = this.collection.find({ siren: siren.value }).sort({ updateDate: 1 });
 
         if (!cursor.hasNext()) return null;
         const dbo = await cursor.next();

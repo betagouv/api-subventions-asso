@@ -1,9 +1,8 @@
-import { ObjectId } from "mongodb";
 import { SireneUniteLegaleEntity } from "../../../../entities/SireneUniteLegaleEntity";
-import Siren from "../../../../identifier-objects/Siren";
 import { SireneUniteLegaleDbo } from "../@types/SireneUniteLegaleDbo";
 import SireneUniteLegaleDto from "../@types/SireneUniteLegaleDto";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
+import { Rna, Siren } from "../../../../identifier-objects";
 
 const baseDto: SireneUniteLegaleDto = {
     siren: DEFAULT_ASSOCIATION.siren,
@@ -57,6 +56,7 @@ export const DTOS: SireneUniteLegaleDto[] = [
 export const ENTITIES: SireneUniteLegaleEntity[] = [
     {
         ...DTOS[0],
+        identifiantAssociationUniteLegale: new Rna(DEFAULT_ASSOCIATION.rna),
         siren: new Siren(DTOS[0].siren),
         anneeEffectifsUniteLegale: 2021,
         nombrePeriodesUniteLegale: 5,
@@ -65,6 +65,7 @@ export const ENTITIES: SireneUniteLegaleEntity[] = [
     },
     {
         ...DTOS[1],
+        identifiantAssociationUniteLegale: new Rna(DEFAULT_ASSOCIATION.rna),
         siren: new Siren(DTOS[1].siren),
         anneeEffectifsUniteLegale: 2021,
         nombrePeriodesUniteLegale: 5,
@@ -76,6 +77,6 @@ export const ENTITIES: SireneUniteLegaleEntity[] = [
 export const UNITE_LEGAL_ENTREPRISE_ENTITIES = [{ siren: new Siren(DTOS[2].siren) }];
 
 export const DBOS: SireneUniteLegaleDbo[] = [
-    { ...ENTITIES[0], siren: ENTITIES[0].siren.value, _id: new ObjectId() },
-    { ...ENTITIES[1], siren: ENTITIES[1].siren.value, _id: new ObjectId() },
+    { ...ENTITIES[0], siren: ENTITIES[0].siren.value, identifiantAssociationUniteLegale: ENTITIES[0].rna?.value },
+    { ...ENTITIES[1], siren: ENTITIES[1].siren.value, identifiantAssociationUniteLegale: ENTITIES[1].rna?.value },
 ];
