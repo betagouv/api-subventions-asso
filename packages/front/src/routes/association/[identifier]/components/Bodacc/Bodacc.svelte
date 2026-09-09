@@ -12,8 +12,8 @@
     let { bodacc }: Props = $props();
     let element = $state<HTMLElement>();
 
-    const ctrl = new BodaccController(bodacc);
-    const { announcements } = ctrl;
+    const ctrl = $derived(new BodaccController(bodacc));
+    const announcements = $derived(ctrl.announcements);
     onMount(() => ctrl.onMount(element));
 </script>
 

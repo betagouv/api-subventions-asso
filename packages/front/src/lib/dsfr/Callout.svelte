@@ -23,10 +23,10 @@
         children,
     }: Props = $props();
 
-    const titleTag = titleSize === "p" ? "p" : `h${titleSize}`;
+    const titleTag = $derived(titleSize === "p" ? "p" : `h${titleSize}`);
 
-    const actionClasses = `fr-btn${labelIcon ? " " + getIconClass(labelIcon) : ""}`;
-    const calloutClasses = `fr-callout${icon ? " " + getIconClass(icon) : ""}`;
+    const actionClasses = $derived(`fr-btn${labelIcon ? " " + getIconClass(labelIcon) : ""}`);
+    const calloutClasses = $derived(`fr-callout${icon ? " " + getIconClass(icon) : ""}`);
 </script>
 
 <div class={calloutClasses}>

@@ -10,7 +10,7 @@
 
     let { announcement }: Props = $props();
 
-    const controller = new AnnouncementController(announcement);
+    const controller = $derived(new AnnouncementController(announcement));
 </script>
 
 <div class="announcement">
@@ -29,7 +29,7 @@
             </p>
             <p class="fr-text--lead fr-mb-2v">
                 <b>Région :</b>
-                {controller.announcement.departement.numero}
+                {controller.announcement.region.nom}
             </p>
             <p class="fr-text--lead fr-mb-2v">
                 <b>Jugement :</b>
