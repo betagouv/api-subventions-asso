@@ -3,18 +3,16 @@ import uniteLegalNameAdapter from "../../../adapters/outputs/db/unite-legale-nam
 import UniteLegaleNameEntity from "../../../entities/UniteLegaleNameEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import AssociationNameMapper from "../../association-name/mappers/association-name.mapper";
-import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 import Siret from "../../../identifier-objects/Siret";
 import Siren from "../../../identifier-objects/Siren";
 
 export class UniteLegaleNameService {
-    async getNameFromIdentifier(identifier: AssociationIdentifier): Promise<UniteLegaleNameEntity | null> {
-        if (!identifier.siren) return null;
-        return uniteLegalNameAdapter.findOneBySiren(identifier.siren);
-    }
-
+    //@TODO: make value either a string (name) or a Siren
     async searchBySirenSiretName(value: string) {
         if (Siret.isStartOfSiret(value)) value = Siren.fromPartialSiretStr(value).value;
+        // value is always siren or name
+        // if siret it is transformed into siren
+        // if rna uniteLegaleName will never return a thing as it search on siren + name
         const associations = await uniteLegalNameAdapter.search(value);
         const groupedNameByStructures = associations.reduce(
             (acc, entity) => {

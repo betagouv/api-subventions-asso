@@ -5,7 +5,6 @@ import UniteLegaleNameService from "./unite-legale.name.service";
 import AssociationNameEntity from "../../association-name/entities/AssociationNameEntity";
 import Siren from "../../../identifier-objects/Siren";
 import Rna from "../../../identifier-objects/Rna";
-import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 import Siret from "../../../identifier-objects/Siret";
 
 jest.mock("../../../adapters/outputs/db/unite-legale-name/unite-legale-name.adapter");
@@ -18,20 +17,12 @@ const mockedRnaSirenService = rnaSirenService as jest.Mocked<typeof rnaSirenServ
 describe("UniteLegaleNameService", () => {
     const SIREN = new Siren("123456789");
     const RNA = new Rna("W123456789");
-    const RNA_IDENTIFIER = AssociationIdentifier.fromRna(RNA);
-    const fakeUniteLegaleNameEntity = new UniteLegaleNameEntity(SIREN, "Fake Name", `${SIREN} - Fake Name`, new Date());
+    const fakeUniteLegaleNameEntity = new UniteLegaleNameEntity({ siren: SIREN, rna: null, name: "Fake Name" });
 
     let fromPartialSiretStrMock: jest.SpyInstance;
 
     beforeAll(() => {
         fromPartialSiretStrMock = jest.spyOn(Siren, "fromPartialSiretStr");
-    });
-
-    describe("getNameFromIdentifier", () => {
-        it("should return null for unknown identifier", async () => {
-            const result = await UniteLegaleNameService.getNameFromIdentifier(RNA_IDENTIFIER);
-            expect(result).toBeNull();
-        });
     });
 
     describe("searchBySirenSiretName", () => {

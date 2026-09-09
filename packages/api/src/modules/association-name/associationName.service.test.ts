@@ -1,4 +1,3 @@
-import UniteLegaleNameEntity from "../../entities/UniteLegaleNameEntity";
 import UniteLegaleNameService from "../providers/unite-legale-name/unite-legale.name.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import associationNameService from "./associationName.service";
@@ -6,7 +5,6 @@ import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-en
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 import Siren from "../../identifier-objects/Siren";
 import Rna from "../../identifier-objects/Rna";
-import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 
 jest.mock("../providers/unite-legale-name/unite-legale.name.service");
 jest.mock("../rna-siren/rna-siren.service");
@@ -17,29 +15,6 @@ const mockedRnaSirenService = rnaSirenService as jest.Mocked<typeof rnaSirenServ
 const mockedRechercheEntreprises = rechercheEntreprisesService as jest.Mocked<typeof rechercheEntreprisesService>;
 
 describe("associationName.service", () => {
-    describe("getNameFromIdentifier()", () => {
-        const uniteLegalNameMock = jest.spyOn(UniteLegaleNameService, "getNameFromIdentifier");
-        const SIREN = new Siren("433955101");
-        const IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
-        const PORT_OUTPUT = new UniteLegaleNameEntity(
-            SIREN,
-            "ALPCM NANTES BASKET",
-            "",
-            new Date("2022-07-13T00:00:00.000Z"),
-        );
-
-        beforeAll(() => {
-            uniteLegalNameMock.mockResolvedValue(PORT_OUTPUT);
-        });
-        afterAll(() => {
-            uniteLegalNameMock.mockRestore();
-        });
-
-        it("should call port", async () => {
-            await associationNameService.getNameFromIdentifier(IDENTIFIER);
-            expect(uniteLegalNameMock).toBeCalledWith(IDENTIFIER);
-        });
-    });
     describe("find", () => {
         const SIREN = new Siren("123456789");
         const SIREN_2 = new Siren("987654321");

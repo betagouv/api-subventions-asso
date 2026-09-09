@@ -1,21 +1,12 @@
 import { NotAssociationError } from "core";
 import UniteLegaleNameService from "../providers/unite-legale-name/unite-legale.name.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
-import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
 import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 
 export class AssociationNameService {
-    async getNameFromIdentifier(identifier: AssociationIdentifier): Promise<string | undefined> {
-        const result = await UniteLegaleNameService.getNameFromIdentifier(identifier);
-
-        if (!result) return;
-
-        return result.name;
-    }
-
     async find(value: string): Promise<AssociationNameEntity[]> {
         let associationNames: AssociationNameEntity[];
         let gotCompany = false;
