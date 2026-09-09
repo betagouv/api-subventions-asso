@@ -72,7 +72,7 @@
         "core": "workspace:*",
         "cors": "^2.8.6",
         "croner": "^6.0.7",
-        "csv-parse": "^5.6.0",
+        "csv-parse": "^7.0.2",
         "csv-parser": "^3.2.1",
         "csv-stringify": "^6.8.1",
         "decompress": "^4.2.1",
