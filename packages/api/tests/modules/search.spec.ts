@@ -1,7 +1,7 @@
 import { App } from "supertest/types";
 import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
-import uniteLegalNameAdapter from "../../src/adapters/outputs/db/unite-legale-name/unite-legale-name.adapter";
+import associationSearchAdapter from "../../src/adapters/outputs/db/association-search/association-search.adapter";
 import AssociationNameFixture from "../__fixtures__/association-name.fixture";
 import apiEntrepriseService from "../../src/modules/providers/api-entreprise/api-entreprise.service";
 import rechercheEntreprisesAdapter from "../../src/adapters/outputs/api/recherche-entreprises/recherche-entreprises.adapter";
@@ -19,7 +19,7 @@ describe("/search", () => {
 
     describe("/associations/{input}", () => {
         beforeEach(async () => {
-            Promise.all(AssociationNameFixture.map(fixture => uniteLegalNameAdapter.upsertMany([fixture])));
+            Promise.all(AssociationNameFixture.map(fixture => associationSearchAdapter.upsertMany([fixture])));
         });
 
         it("should return 200", async () => {

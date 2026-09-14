@@ -44,6 +44,7 @@ class AssociationService {
         const results = await this._searchByText(lookup, page);
         if (results?.total) return results;
 
+        // @TODO: remove this when /association/search/{input} will search both in RNA and Sirene collections
         // If no data found in association name collection we search by rna or siren, because association name is not exhaustive.
         if (isRna(lookup) || isStartOfSiret(lookup)) {
             const potentielDuplicates = await this._searchByIdentifier(lookup.toString());

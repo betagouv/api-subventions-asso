@@ -1,19 +1,19 @@
 import Fuse from "fuse.js";
-import uniteLegalNameAdapter from "../../../adapters/outputs/db/unite-legale-name/unite-legale-name.adapter";
-import UniteLegaleNameEntity from "../../../entities/UniteLegaleNameEntity";
+import associationSearchAdapter from "../../../adapters/outputs/db/association-search/association-search.adapter";
+import AssociationSearchEntity from "../../../entities/AssociationSearchEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import AssociationNameMapper from "../../association-name/mappers/association-name.mapper";
 import Siret from "../../../identifier-objects/Siret";
 import Siren from "../../../identifier-objects/Siren";
 
-export class UniteLegaleNameService {
+export class AssociationSearchService {
     //@TODO: make value either a string (name) or a Siren
     async searchBySirenSiretName(value: string) {
         if (Siret.isStartOfSiret(value)) value = Siren.fromPartialSiretStr(value).value;
         // value is always siren or name
         // if siret it is transformed into siren
         // if rna uniteLegaleName will never return a thing as it search on siren + name
-        const associations = await uniteLegalNameAdapter.search(value);
+        const associations = await associationSearchAdapter.search(value);
         const groupedNameByStructures = associations.reduce(
             (acc, entity) => {
                 const sirenStr = entity.siren.value;
@@ -21,10 +21,10 @@ export class UniteLegaleNameService {
                 acc[sirenStr].push(entity);
                 return acc;
             },
-            {} as Record<string, UniteLegaleNameEntity[]>,
+            {} as Record<string, AssociationSearchEntity[]>,
         );
 
-        const fuseSearch = (names: UniteLegaleNameEntity[]) => {
+        const fuseSearch = (names: AssociationSearchEntity[]) => {
             const fuse = new Fuse(names, {
                 includeScore: true,
                 findAllMatches: true,
@@ -51,11 +51,11 @@ export class UniteLegaleNameService {
         return (await Promise.all(rnaSirenPromises)).flat();
     }
 
-    upsertMany(entities: UniteLegaleNameEntity[]) {
-        return uniteLegalNameAdapter.upsertMany(entities);
+    upsertMany(entities: AssociationSearchEntity[]) {
+        return associationSearchAdapter.upsertMany(entities);
     }
 }
 
-const uniteLegaleNameService = new UniteLegaleNameService();
+const associationSearchService = new AssociationSearchService();
 
-export default uniteLegaleNameService;
+export default associationSearchService;

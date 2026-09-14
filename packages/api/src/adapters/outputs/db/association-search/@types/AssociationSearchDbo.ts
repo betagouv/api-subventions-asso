@@ -1,4 +1,4 @@
-export default interface UniteLegaleNameDbo {
+export default interface AssociationSearchDbo {
     siren: string;
     rna: string | null;
     name: string;

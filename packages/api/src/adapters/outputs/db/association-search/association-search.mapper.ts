@@ -1,12 +1,12 @@
 import { WithoutId } from "mongodb";
-import UniteLegaleNameEntity from "../../../../entities/UniteLegaleNameEntity";
+import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 import Siren from "../../../../identifier-objects/Siren";
-import UniteLegalNameDbo from "./@types/UniteLegaleNameDbo";
+import AssociationSearchDbo from "./@types/AssociationSearchDbo";
 import Rna from "../../../../identifier-objects/Rna";
 
-export default class UniteLegalNameMapper {
-    static toEntity(dbo: UniteLegalNameDbo): UniteLegaleNameEntity {
-        return new UniteLegaleNameEntity({
+export default class AssociationSearchMapper {
+    static toEntity(dbo: AssociationSearchDbo): AssociationSearchEntity {
+        return new AssociationSearchEntity({
             siren: new Siren(dbo.siren),
             rna: dbo.rna ? new Rna(dbo.rna) : null,
             name: dbo.name,
@@ -15,7 +15,7 @@ export default class UniteLegalNameMapper {
         });
     }
 
-    static toDbo(entity: UniteLegaleNameEntity): WithoutId<UniteLegalNameDbo> {
+    static toDbo(entity: AssociationSearchEntity): WithoutId<AssociationSearchDbo> {
         return {
             siren: entity.siren.value,
             rna: entity.rna ? entity.rna.value : null,

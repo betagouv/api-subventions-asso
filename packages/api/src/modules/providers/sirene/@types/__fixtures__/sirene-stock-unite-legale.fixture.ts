@@ -1,5 +1,6 @@
 import DEFAULT_ASSOCIATION from "../../../../../../tests/__fixtures__/association.fixture";
 import { SireneUniteLegaleEntity } from "../../../../../entities/SireneUniteLegaleEntity";
+import { Rna } from "../../../../../identifier-objects";
 import Siren from "../../../../../identifier-objects/Siren";
 
 export const STOCK_UNITE_LEGALE_ENTITY: SireneUniteLegaleEntity = {
@@ -15,7 +16,7 @@ export const STOCK_UNITE_LEGALE_ENTITY: SireneUniteLegaleEntity = {
     prenom4UniteLegale: null,
     prenomUsuelUniteLegale: null,
     pseudonymeUniteLegale: null,
-    identifiantAssociationUniteLegale: null,
+    identifiantAssociationUniteLegale: new Rna(DEFAULT_ASSOCIATION.rna),
     trancheEffectifsUniteLegale: null,
     anneeEffectifsUniteLegale: null,
     dateDernierTraitementUniteLegale: new Date("2026-03-13T00:00:00.000Z"),

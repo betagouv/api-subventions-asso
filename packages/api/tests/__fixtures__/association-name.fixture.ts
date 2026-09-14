@@ -1,4 +1,4 @@
-import UniteLegaleNameEntity from "../../src/entities/UniteLegaleNameEntity";
+import UniteLegaleNameEntity from "../../src/entities/AssociationSearchEntity";
 import Siren from "../../src/identifier-objects/Siren";
 
 export default [

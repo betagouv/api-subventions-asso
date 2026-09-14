@@ -10,7 +10,7 @@ interface UniteLegaleNameProps {
     updateDate?: Date;
 }
 
-export default class UniteLegaleNameEntity {
+export default class AssociationSearchEntity {
     public siren: Siren;
     public rna: Rna | null;
     public name: string;

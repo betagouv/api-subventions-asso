@@ -1,5 +1,5 @@
 import { NotAssociationError } from "core";
-import UniteLegaleNameService from "../providers/unite-legale-name/unite-legale.name.service";
+import AssociationSearchService from "../providers/association-search/association-search.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
@@ -36,7 +36,7 @@ export class AssociationNameService {
 
             const promiseResults = [
                 ...(await Promise.all(
-                    identifiers.map(identifierStr => UniteLegaleNameService.searchBySirenSiretName(identifierStr)),
+                    identifiers.map(identifierStr => AssociationSearchService.searchBySirenSiretName(identifierStr)),
                 )),
                 ...(await Promise.all(identifiers.map(identifierStr => searchEntreprisesCatch(identifierStr)))),
             ];
@@ -46,7 +46,7 @@ export class AssociationNameService {
             // Siret Or Name
 
             const promiseResults = [
-                ...(await UniteLegaleNameService.searchBySirenSiretName(value.toLowerCase().trim())),
+                ...(await AssociationSearchService.searchBySirenSiretName(value.toLowerCase().trim())),
                 ...(await searchEntreprisesCatch(value)),
             ];
 

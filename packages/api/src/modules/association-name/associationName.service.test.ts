@@ -1,4 +1,4 @@
-import UniteLegaleNameService from "../providers/unite-legale-name/unite-legale.name.service";
+import AssociationSearchService from "../providers/association-search/association-search.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import associationNameService from "./associationName.service";
 import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
@@ -6,11 +6,11 @@ import AssociationNameEntity from "./entities/AssociationNameEntity";
 import Siren from "../../identifier-objects/Siren";
 import Rna from "../../identifier-objects/Rna";
 
-jest.mock("../providers/unite-legale-name/unite-legale.name.service");
+jest.mock("../providers/association-search/association-search.service");
 jest.mock("../rna-siren/rna-siren.service");
 jest.mock("../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service");
 
-const mockedUniteLegaleNameService = UniteLegaleNameService as jest.Mocked<typeof UniteLegaleNameService>;
+const mockedUniteLegaleNameService = AssociationSearchService as jest.Mocked<typeof AssociationSearchService>;
 const mockedRnaSirenService = rnaSirenService as jest.Mocked<typeof rnaSirenService>;
 const mockedRechercheEntreprises = rechercheEntreprisesService as jest.Mocked<typeof rechercheEntreprisesService>;
 

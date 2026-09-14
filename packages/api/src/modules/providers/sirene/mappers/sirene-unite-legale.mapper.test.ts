@@ -74,9 +74,9 @@ describe("SireneUniteLegaleMapper", () => {
         });
     });
 
-    describe("entityToUniteLegaleNameEntity", () => {
+    describe("entityToAssociationSearchEntity", () => {
         it("should return a SireneUniteLegaleEntity", () => {
-            const actual = SireneUniteLegaleMapper.entityToUniteLegaleNameEntity(ENTITIES[0]);
+            const actual = SireneUniteLegaleMapper.entityToAssociationSearchEntity(ENTITIES[0]);
 
             expect(actual).toMatchSnapshot();
         });

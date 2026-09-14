@@ -1,26 +1,26 @@
 import { AnyBulkWriteOperation } from "mongodb";
-import UniteLegaleNameEntity from "../../../../entities/UniteLegaleNameEntity";
+import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 import MongoAdapter from "../MongoAdapter";
 import Siren from "../../../../identifier-objects/Siren";
-import { UniteLegalNamePort } from "./unite-legale-name.port";
+import { AssociationSearchPort } from "./association-search.port";
 
-import UniteLegalNameMapper from "./unite-legale-name.mapper";
-import UniteLegaleNameDbo from "./@types/UniteLegaleNameDbo";
+import AssociationSearchMapper from "./association-search.mapper";
+import AssociationSearchDbo from "./@types/AssociationSearchDbo";
 
-export class UniteLegaleNameAdapter extends MongoAdapter<UniteLegaleNameDbo> implements UniteLegalNamePort {
-    collectionName = "unite-legal-names";
+export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo> implements AssociationSearchPort {
+    collectionName = "unite-legale-search";
 
     async createIndexes(): Promise<void> {
         await this.collection.createIndex({ searchKey: 1 }, { unique: true });
         await this.collection.createIndex({ siren: 1 });
     }
 
-    search(searchQuery: string): Promise<UniteLegaleNameEntity[]> {
+    search(searchQuery: string): Promise<AssociationSearchEntity[]> {
         return this.collection
             .find({
                 searchKey: { $regex: searchQuery },
             })
-            .map(doc => UniteLegalNameMapper.toEntity(doc))
+            .map(doc => AssociationSearchMapper.toEntity(doc))
             .toArray();
     }
 
@@ -30,31 +30,31 @@ export class UniteLegaleNameAdapter extends MongoAdapter<UniteLegaleNameDbo> imp
      * @param {Siren} siren
      * @returns the latest name associate at the siren
      */
-    async findOneBySiren(siren: Siren): Promise<UniteLegaleNameEntity | null> {
+    async findOneBySiren(siren: Siren): Promise<AssociationSearchEntity | null> {
         const cursor = this.collection.find({ siren: siren.value }).sort({ updateDate: 1 });
 
         if (!cursor.hasNext()) return null;
         const dbo = await cursor.next();
         await cursor.close();
         if (!dbo) return null;
-        return UniteLegalNameMapper.toEntity(dbo);
+        return AssociationSearchMapper.toEntity(dbo);
     }
 
-    public async upsertMany(entities: UniteLegaleNameEntity[]): Promise<void> {
+    public async upsertMany(entities: AssociationSearchEntity[]): Promise<void> {
         const operations = entities.map(
             e =>
                 ({
                     updateOne: {
                         filter: { searchKey: e.searchKey },
-                        update: { $set: UniteLegalNameMapper.toDbo(e) },
+                        update: { $set: AssociationSearchMapper.toDbo(e) },
                         upsert: true,
                     },
-                }) as AnyBulkWriteOperation<UniteLegaleNameDbo>,
+                }) as AnyBulkWriteOperation<AssociationSearchDbo>,
         );
         await this.collection.bulkWrite(operations);
     }
 }
 
-const uniteLegalNameAdapter = new UniteLegaleNameAdapter();
+const associationSearchAdapter = new AssociationSearchAdapter();
 
-export default uniteLegalNameAdapter;
+export default associationSearchAdapter;

@@ -1,10 +1,7 @@
 import path from "path";
 import fs from "fs";
-import { createSireneStockUniteLegaleCli } from "../../../src/adapters/inputs/cli/sirene-stock-unite-legale.cli";
-import uniteLegalNameAdapter from "../../../src/adapters/outputs/db/unite-legale-name/unite-legale-name.adapter";
-import uniteLegaleEntrepriseAdapter from "../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
-import sireneUniteLegaleAdapter from "../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
-import { sireneStockUniteLegaleAdapter } from "../../../src/adapters/outputs/api/data-gouv/data-gouv.adapter";
+import { createSireneStockUniteLegaleCli } from "../../../../src/adapters/inputs/cli/sirene-stock-unite-legale.cli";
+import { sireneStockUniteLegaleAdapter } from "../../../../src/adapters/outputs/api/data-gouv/data-gouv.adapter";
 
 const PARQUET_PATH = path.resolve(__dirname, "../../../src/modules/providers/sirene/__fixtures__");
 
@@ -34,7 +31,7 @@ describe("SireneStockUniteLegaleCli", () => {
             expect(data).toMatchSnapshot();
         });
 
-        it("should persist asso names", async () => {
+        it("should persist associaton search documents", async () => {
             await cli.import();
             // @ts-expect-error: access protected for test
             const data = await uniteLegalNameAdapter.collection.find({}, { projection: { _id: 0 } }).toArray();
