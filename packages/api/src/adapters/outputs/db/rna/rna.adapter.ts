@@ -3,6 +3,7 @@ import { RnaPort } from "./rna.port";
 import RnaDbo from "./rna.dbo";
 import { Rna } from "../../../../identifier-objects";
 import { toEntity } from "./rna.mapper";
+import { AnyBulkWriteOperation } from "mongodb";
 
 export class RnaAdapter extends MongoAdapter<RnaDbo> implements RnaPort {
     public collectionName = "rna";
@@ -14,6 +15,17 @@ export class RnaAdapter extends MongoAdapter<RnaDbo> implements RnaPort {
     async insertMany(lines: RnaDbo[]) {
         await this.collection.insertMany(lines, { ordered: false });
         return;
+    }
+
+    async upsertMany(lines: RnaDbo[]): Promise<void> {
+        const operations: AnyBulkWriteOperation<RnaDbo>[] = lines.map(line => ({
+            replaceOne: {
+                filter: { id: line.id },
+                replacement: line,
+                upsert: true,
+            },
+        }));
+        await this.collection.bulkWrite(operations, { ordered: false });
     }
 
     async getByRna(rna: Rna) {
