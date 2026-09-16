@@ -1,35 +1,49 @@
-import { AssociationNameDto } from "dto";
 import db from "../../../../shared/MongoConnection";
 import { SearchPort } from "./search.port";
-import SearchCacheEntity from "./@types/SearchCacheDbo";
+import SearchCacheEntity, { SearchResultDbo } from "./@types/SearchCacheDbo";
+import AssociationNameEntity from "../../../../modules/association-name/entities/AssociationNameEntity";
+import Rna from "../../../../identifier-objects/Rna";
+import Siren from "../../../../identifier-objects/Siren";
+
+function toEntity(dbo: SearchResultDbo): AssociationNameEntity {
+    return new AssociationNameEntity(dbo.name, new Siren(dbo.siren), new Rna(dbo.rna), dbo.address, dbo.nbEtabs);
+}
+
+function toDbo(searchToken: string, searchResult: AssociationNameEntity[]): SearchCacheEntity {
+    return new SearchCacheEntity(
+        searchToken,
+        searchResult.map(associationName => {
+            return {
+                name: associationName.name,
+                rna: associationName.rna?.value,
+                siren: associationName.siren.value,
+                address: associationName.address,
+                nbEtabs: associationName.nbEtabs,
+            };
+        }) as SearchResultDbo[],
+    );
+}
 
 export class SearchCacheAdapter implements SearchPort {
     private readonly collection = db.collection<SearchCacheEntity>("search-cache");
 
-    async saveResults(searchToken: string, results: AssociationNameDto[]): Promise<void> {
-        await this.collection.insertOne(new SearchCacheEntity(searchToken, results));
+    async saveResults(searchToken: string, searchResult: AssociationNameEntity[]) {
+        await this.collection.insertOne(toDbo(searchToken, searchResult));
     }
 
-    async getResults(
-        searchToken: string,
-        page: number,
-        pageSize: number,
-        maxTimestamp: Date,
-    ): Promise<{ results: AssociationNameDto[]; total: number } | null> {
+    async getResults(searchToken: string, maxTimestamp: Date) {
         const aggregationResult = (await this.collection
             .aggregate([
                 { $match: { searchToken, timestamp: { $gt: maxTimestamp } } },
                 {
                     $project: {
                         _id: 0,
-                        results: { $slice: ["$results", (page - 1) * pageSize, pageSize] },
-                        total: "$total",
                     },
                 },
             ])
-            .toArray()) as { results: AssociationNameDto[]; total: number }[];
+            .toArray()) as SearchCacheEntity[];
         if (!aggregationResult[0]) return null;
-        return { results: aggregationResult[0].results, total: aggregationResult[0].total };
+        return aggregationResult[0].results.map(toEntity);
     }
 
     async deleteAll(): Promise<void> {

@@ -7,10 +7,3 @@ export interface AssociationNameDto {
     address?: Adresse;
     nbEtabs?: number;
 }
-
-export interface PaginatedAssociationNameDto {
-    results: AssociationNameDto[];
-    nbPages: number;
-    page: number;
-    total: number;
-}

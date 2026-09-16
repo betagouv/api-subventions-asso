@@ -1,39 +1,33 @@
-import { PaginatedAssociationNameDto } from "dto";
 import associationNameService from "../association-name/associationName.service";
 import searchAdapter from "../../adapters/outputs/db/search/search.adapter";
-import AssociationNameDtoMapper from "./mappers/association-name-dto.mapper";
+import AssociationNameEntity from "../association-name/entities/AssociationNameEntity";
+import PaginatedResult from "../../@types/PaginatedResult";
 
 export class SearchService {
-    static PAGE_SIZE = 12;
-    static CACHE_LIFESPAN_MS = 24 * 60 * 60 * 1000;
+    PAGE_SIZE = 12;
+    CACHE_LIFESPAN_MS = 24 * 60 * 60 * 1000;
 
-    public async getAssociationsKeys(value: string, page = 1): Promise<PaginatedAssociationNameDto> {
-        const resultsFromCache = await searchAdapter.getResults(
-            value,
-            page,
-            SearchService.PAGE_SIZE,
-            new Date(Date.now() - SearchService.CACHE_LIFESPAN_MS),
-        );
+    public async getAssociationsKeys(value: string): Promise<AssociationNameEntity[]> {
+        const resultsFromCache = await searchAdapter.getResults(value, new Date(Date.now() - this.CACHE_LIFESPAN_MS));
 
-        if (resultsFromCache)
-            return {
-                nbPages: Math.ceil(resultsFromCache.total / SearchService.PAGE_SIZE),
-                page,
-                results: resultsFromCache.results,
-                total: resultsFromCache.total,
-            };
+        if (resultsFromCache) return resultsFromCache;
 
         // nothing in cache
-        const resultsEntities = await associationNameService.find(value);
-        const resultsDtos = resultsEntities.map(entity => AssociationNameDtoMapper.toDto(entity));
-        const nbResults = resultsDtos.length;
-        searchAdapter.saveResults(value, resultsDtos);
+        // @TODO: pagination has been removed because not used properly but we should limit the result of the find
+        const entities = await associationNameService.find(value);
+        searchAdapter.saveResults(value, entities);
 
+        return entities;
+    }
+
+    public async getPaginatedResult(value: string, page: number): Promise<PaginatedResult<AssociationNameEntity[]>> {
+        const results = await this.getAssociationsKeys(value);
+        const paginatedResult = results.slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE);
         return {
-            nbPages: Math.ceil(nbResults / SearchService.PAGE_SIZE),
+            results: paginatedResult,
             page,
-            results: resultsDtos.slice((page - 1) * SearchService.PAGE_SIZE, page * SearchService.PAGE_SIZE),
-            total: resultsDtos.length,
+            nbPages: Math.ceil(results.length / this.PAGE_SIZE),
+            total: results.length,
         };
     }
 

@@ -1,8 +1,8 @@
 import { Controller, Get, Response, Route, Security, Tags, Query, Path, Example } from "tsoa";
-import { PaginatedAssociationNameDto } from "dto";
 import { HttpErrorInterface } from "core";
-import searchUseCase from "../../../usecases/search/search";
-import searchService from "../../../modules/search/search.service";
+import searchUseCase from "../../../../usecases/search/search";
+import searchService from "../../../../modules/search/search.service";
+import { AssociationNameDto, PaginatedResultDto } from "dto";
 
 @Route("search")
 @Security("jwt")
@@ -14,12 +14,12 @@ export class SearchHttp extends Controller {
      * @param input Identifiant RNA ou Identifiant Siren ou Nom d'une association (peut-être encodé via encodeURIComponent())
      * @param page default to 1
      */
-    @Example<PaginatedAssociationNameDto>({
+    @Example<PaginatedResultDto<AssociationNameDto[]>>({
         results: [
             {
                 siren: "123456789",
-                name: "Association Exemple",
                 rna: "W751234567",
+                name: "Association Exemple",
                 nbEtabs: 1,
             },
         ],
@@ -31,8 +31,15 @@ export class SearchHttp extends Controller {
     @Response<HttpErrorInterface>("404", "Aucune association trouvée", {
         message: "Could not match any association with given input : ${input}",
     })
-    public findAssociations(@Path() input: string, @Query() page = "1"): Promise<PaginatedAssociationNameDto> {
-        return searchService.getAssociationsKeys(decodeURIComponent(input), Number.parseInt(page));
+    public async findAssociations(
+        @Path() input: string,
+        @Query() page = "1",
+    ): Promise<PaginatedResultDto<AssociationNameDto[]>> {
+        const search = await searchService.getPaginatedResult(decodeURIComponent(input), Number.parseInt(page));
+        return {
+            ...search,
+            results: search.results.map(entity => ({ ...entity, siren: entity.siren.value, rna: entity.rna?.value })),
+        };
     }
 
     public search(@Path() input: string, @Query() page = "1"): Promise<unknown> {
