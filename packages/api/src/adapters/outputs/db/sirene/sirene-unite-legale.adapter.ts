@@ -11,6 +11,7 @@ export class SireneUniteLegaleAdapter extends MongoAdapter<SireneUniteLegaleDbo>
 
     public async createIndexes(): Promise<void> {
         await this.collection.createIndex({ siren: 1 }, { unique: true });
+        await this.collection.createIndex({ identifiantAssociationUniteLegale: 1 });
     }
 
     public async upsertMany(entities: SireneUniteLegaleEntity[]): Promise<void> {
