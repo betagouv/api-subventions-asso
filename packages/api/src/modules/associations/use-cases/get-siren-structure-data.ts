@@ -18,16 +18,16 @@ import { getMostRecentDate } from "../../../shared/helpers/DateHelper";
 function uniteLegaleToAssociation(entity: SireneUniteLegaleEntity): AssociationWithProviderValues {
     const toPvs = ProviderValueFactory.buildProviderValuesMapper(
         sireneUniteLegaleAdapter.collectionName,
-        new Date(entity.dateDernierTraitementUniteLegale),
+        entity.dateDernierTraitementUniteLegale,
     );
 
     return {
-        denomination_siren: toPvs(entity.denominationUniteLegale),
+        denomination_siren: toPvs(entity.denominationUniteLegale as string),
         siren: toPvs(entity.siren.value),
-        nic_siege: toPvs(entity.nicSiegeUniteLegale),
-        categorie_juridique: toPvs(entity.categorieJuridiqueUniteLegale),
-        date_creation_siren: toPvs(new Date(entity.dateCreationUniteLegale)),
-        date_modification_siren: toPvs(new Date(entity.dateDernierTraitementUniteLegale)),
+        nic_siege: toPvs(entity.nicSiegeUniteLegale as string),
+        categorie_juridique: toPvs(entity.categorieJuridiqueUniteLegale as string),
+        date_creation_siren: toPvs(entity.dateCreationUniteLegale as Date),
+        date_modification_siren: toPvs(entity.dateDernierTraitementUniteLegale),
     };
 }
 

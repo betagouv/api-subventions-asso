@@ -21,7 +21,9 @@ import ScdlCli from "./adapters/inputs/cli/scdl.cli";
 import { initIndexes } from "./shared/MongoInit";
 import GeoCli from "./adapters/inputs/cli/geo.cli";
 import DataBretagneCli from "./adapters/inputs/cli/data-bretagne.cli";
-import SireneStockUniteLegaleCli from "./adapters/inputs/cli/sirene-stock-unite-legale.cli";
+import SireneStockUniteLegaleCli, {
+    createSireneStockUniteLegaleCli,
+} from "./adapters/inputs/cli/sirene-stock-unite-legale.cli";
 import EstablishmentCli, { createEstablishmentCli } from "./adapters/inputs/cli/establishment.cli";
 import AmountsVsProgramRegionCli from "./adapters/inputs/cli/amounts-vs-program-region.cli";
 import ScdlBatchCli from "./adapters/inputs/cli/scdl-batch.cli";
@@ -70,6 +72,7 @@ async function main() {
         [ChorusCli.cmdName, { factory: () => new ChorusCli(chorusImport, updateFlatByExercise) }],
         [EstablishmentCli.cmdName, { factory: createEstablishmentCli }],
         [RnaCli.cmdName, { factory: () => new RnaCli(rnaPipeline) }],
+        [SireneStockUniteLegaleCli.cmdName, { factory: createSireneStockUniteLegaleCli }],
     ]);
 
     const args = process.argv.slice(2);
