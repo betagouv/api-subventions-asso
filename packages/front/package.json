@@ -68,7 +68,7 @@
         "eslint-plugin-vitest-globals": "^1.6.1",
         "prettier-plugin-svelte": "^3.5.2",
         "svelte-eslint-parser": "^1.8.0",
-        "vitest": "^4.1.10"
+        "vitest": "^4.1.11"
     },
     "type": "module"
 }
