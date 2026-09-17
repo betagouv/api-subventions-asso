@@ -1,22 +1,21 @@
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
-import associationHelper from "./associations.helper";
+import { SireneUniteLegalePort } from "../../adapters/outputs/db/sirene/sirene-unite-legale.port";
+import { AssociationsHelper } from "./associations.helper";
 import providers from "../providers";
 import apiAssoService from "../providers/api-asso/api-asso.service";
 import uniteLegaleEntrepriseService from "../providers/unite-legale-entreprise/unite-legale.entreprise.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
-import sireneUniteLegaleService from "../providers/sirene/sirene-unite-legale.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
+import { SireneUniteLegaleEntity } from "../../entities/SireneUniteLegaleEntity";
 
 jest.mock("../providers/index");
 
 jest.mock("../providers/api-asso/api-asso.service");
 jest.mock("../providers/unite-legale-entreprise/unite-legale.entreprise.service");
 jest.mock("../../shared/LegalCategoriesAccepted", () => ({ LEGAL_CATEGORIES_ACCEPTED: "asso" }));
-jest.mock("../providers/sirene/sirene-unite-legale.service");
-
 const DEFAULT_PROVIDERS = providers.default;
 
 describe("associationHelper", () => {
@@ -24,6 +23,8 @@ describe("associationHelper", () => {
     const SIREN = new Siren("100000001");
     const INVALID_IDENTIFIER = {} as unknown as AssociationIdentifier;
     const rnaSirenServiceFindOne = jest.spyOn(rnaSirenService, "find");
+    const sirenePort = { findOneBySiren: jest.fn() } as unknown as jest.Mocked<SireneUniteLegalePort>;
+    const associationHelper = new AssociationsHelper(sirenePort);
 
     let formatDataMock: jest.SpyInstance;
     beforeAll(() => {
@@ -53,15 +54,13 @@ describe("associationHelper", () => {
         });
 
         it("should return true when siren is in sireneStockUniteLegale", async () => {
-            // @ts-expect-error: mock
-            jest.mocked(sireneUniteLegaleService.findOneBySiren).mockResolvedValueOnce(true);
+            sirenePort.findOneBySiren.mockResolvedValueOnce({} as SireneUniteLegaleEntity);
             const actual = await associationHelper.isIdentifierFromAsso(IDENTIFIER_WITHOUT_RNA);
             expect(actual).toBeTruthy();
         });
 
         it("should return false when siren is in uniteLegaleEntreprises", async () => {
-            // @ts-expect-error: mock
-            jest.mocked(sireneUniteLegaleService.findOneBySiren).mockResolvedValueOnce(false);
+            sirenePort.findOneBySiren.mockResolvedValueOnce(null);
             // @ts-expect-error: mock
             uniteLegaleEntrepriseService.isEntreprise.mockResolvedValueOnce(true);
             const actual = await associationHelper.isIdentifierFromAsso(IDENTIFIER_WITHOUT_RNA);

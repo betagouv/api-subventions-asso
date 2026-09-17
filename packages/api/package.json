@@ -98,7 +98,6 @@
         "moment": "^2.30.1",
         "mongodb": "6.16.0",
         "multer": "^2.2.0",
-        "node-stream-zip": "^1.15.0",
         "node-xlsx": "^0.24.0",
         "openid-client": "^6.8.4",
         "passport": "^0.7.0",

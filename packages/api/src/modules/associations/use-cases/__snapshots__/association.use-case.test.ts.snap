@@ -230,7 +230,7 @@ exports[`Association Use Cases GetSirenStructureData returns association data 1`
       "last_update": 2026-03-13T00:00:00.000Z,
       "provider": "sirene",
       "type": "string",
-      "value": "",
+      "value": "9220",
     },
   ],
   "date_creation_siren": [
@@ -238,7 +238,7 @@ exports[`Association Use Cases GetSirenStructureData returns association data 1`
       "last_update": 2026-03-13T00:00:00.000Z,
       "provider": "sirene",
       "type": "object",
-      "value": Date { NaN },
+      "value": 1989-02-01T00:00:00.000Z,
     },
   ],
   "date_modification_siren": [
@@ -254,7 +254,7 @@ exports[`Association Use Cases GetSirenStructureData returns association data 1`
       "last_update": 2026-03-13T00:00:00.000Z,
       "provider": "sirene",
       "type": "string",
-      "value": "",
+      "value": "DEFAULT_ASSOCIATION",
     },
   ],
   "lastUpdate": 2026-05-20T00:00:00.000Z,

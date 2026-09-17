@@ -13,7 +13,7 @@ describe("DataGouvAdapter", () => {
     let port;
 
     beforeEach(() => {
-        port = new DataGouvAdapter("825f4199-cadd-486c-ac46-a65a8ea1a047");
+        port = new DataGouvAdapter("350182c9-148a-46e0-8389-76c2ec1374a3");
     });
 
     describe("constructor", () => {
@@ -29,7 +29,7 @@ describe("DataGouvAdapter", () => {
         it("should make a GET request for the file", async () => {
             await port.getFileStream();
             expect(port.http.get).toHaveBeenCalledWith(
-                "https://www.data.gouv.fr/api/1/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047",
+                "https://www.data.gouv.fr/api/1/datasets/r/350182c9-148a-46e0-8389-76c2ec1374a3",
                 { responseType: "stream" },
             );
         });

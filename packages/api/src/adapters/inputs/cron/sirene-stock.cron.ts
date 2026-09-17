@@ -1,19 +1,20 @@
 import { CronController } from "../../../@types/CronController";
 import { AsyncCron } from "../../../decorators/cron.decorator";
-import sireneStockUniteLegaleService, {
-    SireneStockUniteLegaleService,
-} from "../../../modules/providers/sirene/sirene-stock-unite-legale.service";
 import DownloadFile from "../../../usecases/download-file";
 import { RemoveFile } from "../../../usecases/remove-file";
-import { sireneStockEstablishmentAdapter } from "../../outputs/api/data-gouv/data-gouv.adapter";
+import {
+    sireneStockEstablishmentAdapter,
+    sireneStockUniteLegaleAdapter,
+} from "../../outputs/api/data-gouv/data-gouv.adapter";
 import { createEstablishmentCli } from "../cli/establishment.cli";
+import { createSireneStockUniteLegaleCli } from "../cli/sirene-stock-unite-legale.cli";
 import { DownloadAndImport } from "../pipeline/import/download-and-import.pipeline";
 
 export class SireneStockCron implements CronController {
     name = "sirene";
 
     constructor(
-        private ulPipeline: SireneStockUniteLegaleService,
+        private ulPipeline: DownloadAndImport,
         private estabPipeline: DownloadAndImport,
     ) {}
 
@@ -25,7 +26,7 @@ export class SireneStockCron implements CronController {
     }
 
     async importUnitesLegale() {
-        return this.ulPipeline.getAndParse();
+        return this.ulPipeline.run();
     }
 
     async importEstablishments() {
@@ -34,7 +35,11 @@ export class SireneStockCron implements CronController {
 }
 
 const sireneStockCron = new SireneStockCron(
-    sireneStockUniteLegaleService,
+    new DownloadAndImport(
+        createSireneStockUniteLegaleCli(),
+        new DownloadFile(sireneStockUniteLegaleAdapter),
+        new RemoveFile(),
+    ),
     new DownloadAndImport(
         createEstablishmentCli(),
         new DownloadFile(sireneStockEstablishmentAdapter),

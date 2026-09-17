@@ -218,9 +218,6 @@ importers:
       multer:
         specifier: ^2.2.0
         version: 2.2.0
-      node-stream-zip:
-        specifier: ^1.15.0
-        version: 1.15.0
       node-xlsx:
         specifier: ^0.24.0
         version: 0.24.0
@@ -5812,10 +5809,6 @@ packages:
     resolution: {integrity: sha512-J6l92tKHX6w8Jy5nO1Vuc01NoIiRGi/d6qBKVxh+IQ8Cr3b6HbVNfKiF8ZpFKufTwpwxMmce2W3iQZ861ZRyTg==}
     engines: {node: '>=18'}
 
-  node-stream-zip@1.15.0:
-    resolution: {integrity: sha512-LN4fydt9TqhZhThkZIVQnF9cwjU3qmUH9h78Mx/K7d3VvfRqqwthLwJEUOEL0QPZ0XQmNN7be5Ggit5+4dq3Bw==}
-    engines: {node: '>=0.12.0'}
-
   node-xlsx@0.24.0:
     resolution: {integrity: sha512-1olwK48XK9nXZsyH/FCltvGrQYvXXZuxVitxXXv2GIuRm51aBi1+5KwR4rWM4KeO61sFU+00913WLZTD+AcXEg==}
     engines: {node: '>=10.0.0'}
@@ -10358,7 +10351,6 @@ snapshots:
       moment: 2.30.1
       mongodb: 6.16.0(@aws-sdk/credential-providers@3.1080.0)(socks@2.8.9)
       multer: 2.2.0
-      node-stream-zip: 1.15.0
       node-xlsx: 0.24.0
       openid-client: 6.8.4
       passport: 0.7.0
@@ -14116,8 +14108,6 @@ snapshots:
   node-int64@0.4.0: {}
 
   node-releases@2.0.50: {}
-
-  node-stream-zip@1.15.0: {}
 
   node-xlsx@0.24.0:
     dependencies:
