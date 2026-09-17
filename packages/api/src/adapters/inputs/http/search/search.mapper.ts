@@ -1,12 +1,19 @@
-import AssociationNameEntity from "../../../../modules/association-name/entities/AssociationNameEntity";
+import { RechercheAssociationDto } from "dto";
+import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 
-export function toPagniatedResult(entities: AssociationNameEntity[], page: number) {
-    const PAGE_SIZE = 12;
-
+export function toDto(entity: AssociationSearchEntity): RechercheAssociationDto {
     return {
-        nbPages: Math.ceil(entities.length / PAGE_SIZE),
-        page,
-        results: entities.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-        total: entities.length,
+        ...entity,
+        siren: entity.siren.value,
+        rna: entity.rna?.value ?? null,
+        name: entity.name,
+        adresse: {
+            numero: entity.address?.number ?? null,
+            type_voie: entity.address?.type ?? null,
+            voie: entity.address?.name ?? null,
+            code_postal: entity.address?.postalCode ?? null,
+            commune: entity.address?.city ?? null,
+        },
+        nbEtabs: entity.nbEstabs ?? null,
     };
 }

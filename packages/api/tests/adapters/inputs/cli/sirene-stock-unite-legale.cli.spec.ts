@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { createSireneStockUniteLegaleCli } from "../../../../src/adapters/inputs/cli/sirene-stock-unite-legale.cli";
 import { sireneStockUniteLegaleAdapter } from "../../../../src/adapters/outputs/api/data-gouv/data-gouv.adapter";
+import db from "../../../../src/shared/MongoConnection";
 
 const PARQUET_PATH = path.resolve(__dirname, "../../../src/modules/providers/sirene/__fixtures__");
 
@@ -33,8 +34,14 @@ describe("SireneStockUniteLegaleCli", () => {
 
         it("should persist associaton search documents", async () => {
             await cli.import();
-            // @ts-expect-error: access protected for test
-            const data = await uniteLegalNameAdapter.collection.find({}, { projection: { _id: 0 } }).toArray();
+            const data = (
+                await db
+                    .collection("association-search")
+                    .find({}, { projection: { _id: 0 } })
+                    .toArray()
+            ).map(object => ({
+                ...object,
+            }));
             expect(data).toMatchSnapshot();
         });
 

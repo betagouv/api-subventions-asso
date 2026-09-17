@@ -1,15 +1,21 @@
 import db from "../../../../shared/MongoConnection";
 import { SearchPort } from "./search.port";
 import SearchCacheEntity, { SearchResultDbo } from "./@types/SearchCacheDbo";
-import AssociationNameEntity from "../../../../modules/association-name/entities/AssociationNameEntity";
+import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 import Rna from "../../../../identifier-objects/Rna";
 import Siren from "../../../../identifier-objects/Siren";
 
-function toEntity(dbo: SearchResultDbo): AssociationNameEntity {
-    return new AssociationNameEntity(dbo.name, new Siren(dbo.siren), new Rna(dbo.rna), dbo.address, dbo.nbEtabs);
+function toEntity(dbo: SearchResultDbo): AssociationSearchEntity {
+    return new AssociationSearchEntity({
+        name: dbo.name,
+        siren: new Siren(dbo.siren),
+        rna: new Rna(dbo.rna),
+        address: dbo.address ?? undefined,
+        nbEstabs: dbo.nbEstabs ?? undefined,
+    });
 }
 
-function toDbo(searchToken: string, searchResult: AssociationNameEntity[]): SearchCacheEntity {
+function toDbo(searchToken: string, searchResult: AssociationSearchEntity[]): SearchCacheEntity {
     return new SearchCacheEntity(
         searchToken,
         searchResult.map(associationName => {
@@ -18,7 +24,7 @@ function toDbo(searchToken: string, searchResult: AssociationNameEntity[]): Sear
                 rna: associationName.rna?.value,
                 siren: associationName.siren.value,
                 address: associationName.address,
-                nbEtabs: associationName.nbEtabs,
+                nbEstabs: associationName.nbEstabs,
             };
         }) as SearchResultDbo[],
     );
@@ -27,7 +33,7 @@ function toDbo(searchToken: string, searchResult: AssociationNameEntity[]): Sear
 export class SearchCacheAdapter implements SearchPort {
     private readonly collection = db.collection<SearchCacheEntity>("search-cache");
 
-    async saveResults(searchToken: string, searchResult: AssociationNameEntity[]) {
+    async saveResults(searchToken: string, searchResult: AssociationSearchEntity[]) {
         await this.collection.insertOne(toDbo(searchToken, searchResult));
     }
 

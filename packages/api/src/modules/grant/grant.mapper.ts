@@ -83,7 +83,7 @@ export default class GrantMapper {
             instructor: application?.instructiveDepartmentName ?? undefined,
             measure: application?.scheme ?? undefined,
             siret,
-            postalCode: estabBySiret[siret]?.adresse?.[0]?.value?.code_postal,
+            postalCode: estabBySiret[siret]?.adresse?.[0]?.value?.code_postal ?? undefined,
             status: application?.statusLabel,
 
             // payment part

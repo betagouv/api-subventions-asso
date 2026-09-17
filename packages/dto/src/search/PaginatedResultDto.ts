@@ -1,5 +1,5 @@
 export interface PaginatedResultDto<T> {
-    results: T;
+    resultats: T;
     nbPages: number;
     page: number;
     total: number;

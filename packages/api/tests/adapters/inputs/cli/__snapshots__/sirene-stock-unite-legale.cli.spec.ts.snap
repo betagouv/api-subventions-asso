@@ -3,18 +3,20 @@
 exports[`SireneStockUniteLegaleCli import should persist associaton search documents 1`] = `
 [
   {
+    "address": null,
     "name": "CENTRE MEDICO PSYCHO PEDAGOGIQUE",
+    "nbEstabs": null,
     "rna": null,
     "searchKey": "300483146 - centre medico psycho pedagogique",
     "siren": "300483146",
-    "updateDate": Any<Date>,
   },
   {
+    "address": null,
     "name": "EDUCATION POPULAIRE DU FAUBOURG VOSGES",
+    "nbEstabs": null,
     "rna": null,
     "searchKey": "300846177 - education populaire du faubourg vosges",
     "siren": "300846177",
-    "updateDate": Any<Date>,
   },
 ]
 `;

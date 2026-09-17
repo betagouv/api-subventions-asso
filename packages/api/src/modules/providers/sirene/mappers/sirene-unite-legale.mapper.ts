@@ -35,7 +35,7 @@ export default class SireneUniteLegaleMapper {
     static entityToAssociationSearchEntity(entity: SireneUniteLegaleEntity): AssociationSearchEntity {
         return new AssociationSearchEntity({
             siren: entity.siren,
-            rna: entity.identifiantAssociationUniteLegale,
+            rna: entity.identifiantAssociationUniteLegale ?? undefined,
             name: entity.denominationUniteLegale,
         });
     }

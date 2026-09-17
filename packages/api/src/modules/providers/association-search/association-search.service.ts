@@ -2,13 +2,12 @@ import Fuse from "fuse.js";
 import associationSearchAdapter from "../../../adapters/outputs/db/association-search/association-search.adapter";
 import AssociationSearchEntity from "../../../entities/AssociationSearchEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
-import AssociationNameMapper from "../../association-name/mappers/association-name.mapper";
 import Siret from "../../../identifier-objects/Siret";
 import Siren from "../../../identifier-objects/Siren";
 
 export class AssociationSearchService {
     //@TODO: make value either a string (name) or a Siren
-    async searchBySirenSiretName(value: string) {
+    async searchBySirenSiretName(value: string): Promise<AssociationSearchEntity[]> {
         if (Siret.isStartOfSiret(value)) value = Siren.fromPartialSiretStr(value).value;
         // value is always siren or name
         // if siret it is transformed into siren
@@ -41,11 +40,17 @@ export class AssociationSearchService {
             }
 
             const rnaSirenEntities = await rnaSirenService.find(bestMatch.siren, true); // hotfix calls api asso way too much
-            if (!rnaSirenEntities) return [AssociationNameMapper.fromUniteLegaleNameEntity(bestMatch)];
+            if (!rnaSirenEntities) return [bestMatch];
 
             return rnaSirenEntities?.map(entity => {
                 // For one siren its possible to have many rna from match
-                return AssociationNameMapper.fromUniteLegaleNameEntity(bestMatch, entity.rna);
+                return new AssociationSearchEntity({
+                    siren: bestMatch.siren,
+                    rna: entity.rna,
+                    name: bestMatch.name,
+                    address: bestMatch.address ?? undefined,
+                    nbEstabs: bestMatch.nbEstabs ?? undefined,
+                });
             });
         });
         return (await Promise.all(rnaSirenPromises)).flat();

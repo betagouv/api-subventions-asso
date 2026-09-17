@@ -1,13 +1,13 @@
 import associationNameService from "../association-name/associationName.service";
 import searchAdapter from "../../adapters/outputs/db/search/search.adapter";
-import AssociationNameEntity from "../association-name/entities/AssociationNameEntity";
 import PaginatedResult from "../../@types/PaginatedResult";
+import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
 
 export class SearchService {
     PAGE_SIZE = 12;
     CACHE_LIFESPAN_MS = 24 * 60 * 60 * 1000;
 
-    public async getAssociationsKeys(value: string): Promise<AssociationNameEntity[]> {
+    public async getAssociationsKeys(value: string): Promise<AssociationSearchEntity[]> {
         const resultsFromCache = await searchAdapter.getResults(value, new Date(Date.now() - this.CACHE_LIFESPAN_MS));
 
         if (resultsFromCache) return resultsFromCache;
@@ -20,7 +20,7 @@ export class SearchService {
         return entities;
     }
 
-    public async getPaginatedResult(value: string, page: number): Promise<PaginatedResult<AssociationNameEntity[]>> {
+    public async getPaginatedResult(value: string, page: number): Promise<PaginatedResult<AssociationSearchEntity[]>> {
         const results = await this.getAssociationsKeys(value);
         const paginatedResult = results.slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE);
         return {

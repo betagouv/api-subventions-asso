@@ -36,7 +36,7 @@ describe("RechercheEntreprisesService", () => {
         beforeEach(() => {
             jest.mocked(associationHelper.isCategoryFromAsso).mockReturnValue(true);
             // @ts-expect-error: mock return value
-            jest.spyOn(RechercheEntreprisesMapper, "toAssociationNameEntity").mockReturnValue({
+            jest.spyOn(RechercheEntreprisesMapper, "toAssociationSearchEntity").mockReturnValue({
                 name: "Adapted Association Name",
             });
             mockSearch = jest.spyOn(rechercheEntreprisesService, "search").mockResolvedValue(RESULTS);
@@ -67,10 +67,10 @@ describe("RechercheEntreprisesService", () => {
             );
         });
 
-        it("adapts all result to AssociationNameEntity", async () => {
+        it("adapts all result to AssociationSearchEntity", async () => {
             await rechercheEntreprisesService.getSearchResult("NAME_RESEARCH");
             RESULTS.forEach((result, index) => {
-                expect(RechercheEntreprisesMapper.toAssociationNameEntity).toHaveBeenNthCalledWith(index + 1, result);
+                expect(RechercheEntreprisesMapper.toAssociationSearchEntity).toHaveBeenNthCalledWith(index + 1, result);
             });
         });
 

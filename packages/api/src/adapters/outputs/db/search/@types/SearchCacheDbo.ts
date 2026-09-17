@@ -1,6 +1,6 @@
-import AssociationNameEntity from "../../../../../modules/association-name/entities/AssociationNameEntity";
+import AssociationSearchEntity from "../../../../../entities/AssociationSearchEntity";
 
-export type SearchResultDbo = Omit<AssociationNameEntity, "rna" | "siren"> & { rna: string; siren: string };
+export type SearchResultDbo = Omit<AssociationSearchEntity, "rna" | "siren"> & { rna: string; siren: string };
 
 export interface SearchCacheDbo {
     timestamp: Date;

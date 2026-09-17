@@ -2,7 +2,8 @@ import { Controller, Get, Response, Route, Security, Tags, Query, Path, Example 
 import { HttpErrorInterface } from "core";
 import searchUseCase from "../../../../usecases/search/search";
 import searchService from "../../../../modules/search/search.service";
-import { AssociationNameDto, PaginatedResultDto } from "dto";
+import { RechercheAssociationDto, PaginatedResultDto } from "dto";
+import { toDto } from "./search.mapper";
 
 @Route("search")
 @Security("jwt")
@@ -14,12 +15,19 @@ export class SearchHttp extends Controller {
      * @param input Identifiant RNA ou Identifiant Siren ou Nom d'une association (peut-être encodé via encodeURIComponent())
      * @param page default to 1
      */
-    @Example<PaginatedResultDto<AssociationNameDto[]>>({
-        results: [
+    @Example<PaginatedResultDto<RechercheAssociationDto[]>>({
+        resultats: [
             {
                 siren: "123456789",
                 rna: "W751234567",
                 name: "Association Exemple",
+                adresse: {
+                    numero: "3",
+                    type_voie: "rue",
+                    code_postal: "35000",
+                    voie: "de Paris",
+                    commune: "Rennes",
+                },
                 nbEtabs: 1,
             },
         ],
@@ -34,11 +42,14 @@ export class SearchHttp extends Controller {
     public async findAssociations(
         @Path() input: string,
         @Query() page = "1",
-    ): Promise<PaginatedResultDto<AssociationNameDto[]>> {
-        const search = await searchService.getPaginatedResult(decodeURIComponent(input), Number.parseInt(page));
+    ): Promise<PaginatedResultDto<RechercheAssociationDto[]>> {
+        const { results, ...search } = await searchService.getPaginatedResult(
+            decodeURIComponent(input),
+            Number.parseInt(page),
+        );
         return {
             ...search,
-            results: search.results.map(entity => ({ ...entity, siren: entity.siren.value, rna: entity.rna?.value })),
+            resultats: results.map(toDto),
         };
     }
 

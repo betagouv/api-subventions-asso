@@ -4,9 +4,21 @@ exports[`/search /associations/{input} should return an Association from its Sir
 {
   "nbPages": 1,
   "page": 1,
-  "results": [
+  "resultats": [
     {
+      "address": null,
+      "adresse": {
+        "code_postal": null,
+        "commune": null,
+        "numero": null,
+        "type_voie": null,
+        "voie": null,
+      },
       "name": "ASSOCIATION AURORE",
+      "nbEstabs": null,
+      "nbEtabs": null,
+      "rna": null,
+      "searchKey": "775684970 - association aurore",
       "siren": "775684970",
     },
   ],
@@ -14,13 +26,25 @@ exports[`/search /associations/{input} should return an Association from its Sir
 }
 `;
 
-exports[`/search /associations/{input} should return an AssociationNameEntity from its name 1`] = `
+exports[`/search /associations/{input} should return an AssociationSearchEntity from its name 1`] = `
 {
   "nbPages": 1,
   "page": 1,
-  "results": [
+  "resultats": [
     {
+      "address": null,
+      "adresse": {
+        "code_postal": null,
+        "commune": null,
+        "numero": null,
+        "type_voie": null,
+        "voie": null,
+      },
       "name": "ASSOCIATION AURORE",
+      "nbEstabs": null,
+      "nbEtabs": null,
+      "rna": null,
+      "searchKey": "775684970 - association aurore",
       "siren": "775684970",
     },
   ],
@@ -32,7 +56,7 @@ exports[`/search /associations/{input} should return other than first page 1`] =
 {
   "nbPages": 1,
   "page": 2,
-  "results": [],
+  "resultats": [],
   "total": 1,
 }
 `;

@@ -1,8 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SireneUniteLegaleAdapter entityToAssociationSearchEntity should return a SireneUniteLegaleEntity 1`] = `
-{
+AssociationSearchEntity {
+  "address": null,
   "name": "asso coeur",
+  "nbEstabs": null,
   "rna": Rna {
     "identifier": "W000000000",
   },
@@ -10,6 +12,5 @@ exports[`SireneUniteLegaleAdapter entityToAssociationSearchEntity should return 
   "siren": Siren {
     "identifier": "100000000",
   },
-  "updateDate": Any<Date>,
 }
 `;

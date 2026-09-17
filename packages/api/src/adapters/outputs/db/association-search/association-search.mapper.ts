@@ -7,21 +7,19 @@ import Rna from "../../../../identifier-objects/Rna";
 export default class AssociationSearchMapper {
     static toEntity(dbo: AssociationSearchDbo): AssociationSearchEntity {
         return new AssociationSearchEntity({
+            ...dbo,
             siren: new Siren(dbo.siren),
-            rna: dbo.rna ? new Rna(dbo.rna) : null,
-            name: dbo.name,
-            searchKey: dbo.searchKey,
-            updateDate: dbo.updateDate,
+            rna: dbo.rna ? new Rna(dbo.rna) : undefined,
+            address: dbo.address ?? undefined,
+            nbEstabs: dbo.nbEstabs ?? undefined,
         });
     }
 
     static toDbo(entity: AssociationSearchEntity): WithoutId<AssociationSearchDbo> {
         return {
+            ...entity,
             siren: entity.siren.value,
             rna: entity.rna ? entity.rna.value : null,
-            name: entity.name,
-            searchKey: entity.searchKey,
-            updateDate: entity.updateDate,
         };
     }
 }

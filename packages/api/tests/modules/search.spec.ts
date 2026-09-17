@@ -38,26 +38,16 @@ describe("/search", () => {
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot({
-                results: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren.value }],
-                nbPages: 1,
-                page: 1,
-                total: 1,
-            });
+            expect(response.body).toMatchSnapshot();
         });
 
-        it("should return an AssociationNameEntity from its name", async () => {
+        it("should return an AssociationSearchEntity from its name", async () => {
             const response = await request(g.app)
                 .get(`/search/associations/${AssociationNameFixture[0].name}`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot({
-                results: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren.value }],
-                nbPages: 1,
-                page: 1,
-                total: 1,
-            });
+            expect(response.body).toMatchSnapshot();
         });
 
         it("should return other than first page", async () => {
@@ -66,12 +56,7 @@ describe("/search", () => {
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot({
-                results: [],
-                nbPages: 1,
-                page: 2,
-                total: 1,
-            });
+            expect(response.body).toMatchSnapshot();
         });
     });
 });

@@ -4,11 +4,11 @@ import rnaSirenService from "../rna-siren/rna-siren.service";
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
 import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
-import AssociationNameEntity from "./entities/AssociationNameEntity";
+import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
 
 export class AssociationNameService {
-    async find(value: string): Promise<AssociationNameEntity[]> {
-        let associationNames: AssociationNameEntity[];
+    async find(value: string): Promise<AssociationSearchEntity[]> {
+        let associationNames: AssociationSearchEntity[];
         let gotCompany = false;
         const searchEntreprisesCatch = (value: string) =>
             rechercheEntreprisesService.getSearchResult(value).catch(() => {
@@ -56,16 +56,10 @@ export class AssociationNameService {
             (acc, associationName) => {
                 const id = `${associationName.rna?.value} - ${associationName.siren.value}`;
                 const oldValue = acc[id] || {};
-                acc[id] = new AssociationNameEntity(
-                    oldValue.name || associationName.name,
-                    oldValue.siren || associationName.siren,
-                    oldValue.rna || associationName.rna,
-                    oldValue.address || associationName.address,
-                    oldValue.nbEtabs || associationName.nbEtabs,
-                );
+                acc[id] = Object.assign(associationName, oldValue);
                 return acc;
             },
-            {} as Record<string, AssociationNameEntity>,
+            {} as Record<string, AssociationSearchEntity>,
         );
         const res = Object.values(mergedAssociationName);
         if (!res.length && gotCompany) throw new NotAssociationError();

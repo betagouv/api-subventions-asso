@@ -2,7 +2,6 @@ import associationSearchAdapter from "../../../adapters/outputs/db/association-s
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import AssociationSearchEntity from "../../../entities/AssociationSearchEntity";
 import AssociationSearchService from "./association-search.service";
-import AssociationNameEntity from "../../association-name/entities/AssociationNameEntity";
 import Siren from "../../../identifier-objects/Siren";
 import Rna from "../../../identifier-objects/Rna";
 import Siret from "../../../identifier-objects/Siret";
@@ -17,7 +16,10 @@ const mockedRnaSirenService = rnaSirenService as jest.Mocked<typeof rnaSirenServ
 describe("AssociationSearchService", () => {
     const SIREN = new Siren("123456789");
     const RNA = new Rna("W123456789");
-    const fakeAssociationSearchEntity = new AssociationSearchEntity({ siren: SIREN, rna: null, name: "Fake Name" });
+    const fakeAssociationSearchEntity = new AssociationSearchEntity({
+        siren: SIREN,
+        name: "Fake Name",
+    });
 
     let fromPartialSiretStrMock: jest.SpyInstance;
 
@@ -40,15 +42,19 @@ describe("AssociationSearchService", () => {
 
         it("should return matched associations", async () => {
             mockedAssociationSearch.search.mockResolvedValueOnce([fakeAssociationSearchEntity]);
-            const expected = new AssociationNameEntity(fakeAssociationSearchEntity.name, SIREN);
+            const expected = new AssociationSearchEntity({ name: fakeAssociationSearchEntity.name, siren: SIREN });
             const result = await AssociationSearchService.searchBySirenSiretName("knownIdentifier");
             expect(result).toEqual([expected]);
         });
 
         it("should handle cases where there are multiple rnaSiren entities for the same siren", async () => {
             const expected = [
-                new AssociationNameEntity(fakeAssociationSearchEntity.name, SIREN, RNA),
-                new AssociationNameEntity(fakeAssociationSearchEntity.name, SIREN, new Rna("W987654321")),
+                new AssociationSearchEntity({ name: fakeAssociationSearchEntity.name, siren: SIREN, rna: RNA }),
+                new AssociationSearchEntity({
+                    name: fakeAssociationSearchEntity.name,
+                    siren: SIREN,
+                    rna: new Rna("W987654321"),
+                }),
             ];
 
             mockedAssociationSearch.search.mockResolvedValueOnce([fakeAssociationSearchEntity]);
@@ -67,7 +73,7 @@ describe("AssociationSearchService", () => {
         it("should handle cases where the value is a start of siret", async () => {
             mockedAssociationSearch.search.mockResolvedValueOnce([fakeAssociationSearchEntity]);
             isStartOfSiretMock.mockReturnValue(true);
-            const expected = new AssociationNameEntity(fakeAssociationSearchEntity.name, SIREN);
+            const expected = new AssociationSearchEntity({ name: fakeAssociationSearchEntity.name, siren: SIREN });
 
             const result = await AssociationSearchService.searchBySirenSiretName(SIREN.value);
             expect(result).toEqual([expected]);
