@@ -1,5 +1,9 @@
-<script>
-    export let content = "Nous sommes désolés, nous n'avons trouvé aucune donnée sur cette association";
+<script lang="ts">
+    interface Props {
+        content?: string;
+    }
+
+    let { content = "Nous sommes désolés, nous n'avons trouvé aucune donnée sur cette association" }: Props = $props();
 </script>
 
 <div class="error-no-data-found">

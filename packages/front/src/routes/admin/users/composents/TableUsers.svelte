@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
     import TableUsersController from "./TableUsers.controller";
 
     import Button from "$lib/dsfr/Button.svelte";
     import userService from "$lib/resources/users/user.service";
 
-    export let usersStore;
+    let { usersStore } = $props();
 
     const ctrl = new TableUsersController(usersStore);
     const { users } = ctrl;
@@ -82,7 +82,7 @@
                             icon="delete-fill"
                             trackingDisable="true"
                             ariaControls="fr-modal"
-                            on:click={() => ctrl.displayModal(user)} />
+                            onclick={() => ctrl.displayModal(user)} />
                     </td>
                 </tr>
             {/each}

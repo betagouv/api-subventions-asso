@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
 
-    const dispatch = createEventDispatcher<{ start: void }>();
+    let { onstart = () => {} } = $props();
 </script>
 
 <div class="fr-col-12 fr-col-lg-9">
@@ -36,6 +35,6 @@
     </Alert>
 
     <div class="text-center">
-        <button on:click={() => dispatch("start")} class="fr-btn" type="button">Débuter</button>
+        <button onclick={onstart} class="fr-btn" type="button">Débuter</button>
     </div>
 </div>

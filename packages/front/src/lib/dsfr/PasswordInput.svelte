@@ -1,18 +1,30 @@
 <script lang="ts">
     import { nanoid } from "nanoid";
 
-    export let value;
-    export let label;
-    export let id = nanoid(7);
-    export let name = `password-input-${id}`;
-    export let error = false;
-    export let errorMsg: string | null = null;
-    export let forgetPasswordUrl = undefined;
+    interface Props {
+        value: string | undefined;
+        label: string;
+        id?: string;
+        name?: string;
+        error?: boolean;
+        errorMsg?: string | null;
+        forgetPasswordUrl?: string;
+    }
+
+    let {
+        value = $bindable(),
+        label,
+        id = nanoid(7),
+        name = `password-input-${id}`,
+        error = false,
+        errorMsg = null,
+        forgetPasswordUrl = undefined,
+    }: Props = $props();
 
     const descErrorElement = `${name}-desc-error`;
 
     // define validation class
-    $: inputClasses = `fr-password__input fr-input ${error ? "fr-input--error" : ""}`;
+    let inputClasses = $derived(`fr-password__input fr-input ${error ? "fr-input--error" : ""}`);
 </script>
 
 <div class="fr-password" id="password">
@@ -34,7 +46,7 @@
             <p id={descErrorElement} class="fr-error-text">{errorMsg}</p>
         {/if}
     </div>
-    <div class="fr-messages-group" id="password-input-messages-{id}" aria-live="polite" />
+    <div class="fr-messages-group" id="password-input-messages-{id}" aria-live="polite"></div>
     <div class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm">
         <input aria-label="Afficher le mot de passe" id="password-show" type="checkbox" />
         <label class="fr-label" for="password-show">Afficher</label>

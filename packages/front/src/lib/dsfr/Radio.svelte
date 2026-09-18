@@ -1,21 +1,35 @@
 <script lang="ts">
     import { nanoid } from "nanoid";
-    import Dispatch from "$lib/core/Dispatch";
 
-    export let value: string;
+    type RadioOption = { label: string; value: string; hintHtml?: string };
 
-    export let label: string;
-    export let options: { label: string; value: string; hintHtml?: string }[] = [];
-    export let id = nanoid(7);
-    export let name = `radio-${id}`;
-    export let hintHtml = "";
-    export let required = false;
-    export let inline = false;
-    export let errorMsgHtml = "";
+    interface Props {
+        value: string;
+        label: string;
+        options?: RadioOption[];
+        id?: string;
+        name?: string;
+        hintHtml?: string;
+        required?: boolean;
+        inline?: boolean;
+        errorMsgHtml?: string;
+        onchange?: (option: RadioOption) => void;
+    }
+
+    let {
+        value = $bindable(),
+        label,
+        options = [],
+        id = nanoid(7),
+        name = `radio-${id}`,
+        hintHtml = "",
+        required = false,
+        inline = false,
+        errorMsgHtml = "",
+        onchange = () => {},
+    }: Props = $props();
 
     const descErrorElement = `${id}-desc-error`;
-
-    const dispatch = Dispatch.getDispatcher();
 </script>
 
 <fieldset class="fr-fieldset" {id} aria-labelledby="{id}-legend {id}-messages" class:fr-fieldset--error={errorMsgHtml}>
@@ -33,7 +47,7 @@
                     value={option.value}
                     {required}
                     bind:group={value}
-                    on:change={() => dispatch("change", option)} />
+                    onchange={() => onchange(option)} />
                 <label
                     class="fr-label"
                     for="{id}-{i}"

@@ -1,5 +1,10 @@
 <script lang="ts">
     import AuthController from "./Auth.controller";
+    interface Props {
+        children?: import("svelte").Snippet;
+    }
+
+    let { children }: Props = $props();
     const controller = new AuthController();
     const { show } = controller;
     controller.init();
@@ -7,6 +12,6 @@
 
 <div>
     {#if $show}
-        <slot />
+        {@render children?.()}
     {/if}
 </div>

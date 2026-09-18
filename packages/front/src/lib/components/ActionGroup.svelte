@@ -1,10 +1,19 @@
+<script lang="ts">
+    interface Props {
+        content?: import("svelte").Snippet;
+        action?: import("svelte").Snippet;
+    }
+
+    let { content, action }: Props = $props();
+</script>
+
 <div class="fr-grid-row">
     <div class="fr-col-8">
-        <slot name="content" />
+        {@render content?.()}
     </div>
     <div class="fr-col-4 align-right">
         <span>
-            <slot name="action" />
+            {@render action?.()}
         </span>
     </div>
 </div>

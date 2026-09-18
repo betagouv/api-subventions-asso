@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
     import { ResetPwdController } from "./ResetPwd.controller";
     import PasswordFormatAlert from "$lib/components/DefinePassword/PasswordFormatAlert.svelte";
     import PasswordErrorAlert from "$lib/components/DefinePassword/PasswordErrorAlert.svelte";
     import DefinePassword from "$lib/components/DefinePassword/DefinePassword.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
-    export let data;
+    let { data } = $props();
     const { token } = data.params;
 
     const ctrl = new ResetPwdController(token);
@@ -36,10 +36,16 @@
                     <PasswordErrorAlert {error} />
                 {/await}
 
-                <form action="#" method="GET" on:submit|preventDefault={() => ctrl.onSubmit()}>
+                <form
+                    action="#"
+                    method="GET"
+                    onsubmit={event => {
+                        event.preventDefault();
+                        ctrl.onSubmit();
+                    }}>
                     <DefinePassword
-                        on:error={() => ctrl.disableSubmit()}
-                        on:valid={() => ctrl.enableSubmit()}
+                        onerror={() => ctrl.disableSubmit()}
+                        onvalid={() => ctrl.enableSubmit()}
                         bind:values={$values} />
                     <div class="fr-input-group fr-my-4w">
                         <Button

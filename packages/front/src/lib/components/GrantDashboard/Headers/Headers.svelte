@@ -1,15 +1,17 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import Tooltip from "$lib/dsfr/Tooltip.svelte";
     import ButtonSort from "$lib/dsfr/ButtonSort.svelte";
 
-    export let id: string;
-    export let headers: { name: string; tooltip?: string }[];
+    interface Props {
+        id: string;
+        headers: { name: string; tooltip?: string }[];
+        onsort?: (index: number) => void;
+    }
 
-    const dispatch = createEventDispatcher<{ sort: number }>();
+    let { id, headers, onsort = () => {} }: Props = $props();
 
-    let sortDirectionIndex: { index: number; sortDirection: "none" | "ascending" | "descending" }[] = headers.map(
-        (_header, index) => ({ index, sortDirection: "none" }),
+    let sortDirectionIndex: { index: number; sortDirection: "none" | "ascending" | "descending" }[] = $state(
+        headers.map((_header, index) => ({ index, sortDirection: "none" })),
     );
 
     function handleSort(index) {
@@ -25,7 +27,7 @@
         // force svelte to rerender array change
         sortDirectionIndex = sortDirectionIndex;
 
-        dispatch("sort", index);
+        onsort(index);
     }
 </script>
 
@@ -39,7 +41,7 @@
                 <Tooltip id="header-tooltip-{index}"><p>{header.tooltip}</p></Tooltip>
             {/if}
             <ButtonSort
-                on:click={() => handleSort(index)}
+                onclick={() => handleSort(index)}
                 id="table-{id}-{index}-sort-asc-desc"
                 sortDirection={sortDirectionIndex[index].sortDirection} />
         </div>

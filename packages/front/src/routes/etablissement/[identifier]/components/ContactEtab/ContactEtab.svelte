@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import ContactEtabController from "./ContactEtabController";
     import ActionGroup from "$lib/components/ActionGroup.svelte";
     import Button from "$lib/dsfr/Button.svelte";
@@ -7,28 +7,27 @@
     import Table from "$lib/dsfr/Table.svelte";
     import TableRow from "$lib/dsfr/TableRow.svelte";
 
-    export let contacts = [];
-    export let siret;
+    let { contacts = [], siret } = $props();
 
     const tableId = "contact-etab";
-    const controller = new ContactEtabController(contacts, siret);
+    const controller = $state(new ContactEtabController(contacts, siret));
     const { contacts: _contacts } = controller;
 </script>
 
 <ActionGroup>
-    <svelte:fragment slot="content">
+    {#snippet content()}
         <h2>Contacts et représentants légaux</h2>
-    </svelte:fragment>
-    <svelte:fragment slot="action">
+    {/snippet}
+    {#snippet action()}
         {#if controller.hasContact}
             <Button
-                on:click={() => controller.download()}
+                onclick={() => controller.download()}
                 type="secondary"
                 trackerName="etablissements.contacts.download-csv">
                 Télécharger au format CSV
             </Button>
         {/if}
-    </svelte:fragment>
+    {/snippet}
 </ActionGroup>
 {#if controller.hasContact}
     <div class="fr-grid-row fr-grid-row--gutters">
@@ -36,7 +35,10 @@
             <Input label="Rechercher un nom, un prénom" bind:value={controller.inputName} />
         </div>
         <div class="fr-col-6">
-            <Select on:change={e => controller.filterByRole(e.detail)} label="Rôle" options={controller.roles} />
+            <Select
+                onchange={selectedIndex => controller.filterByRole(selectedIndex)}
+                label="Rôle"
+                options={controller.roles} />
         </div>
     </div>
     <div class="fr-grid-row fr-grid-row--gutters">

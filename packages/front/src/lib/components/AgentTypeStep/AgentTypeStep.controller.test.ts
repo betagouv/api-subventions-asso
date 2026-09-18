@@ -1,12 +1,6 @@
 import { beforeEach } from "vitest";
 import AgentTypeStepController from "./AgentTypeStep.controller";
-import Dispatch from "$lib/core/Dispatch";
 import Store from "$lib/core/Store";
-vi.mock("$lib/core/Dispatch", () => ({
-    default: {
-        getDispatcher: vi.fn(() => vi.fn()),
-    },
-}));
 vi.mock("$lib/core/Store");
 vi.mock("svelte");
 
@@ -21,16 +15,6 @@ describe("AgentTypeStepController", () => {
         const STORE_VALUE = "some value";
         beforeAll(() => {
             vi.spyOn(Store.prototype, "value", "get").mockReturnValue(STORE_VALUE);
-        });
-
-        it("inits dispatch", () => {
-            const expected = "Result From Dispatch";
-            // @ts-expect-error - mock
-            vi.mocked(Dispatch.getDispatcher).mockReturnValueOnce(expected);
-            ctrl = new AgentTypeStepController();
-            // @ts-expect-error: access private property
-            const actual = ctrl.dispatch;
-            expect(actual).toBe(expected);
         });
 
         it("inits errorMessage", () => {

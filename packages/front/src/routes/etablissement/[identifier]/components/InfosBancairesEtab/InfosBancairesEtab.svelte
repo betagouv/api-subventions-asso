@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import { InfosBancairesEtabController } from "./InfosBancairesEtab.controller";
     import Table from "$lib/dsfr/Table.svelte";
     import TableRow from "$lib/dsfr/TableRow.svelte";
 
-    export let elements; // informations_bancaires
+    let { elements } = $props();
 
     const tableId = "infos-bancaires-etab";
 

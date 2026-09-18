@@ -13,13 +13,21 @@
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
     import Headers from "./Headers/Headers.svelte";
 
-    export let structureId;
+    let { structureId } = $props();
 
     const tableId = "grant-dashboard";
 
     const ctrl = new GrantDashboardController(structureId);
-    const { grantPromise, grants, headers, rows, selectedExercise, exerciseOptions, isExtractLoading, selectedGrants } =
-        ctrl;
+    const {
+        grantPromise,
+        grants,
+        headers: tableHeaders,
+        rows,
+        selectedExercise,
+        exerciseOptions,
+        isExtractLoading,
+        selectedGrants,
+    } = ctrl;
 </script>
 
 {#await grantPromise}
@@ -35,7 +43,7 @@
                     </Button>
                 {:else}
                     <Button
-                        on:click={() => ctrl.download()}
+                        onclick={() => ctrl.download()}
                         icon="download-line"
                         trackingDisable={true}
                         iconPosition="right">
@@ -52,7 +60,7 @@
             {/if}
         </div>
         <div class="align-bottom">
-            <TargetBlankLink href={ctrl.providerBlogUrl} on:click={ctrl.clickProviderLink}>
+            <TargetBlankLink href={ctrl.providerBlogUrl} onclick={ctrl.clickProviderLink}>
                 Quelles données retrouver dans Data.Subvention ?
             </TargetBlankLink>
         </div>
@@ -71,15 +79,17 @@
                     scrollable={false}
                     bordered={false}
                     custom={true}>
-                    <Headers on:sort={event => ctrl.sortTable(event.detail)} slot="headers" {headers} id={tableId} />
+                    {#snippet headers()}
+                        <Headers onsort={index => ctrl.sortTable(index)} headers={tableHeaders} id={tableId} />
+                    {/snippet}
                     {#each $rows as row, rowIndex (rowIndex)}
                         {#key row}
                             <TableRow id={tableId} index={rowIndex}>
                                 <ApplicationRow
-                                    on:click={() => ctrl.onApplicationClick(rowIndex)}
+                                    onclick={() => ctrl.onApplicationClick(rowIndex)}
                                     cells={row.applicationCells} />
                                 <PaymentRow
-                                    on:click={() => ctrl.onPaymentClick(rowIndex)}
+                                    onclick={() => ctrl.onPaymentClick(rowIndex)}
                                     cells={row.paymentsCells}
                                     granted={row.granted} />
                             </TableRow>

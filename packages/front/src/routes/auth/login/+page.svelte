@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { PUBLIC_DATASUB_URL } from "$env/static/public";
     import AgentConnectButton from "$lib/dsfr/AgentConnectButton.svelte";
     import { onMount } from "svelte";
@@ -9,18 +9,20 @@
     import Alert from "$lib/dsfr/Alert.svelte";
 
     let form;
-    let alertElement;
-    export let data;
+    let alertElement = $state();
+    let { data } = $props();
     const { query } = data;
 
     const alertMsg =
         "Data.subvention étant réservé aux agents publics, il est nécessaire d'être doté d'une adresse e-mail professionnelle du service public ou d'utiliser le service ProConnect.";
 
-    const controller = new LoginController(query);
+    const controller = $state(new LoginController(query));
 
     const { error, showSuccessMessage, successMessage } = controller;
     onMount(() => controller.onMount(alertElement));
-    $: controller.formElt = form;
+    $effect(() => {
+        controller.formElt = form;
+    });
 </script>
 
 <h1 class="fr-mb-6w fr-h2">
@@ -55,9 +57,13 @@
         </div>
     </div>
     <div class="fr-grid-row fr-my-4w">
-        <div class="text-separator" />
+        <div class="text-separator"></div>
     </div>
-    <form on:submit|preventDefault={() => controller.submit()}>
+    <form
+        onsubmit={event => {
+            event.preventDefault();
+            controller.submit();
+        }}>
         <fieldset class="fr-fieldset">
             <legend class="fr-fieldset__legend fr-h5 text-center" id="login-legend">
                 Connectez-vous avec vos identifiants habituels <br />
