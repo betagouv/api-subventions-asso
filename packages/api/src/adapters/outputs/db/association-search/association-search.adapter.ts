@@ -8,7 +8,7 @@ import AssociationSearchMapper from "./association-search.mapper";
 import AssociationSearchDbo from "./@types/AssociationSearchDbo";
 
 export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo> implements AssociationSearchPort {
-    collectionName = "unite-legale-search";
+    collectionName = "association-search";
 
     async createIndexes(): Promise<void> {
         await this.collection.createIndex({ searchKey: 1 }, { unique: true });

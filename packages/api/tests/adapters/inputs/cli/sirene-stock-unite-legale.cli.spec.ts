@@ -4,7 +4,7 @@ import { createSireneStockUniteLegaleCli } from "../../../../src/adapters/inputs
 import { sireneStockUniteLegaleAdapter } from "../../../../src/adapters/outputs/api/data-gouv/data-gouv.adapter";
 import db from "../../../../src/shared/MongoConnection";
 
-const PARQUET_PATH = path.resolve(__dirname, "../../../src/modules/providers/sirene/__fixtures__");
+const PARQUET_PATH = path.resolve(__dirname, "./../__fixtures__");
 
 describe("SireneStockUniteLegaleCli", () => {
     let getFileStreamMock: jest.SpyInstance;
@@ -12,7 +12,7 @@ describe("SireneStockUniteLegaleCli", () => {
     beforeAll(() => {
         getFileStreamMock = jest.spyOn(sireneStockUniteLegaleAdapter, "getFileStream").mockImplementation(() =>
             Promise.resolve({
-                data: fs.createReadStream(PARQUET_PATH + "/StockUniteLegale.parquet"),
+                data: fs.createReadStream(PARQUET_PATH + "/remote.sirene-stock-unite-legale.parquet"),
                 status: 200,
                 statusText: "OK",
             }),
@@ -27,28 +27,29 @@ describe("SireneStockUniteLegaleCli", () => {
     describe("import", () => {
         it("should persist sirene data", async () => {
             await cli.import();
-            // @ts-expect-error: access protected for test
-            const data = await sireneUniteLegaleAdapter.collection.find({}, { projection: { _id: 0 } }).toArray();
+            const data = await db
+                .collection("sirene")
+                .find({}, { projection: { _id: 0 } })
+                .toArray();
             expect(data).toMatchSnapshot();
         });
 
         it("should persist associaton search documents", async () => {
             await cli.import();
-            const data = (
-                await db
-                    .collection("association-search")
-                    .find({}, { projection: { _id: 0 } })
-                    .toArray()
-            ).map(object => ({
-                ...object,
-            }));
+            const data = await db
+                .collection("association-search")
+                .find({}, { projection: { _id: 0 } })
+                .toArray();
+
             expect(data).toMatchSnapshot();
         });
 
         it("should persist entreprises' siret", async () => {
             await cli.import();
-            // @ts-expect-error: access protected for test
-            const data = await uniteLegaleEntrepriseAdapter.collection.find({}, { projection: { _id: 0 } }).toArray();
+            const data = await db
+                .collection("unite-legal-entreprise")
+                .find({}, { projection: { _id: 0 } })
+                .toArray();
             expect(data).toMatchSnapshot();
         });
     });

@@ -1,10 +1,10 @@
 import MongoAdapter from "../MongoAdapter";
-import { SireneUniteLegaleDbo } from "../../../../modules/providers/sirene/@types/SireneUniteLegaleDbo";
-import SireneUniteLegaleMapper from "../../../../modules/providers/sirene/mappers/sirene-unite-legale.mapper";
+import { SireneUniteLegaleDbo } from "./SireneUniteLegaleDbo";
 import Siren from "../../../../identifier-objects/Siren";
 import Rna from "../../../../identifier-objects/Rna";
 import { SireneUniteLegaleEntity } from "../../../../entities/SireneUniteLegaleEntity";
 import { SireneUniteLegalePort } from "./sirene-unite-legale.port";
+import SireneUniteLegaleMapper from "./sirene-unite-legale.mapper";
 
 export class SireneUniteLegaleAdapter extends MongoAdapter<SireneUniteLegaleDbo> implements SireneUniteLegalePort {
     collectionName = "sirene";

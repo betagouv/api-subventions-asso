@@ -1,8 +1,5 @@
-import { SireneUniteLegaleEntity } from "../../../../entities/SireneUniteLegaleEntity";
-import { SireneUniteLegaleDbo } from "../@types/SireneUniteLegaleDbo";
-import SireneUniteLegaleDto from "../@types/SireneUniteLegaleDto";
-import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
-import { Rna, Siren } from "../../../../identifier-objects";
+import DEFAULT_ASSOCIATION from "../../../../../../../tests/__fixtures__/association.fixture";
+import SireneUniteLegaleDto from "../SireneUniteLegaleDto";
 
 const baseDto: SireneUniteLegaleDto = {
     siren: DEFAULT_ASSOCIATION.siren,
@@ -17,7 +14,7 @@ const baseDto: SireneUniteLegaleDto = {
     prenom4UniteLegale: null,
     prenomUsuelUniteLegale: null,
     pseudonymeUniteLegale: null,
-    identifiantAssociationUniteLegale: "W123456789",
+    identifiantAssociationUniteLegale: DEFAULT_ASSOCIATION.rna,
     trancheEffectifsUniteLegale: null,
     anneeEffectifsUniteLegale: 2021n,
     dateDernierTraitementUniteLegale: new Date("2023-01-01T14:26:06.000Z"),
@@ -42,7 +39,7 @@ const baseDto: SireneUniteLegaleDto = {
     activitePrincipaleNAF25UniteLegale: "94.99Y",
 };
 
-export const DTOS: SireneUniteLegaleDto[] = [
+export const SIRENE_UNITE_LEGALE_DTOS: SireneUniteLegaleDto[] = [
     baseDto,
     { ...baseDto, siren: "123456789" },
     {
@@ -51,32 +48,4 @@ export const DTOS: SireneUniteLegaleDto[] = [
         categorieJuridiqueUniteLegale: 9320n, // not an association
     },
     { ...baseDto, siren: "098765432", unitePurgeeUniteLegale: true }, // purged
-];
-
-export const ENTITIES: SireneUniteLegaleEntity[] = [
-    {
-        ...DTOS[0],
-        identifiantAssociationUniteLegale: new Rna(DEFAULT_ASSOCIATION.rna),
-        siren: new Siren(DTOS[0].siren),
-        anneeEffectifsUniteLegale: 2021,
-        nombrePeriodesUniteLegale: 5,
-        anneeCategorieEntreprise: 2022,
-        categorieJuridiqueUniteLegale: "9220",
-    },
-    {
-        ...DTOS[1],
-        identifiantAssociationUniteLegale: new Rna(DEFAULT_ASSOCIATION.rna),
-        siren: new Siren(DTOS[1].siren),
-        anneeEffectifsUniteLegale: 2021,
-        nombrePeriodesUniteLegale: 5,
-        anneeCategorieEntreprise: 2022,
-        categorieJuridiqueUniteLegale: "9220",
-    },
-];
-
-export const UNITE_LEGAL_ENTREPRISE_ENTITIES = [{ siren: new Siren(DTOS[2].siren) }];
-
-export const DBOS: SireneUniteLegaleDbo[] = [
-    { ...ENTITIES[0], siren: ENTITIES[0].siren.value, identifiantAssociationUniteLegale: ENTITIES[0].rna?.value },
-    { ...ENTITIES[1], siren: ENTITIES[1].siren.value, identifiantAssociationUniteLegale: ENTITIES[1].rna?.value },
 ];

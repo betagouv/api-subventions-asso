@@ -5,24 +5,24 @@ import { ImportReport } from "../../../../../@types/ImportReport";
 import { SireneUniteLegaleEntity } from "../../../../../entities/SireneUniteLegaleEntity";
 import { UniteLegaleEntrepriseEntity } from "../../../../../entities/UniteLegaleEntrepriseEntity";
 import Siren from "../../../../../identifier-objects/Siren";
-import SireneUniteLegaleDto from "../../../../../modules/providers/sirene/@types/SireneUniteLegaleDto";
-import SireneUniteLegaleMapper from "../../../../../modules/providers/sirene/mappers/sirene-unite-legale.mapper";
+import SireneUniteLegaleDto from "./SireneUniteLegaleDto";
 import uniteLegaleEntrepriseService, {
     UniteLegaleEntrepriseService,
 } from "../../../../../modules/providers/unite-legale-entreprise/unite-legale.entreprise.service";
-import uniteLegaleNameService, {
-    UniteLegaleNameService,
-} from "../../../../../modules/providers/unite-legale-name/unite-legale.name.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategoriesAccepted";
 import sireneUniteLegaleAdapter from "../../../../outputs/db/sirene/sirene-unite-legale.adapter";
 import { SireneUniteLegalePort } from "../../../../outputs/db/sirene/sirene-unite-legale.port";
 import parquetParser, { ParquetParser, ParquetRow } from "../../../parquet.parser";
+import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
+import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
+import SireneUniteLegaleMapper from "./sirene-unite-legale.mapper";
+import UniteLegaleToSearch from "../../../../../usecases/search/unite-legale-to-search";
 
 export class SireneUniteLegalePipeline {
     constructor(
         private parser: ParquetParser,
         private sirenePort: SireneUniteLegalePort,
-        private nameService: UniteLegaleNameService,
+        private searchPort: AssociationSearchPort,
         private entrepriseService: UniteLegaleEntrepriseService,
     ) {}
 
@@ -88,9 +88,7 @@ export class SireneUniteLegalePipeline {
 
         await Promise.all([
             this.sirenePort.upsertMany(entities),
-            this.nameService.upsertMany(
-                entities.map(entity => SireneUniteLegaleMapper.entityToUniteLegaleNameEntity(entity)),
-            ),
+            this.searchPort.upsertMany(entities.map(entity => new UniteLegaleToSearch().execute(entity))),
         ]);
     }
 
@@ -104,7 +102,7 @@ export class SireneUniteLegalePipeline {
 const sireneUniteLegalePipeline = new SireneUniteLegalePipeline(
     parquetParser,
     sireneUniteLegaleAdapter,
-    uniteLegaleNameService,
+    associationSearchAdapter,
     uniteLegaleEntrepriseService,
 );
 

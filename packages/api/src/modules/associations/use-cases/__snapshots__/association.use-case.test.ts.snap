@@ -227,7 +227,7 @@ exports[`Association Use Cases GetSirenStructureData returns association data 1`
   ],
   "categorie_juridique": [
     {
-      "last_update": 2026-03-13T00:00:00.000Z,
+      "last_update": 2023-01-01T14:26:06.000Z,
       "provider": "sirene",
       "type": "string",
       "value": "9220",
@@ -235,7 +235,7 @@ exports[`Association Use Cases GetSirenStructureData returns association data 1`
   ],
   "date_creation_siren": [
     {
-      "last_update": 2026-03-13T00:00:00.000Z,
+      "last_update": 2023-01-01T14:26:06.000Z,
       "provider": "sirene",
       "type": "object",
       "value": 1989-02-01T00:00:00.000Z,
@@ -243,24 +243,24 @@ exports[`Association Use Cases GetSirenStructureData returns association data 1`
   ],
   "date_modification_siren": [
     {
-      "last_update": 2026-03-13T00:00:00.000Z,
+      "last_update": 2023-01-01T14:26:06.000Z,
       "provider": "sirene",
       "type": "object",
-      "value": 2026-03-13T00:00:00.000Z,
+      "value": 2023-01-01T14:26:06.000Z,
     },
   ],
   "denomination_siren": [
     {
-      "last_update": 2026-03-13T00:00:00.000Z,
+      "last_update": 2023-01-01T14:26:06.000Z,
       "provider": "sirene",
       "type": "string",
-      "value": "DEFAULT_ASSOCIATION",
+      "value": "asso coeur",
     },
   ],
   "lastUpdate": 2026-05-20T00:00:00.000Z,
   "nic_siege": [
     {
-      "last_update": 2026-03-13T00:00:00.000Z,
+      "last_update": 2023-01-01T14:26:06.000Z,
       "provider": "sirene",
       "type": "string",
       "value": "00001",
@@ -269,7 +269,7 @@ exports[`Association Use Cases GetSirenStructureData returns association data 1`
   "siege": true,
   "siren": [
     {
-      "last_update": 2026-03-13T00:00:00.000Z,
+      "last_update": 2023-01-01T14:26:06.000Z,
       "provider": "sirene",
       "type": "string",
       "value": "100000000",
