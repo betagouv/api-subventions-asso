@@ -1,4 +1,4 @@
-import AssociationNameEntity from "../../../../modules/association-name/entities/AssociationNameEntity";
+import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 import rechercheEntreprisesAdapter from "./recherche-entreprises.adapter";
 import { RechercheEntreprisesDto, RechercheEntreprisesResultDto } from "./@types/RechercheEntreprisesDto";
 import { RechercheEntreprisesMapper } from "./recherche-entreprises.mapper";
@@ -48,7 +48,7 @@ export class RechercheEntreprisesService implements Provider {
         });
     }
 
-    async getSearchResult(query): Promise<AssociationNameEntity[]> {
+    async getSearchResult(query): Promise<Partial<AssociationSearchEntity>[]> {
         const searchResult = (await this.search(query)).filter(dto => dto.siren && dto.nom_complet);
 
         if (searchResult.length === 0) return [];
@@ -61,14 +61,14 @@ export class RechercheEntreprisesService implements Provider {
             const dto = searchResult[0];
             if (!associationHelper.isCategoryFromAsso(dto?.nature_juridique)) throw new NotAssociationError();
             return [
-                RechercheEntreprisesMapper.toAssociationNameEntity(
+                RechercheEntreprisesMapper.toAssociationSearchEntity(
                     dto as RechercheEntreprisesResultDto & { siren: string; nom_complet: string },
                 ),
             ];
         }
 
         return searchResult.map(dto =>
-            RechercheEntreprisesMapper.toAssociationNameEntity(
+            RechercheEntreprisesMapper.toAssociationSearchEntity(
                 dto as RechercheEntreprisesResultDto & { siren: string; nom_complet: string },
             ),
         );

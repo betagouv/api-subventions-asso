@@ -9,12 +9,15 @@ import { ImportReport } from "../../../../../@types/ImportReport";
 import { RnaPort } from "../../../../outputs/db/rna/rna.port";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import dataLogAdapter from "../../../../outputs/db/data-log/data-log.adapter";
+import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
+import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
 
 export class RnaPipeline {
     constructor(
         public parser: RnaParser,
         public mapper: RnaMapper,
         public rnaPort: RnaPort,
+        public searchPort: AssociationSearchPort,
         public logPort: DataLogPort,
     ) {}
 
@@ -54,7 +57,7 @@ export class RnaPipeline {
                 transform: (batch: RnaWaldecDto[], _enc, callback) => {
                     report.parsedCount += batch.length;
                     try {
-                        const dbos = batch.map(row => this.mapper.map(row));
+                        const dbos = batch.map(row => this.mapper.toDbo(row));
                         callback(null, dbos);
                     } catch (err) {
                         callback(err as Error);
@@ -66,6 +69,18 @@ export class RnaPipeline {
                 write: async (dbos: RnaDbo[], _enc, callback) => {
                     try {
                         if (dbos.length > 0) {
+                            console.log("Update association-search collection...");
+                            await this.searchPort.upsertMany(
+                                dbos
+                                    .filter(dbo => dbo.titre) // in rare cases rna document can miss the titre and this would break association-search update
+                                    .map(dbo =>
+                                        this.mapper.toAssociationSearch(
+                                            dbo as Omit<RnaDbo, "titre"> & { titre: string },
+                                        ),
+                                    ),
+                            );
+
+                            console.log("Persist new ");
                             if (lastImportDate) await this.rnaPort.upsertMany(dbos);
                             else await this.rnaPort.insertMany(dbos);
                             report.importedCount += dbos.length;
@@ -85,5 +100,5 @@ export class RnaPipeline {
     }
 }
 
-const rnaPipeline = new RnaPipeline(rnaParser, rnaMapper, rnaAdapter, dataLogAdapter);
+const rnaPipeline = new RnaPipeline(rnaParser, rnaMapper, rnaAdapter, associationSearchAdapter, dataLogAdapter);
 export default rnaPipeline;

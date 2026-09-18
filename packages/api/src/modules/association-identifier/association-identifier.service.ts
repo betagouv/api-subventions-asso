@@ -17,7 +17,7 @@ export class AssociationIdentifierService {
                 if (entity.rna) return AssociationIdentifier.fromSirenAndRna(identifier, entity.rna!);
                 else return AssociationIdentifier.fromSiren(identifier);
             });
-        else return reResult.map(entity => AssociationIdentifier.fromSirenAndRna(entity.siren, identifier));
+        else return reResult.map(entity => AssociationIdentifier.fromSirenAndRna(entity.siren!, identifier));
     }
 
     async getAssociationIdentifiers(id: string): Promise<AssociationIdentifier[]> {

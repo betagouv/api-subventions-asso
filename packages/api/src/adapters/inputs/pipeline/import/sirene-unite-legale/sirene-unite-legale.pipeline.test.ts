@@ -1,27 +1,28 @@
 import { ParquetRow } from "../../../parquet.parser";
 import { UniteLegaleEntrepriseEntity } from "../../../../../entities/UniteLegaleEntrepriseEntity";
-import { DTOS } from "../../../../../modules/providers/sirene/__fixtures__/sirene-unite-legale.fixture";
 import { SireneUniteLegalePipeline } from "./sirene-unite-legale.pipeline";
+import { SIRENE_UNITE_LEGALE_DTOS } from "./__fixtures__/sirene-unite-legale.dto.fixture";
+import SireneUniteLegaleDto from "./SireneUniteLegaleDto";
 
-async function* fakeParse(batches: ParquetRow[][]): AsyncGenerator<ParquetRow[]> {
+async function* fakeParse(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
     for (const batch of batches) yield batch;
 }
 
-function createPipeline(batches: ParquetRow[][]) {
+function createPipeline(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
     const parser = { parse: jest.fn().mockImplementation(() => fakeParse(batches)) };
     const sirenePort = { upsertMany: jest.fn().mockResolvedValue(undefined) };
-    const nameService = { upsertMany: jest.fn().mockResolvedValue(undefined) };
+    const searchPort = { upsertMany: jest.fn().mockResolvedValue(undefined) };
     const entrepriseService = { insertManyEntrepriseSiren: jest.fn().mockResolvedValue(undefined) };
 
     return {
         parser,
         sirenePort,
-        nameService,
+        searchPort,
         entrepriseService,
         pipeline: new SireneUniteLegalePipeline(
             parser as never,
             sirenePort as never,
-            nameService as never,
+            searchPort as never,
             entrepriseService as never,
         ),
     };
@@ -32,7 +33,7 @@ describe("SireneUniteLegalePipeline", () => {
 
     describe("run", () => {
         it("parses the given file", async () => {
-            const { parser, pipeline } = createPipeline([[DTOS[0]]]);
+            const { parser, pipeline } = createPipeline([[{ ...SIRENE_UNITE_LEGALE_DTOS[0] }]]);
 
             await pipeline.run(FILE_PATH);
 
@@ -42,11 +43,11 @@ describe("SireneUniteLegalePipeline", () => {
         it("filters purged units and invalid sirens", async () => {
             const { sirenePort, entrepriseService, pipeline } = createPipeline([
                 [
-                    DTOS[0],
-                    { ...DTOS[1], unitePurgeeUniteLegale: false },
-                    DTOS[2],
-                    DTOS[3],
-                    { ...DTOS[0], siren: "invalid" },
+                    { ...SIRENE_UNITE_LEGALE_DTOS[0] },
+                    { ...SIRENE_UNITE_LEGALE_DTOS[1], unitePurgeeUniteLegale: false },
+                    SIRENE_UNITE_LEGALE_DTOS[2],
+                    SIRENE_UNITE_LEGALE_DTOS[3],
+                    { ...SIRENE_UNITE_LEGALE_DTOS[0], siren: "invalid" },
                 ],
             ]);
 
@@ -62,26 +63,36 @@ describe("SireneUniteLegalePipeline", () => {
             };
 
             expect(actual).toEqual({
-                associations: [DTOS[0].siren, DTOS[1].siren],
-                entreprises: [DTOS[2].siren],
+                associations: [SIRENE_UNITE_LEGALE_DTOS[0].siren, SIRENE_UNITE_LEGALE_DTOS[1].siren],
+                entreprises: [SIRENE_UNITE_LEGALE_DTOS[2].siren],
             });
         });
 
         it("persists every parquet batch", async () => {
-            const { sirenePort, nameService, pipeline } = createPipeline([[DTOS[0]], [DTOS[1]]]);
+            const { sirenePort, searchPort, pipeline } = createPipeline([
+                [SIRENE_UNITE_LEGALE_DTOS[0]],
+                [SIRENE_UNITE_LEGALE_DTOS[1]],
+            ]);
 
             await pipeline.run(FILE_PATH);
 
             const actual = {
                 sireneBatchSizes: sirenePort.upsertMany.mock.calls.map(([batch]) => batch.length),
-                nameBatchSizes: nameService.upsertMany.mock.calls.map(([batch]) => batch.length),
+                nameBatchSizes: searchPort.upsertMany.mock.calls.map(([batch]) => batch.length),
             };
 
             expect(actual).toEqual({ sireneBatchSizes: [1, 1], nameBatchSizes: [1, 1] });
         });
 
         it("returns the import report", async () => {
-            const { pipeline } = createPipeline([[DTOS[0], DTOS[2], DTOS[3], { ...DTOS[0], siren: "invalid" }]]);
+            const { pipeline } = createPipeline([
+                [
+                    SIRENE_UNITE_LEGALE_DTOS[0],
+                    SIRENE_UNITE_LEGALE_DTOS[2],
+                    SIRENE_UNITE_LEGALE_DTOS[3],
+                    { ...SIRENE_UNITE_LEGALE_DTOS[0], siren: "invalid" },
+                ],
+            ]);
 
             const actual = await pipeline.run(FILE_PATH);
 

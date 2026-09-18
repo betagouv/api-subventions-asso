@@ -4,24 +4,44 @@ exports[`/search /associations/{input} should return an Association from its Sir
 {
   "nbPages": 1,
   "page": 1,
-  "results": [
+  "resultats": [
     {
-      "name": "ASSOCIATION AURORE",
-      "siren": "775684970",
+      "adresse": {
+        "code_postal": "75000",
+        "commune": "Paris",
+        "numero": "1",
+        "type_voie": "RUE",
+        "voie": "Général de Gaulle",
+      },
+      "name": "DEFAULT_ASSOCIATION",
+      "nbEtabs": 2,
+      "rna": "W000000000",
+      "siren": "100000000",
+      "siretSiege": "10000000000001",
     },
   ],
   "total": 1,
 }
 `;
 
-exports[`/search /associations/{input} should return an AssociationNameEntity from its name 1`] = `
+exports[`/search /associations/{input} should return an AssociationSearchEntity from its name 1`] = `
 {
   "nbPages": 1,
   "page": 1,
-  "results": [
+  "resultats": [
     {
-      "name": "ASSOCIATION AURORE",
-      "siren": "775684970",
+      "adresse": {
+        "code_postal": "75000",
+        "commune": "Paris",
+        "numero": "1",
+        "type_voie": "RUE",
+        "voie": "Général de Gaulle",
+      },
+      "name": "DEFAULT_ASSOCIATION",
+      "nbEtabs": 2,
+      "rna": "W000000000",
+      "siren": "100000000",
+      "siretSiege": "10000000000001",
     },
   ],
   "total": 1,
@@ -32,7 +52,7 @@ exports[`/search /associations/{input} should return other than first page 1`] =
 {
   "nbPages": 1,
   "page": 2,
-  "results": [],
+  "resultats": [],
   "total": 1,
 }
 `;

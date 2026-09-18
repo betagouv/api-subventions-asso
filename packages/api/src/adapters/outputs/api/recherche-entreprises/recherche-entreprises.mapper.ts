@@ -1,24 +1,28 @@
-import AssociationNameEntity from "../../../../modules/association-name/entities/AssociationNameEntity";
-import Rna from "../../../../identifier-objects/Rna";
-import Siren from "../../../../identifier-objects/Siren";
+import { Rna, Siren, Siret } from "../../../../identifier-objects";
 import { RechercheEntreprisesResultDto } from "./@types/RechercheEntreprisesDto";
 
 export class RechercheEntreprisesMapper {
-    static toAssociationNameEntity(dto: RechercheEntreprisesResultDto & { nom_complet: string; siren: string }) {
-        return new AssociationNameEntity(
-            dto.nom_complet,
-            new Siren(dto.siren),
-            dto.complements?.identifiant_association ? new Rna(dto.complements?.identifiant_association) : undefined,
-            dto.siege
+    // does not return AssociationSearchEntity has this is old provider and those should be remove soon
+    // rna is not ensured and does not match the Entity props parameter types
+    static toAssociationSearchEntity(dto: RechercheEntreprisesResultDto & { nom_complet: string; siren: string }) {
+        return {
+            name: dto.nom_complet,
+            siren: new Siren(dto.siren),
+            mainEstablishmentSiret: dto.siege?.siret ? new Siret(dto.siege?.siret) : undefined,
+            rna: dto.complements?.identifiant_association
+                ? new Rna(dto.complements?.identifiant_association)
+                : undefined,
+            address: dto.siege
                 ? {
-                      numero: dto.siege.numero_voie,
-                      type_voie: dto.siege.type_voie,
-                      voie: dto.siege.libelle_voie,
-                      code_postal: dto.siege.code_postal || undefined,
-                      commune: dto.siege.libelle_commune || undefined,
+                      number: dto.siege.numero_voie || null,
+                      type: dto.siege.type_voie || null,
+                      name: dto.siege.libelle_voie || null,
+                      postalCode: dto.siege.code_postal || null,
+                      city: dto.siege.libelle_commune || null,
+                      complement: null,
                   }
                 : undefined,
-            dto.nombre_etablissements,
-        );
+            nbEstabs: dto.nombre_etablissements || undefined,
+        };
     }
 }

@@ -1,7 +1,7 @@
 import type {
     Association,
     DocumentDto,
-    PaginatedAssociationNameDto,
+    PaginatedAssociationSearchDto,
     AssociationIdentifierDto,
     GrantFlatDto,
 } from "dto";
@@ -41,7 +41,7 @@ class AssociationPort {
 
     async search(lookup: string, page = 1) {
         const path = `/search/associations/${lookup}?page=${page}`;
-        return (await requestsService.get(path))?.data as PaginatedAssociationNameDto;
+        return (await requestsService.get(path))?.data as PaginatedAssociationSearchDto;
     }
 }
 

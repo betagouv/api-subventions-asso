@@ -72,6 +72,15 @@ describe("StringHelper", () => {
         });
     });
 
+    describe("removeAccents", () => {
+        it("removes accents", () => {
+            const str = "âge et métriques";
+            const expected = "age et metriques";
+            const actual = StringHelper.removeAccents(str);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("sanitizeHeader", () => {
         it.each`
             input                                          | expected

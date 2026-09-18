@@ -5,7 +5,7 @@ import rnaSirenService from "../rna-siren/rna-siren.service";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import Siren from "../../identifier-objects/Siren";
 import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
-import { ASSOCIATION_NAME } from "../association-name/__fixtures__/AssociationName";
+import { ASSOCIATION_SEARCH_ENTITIES } from "../../domain/__fixtures__/association-search.fixture";
 
 jest.mock("../rna-siren/rna-siren.service");
 jest.mock("../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service");
@@ -17,7 +17,7 @@ describe("AssociationIdentifierService", () => {
 
     describe("findFromRechercheEntreprises", () => {
         beforeEach(() => {
-            jest.mocked(rechercheEntreprisesService.getSearchResult).mockResolvedValue([ASSOCIATION_NAME]);
+            jest.mocked(rechercheEntreprisesService.getSearchResult).mockResolvedValue(ASSOCIATION_SEARCH_ENTITIES);
         });
 
         it("search for identifiers from Recherche Entreprise API", async () => {

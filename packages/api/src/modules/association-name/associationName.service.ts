@@ -1,23 +1,14 @@
 import { NotAssociationError } from "core";
-import UniteLegaleNameService from "../providers/unite-legale-name/unite-legale.name.service";
+import AssociationSearchService from "../providers/association-search/association-search.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
-import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
 import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
-import AssociationNameEntity from "./entities/AssociationNameEntity";
+import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
 
 export class AssociationNameService {
-    async getNameFromIdentifier(identifier: AssociationIdentifier): Promise<string | undefined> {
-        const result = await UniteLegaleNameService.getNameFromIdentifier(identifier);
-
-        if (!result) return;
-
-        return result.name;
-    }
-
-    async find(value: string): Promise<AssociationNameEntity[]> {
-        let associationNames: AssociationNameEntity[];
+    async find(value: string): Promise<Partial<AssociationSearchEntity>[]> {
+        let associationNames: Partial<AssociationSearchEntity>[];
         let gotCompany = false;
         const searchEntreprisesCatch = (value: string) =>
             rechercheEntreprisesService.getSearchResult(value).catch(() => {
@@ -45,7 +36,7 @@ export class AssociationNameService {
 
             const promiseResults = [
                 ...(await Promise.all(
-                    identifiers.map(identifierStr => UniteLegaleNameService.searchBySirenSiretName(identifierStr)),
+                    identifiers.map(identifierStr => AssociationSearchService.searchBySirenSiretName(identifierStr)),
                 )),
                 ...(await Promise.all(identifiers.map(identifierStr => searchEntreprisesCatch(identifierStr)))),
             ];
@@ -55,7 +46,7 @@ export class AssociationNameService {
             // Siret Or Name
 
             const promiseResults = [
-                ...(await UniteLegaleNameService.searchBySirenSiretName(value.toLowerCase().trim())),
+                ...(await AssociationSearchService.searchBySirenSiretName(value.toLowerCase().trim())),
                 ...(await searchEntreprisesCatch(value)),
             ];
 
@@ -63,18 +54,12 @@ export class AssociationNameService {
         }
         const mergedAssociationName = associationNames.reduce(
             (acc, associationName) => {
-                const id = `${associationName.rna?.value} - ${associationName.siren.value}`;
+                const id = `${associationName.rna?.value} - ${associationName.siren!.value}`;
                 const oldValue = acc[id] || {};
-                acc[id] = new AssociationNameEntity(
-                    oldValue.name || associationName.name,
-                    oldValue.siren || associationName.siren,
-                    oldValue.rna || associationName.rna,
-                    oldValue.address || associationName.address,
-                    oldValue.nbEtabs || associationName.nbEtabs,
-                );
+                acc[id] = Object.assign(associationName, oldValue);
                 return acc;
             },
-            {} as Record<string, AssociationNameEntity>,
+            {} as Record<string, AssociationSearchEntity>,
         );
         const res = Object.values(mergedAssociationName);
         if (!res.length && gotCompany) throw new NotAssociationError();

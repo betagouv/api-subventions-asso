@@ -1,3 +1,5 @@
+import { ASSOCIATION_SEARCH_ENTITIES } from "../../../../../domain/__fixtures__/association-search.fixture";
+import { AssociationSearchAdapter } from "../../../../outputs/db/association-search/association-search.adapter";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { RnaAdapter } from "../../../../outputs/db/rna/rna.adapter";
 import { RNA_DBO } from "../../../../outputs/db/rna/rna.dbo.fixture";
@@ -28,13 +30,18 @@ describe("RNA pipeline", () => {
     } as unknown as RnaParser;
 
     const mapper = {
-        map: jest.fn().mockImplementation(_dto => RNA_DBO),
+        toDbo: jest.fn().mockImplementation(_dto => RNA_DBO),
+        toAssociationSearch: jest.fn().mockImplementation(_dbo => ASSOCIATION_SEARCH_ENTITIES[0]),
     } as unknown as jest.Mocked<RnaMapper>;
 
     const adapter = {
         insertMany: jest.fn().mockResolvedValue(undefined),
         upsertMany: jest.fn().mockResolvedValue(undefined),
     } as unknown as RnaAdapter;
+
+    const searchAdapter = {
+        upsertMany: jest.fn().mockResolvedValue(undefined),
+    } as unknown as AssociationSearchAdapter;
 
     const mockLogsAdapter = {
         getLastImportByProvider: jest.fn().mockResolvedValue(IMPORT_DATE),
@@ -43,7 +50,7 @@ describe("RNA pipeline", () => {
     let pipeline: RnaPipeline;
 
     beforeEach(() => {
-        pipeline = new RnaPipeline(parser, mapper, adapter, mockLogsAdapter);
+        pipeline = new RnaPipeline(parser, mapper, adapter, searchAdapter, mockLogsAdapter);
     });
 
     describe("run", () => {
@@ -66,7 +73,7 @@ describe("RNA pipeline", () => {
 
             // filter out filtered dto from BATCHES
             [BATCHES[0][0], BATCHES[1][0]].flat().forEach((dto, index) => {
-                expect(mapper.map).toHaveBeenNthCalledWith(index + 1, dto);
+                expect(mapper.toDbo).toHaveBeenNthCalledWith(index + 1, dto);
             });
         });
 
@@ -74,7 +81,18 @@ describe("RNA pipeline", () => {
             await pipeline.run(FILE_PATH);
 
             [BATCHES[0][0], BATCHES[1][0]].flat().forEach((dto, index) => {
-                expect(mapper.map).toHaveBeenNthCalledWith(index + 1, dto);
+                expect(mapper.toDbo).toHaveBeenNthCalledWith(index + 1, dto);
+            });
+        });
+
+        it("updates association-search collection", async () => {
+            await pipeline.run(FILE_PATH);
+
+            BATCHES.forEach((_dto, index) => {
+                expect(searchAdapter.upsertMany).toHaveBeenNthCalledWith(
+                    index + 1,
+                    BATCHES[index].map(_dbo => ASSOCIATION_SEARCH_ENTITIES[0]),
+                );
             });
         });
 

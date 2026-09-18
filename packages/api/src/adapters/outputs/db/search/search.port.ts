@@ -1,12 +1,7 @@
-import { AssociationNameDto } from "dto";
+import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 
 export interface SearchPort {
-    saveResults(searchToken: string, results: AssociationNameDto[]): Promise<void>;
-    getResults(
-        searchToken: string,
-        page: number,
-        pageSize: number,
-        maxTimestamp: Date,
-    ): Promise<{ results: AssociationNameDto[]; total: number } | null>;
+    saveResults(searchToken: string, results: AssociationSearchEntity[]): Promise<void>;
+    getResults(searchToken: string, maxTimestamp: Date): Promise<AssociationSearchEntity[] | null>;
     deleteAll(): Promise<void>;
 }

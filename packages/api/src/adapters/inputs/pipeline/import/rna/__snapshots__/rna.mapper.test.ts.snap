@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RnaMapper map returns dbo 1`] = `
+exports[`RnaMapper toDbo returns dbo 1`] = `
 {
   "adrg-achemine": "LARAJASSE",
   "adrg-codepostal": "69590",

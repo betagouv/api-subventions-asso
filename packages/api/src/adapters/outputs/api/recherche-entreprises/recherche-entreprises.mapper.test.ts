@@ -1,12 +1,10 @@
-import AssociationNameEntity from "../../../../modules/association-name/entities/AssociationNameEntity";
-import Rna from "../../../../identifier-objects/Rna";
 import Siren from "../../../../identifier-objects/Siren";
 import { RechercheEntreprisesMapper } from "./recherche-entreprises.mapper";
 import { RechercheEntreprisesResultDto } from "./@types/RechercheEntreprisesDto";
 
 describe("RechercheEntreprisesAdapter", () => {
-    describe("toAssociationNameEntity", () => {
-        it("should convert RechercheEntreprisesResultDto to AssociationNameEntity", () => {
+    describe("toAssociationSearchEntity", () => {
+        it("should convert RechercheEntreprisesResultDto to AssociationSearchEntity", () => {
             const dto = {
                 nom_complet: "Example Association",
                 siren: "123456789",
@@ -17,27 +15,14 @@ describe("RechercheEntreprisesAdapter", () => {
                     libelle_voie: "Example Street",
                     code_postal: "12345",
                     libelle_commune: "Example City",
+                    siret: "12345678900018",
                 },
                 nombre_etablissements: 3,
             };
 
-            const expected = new AssociationNameEntity(
-                dto.nom_complet,
-                new Siren(dto.siren),
-                new Rna(dto.complements?.identifiant_association),
-                {
-                    numero: dto.siege.numero_voie,
-                    type_voie: dto.siege.type_voie,
-                    voie: dto.siege.libelle_voie,
-                    code_postal: dto.siege.code_postal,
-                    commune: dto.siege.libelle_commune,
-                },
-                dto.nombre_etablissements,
-            );
+            const result = RechercheEntreprisesMapper.toAssociationSearchEntity(dto);
 
-            const result = RechercheEntreprisesMapper.toAssociationNameEntity(dto);
-
-            expect(result).toEqual(expected);
+            expect(result).toMatchSnapshot();
         });
 
         it("should handle cases where complements or siege are missing", () => {
@@ -49,15 +34,16 @@ describe("RechercheEntreprisesAdapter", () => {
                 nombre_etablissements: 2,
             } as unknown as RechercheEntreprisesResultDto & { nom_complet: string; siren: string };
 
-            const expected = new AssociationNameEntity(
-                dto.nom_complet,
-                new Siren(dto.siren),
-                undefined,
-                undefined,
-                dto.nombre_etablissements,
-            );
+            const expected = {
+                name: dto.nom_complet,
+                siren: new Siren(dto.siren),
+                mainEstablishmentSiret: undefined,
+                rna: undefined,
+                address: undefined,
+                nbEstabs: dto.nombre_etablissements,
+            };
 
-            const result = RechercheEntreprisesMapper.toAssociationNameEntity(dto);
+            const result = RechercheEntreprisesMapper.toAssociationSearchEntity(dto);
 
             expect(result).toEqual(expected);
         });
@@ -70,15 +56,15 @@ describe("RechercheEntreprisesAdapter", () => {
                 nombre_etablissements: 1,
             } as unknown as RechercheEntreprisesResultDto & { nom_complet: string; siren: string };
 
-            const expected = new AssociationNameEntity(
-                dto.nom_complet,
-                new Siren(dto.siren),
-                undefined,
-                undefined,
-                dto.nombre_etablissements,
-            );
+            const expected = {
+                name: dto.nom_complet,
+                siren: new Siren(dto.siren),
+                rna: undefined,
+                address: undefined,
+                nbEstabs: dto.nombre_etablissements,
+            };
 
-            const result = RechercheEntreprisesMapper.toAssociationNameEntity(dto);
+            const result = RechercheEntreprisesMapper.toAssociationSearchEntity(dto);
 
             expect(result).toEqual(expected);
         });
