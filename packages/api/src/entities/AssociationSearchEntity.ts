@@ -5,21 +5,31 @@ import { removeAccents } from "../shared/helpers/StringHelper";
 
 interface AssociationSearchProps {
     siren: Siren;
-    name: string;
     rna?: Rna;
     mainEstablishmentSiret: Siret;
+    name: string;
+    object?: string;
     address?: Address;
     nbEstabs?: number;
     searchKey?: string;
 }
 
-export type AssociationSearchPartialUpdate = Partial<AssociationSearchEntity>;
+type WithSiren = Partial<AssociationSearchEntity> & {
+    siren: AssociationSearchEntity["siren"];
+};
+
+type WithRna = Partial<AssociationSearchEntity> & {
+    rna: AssociationSearchEntity["rna"];
+};
+
+export type AssociationSearchPartialUpdate = WithSiren | WithRna;
 
 export default class AssociationSearchEntity {
     public siren: Siren;
     public rna: Rna | null;
-    public name: string;
     public mainEstablishmentSiret: Siret;
+    public name: string;
+    public object: string | null;
     public address: Address | null;
     public nbEstabs: number | null;
     public searchKey: string;
@@ -29,6 +39,7 @@ export default class AssociationSearchEntity {
         this.mainEstablishmentSiret = props.mainEstablishmentSiret;
         this.rna = props.rna ?? null;
         this.name = props.name;
+        this.object = props.object ?? null;
         this.address = props.address ?? null;
         this.nbEstabs = props.nbEstabs ?? null;
         this.searchKey = props.searchKey ? props.searchKey : this.buildSearchKey(props);

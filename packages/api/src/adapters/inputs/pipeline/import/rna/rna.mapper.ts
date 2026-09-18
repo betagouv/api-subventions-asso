@@ -1,3 +1,5 @@
+import AssociationSearchEntity from "../../../../../entities/AssociationSearchEntity";
+import { Rna } from "../../../../../identifier-objects";
 import { stringToDateOrNull } from "../../../../../shared/helpers/DateHelper";
 import RnaDbo from "../../../../outputs/db/rna/rna.dbo";
 import { RnaWaldecDto } from "./rna.dto";
@@ -44,6 +46,15 @@ export class RnaMapper {
             observation: dto.observation,
             position: dto.position,
             "maj-time": new Date(dto.maj_time),
+        };
+    }
+
+    toAssociationSearch(dbo: Omit<RnaDbo, "titre"> & { titre: string }): Partial<AssociationSearchEntity> {
+        if (!dbo.titre) throw new Error("RnaDbo must contain titre to be transformed into AssociationSearch");
+        return {
+            rna: new Rna(dbo.id),
+            name: dbo.titre,
+            object: dbo.objet ?? null,
         };
     }
 }

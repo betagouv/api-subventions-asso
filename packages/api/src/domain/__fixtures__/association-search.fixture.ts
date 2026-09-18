@@ -8,6 +8,7 @@ export const ASSOCIATION_SEARCH_ENTITIES: AssociationSearchEntity[] = [
         mainEstablishmentSiret: new Siret(DEFAULT_ASSOCIATION.siret),
         rna: new Rna(DEFAULT_ASSOCIATION.rna),
         name: DEFAULT_ASSOCIATION.name,
+        object: "ROLE AND DEFINITION OF THE ASSOCIATION",
         address: {
             number: "1",
             type: "RUE",

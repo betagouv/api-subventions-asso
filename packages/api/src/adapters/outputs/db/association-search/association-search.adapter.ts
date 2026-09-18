@@ -1,5 +1,5 @@
 import { AnyBulkWriteOperation } from "mongodb";
-import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
+import AssociationSearchEntity, { AssociationSearchPartialUpdate } from "../../../../entities/AssociationSearchEntity";
 import MongoAdapter from "../MongoAdapter";
 import Siren from "../../../../identifier-objects/Siren";
 import { AssociationSearchPort } from "./association-search.port";
@@ -46,13 +46,13 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         return AssociationSearchMapper.toEntity(dbo);
     }
 
-    public async upsertMany(entities: AssociationSearchEntity[]): Promise<void> {
+    public async upsertMany(entities: AssociationSearchPartialUpdate[]): Promise<void> {
         const operations = entities.map(
             e =>
                 ({
                     updateOne: {
-                        filter: { siren: e.siren },
-                        update: { $set: AssociationSearchMapper.toDbo(e) },
+                        filter: e.siren ? { siren: e.siren } : { rna: e.rna }, // most of the time we update from siren
+                        update: { $set: AssociationSearchMapper.toPartialDbo(e) },
                         upsert: true,
                     },
                 }) as AnyBulkWriteOperation<AssociationSearchDbo>,

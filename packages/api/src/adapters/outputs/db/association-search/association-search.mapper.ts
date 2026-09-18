@@ -1,4 +1,4 @@
-import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
+import AssociationSearchEntity, { AssociationSearchPartialUpdate } from "../../../../entities/AssociationSearchEntity";
 import Siren from "../../../../identifier-objects/Siren";
 import AssociationSearchDbo from "./@types/AssociationSearchDbo";
 import Rna from "../../../../identifier-objects/Rna";
@@ -16,12 +16,12 @@ export default class AssociationSearchMapper {
         });
     }
 
-    static toDbo(entity: AssociationSearchEntity): AssociationSearchDbo {
-        return {
-            ...entity,
-            siren: entity.siren.value,
-            mainEstablishmentSiret: entity.mainEstablishmentSiret.value,
-            rna: entity.rna ? entity.rna.value : null,
-        };
+    static toPartialDbo(entity: AssociationSearchPartialUpdate): Partial<AssociationSearchDbo> {
+        const { siren, rna, mainEstablishmentSiret, ...rest } = entity;
+        const dbo: Partial<AssociationSearchDbo> = { ...rest };
+        if (siren) dbo.siren = siren.value;
+        if (rna) dbo.rna = rna.value;
+        if (mainEstablishmentSiret) dbo.mainEstablishmentSiret = mainEstablishmentSiret.value;
+        return dbo;
     }
 }
