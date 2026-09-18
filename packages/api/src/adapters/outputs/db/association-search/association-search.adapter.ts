@@ -11,7 +11,13 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     collectionName = "association-search";
 
     async createIndexes(): Promise<void> {
-        await this.collection.createIndex({ searchKey: 1 }, { unique: true });
+        await this.collection.createIndex(
+            { searchKey: 1 },
+            {
+                unique: true,
+                sparse: true,
+            },
+        );
         await this.collection.createIndex({ siren: 1 });
     }
 
@@ -45,7 +51,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
             e =>
                 ({
                     updateOne: {
-                        filter: { searchKey: e.searchKey },
+                        filter: { siren: e.siren },
                         update: { $set: AssociationSearchMapper.toDbo(e) },
                         upsert: true,
                     },

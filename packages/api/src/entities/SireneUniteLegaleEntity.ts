@@ -32,7 +32,7 @@ export interface SireneUniteLegaleEntity {
     categorieJuridiqueUniteLegale: string | null;
     activitePrincipaleUniteLegale: string | null;
     nomenclatureActivitePrincipaleUniteLegale: string | null;
-    nicSiegeUniteLegale: string | null;
+    nicSiegeUniteLegale: string;
     economieSocialeSolidaireUniteLegale: string | null;
     societeMissionUniteLegale: string | null;
     caractereEmployeurUniteLegale: string | null;

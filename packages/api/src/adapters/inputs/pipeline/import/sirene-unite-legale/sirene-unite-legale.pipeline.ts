@@ -16,7 +16,6 @@ import parquetParser, { ParquetParser, ParquetRow } from "../../../parquet.parse
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
 import SireneUniteLegaleMapper from "./sirene-unite-legale.mapper";
-import UniteLegaleToSearch from "../../../../../usecases/search/unite-legale-to-search";
 
 export class SireneUniteLegalePipeline {
     constructor(
@@ -88,7 +87,7 @@ export class SireneUniteLegalePipeline {
 
         await Promise.all([
             this.sirenePort.upsertMany(entities),
-            this.searchPort.upsertMany(entities.map(entity => new UniteLegaleToSearch().execute(entity))),
+            this.searchPort.upsertMany(entities.map(entity => SireneUniteLegaleMapper.toAssociationSearch(entity))),
         ]);
     }
 

@@ -2,10 +2,10 @@ import { App } from "supertest/types";
 import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
 import associationSearchAdapter from "../../src/adapters/outputs/db/association-search/association-search.adapter";
-import AssociationNameFixture from "../__fixtures__/association-name.fixture";
 import apiEntrepriseService from "../../src/modules/providers/api-entreprise/api-entreprise.service";
 import rechercheEntreprisesAdapter from "../../src/adapters/outputs/api/recherche-entreprises/recherche-entreprises.adapter";
 import { EMPTY_RECHERCHE_ENTREPRISES_DTO } from "../../src/adapters/outputs/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
+import { ASSOCIATION_SEARCH_ENTITIES } from "../../src/domain/__fixtures__/association-search.fixture";
 
 const g = global as unknown as { app: App };
 
@@ -19,7 +19,7 @@ describe("/search", () => {
 
     describe("/associations/{input}", () => {
         beforeEach(async () => {
-            Promise.all(AssociationNameFixture.map(fixture => associationSearchAdapter.upsertMany([fixture])));
+            await associationSearchAdapter.upsertMany(ASSOCIATION_SEARCH_ENTITIES);
         });
 
         it("should return 200", async () => {
@@ -33,7 +33,7 @@ describe("/search", () => {
 
         it("should return an Association from its Siren", async () => {
             const response = await request(g.app)
-                .get(`/search/associations/${AssociationNameFixture[0].siren}`)
+                .get(`/search/associations/${ASSOCIATION_SEARCH_ENTITIES[0].siren}`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
@@ -43,7 +43,7 @@ describe("/search", () => {
 
         it("should return an AssociationSearchEntity from its name", async () => {
             const response = await request(g.app)
-                .get(`/search/associations/${AssociationNameFixture[0].name}`)
+                .get(`/search/associations/${ASSOCIATION_SEARCH_ENTITIES[0].name}`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -52,7 +52,7 @@ describe("/search", () => {
 
         it("should return other than first page", async () => {
             const response = await request(g.app)
-                .get(`/search/associations/${AssociationNameFixture[0].name}?page=2`)
+                .get(`/search/associations/${ASSOCIATION_SEARCH_ENTITIES[0].name}?page=2`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);

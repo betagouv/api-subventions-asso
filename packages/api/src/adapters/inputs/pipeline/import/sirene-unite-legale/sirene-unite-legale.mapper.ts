@@ -1,3 +1,4 @@
+import AssociationSearchEntity from "../../../../../entities/AssociationSearchEntity";
 import { SireneUniteLegaleEntity } from "../../../../../entities/SireneUniteLegaleEntity";
 import { Rna, Siren } from "../../../../../identifier-objects";
 import { ParquetRow } from "../../../parquet.parser";
@@ -50,5 +51,13 @@ export default class SireneUniteLegaleMapper {
             caractereEmployeurUniteLegale: dto.caractereEmployeurUniteLegale,
             activitePrincipaleNAF25UniteLegale: dto.activitePrincipaleNAF25UniteLegale,
         };
+    }
+
+    static toAssociationSearch(entity: SireneUniteLegaleEntity) {
+        return {
+            siren: entity.siren,
+            rna: entity.identifiantAssociationUniteLegale ?? undefined,
+            mainEstablishmentSiret: entity.siren.toSiret(entity.nicSiegeUniteLegale),
+        } as Pick<AssociationSearchEntity, "siren" | "rna" | "mainEstablishmentSiret">;
     }
 }

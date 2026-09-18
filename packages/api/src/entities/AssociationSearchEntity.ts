@@ -1,5 +1,5 @@
 import { Address } from "../@types/Address";
-import { Rna } from "../identifier-objects";
+import { Rna, Siret } from "../identifier-objects";
 import Siren from "../identifier-objects/Siren";
 import { removeAccents } from "../shared/helpers/StringHelper";
 
@@ -7,6 +7,7 @@ interface AssociationSearchProps {
     siren: Siren;
     name: string;
     rna?: Rna;
+    mainEstablishmentSiret: Siret;
     address?: Address;
     nbEstabs?: number;
     searchKey?: string;
@@ -18,12 +19,14 @@ export default class AssociationSearchEntity {
     public siren: Siren;
     public rna: Rna | null;
     public name: string;
+    public mainEstablishmentSiret: Siret;
     public address: Address | null;
     public nbEstabs: number | null;
     public searchKey: string;
 
     constructor(props: AssociationSearchProps) {
         this.siren = props.siren;
+        this.mainEstablishmentSiret = props.mainEstablishmentSiret;
         this.rna = props.rna ?? null;
         this.name = props.name;
         this.address = props.address ?? null;

@@ -6,5 +6,5 @@ export interface AssociationSearchPort {
 
     search(searchQuery: string): Promise<AssociationSearchEntity[]>;
     findOneBySiren(siren: Siren): Promise<AssociationSearchEntity | null>;
-    upsertMany(entities: AssociationSearchEntity[]): Promise<void>;
+    upsertMany(entities: Partial<AssociationSearchEntity>[]): Promise<void>;
 }

@@ -29,7 +29,7 @@ export default interface SireneUniteLegaleDto {
     categorieJuridiqueUniteLegale: bigint | null; // bigint to string
     activitePrincipaleUniteLegale: string | null;
     nomenclatureActivitePrincipaleUniteLegale: string | null;
-    nicSiegeUniteLegale: string | null;
+    nicSiegeUniteLegale: string; // always define (checked on 2026/09/18)
     economieSocialeSolidaireUniteLegale: string | null;
     societeMissionUniteLegale: string | null;
     caractereEmployeurUniteLegale: string | null;
