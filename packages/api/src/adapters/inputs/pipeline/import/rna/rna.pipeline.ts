@@ -57,7 +57,7 @@ export class RnaPipeline {
                 transform: (batch: RnaWaldecDto[], _enc, callback) => {
                     report.parsedCount += batch.length;
                     try {
-                        const dbos = batch.map(row => this.mapper.map(row));
+                        const dbos = batch.map(row => this.mapper.toDbo(row));
                         callback(null, dbos);
                     } catch (err) {
                         callback(err as Error);

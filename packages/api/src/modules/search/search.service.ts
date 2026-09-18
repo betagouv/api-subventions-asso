@@ -7,7 +7,7 @@ export class SearchService {
     PAGE_SIZE = 12;
     CACHE_LIFESPAN_MS = 24 * 60 * 60 * 1000;
 
-    public async getAssociationsKeys(value: string): Promise<AssociationSearchEntity[]> {
+    public async getAssociationsKeys(value: string): Promise<Partial<AssociationSearchEntity>[]> {
         const resultsFromCache = await searchAdapter.getResults(value, new Date(Date.now() - this.CACHE_LIFESPAN_MS));
 
         if (resultsFromCache) return resultsFromCache;
@@ -20,7 +20,10 @@ export class SearchService {
         return entities;
     }
 
-    public async getPaginatedResult(value: string, page: number): Promise<PaginatedResult<AssociationSearchEntity[]>> {
+    public async getPaginatedResult(
+        value: string,
+        page: number,
+    ): Promise<PaginatedResult<Partial<AssociationSearchEntity>[]>> {
         const results = await this.getAssociationsKeys(value);
         const paginatedResult = results.slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE);
         return {

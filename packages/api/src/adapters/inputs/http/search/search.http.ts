@@ -20,6 +20,7 @@ export class SearchHttp extends Controller {
             {
                 siren: "123456789",
                 rna: "W751234567",
+                siretSiege: "12345678900018",
                 name: "Association Exemple",
                 adresse: {
                     numero: "3",

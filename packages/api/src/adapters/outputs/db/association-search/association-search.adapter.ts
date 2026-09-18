@@ -1,11 +1,9 @@
-import { AnyBulkWriteOperation } from "mongodb";
-import AssociationSearchEntity, { AssociationSearchPartialUpdate } from "../../../../entities/AssociationSearchEntity";
+import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 import MongoAdapter from "../MongoAdapter";
 import Siren from "../../../../identifier-objects/Siren";
 import { AssociationSearchPort } from "./association-search.port";
-
 import AssociationSearchMapper from "./association-search.mapper";
-import AssociationSearchDbo from "./@types/AssociationSearchDbo";
+import AssociationSearchDbo, { AssociationSearchPartialUpdate } from "./@types/AssociationSearchDbo";
 
 export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo> implements AssociationSearchPort {
     collectionName = "association-search";
@@ -21,10 +19,11 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         await this.collection.createIndex({ siren: 1 });
     }
 
-    search(searchQuery: string): Promise<AssociationSearchEntity[]> {
+    findByText(text: string): Promise<AssociationSearchEntity[]> {
+        console.log("text: ", text);
         return this.collection
             .find({
-                searchKey: { $regex: searchQuery },
+                searchName: { $regex: text },
             })
             .map(doc => AssociationSearchMapper.toEntity(doc))
             .toArray();
@@ -46,17 +45,16 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         return AssociationSearchMapper.toEntity(dbo);
     }
 
-    public async upsertMany(entities: AssociationSearchPartialUpdate[]): Promise<void> {
-        const operations = entities.map(
-            e =>
-                ({
-                    updateOne: {
-                        filter: e.siren ? { siren: e.siren } : { rna: e.rna }, // most of the time we update from siren
-                        update: { $set: AssociationSearchMapper.toPartialDbo(e) },
-                        upsert: true,
-                    },
-                }) as AnyBulkWriteOperation<AssociationSearchDbo>,
-        );
+    // becarefull as here we do not pass entities but partial dbos
+    public async upsertMany(dbos: Partial<AssociationSearchPartialUpdate>[]): Promise<void> {
+        const operations = dbos.map(dbo => ({
+            updateOne: {
+                filter: dbo.siren ? { siren: dbo.siren } : { rna: dbo.rna }, // most of the time we update from siren
+                update: { $set: dbo },
+                upsert: true,
+            },
+        }));
+
         await this.collection.bulkWrite(operations);
     }
 }

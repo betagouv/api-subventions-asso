@@ -30,7 +30,7 @@ describe("RNA pipeline", () => {
     } as unknown as RnaParser;
 
     const mapper = {
-        map: jest.fn().mockImplementation(_dto => RNA_DBO),
+        toDbo: jest.fn().mockImplementation(_dto => RNA_DBO),
         toAssociationSearch: jest.fn().mockImplementation(_dbo => ASSOCIATION_SEARCH_ENTITIES[0]),
     } as unknown as jest.Mocked<RnaMapper>;
 
@@ -73,7 +73,7 @@ describe("RNA pipeline", () => {
 
             // filter out filtered dto from BATCHES
             [BATCHES[0][0], BATCHES[1][0]].flat().forEach((dto, index) => {
-                expect(mapper.map).toHaveBeenNthCalledWith(index + 1, dto);
+                expect(mapper.toDbo).toHaveBeenNthCalledWith(index + 1, dto);
             });
         });
 
@@ -81,7 +81,7 @@ describe("RNA pipeline", () => {
             await pipeline.run(FILE_PATH);
 
             [BATCHES[0][0], BATCHES[1][0]].flat().forEach((dto, index) => {
-                expect(mapper.map).toHaveBeenNthCalledWith(index + 1, dto);
+                expect(mapper.toDbo).toHaveBeenNthCalledWith(index + 1, dto);
             });
         });
 

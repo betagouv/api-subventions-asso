@@ -1,12 +1,12 @@
 import { RechercheAssociationDto } from "dto";
 import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 
-export function toDto(entity: AssociationSearchEntity): RechercheAssociationDto {
+export function toDto(entity: Partial<AssociationSearchEntity>): RechercheAssociationDto {
     return {
-        ...entity,
-        siren: entity.siren.value,
+        siren: entity.siren!.value,
         rna: entity.rna?.value ?? null,
-        name: entity.name,
+        siretSiege: entity.mainEstablishmentSiret?.value ?? null,
+        name: entity.name!,
         adresse: {
             numero: entity.address?.number ?? null,
             type_voie: entity.address?.type ?? null,

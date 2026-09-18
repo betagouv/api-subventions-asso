@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RechercheEntreprisesAdapter toAssociationSearchEntity should convert RechercheEntreprisesResultDto to AssociationSearchEntity 1`] = `
+{
+  "address": {
+    "city": "Example City",
+    "complement": null,
+    "name": "Example Street",
+    "number": "123",
+    "postalCode": "12345",
+    "type": "Rue",
+  },
+  "mainEstablishmentSiret": Siret {
+    "identifier": "12345678900018",
+  },
+  "name": "Example Association",
+  "nbEstabs": 3,
+  "rna": Rna {
+    "identifier": "W123456789",
+  },
+  "siren": Siren {
+    "identifier": "123456789",
+  },
+}
+`;

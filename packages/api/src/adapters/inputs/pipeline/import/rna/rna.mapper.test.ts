@@ -3,9 +3,9 @@ import { RNA_WALDEC_DTO } from "./rna.dto.fixture";
 import rnaMapper from "./rna.mapper";
 
 describe("RnaMapper", () => {
-    describe("map", () => {
+    describe("toDbo", () => {
         it("returns dbo", () => {
-            const actual = rnaMapper.map(RNA_WALDEC_DTO);
+            const actual = rnaMapper.toDbo(RNA_WALDEC_DTO);
             expect(actual).toMatchSnapshot(actual);
         });
     });
@@ -14,7 +14,7 @@ describe("RnaMapper", () => {
         it("throws an error if no titre provided", () => {
             // @ts-expect-error: bypass type check
             expect(() => rnaMapper.toAssociationSearch({ ...RNA_DBO, titre: null })).toThrow(
-                "RnaDbo must contain titre to be transformed into AssociationSearch",
+                "Rna data must contain titre to be transformed into AssociationSearch",
             );
         });
     });

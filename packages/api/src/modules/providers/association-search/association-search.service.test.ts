@@ -17,7 +17,9 @@ describe("AssociationSearchService", () => {
     const SIREN = new Siren("123456789");
     const RNA = new Rna("W123456789");
     const fakeAssociationSearchEntity = new AssociationSearchEntity({
-        siren: SIREN,
+        siren: SIREN.value,
+        mainEstablishmentSiret: SIREN.value + "00018",
+        rna: RNA.value,
         name: "Fake Name",
     });
 
@@ -35,29 +37,40 @@ describe("AssociationSearchService", () => {
         });
 
         it("should return empty array for unknown identifier", async () => {
-            mockedAssociationSearch.search.mockResolvedValueOnce([]);
+            mockedAssociationSearch.findByText.mockResolvedValueOnce([]);
             const result = await AssociationSearchService.searchBySirenSiretName("unknownIdentifier");
             expect(result).toEqual([]);
         });
 
         it("should return matched associations", async () => {
-            mockedAssociationSearch.search.mockResolvedValueOnce([fakeAssociationSearchEntity]);
-            const expected = new AssociationSearchEntity({ name: fakeAssociationSearchEntity.name, siren: SIREN });
+            mockedAssociationSearch.findByText.mockResolvedValueOnce([fakeAssociationSearchEntity]);
+            const expected = new AssociationSearchEntity({
+                name: fakeAssociationSearchEntity.name,
+                siren: SIREN.value,
+                mainEstablishmentSiret: SIREN.value + "00018",
+                rna: RNA.value,
+            });
             const result = await AssociationSearchService.searchBySirenSiretName("knownIdentifier");
             expect(result).toEqual([expected]);
         });
 
         it("should handle cases where there are multiple rnaSiren entities for the same siren", async () => {
             const expected = [
-                new AssociationSearchEntity({ name: fakeAssociationSearchEntity.name, siren: SIREN, rna: RNA }),
                 new AssociationSearchEntity({
                     name: fakeAssociationSearchEntity.name,
-                    siren: SIREN,
-                    rna: new Rna("W987654321"),
+                    siren: SIREN.value,
+                    mainEstablishmentSiret: SIREN.value + "00018",
+                    rna: RNA.value,
+                }),
+                new AssociationSearchEntity({
+                    name: fakeAssociationSearchEntity.name,
+                    siren: SIREN.value,
+                    mainEstablishmentSiret: SIREN.value + "00018",
+                    rna: "W987654321",
                 }),
             ];
 
-            mockedAssociationSearch.search.mockResolvedValueOnce([fakeAssociationSearchEntity]);
+            mockedAssociationSearch.findByText.mockResolvedValueOnce([fakeAssociationSearchEntity]);
 
             // Mocking multiple rnaSiren entities for the same siren
             mockedRnaSirenService.find.mockResolvedValueOnce([
@@ -71,9 +84,14 @@ describe("AssociationSearchService", () => {
         });
 
         it("should handle cases where the value is a start of siret", async () => {
-            mockedAssociationSearch.search.mockResolvedValueOnce([fakeAssociationSearchEntity]);
+            mockedAssociationSearch.findOneBySiren.mockResolvedValueOnce(fakeAssociationSearchEntity);
             isStartOfSiretMock.mockReturnValue(true);
-            const expected = new AssociationSearchEntity({ name: fakeAssociationSearchEntity.name, siren: SIREN });
+            const expected = new AssociationSearchEntity({
+                name: fakeAssociationSearchEntity.name,
+                siren: SIREN.value,
+                mainEstablishmentSiret: SIREN.value + "00018",
+                rna: RNA.value,
+            });
 
             const result = await AssociationSearchService.searchBySirenSiretName(SIREN.value);
             expect(result).toEqual([expected]);

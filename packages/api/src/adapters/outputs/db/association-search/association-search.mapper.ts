@@ -1,27 +1,20 @@
-import AssociationSearchEntity, { AssociationSearchPartialUpdate } from "../../../../entities/AssociationSearchEntity";
-import Siren from "../../../../identifier-objects/Siren";
+import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 import AssociationSearchDbo from "./@types/AssociationSearchDbo";
-import Rna from "../../../../identifier-objects/Rna";
-import { Siret } from "../../../../identifier-objects";
 
 export default class AssociationSearchMapper {
     static toEntity(dbo: AssociationSearchDbo): AssociationSearchEntity {
-        return new AssociationSearchEntity({
-            ...dbo,
-            siren: new Siren(dbo.siren),
-            mainEstablishmentSiret: new Siret(dbo.mainEstablishmentSiret),
-            rna: dbo.rna ? new Rna(dbo.rna) : undefined,
-            address: dbo.address ?? undefined,
-            nbEstabs: dbo.nbEstabs ?? undefined,
-        });
-    }
+        const { siren, rna, mainEstablishmentSiret, name, object, address, nbEstabs, ..._rest } = dbo;
 
-    static toPartialDbo(entity: AssociationSearchPartialUpdate): Partial<AssociationSearchDbo> {
-        const { siren, rna, mainEstablishmentSiret, ...rest } = entity;
-        const dbo: Partial<AssociationSearchDbo> = { ...rest };
-        if (siren) dbo.siren = siren.value;
-        if (rna) dbo.rna = rna.value;
-        if (mainEstablishmentSiret) dbo.mainEstablishmentSiret = mainEstablishmentSiret.value;
-        return dbo;
+        const props = {
+            siren,
+            mainEstablishmentSiret,
+            name,
+            rna: rna,
+            object: object ?? undefined,
+            address: address ?? undefined,
+            nbEstabs: nbEstabs ?? undefined,
+        };
+
+        return new AssociationSearchEntity(props);
     }
 }

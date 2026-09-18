@@ -1,6 +1,6 @@
-import AssociationSearchEntity from "../../../../../entities/AssociationSearchEntity";
 import { SireneUniteLegaleEntity } from "../../../../../entities/SireneUniteLegaleEntity";
 import { Rna, Siren } from "../../../../../identifier-objects";
+import AssociationSearchDbo from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import { ParquetRow } from "../../../parquet.parser";
 import SireneUniteLegaleDto from "./SireneUniteLegaleDto";
 
@@ -55,9 +55,9 @@ export default class SireneUniteLegaleMapper {
 
     static toAssociationSearch(entity: SireneUniteLegaleEntity) {
         return {
-            siren: entity.siren,
-            rna: entity.identifiantAssociationUniteLegale ?? undefined,
-            mainEstablishmentSiret: entity.siren.toSiret(entity.nicSiegeUniteLegale),
-        } as Pick<AssociationSearchEntity, "siren" | "rna" | "mainEstablishmentSiret">;
+            siren: entity.siren.value,
+            rna: entity.identifiantAssociationUniteLegale.value,
+            mainEstablishmentSiret: entity.siren + entity.nicSiegeUniteLegale,
+        } as Pick<AssociationSearchDbo, "siren" | "rna" | "mainEstablishmentSiret">;
     }
 }

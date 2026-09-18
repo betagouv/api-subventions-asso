@@ -48,7 +48,7 @@ export class RechercheEntreprisesService implements Provider {
         });
     }
 
-    async getSearchResult(query): Promise<AssociationSearchEntity[]> {
+    async getSearchResult(query): Promise<Partial<AssociationSearchEntity>[]> {
         const searchResult = (await this.search(query)).filter(dto => dto.siren && dto.nom_complet);
 
         if (searchResult.length === 0) return [];

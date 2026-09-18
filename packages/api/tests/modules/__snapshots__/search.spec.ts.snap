@@ -6,14 +6,6 @@ exports[`/search /associations/{input} should return an Association from its Sir
   "page": 1,
   "resultats": [
     {
-      "address": {
-        "city": "Paris",
-        "complement": null,
-        "name": "Général de Gaulle",
-        "number": "1",
-        "postalCode": "75000",
-        "type": "RUE",
-      },
       "adresse": {
         "code_postal": "75000",
         "commune": "Paris",
@@ -21,16 +13,11 @@ exports[`/search /associations/{input} should return an Association from its Sir
         "type_voie": "RUE",
         "voie": "Général de Gaulle",
       },
-      "mainEstablishmentSiret": {
-        "identifier": "10000000000001",
-      },
       "name": "DEFAULT_ASSOCIATION",
-      "nbEstabs": 2,
       "nbEtabs": 2,
-      "object": "ROLE AND DEFINITION OF THE ASSOCIATION",
       "rna": "W000000000",
-      "searchKey": "100000000 - default_association- W000000000",
       "siren": "100000000",
+      "siretSiege": "10000000000001",
     },
   ],
   "total": 1,
@@ -43,14 +30,6 @@ exports[`/search /associations/{input} should return an AssociationSearchEntity 
   "page": 1,
   "resultats": [
     {
-      "address": {
-        "city": "Paris",
-        "complement": null,
-        "name": "Général de Gaulle",
-        "number": "1",
-        "postalCode": "75000",
-        "type": "RUE",
-      },
       "adresse": {
         "code_postal": "75000",
         "commune": "Paris",
@@ -58,16 +37,11 @@ exports[`/search /associations/{input} should return an AssociationSearchEntity 
         "type_voie": "RUE",
         "voie": "Général de Gaulle",
       },
-      "mainEstablishmentSiret": {
-        "identifier": "10000000000001",
-      },
       "name": "DEFAULT_ASSOCIATION",
-      "nbEstabs": 2,
       "nbEtabs": 2,
-      "object": "ROLE AND DEFINITION OF THE ASSOCIATION",
       "rna": "W000000000",
-      "searchKey": "100000000 - default_association- W000000000",
       "siren": "100000000",
+      "siretSiege": "10000000000001",
     },
   ],
   "total": 1,

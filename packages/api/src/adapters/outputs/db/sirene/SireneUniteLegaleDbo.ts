@@ -6,5 +6,5 @@ export type SireneUniteLegaleDbo = Omit<
     "siren" | "identifiantAssociationUniteLegale"
 > & {
     siren: string;
-    identifiantAssociationUniteLegale: string | null;
+    identifiantAssociationUniteLegale: string;
 };

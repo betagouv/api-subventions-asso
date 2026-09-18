@@ -1,6 +1,10 @@
 import AssociationSearchEntity from "../../../../../entities/AssociationSearchEntity";
 
-export type SearchResultDbo = Omit<AssociationSearchEntity, "rna" | "siren"> & { rna: string; siren: string };
+export type SearchResultDbo = Omit<AssociationSearchEntity, "rna" | "siren" | "mainEstablishmentSiret"> & {
+    rna: string;
+    siren: string;
+    mainEstablishmentSiret: string;
+};
 
 export interface SearchCacheDbo {
     timestamp: Date;

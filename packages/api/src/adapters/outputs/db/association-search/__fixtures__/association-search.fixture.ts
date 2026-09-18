@@ -1,13 +1,14 @@
-import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
-import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
+import DEFAULT_ASSOCIATION from "../../../../../../tests/__fixtures__/association.fixture";
 
-export const ASSOCIATION_SEARCH_ENTITIES: AssociationSearchEntity[] = [
-    new AssociationSearchEntity({
+export const ASSOCIATION_SEARCH_DBOS = [
+    {
         siren: DEFAULT_ASSOCIATION.siren,
         mainEstablishmentSiret: DEFAULT_ASSOCIATION.siret,
         rna: DEFAULT_ASSOCIATION.rna,
         name: DEFAULT_ASSOCIATION.name,
+        searchName: DEFAULT_ASSOCIATION.name.toLowerCase(),
         object: "ROLE AND DEFINITION OF THE ASSOCIATION",
+        searchObject: "ROLE AND DEFINITION OF THE ASSOCIATION".toLowerCase(),
         address: {
             number: "1",
             type: "RUE",
@@ -17,5 +18,5 @@ export const ASSOCIATION_SEARCH_ENTITIES: AssociationSearchEntity[] = [
             complement: null,
         },
         nbEstabs: 2,
-    }),
+    },
 ];

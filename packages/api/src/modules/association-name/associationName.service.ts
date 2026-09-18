@@ -7,8 +7,8 @@ import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-en
 import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
 
 export class AssociationNameService {
-    async find(value: string): Promise<AssociationSearchEntity[]> {
-        let associationNames: AssociationSearchEntity[];
+    async find(value: string): Promise<Partial<AssociationSearchEntity>[]> {
+        let associationNames: Partial<AssociationSearchEntity>[];
         let gotCompany = false;
         const searchEntreprisesCatch = (value: string) =>
             rechercheEntreprisesService.getSearchResult(value).catch(() => {
@@ -54,7 +54,7 @@ export class AssociationNameService {
         }
         const mergedAssociationName = associationNames.reduce(
             (acc, associationName) => {
-                const id = `${associationName.rna?.value} - ${associationName.siren.value}`;
+                const id = `${associationName.rna?.value} - ${associationName.siren!.value}`;
                 const oldValue = acc[id] || {};
                 acc[id] = Object.assign(associationName, oldValue);
                 return acc;
