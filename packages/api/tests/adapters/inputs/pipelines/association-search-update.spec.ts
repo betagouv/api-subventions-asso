@@ -50,8 +50,8 @@ describe("Association Search Update", () => {
         await expect(
             await db
                 .collection("association-search")
-                .find({}, { projection: { _id: 0 }, limit: 20 })
+                .find({}, { projection: { _id: 0 } })
                 .toArray(),
-        ).toMatchSnapshot();
+        ).toMatchSnapshot(); // nothing relevant to siren 100000001 should be stored as it is no an association (legal category from unite legale)
     });
 });

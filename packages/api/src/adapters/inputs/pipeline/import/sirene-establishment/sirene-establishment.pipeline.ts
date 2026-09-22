@@ -32,11 +32,12 @@ export class SireneEstablishmentPipeline {
 
         const lastEditionDate = await this.logAdapter.getLastEditionDateByProvider(SIRENE_ESTABLISHMENT_PROVIDER_ID);
 
+        const associationSearch: Pick<AssociationSearchDbo, "siren" | "address">[] = [];
         await this.parser.parse(filePath, async batch => {
             report.parsedCount += batch.length;
 
-            // first, updates AssociationSearch
-            await this.updateAssociationSearch(batch);
+            // saves main establishment address updates for later
+            associationSearch.push(...this.getAddressesToUpdate(batch));
 
             // then, updates establishment -> prevent associationSearch from not being updated after establishment
             const updatedDtos = this.filterUpdatedEstablishments(batch, lastEditionDate);
@@ -47,10 +48,34 @@ export class SireneEstablishmentPipeline {
             report.importedCount += importedCount;
         });
 
+        await this.updateAssociationSearch(associationSearch);
+
         return report;
     }
 
-    private async updateAssociationSearch(dtos: SireneEstablishmentDto[]) {
+    private async updateAssociationSearch(partials: Pick<AssociationSearchDbo, "siren" | "address">[]) {
+        const iterable = this.establishmentPort.computeNbEstab();
+
+        // increase performance to find match
+        const map = new Map(partials.map(partial => [partial.siren, partial]));
+        let batch: Partial<Pick<AssociationSearchDbo, "siren" | "address" | "nbEstabs">>[] = [];
+
+        for await (const item of iterable) {
+            const match = map.get(item.siren);
+            if (match) Object.assign(item, match);
+            batch.push(item);
+            if (batch.length === 1000) {
+                await this.searchPort.upsertMany(batch);
+                batch = [];
+            }
+        }
+
+        if (batch.length) {
+            await this.searchPort.upsertMany(batch);
+        }
+    }
+
+    private getAddressesToUpdate(dtos: SireneEstablishmentDto[]) {
         // group by siren
         const mapBySiren = dtos.reduce((groups, dto) => {
             const siren = dto.siren;
@@ -66,7 +91,7 @@ export class SireneEstablishmentPipeline {
             if (mainEstablishment) updates.push(SireneEstablishmentMapper.toAssociationSearch(mainEstablishment));
         }
 
-        this.searchPort.upsertMany(updates);
+        return updates;
     }
 
     private async filterAssociationEstablishments(batch: SireneEstablishmentDto[]): Promise<SireneEstablishmentDto[]> {

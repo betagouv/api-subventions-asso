@@ -10,7 +10,10 @@ import { SireneEstablishmentPipeline } from "./sirene-establishment.pipeline";
 
 describe("SireneEstablishmentPipeline", () => {
     const parser = { parse: jest.fn() } as unknown as jest.Mocked<SireneEstablishmentParser>;
-    const establishmentPort = { upsertMany: jest.fn() } as unknown as jest.Mocked<SireneEstablishmentPort>;
+    const establishmentPort = {
+        upsertMany: jest.fn(),
+        computeNbEstab: jest.fn().mockResolvedValue([]),
+    } as unknown as jest.Mocked<SireneEstablishmentPort>;
     const sireneUniteLegale = { filterExistingSirens: jest.fn() } as unknown as jest.Mocked<SireneUniteLegalePort>;
     const searchPort = { upsertMany: jest.fn() } as unknown as jest.Mocked<AssociationSearchPort>;
     const dataLog = { getLastEditionDateByProvider: jest.fn() } as unknown as jest.Mocked<DataLogAdapter>;
@@ -23,7 +26,11 @@ describe("SireneEstablishmentPipeline", () => {
             searchPort,
             dataLog,
         );
-
+        const mockGetAddressesToUpdate = jest
+            // @ts-expect-error: mock private method
+            .spyOn(pipeline, "getAddressesToUpdate")
+            // @ts-expect-error: mock private method
+            .mockReturnValue([SIRENE_ESTABLISHMENT_DTO]);
         // @ts-expect-error: mock private method
         const mockUpdateAssociationSearch = jest.spyOn(pipeline, "updateAssociationSearch").mockResolvedValue();
 
@@ -34,6 +41,11 @@ describe("SireneEstablishmentPipeline", () => {
             establishmentPort.upsertMany.mockResolvedValue(1);
             sireneUniteLegale.filterExistingSirens.mockResolvedValue([SIRENE_ESTABLISHMENT_DTO.siren]);
             jest.mocked(dataLog.getLastEditionDateByProvider).mockResolvedValue(null);
+        });
+
+        afterAll(() => {
+            mockGetAddressesToUpdate.mockReset();
+            mockUpdateAssociationSearch.mockReset();
         });
 
         it("filters establishments with existing association sirens", async () => {
@@ -47,6 +59,11 @@ describe("SireneEstablishmentPipeline", () => {
             expect(establishmentPort.upsertMany).toHaveBeenCalledWith([]);
         });
 
+        it("build partial association-search from batch", async () => {
+            await pipeline.run("file.parquet");
+            expect(mockGetAddressesToUpdate).toHaveBeenCalledWith([SIRENE_ESTABLISHMENT_DTO]);
+        });
+
         it("updates association-search", async () => {
             await pipeline.run("file.parquet");
             expect(mockUpdateAssociationSearch).toHaveBeenCalledWith([SIRENE_ESTABLISHMENT_DTO]);
@@ -58,7 +75,7 @@ describe("SireneEstablishmentPipeline", () => {
         });
     });
 
-    describe("updateAssociationSearch", () => {
+    describe("getAddressesToUpdate", () => {
         const pipeline = new SireneEstablishmentPipeline(
             parser,
             establishmentPort,
@@ -66,7 +83,6 @@ describe("SireneEstablishmentPipeline", () => {
             searchPort,
             dataLog,
         );
-
         const ASSOCIATION_SEARCH = {
             siren: ASSOCIATION_SEARCH_ENTITIES[0].siren.value,
             address: ASSOCIATION_SEARCH_ENTITIES[0].address,
@@ -79,14 +95,46 @@ describe("SireneEstablishmentPipeline", () => {
 
         it("transform dto into association-search", async () => {
             // @ts-expect-error: test private method
-            await pipeline.updateAssociationSearch(DTOS);
+            await pipeline.getAddressesToUpdate(DTOS);
             expect(spyToAssociationSearch).toHaveBeenCalledWith(DTOS[0]);
         });
 
-        it("updates association-search", async () => {
+        it("return updates", async () => {
+            const expected = [ASSOCIATION_SEARCH];
             // @ts-expect-error: test private method
-            await pipeline.updateAssociationSearch(DTOS);
-            expect(searchPort.upsertMany).toHaveBeenCalledWith([ASSOCIATION_SEARCH]);
+            const actual = await pipeline.getAddressesToUpdate(DTOS);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("updateAssociationSearch", () => {
+        const pipeline = new SireneEstablishmentPipeline(
+            parser,
+            establishmentPort,
+            sireneUniteLegale,
+            searchPort,
+            dataLog,
+        );
+        const ASSOCIATION_SEARCH = {
+            siren: ASSOCIATION_SEARCH_ENTITIES[0].siren.value,
+            address: ASSOCIATION_SEARCH_ENTITIES[0].address,
+        };
+
+        const NB_ESTABS = 4;
+
+        // @ts-expect-error: mock iterable
+        establishmentPort.computeNbEstab.mockReturnValue([
+            { siren: SIRENE_ESTABLISHMENT_DTO.siren, nbEstabs: NB_ESTABS },
+        ]);
+
+        it("updates association search ", async () => {
+            // @ts-expect-error: test private method
+            await pipeline.updateAssociationSearch([
+                { siren: ASSOCIATION_SEARCH.siren, address: ASSOCIATION_SEARCH.address },
+            ]);
+            expect(searchPort.upsertMany).toHaveBeenCalledWith([
+                { siren: ASSOCIATION_SEARCH.siren, address: ASSOCIATION_SEARCH.address, nbEstabs: NB_ESTABS },
+            ]);
         });
     });
 });

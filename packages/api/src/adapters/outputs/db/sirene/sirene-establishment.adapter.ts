@@ -38,6 +38,26 @@ export class SireneEstablishmentAdapter
         if (!dbos) return [];
         return dbos.map(dbo => toEntity(dbo));
     }
+
+    public computeNbEstab() {
+        return this.collection.aggregate<{ siren: string; nbEstabs: number }>([
+            {
+                $group: {
+                    _id: "$siren",
+                    nbEstabs: {
+                        $sum: 1,
+                    },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    siren: "$_id",
+                    nbEstabs: 1,
+                },
+            },
+        ]);
+    }
 }
 
 const sireneEstablishmentAdapter = new SireneEstablishmentAdapter();

@@ -12,6 +12,7 @@ exports[`Association Search Update should be the merge of unite legale and rna 1
     },
     "mainEstablishmentSiret": "10000000200022",
     "name": "ASSOCIATION 2",
+    "nbEstabs": 1,
     "object": "object association 2",
     "rna": "W000000002",
     "searchName": "ASSOCIATION 2",
@@ -36,16 +37,6 @@ exports[`Association Search Update should be the merge of unite legale and rna 1
     "mainEstablishmentSiret": "10000000500018",
     "rna": "W000000005",
     "siren": "100000005",
-  },
-  {
-    "address": {
-      "city": "PARIS",
-      "name": "RIRI",
-      "number": "1",
-      "postalCode": "75001",
-      "type": "RUE",
-    },
-    "siren": "100000001",
   },
   {
     "name": "ASSOCIATION 1",

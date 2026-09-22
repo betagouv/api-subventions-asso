@@ -5,4 +5,5 @@ import SireneEstablishmentDto from "../../../inputs/pipeline/import/sirene-estab
 export interface SireneEstablishmentPort {
     upsertMany(dtos: SireneEstablishmentDto[]): Promise<number>;
     getAllBySiren(siren: Siren): Promise<EstablishmentEntity[]>;
+    computeNbEstab(): AsyncIterable<{ siren: string; nbEstabs: number }>;
 }
