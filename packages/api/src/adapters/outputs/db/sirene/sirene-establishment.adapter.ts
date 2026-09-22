@@ -1,10 +1,15 @@
 import MongoAdapter from "../MongoAdapter";
 import SireneEstablishmentDto from "../../../inputs/pipeline/import/sirene-establishment/sirene-establishment.dto";
 import { SireneEstablishmentDbo } from "./sirene-establishment.dbo";
-import { SireneEstablishmentPort } from "./sirene-establishment.port";
+import { AssociationSearchPostalCodes, SireneEstablishmentPort } from "./sirene-establishment.port";
 import { Siren } from "../../../../identifier-objects";
 import { EstablishmentEntity } from "../../../../domain/structures/establishments/EstablishmentEntity";
 import { toEntity } from "./sirene-establishment.mapper";
+
+interface SireneEstablishmentAggregateDbo {
+    _id: string;
+    postalCodes: (string | null)[];
+}
 
 export class SireneEstablishmentAdapter
     extends MongoAdapter<SireneEstablishmentDbo>
@@ -37,6 +42,28 @@ export class SireneEstablishmentAdapter
         const dbos = await this.collection.find({ siren: siren.value }).toArray();
         if (!dbos) return [];
         return dbos.map(dbo => toEntity(dbo));
+    }
+
+    public async getPostalCodesBySirens(sirens: string[]): Promise<AssociationSearchPostalCodes[]> {
+        const uniqueSirens = [...new Set(sirens)];
+        if (!uniqueSirens.length) return [];
+
+        const aggregateResult = await this.collection
+            .aggregate<SireneEstablishmentAggregateDbo>([
+                { $match: { siren: { $in: uniqueSirens } } },
+                {
+                    $group: {
+                        _id: "$siren",
+                        postalCodes: { $addToSet: "$codePostalEtablissement" },
+                    },
+                },
+            ])
+            .toArray();
+
+        return aggregateResult.map(({ _id, postalCodes }) => ({
+            siren: _id,
+            postalCodes: postalCodes.filter(Boolean).sort() as string[],
+        }));
     }
 }
 

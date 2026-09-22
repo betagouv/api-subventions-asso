@@ -12,8 +12,13 @@ describe("SireneEstablishmentAdapter", () => {
     const mockCreateIndex = jest.fn();
     const mockBulkWrite = jest.fn();
     const mockFind = jest.fn();
+    const mockAggregate = jest.fn();
 
     const DBO = { siren: DEFAULT_ASSOCIATION.siren } as unknown as SireneEstablishmentDbo;
+    const AGGREGATE_DBO = {
+        _id: DEFAULT_ASSOCIATION.siren,
+        postalCodes: ["75002", "", null, "75001"],
+    };
 
     beforeAll(() => {
         jest
@@ -25,6 +30,9 @@ describe("SireneEstablishmentAdapter", () => {
                 bulkWrite: mockBulkWrite,
                 find: mockFind.mockImplementation(() => ({
                     toArray: async () => [DBO],
+                })),
+                aggregate: mockAggregate.mockImplementation(() => ({
+                    toArray: async () => [AGGREGATE_DBO],
                 })),
             });
     });
@@ -67,6 +75,23 @@ describe("SireneEstablishmentAdapter", () => {
         it("maps dbos to entities", async () => {
             await sireneEstablishmentAdapter.getAllBySiren(new Siren(DEFAULT_ASSOCIATION.siren));
             expect(toEntity).toHaveBeenCalledWith(DBO);
+        });
+    });
+
+    describe("getPostalCodesBySirens", () => {
+        it("returns sorted postal codes without empty values", async () => {
+            const actual = await sireneEstablishmentAdapter.getPostalCodesBySirens([DEFAULT_ASSOCIATION.siren]);
+            expect(actual).toEqual([
+                {
+                    siren: DEFAULT_ASSOCIATION.siren,
+                    postalCodes: ["75001", "75002"],
+                },
+            ]);
+        });
+
+        it("does not aggregate empty siren lists", async () => {
+            await sireneEstablishmentAdapter.getPostalCodesBySirens([]);
+            expect(mockAggregate).not.toHaveBeenCalled();
         });
     });
 });

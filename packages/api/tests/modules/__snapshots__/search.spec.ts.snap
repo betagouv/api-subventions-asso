@@ -2,57 +2,66 @@
 
 exports[`/search /associations/{input} should return an Association from its Siren 1`] = `
 {
-  "nbPages": 1,
-  "page": 1,
-  "resultats": [
-    {
-      "adresse": {
-        "code_postal": "75000",
-        "commune": "Paris",
-        "numero": "1",
-        "type_voie": "RUE",
-        "voie": "Général de Gaulle",
+  "body": {
+    "nbPages": 1,
+    "page": 1,
+    "resultats": [
+      {
+        "adresse": {
+          "code_postal": "75000",
+          "commune": "Paris",
+          "numero": "1",
+          "type_voie": "RUE",
+          "voie": "Général de Gaulle",
+        },
+        "name": "DEFAULT_ASSOCIATION",
+        "nbEtabs": 2,
+        "rna": "W000000000",
+        "siren": "100000000",
+        "siretSiege": "10000000000001",
       },
-      "name": "DEFAULT_ASSOCIATION",
-      "nbEtabs": 2,
-      "rna": "W000000000",
-      "siren": "100000000",
-      "siretSiege": "10000000000001",
-    },
-  ],
-  "total": 1,
+    ],
+    "total": 1,
+  },
+  "statusCode": 200,
 }
 `;
 
 exports[`/search /associations/{input} should return an AssociationSearchEntity from its name 1`] = `
 {
-  "nbPages": 1,
-  "page": 1,
-  "resultats": [
-    {
-      "adresse": {
-        "code_postal": "75000",
-        "commune": "Paris",
-        "numero": "1",
-        "type_voie": "RUE",
-        "voie": "Général de Gaulle",
+  "body": {
+    "nbPages": 1,
+    "page": 1,
+    "resultats": [
+      {
+        "adresse": {
+          "code_postal": "75000",
+          "commune": "Paris",
+          "numero": "1",
+          "type_voie": "RUE",
+          "voie": "Général de Gaulle",
+        },
+        "name": "DEFAULT_ASSOCIATION",
+        "nbEtabs": 2,
+        "rna": "W000000000",
+        "siren": "100000000",
+        "siretSiege": "10000000000001",
       },
-      "name": "DEFAULT_ASSOCIATION",
-      "nbEtabs": 2,
-      "rna": "W000000000",
-      "siren": "100000000",
-      "siretSiege": "10000000000001",
-    },
-  ],
-  "total": 1,
+    ],
+    "total": 1,
+  },
+  "statusCode": 200,
 }
 `;
 
 exports[`/search /associations/{input} should return other than first page 1`] = `
 {
-  "nbPages": 1,
-  "page": 2,
-  "resultats": [],
-  "total": 1,
+  "body": {
+    "nbPages": 1,
+    "page": 2,
+    "resultats": [],
+    "total": 1,
+  },
+  "statusCode": 200,
 }
 `;

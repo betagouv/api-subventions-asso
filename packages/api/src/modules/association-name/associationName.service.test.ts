@@ -118,5 +118,18 @@ describe("associationName.service", () => {
             const result = await associationNameService.find("unknownIdentifier");
             expect(result).toEqual([fakeAssociation]);
         });
+
+        it("should pass postal code filter to association-search without calling Recherche Entreprises", async () => {
+            jest.clearAllMocks();
+            mockedUniteLegaleNameService.searchBySirenSiretName.mockResolvedValueOnce([]);
+            await associationNameService.find("unknownIdentifier", "75");
+            expect({
+                associationSearchCalls: mockedUniteLegaleNameService.searchBySirenSiretName.mock.calls,
+                rechercheEntreprisesCalls: mockedRechercheEntreprises.getSearchResult.mock.calls,
+            }).toEqual({
+                associationSearchCalls: [["unknownidentifier", "75"]],
+                rechercheEntreprisesCalls: [],
+            });
+        });
     });
 });

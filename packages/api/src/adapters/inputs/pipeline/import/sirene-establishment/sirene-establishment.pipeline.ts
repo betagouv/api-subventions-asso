@@ -43,6 +43,7 @@ export class SireneEstablishmentPipeline {
             const associationDtos = await this.filterAssociationEstablishments(updatedDtos);
 
             const importedCount = await this.establishmentPort.upsertMany(associationDtos);
+            await this.updateAssociationSearchPostalCodes(associationDtos);
 
             report.importedCount += importedCount;
         });
@@ -67,6 +68,13 @@ export class SireneEstablishmentPipeline {
         }
 
         this.searchPort.upsertMany(updates);
+    }
+
+    private async updateAssociationSearchPostalCodes(batch: SireneEstablishmentDto[]) {
+        if (!batch.length) return;
+
+        const postalCodesBySiren = await this.establishmentPort.getPostalCodesBySirens(this.extractSirens(batch));
+        await this.searchPort.updatePostalCodesBySirens(postalCodesBySiren);
     }
 
     private async filterAssociationEstablishments(batch: SireneEstablishmentDto[]): Promise<SireneEstablishmentDto[]> {
