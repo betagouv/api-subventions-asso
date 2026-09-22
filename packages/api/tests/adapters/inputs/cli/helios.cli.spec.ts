@@ -17,6 +17,7 @@ import { CheckIdentifierIsFromAssoUseCase } from "../../../../src/modules/associ
 import { CheckSirenIsFromAssoUseCase } from "../../../../src/modules/associations/use-cases/check-siren-is-from-asso.use-case";
 import rnaSirenAdapter from "../../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
 import { SIRENE_UNITE_LEGAL_ENTITIES } from "../../../../src/domain/__fixtures__/unite-legale.fixture";
+import { ProviderValue } from "dto";
 
 jest.mock("../../../../src/modules/providers/api-asso/api-asso.service");
 
@@ -41,7 +42,7 @@ describe("Helios CLI", () => {
                 categorie_juridique: [],
             });
             jest.spyOn(apiAssoService, "findAssociationBySiren").mockResolvedValueOnce({
-                categorie_juridique: [{ value: LEGAL_CATEGORIES_ACCEPTED[0] }],
+                categorie_juridique: [{ value: LEGAL_CATEGORIES_ACCEPTED[0] } as unknown as ProviderValue<string>],
             });
 
             cli = new HeliosCli(

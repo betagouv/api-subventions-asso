@@ -20,6 +20,8 @@ import { PROGRAMS } from "../../adapters/outputs/db/__fixtures__/state-budget-pr
 import chorusImport from "../../../src/adapters/inputs/pipeline/import/chorus/chorus.import";
 import { SireneUniteLegaleEntity } from "../../../src/entities/SireneUniteLegaleEntity";
 import updateFlatByExercise from "../../../src/modules/providers/chorus/use-cases/update-flat-by-exercise";
+import { Rna } from "../../../src/identifier-objects";
+import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
 
 describe("ChorusCli", () => {
     // it contains :
@@ -38,7 +40,10 @@ describe("ChorusCli", () => {
         await Promise.all([
             stateBudgetProgramAdapter.replace(PROGRAMS),
             // make siren 100000000 belong to asso
-            sireneUniteLegaleAdapter.insertOne({ siren: new Siren("100000000") } as SireneUniteLegaleEntity),
+            sireneUniteLegaleAdapter.insertOne({
+                siren: new Siren("100000000"),
+                identifiantAssociationUniteLegale: new Rna(DEFAULT_ASSOCIATION.rna),
+            } as SireneUniteLegaleEntity),
             // make siren 30000000 belong to an entreprise
             uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
         ]);

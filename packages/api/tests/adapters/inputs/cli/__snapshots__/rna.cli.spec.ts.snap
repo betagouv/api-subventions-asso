@@ -273,26 +273,36 @@ exports[`RNA CLI parse updates association-search 1`] = `
     "name": "LUSINE DIGITALE",
     "object": "Cette association a pour objet la promotion musicale",
     "rna": "W421000001",
+    "searchName": "LUSINE DIGITALE",
+    "searchObject": "Cette association a pour objet la promotion musicale",
   },
   {
     "name": "TEAM QUAD 42",
     "object": "Favoriser lapproche et la decouverte de cultures et pays etrangers par lorganisation dactivites physiques principalement motorisees suscitant des echanges avec les populations locales.",
     "rna": "W421000002",
+    "searchName": "TEAM QUAD 42",
+    "searchObject": "Favoriser lapproche et la decouverte de cultures et pays etrangers par lorganisation dactivites physiques principalement motorisees suscitant des echanges avec les populations locales.",
   },
   {
     "name": "COMITE DEPARTEMENTAL PARACHUTISTE DE LA LOIRE",
     "object": "Promouvoir, orienter et coordonner le parachutisme sportif sous toutes ses formes dans le departement de la Loire.",
     "rna": "W421000003",
+    "searchName": "COMITE DEPARTEMENTAL PARACHUTISTE DE LA LOIRE",
+    "searchObject": "Promouvoir, orienter et coordonner le parachutisme sportif sous toutes ses formes dans le departement de la Loire.",
   },
   {
     "name": "COMITE DES FETES ET DANIMATION DE ST SIXTE",
     "object": "Associer la ville toute entiere a lorganisation des fetes par lintermediaire des groupements interesses, veiller a coordonner des activites des diverses associations afin deviter les concurrences toujours regrettables.",
     "rna": "W421000004",
+    "searchName": "COMITE DES FETES ET DANIMATION DE ST SIXTE",
+    "searchObject": "Associer la ville toute entiere a lorganisation des fetes par lintermediaire des groupements interesses, veiller a coordonner des activites des diverses associations afin deviter les concurrences toujours regrettables.",
   },
   {
     "name": "ASSOCIATION DES PARENTS DELEVES DE LECOLE COMMUNALE DE BOISSET LES MONTROND",
     "object": "Role de mediation entre les parents et les enseignants, aide financiere a lecole communale dans lachat doutils pedagogiques tels que logiciels, livres, fournitures scolaires",
     "rna": "W421000005",
+    "searchName": "ASSOCIATION DES PARENTS DELEVES DE LECOLE COMMUNALE DE BOISSET LES MONTROND",
+    "searchObject": "Role de mediation entre les parents et les enseignants, aide financiere a lecole communale dans lachat doutils pedagogiques tels que logiciels, livres, fournitures scolaires",
   },
 ]
 `;
