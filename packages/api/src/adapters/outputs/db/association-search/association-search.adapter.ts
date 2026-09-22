@@ -18,16 +18,24 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
                 sparse: true,
             },
         );
-        await this.collection.createIndex({ siren: 1 });
-        await this.collection.createIndex({ postalCodes: 1 });
+        await this.collection.createIndex(
+            { siren: 1 },
+            {
+                unique: true,
+                sparse: true,
+            },
+        );
+        await this.collection.createIndex({
+            postalCodes: 1,
+            siren: 1,
+        });
     }
 
     findByText(text: string, postalCode?: string): Promise<AssociationSearchEntity[]> {
-        const cursor = this.collection.find(
-            this.buildQueryWithPostalCodeFilter({ searchName: { $regex: text } }, postalCode),
-        );
-        // if (postalCode) cursor.hint({ postalCodes: 1 }); // Force postalCodes index before the text regex - TODO arbitrate with explain()
-        return cursor.map(doc => AssociationSearchMapper.toEntity(doc)).toArray();
+        return this.collection
+            .find(this.buildQueryWithPostalCodeFilter({ searchName: { $regex: text } }, postalCode))
+            .map(doc => AssociationSearchMapper.toEntity(doc))
+            .toArray();
     }
 
     /**
@@ -65,7 +73,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         if (!dbos.length) return;
 
         const operations = dbos.map(({ siren, postalCodes }) => ({
-            updateMany: {
+            updateOne: {
                 filter: { siren },
                 update: { $set: { postalCodes } },
             },

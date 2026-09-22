@@ -16,8 +16,8 @@ describe("SireneEstablishmentAdapter", () => {
 
     const DBO = { siren: DEFAULT_ASSOCIATION.siren } as unknown as SireneEstablishmentDbo;
     const AGGREGATE_DBO = {
-        _id: DEFAULT_ASSOCIATION.siren,
-        postalCodes: ["75002", "", null, "75001"],
+        siren: DEFAULT_ASSOCIATION.siren,
+        postalCodes: ["75002", "75001"],
     };
 
     beforeAll(() => {
@@ -79,12 +79,38 @@ describe("SireneEstablishmentAdapter", () => {
     });
 
     describe("getPostalCodesBySirens", () => {
-        it("returns sorted postal codes without empty values", async () => {
+        it("returns sorted postal codes", async () => {
             const actual = await sireneEstablishmentAdapter.getPostalCodesBySirens([DEFAULT_ASSOCIATION.siren]);
             expect(actual).toEqual([
                 {
                     siren: DEFAULT_ASSOCIATION.siren,
                     postalCodes: ["75001", "75002"],
+                },
+            ]);
+        });
+
+        it("projects siren and postal codes without null values", async () => {
+            await sireneEstablishmentAdapter.getPostalCodesBySirens([DEFAULT_ASSOCIATION.siren]);
+            expect(mockAggregate).toHaveBeenCalledWith([
+                { $match: { siren: { $in: [DEFAULT_ASSOCIATION.siren] } } },
+                {
+                    $group: {
+                        _id: "$siren",
+                        postalCodes: { $addToSet: "$codePostalEtablissement" },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        siren: "$_id",
+                        postalCodes: {
+                            $filter: {
+                                input: "$postalCodes",
+                                as: "postalCode",
+                                cond: { $ne: ["$$postalCode", null] },
+                            },
+                        },
+                    },
                 },
             ]);
         });

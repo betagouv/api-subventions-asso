@@ -1,11 +1,9 @@
 import { Controller, Get, Response, Route, Security, Tags, Query, Path, Example } from "tsoa";
-import { BadRequestError, HttpErrorInterface } from "core";
+import { HttpErrorInterface } from "core";
 import searchUseCase from "../../../../usecases/search/search";
 import searchService from "../../../../modules/search/search.service";
 import { RechercheAssociationDto, PaginatedResultDto } from "dto";
 import { toDto } from "./search.mapper";
-
-const POSTAL_CODE_REGEX = /^\d{2,5}$/;
 
 @Route("search")
 @Security("jwt")
@@ -48,11 +46,10 @@ export class SearchHttp extends Controller {
         @Query() page = "1",
         @Query() postalCode?: string,
     ): Promise<PaginatedResultDto<RechercheAssociationDto[]>> {
-        const validPostalCode = this.validatePostalCode(postalCode);
         const { results, ...search } = await searchService.getPaginatedResult(
             decodeURIComponent(input),
             Number.parseInt(page),
-            validPostalCode,
+            postalCode,
         );
         return {
             ...search,
@@ -62,13 +59,5 @@ export class SearchHttp extends Controller {
 
     public search(@Path() input: string, @Query() page = "1"): Promise<unknown> {
         return searchUseCase.execute({ value: input, page });
-    }
-
-    private validatePostalCode(postalCode?: string) {
-        if (postalCode === undefined) return undefined;
-        if (!POSTAL_CODE_REGEX.test(postalCode)) {
-            throw new BadRequestError("postalCode must contain between 2 and 5 digits");
-        }
-        return postalCode;
     }
 }

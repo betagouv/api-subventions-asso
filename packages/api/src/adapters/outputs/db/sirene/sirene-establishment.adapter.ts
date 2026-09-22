@@ -7,8 +7,8 @@ import { EstablishmentEntity } from "../../../../domain/structures/establishment
 import { toEntity } from "./sirene-establishment.mapper";
 
 interface SireneEstablishmentAggregateDbo {
-    _id: string;
-    postalCodes: (string | null)[];
+    siren: string;
+    postalCodes: string[];
 }
 
 export class SireneEstablishmentAdapter
@@ -57,12 +57,25 @@ export class SireneEstablishmentAdapter
                         postalCodes: { $addToSet: "$codePostalEtablissement" },
                     },
                 },
+                {
+                    $project: {
+                        _id: 0,
+                        siren: "$_id",
+                        postalCodes: {
+                            $filter: {
+                                input: "$postalCodes",
+                                as: "postalCode",
+                                cond: { $ne: ["$$postalCode", null] },
+                            },
+                        },
+                    },
+                },
             ])
             .toArray();
 
-        return aggregateResult.map(({ _id, postalCodes }) => ({
-            siren: _id,
-            postalCodes: postalCodes.filter(Boolean).sort() as string[],
+        return aggregateResult.map(({ siren, postalCodes }) => ({
+            siren,
+            postalCodes: postalCodes.sort(),
         }));
     }
 }

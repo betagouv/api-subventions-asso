@@ -1,14 +1,18 @@
+import { BadRequestError } from "core";
 import associationNameService from "../association-name/associationName.service";
 import searchAdapter from "../../adapters/outputs/db/search/search.adapter";
 import PaginatedResult from "../../@types/PaginatedResult";
 import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
+
+const POSTAL_CODE_REGEX = /^\d{2,5}$/;
 
 export class SearchService {
     PAGE_SIZE = 12;
     CACHE_LIFESPAN_MS = 24 * 60 * 60 * 1000;
 
     public async getAssociationsKeys(value: string, postalCode?: string): Promise<Partial<AssociationSearchEntity>[]> {
-        const searchToken = this.buildSearchToken(value, postalCode);
+        const validPostalCode = this.validatePostalCode(postalCode);
+        const searchToken = this.buildSearchToken(value, validPostalCode);
         const resultsFromCache = await searchAdapter.getResults(
             searchToken,
             new Date(Date.now() - this.CACHE_LIFESPAN_MS),
@@ -18,7 +22,7 @@ export class SearchService {
 
         // nothing in cache
         // @TODO: pagination has been removed because not used properly but we should limit the result of the find
-        const entities = await associationNameService.find(value, postalCode);
+        const entities = await associationNameService.find(value, validPostalCode);
         searchAdapter.saveResults(searchToken, entities);
 
         return entities;
@@ -46,6 +50,14 @@ export class SearchService {
     private buildSearchToken(value: string, postalCode?: string) {
         if (!postalCode) return value;
         return `${value}__postalCode:${postalCode}`;
+    }
+
+    private validatePostalCode(postalCode?: string) {
+        if (postalCode === undefined) return undefined;
+        if (!POSTAL_CODE_REGEX.test(postalCode)) {
+            throw new BadRequestError("postalCode must contain between 2 and 5 digits");
+        }
+        return postalCode;
     }
 }
 

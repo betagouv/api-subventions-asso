@@ -1,6 +1,7 @@
 import searchService from "./search.service";
 import searchCacheAdapter from "../../adapters/outputs/db/search/search.adapter";
 import associationNameService from "../association-name/associationName.service";
+import { BadRequestError } from "core";
 
 jest.mock("../../adapters/outputs/db/search/search.adapter");
 jest.mock("../association-name/associationName.service");
@@ -49,6 +50,10 @@ describe("SearchService", () => {
                 `${SEARCH_TOKEN}__postalCode:75`,
                 new Date(2024, 0, 1),
             );
+        });
+
+        it("throws BadRequestError for invalid postal code", async () => {
+            await expect(searchService.getAssociationsKeys(SEARCH_TOKEN, "7A")).rejects.toThrow(BadRequestError);
         });
 
         it("save found results", async () => {
