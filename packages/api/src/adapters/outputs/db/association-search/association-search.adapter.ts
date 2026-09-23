@@ -6,6 +6,7 @@ import { AssociationSearchPort } from "./association-search.port";
 import AssociationSearchMapper from "./association-search.mapper";
 import AssociationSearchDbo, { AssociationSearchPartialUpdate } from "./@types/AssociationSearchDbo";
 import type { AssociationSearchPostalCodes } from "../sirene/sirene-establishment.port";
+import { removeAccents } from "../../../../shared/helpers/StringHelper";
 
 export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo> implements AssociationSearchPort {
     collectionName = "association-search";
@@ -22,8 +23,9 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     }
 
     findByText(text: string, postalCode?: string): Promise<AssociationSearchEntity[]> {
+        const cleanText = removeAccents(text.trim().toLowerCase());
         return this.collection
-            .find(this.buildQueryWithPostalCodeFilter({ searchName: { $regex: text } }, postalCode))
+            .find(this.buildQueryWithPostalCodeFilter({ searchName: { $regex: cleanText } }, postalCode))
             .map(doc => AssociationSearchMapper.toEntity(doc))
             .toArray();
     }
