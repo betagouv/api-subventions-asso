@@ -16,7 +16,7 @@ exports[`SireneUniteLegale Mapper toDbo maps to dbo 1`] = `
   "anneeEffectifsUniteLegale": 2021n,
   "caractereEmployeurUniteLegale": null,
   "categorieEntreprise": "PME",
-  "categorieJuridiqueUniteLegale": 9220n,
+  "categorieJuridiqueUniteLegale": "9220",
   "dateCreationUniteLegale": 1989-02-01T00:00:00.000Z,
   "dateDebut": 2022-01-01T00:00:00.000Z,
   "dateDernierTraitementUniteLegale": 2023-01-01T14:26:06.000Z,

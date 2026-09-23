@@ -32,34 +32,44 @@ export class SireneEstablishmentPipeline {
 
         const lastEditionDate = await this.logAdapter.getLastEditionDateByProvider(SIRENE_ESTABLISHMENT_PROVIDER_ID);
 
-        const associationSearch: Pick<AssociationSearchDbo, "siren" | "address">[] = [];
+        let partialAssociationSearchMap: Map<
+            string,
+            Pick<AssociationSearchDbo, "siren"> & Partial<Pick<AssociationSearchDbo, "address">>
+        > = new Map();
+
         await this.parser.parse(filePath, async batch => {
             report.parsedCount += batch.length;
 
-            // saves main establishment address updates for later
-            associationSearch.push(...this.getAddressesToUpdate(batch));
+            // build partials association-search to be updated
+            partialAssociationSearchMap = new Map([
+                // build object from each siren
+                ...new Map(this.extractSirens(batch).map(siren => [siren, { siren }])),
+                // merge with previous objects
+                // order matters or previous assocationSearch with address could be erased
+                ...partialAssociationSearchMap,
+                // merge addresses to update
+                ...this.getAddressesToUpdate(batch),
+            ]);
 
-            // then, updates establishment -> prevent associationSearch from not being updated after establishment
             const updatedDtos = this.filterUpdatedEstablishments(batch, lastEditionDate);
             const associationDtos = await this.filterAssociationEstablishments(updatedDtos);
 
             const importedCount = await this.establishmentPort.upsertMany(associationDtos);
-            await this.updateAssociationSearchPostalCodes(associationDtos);
 
             report.importedCount += importedCount;
         });
 
-        await this.updateAssociationSearch(associationSearch);
+        await this.updateAssociationSearch(partialAssociationSearchMap);
 
         return report;
     }
 
-    private async updateAssociationSearch(partials: Pick<AssociationSearchDbo, "siren" | "address">[]) {
-        const iterable = this.establishmentPort.computeNbEstab();
+    private async updateAssociationSearch(
+        map: Map<string, Pick<AssociationSearchDbo, "siren"> & Partial<Pick<AssociationSearchDbo, "address">>>,
+    ) {
+        const iterable = this.establishmentPort.getComputedFields([...map.keys()]);
 
-        // increase performance to find match
-        const map = new Map(partials.map(partial => [partial.siren, partial]));
-        let batch: Partial<Pick<AssociationSearchDbo, "siren" | "address" | "nbEstabs">>[] = [];
+        let batch: Partial<Pick<AssociationSearchDbo, "siren" | "address" | "nbEstabs" | "postalCodes">>[] = [];
 
         for await (const item of iterable) {
             const match = map.get(item.siren);
@@ -86,20 +96,14 @@ export class SireneEstablishmentPipeline {
         }, new Map<string, SireneEstablishmentDto[]>());
 
         // for each group filter main and update address
-        const updates: Pick<AssociationSearchDbo, "siren" | "address">[] = [];
+        const updates: Map<string, Pick<AssociationSearchDbo, "siren" | "address">> = new Map();
         for (const [_key, group] of mapBySiren) {
             const mainEstablishment = group.find(dto => dto.etablissementSiege);
-            if (mainEstablishment) updates.push(SireneEstablishmentMapper.toAssociationSearch(mainEstablishment));
+            if (mainEstablishment)
+                updates.set(mainEstablishment.siren, SireneEstablishmentMapper.toAssociationSearch(mainEstablishment));
         }
 
         return updates;
-    }
-
-    private async updateAssociationSearchPostalCodes(batch: SireneEstablishmentDto[]) {
-        if (!batch.length) return;
-
-        const postalCodesBySiren = await this.establishmentPort.getPostalCodesBySirens(this.extractSirens(batch));
-        await this.searchPort.updatePostalCodesBySirens(postalCodesBySiren);
     }
 
     private async filterAssociationEstablishments(batch: SireneEstablishmentDto[]): Promise<SireneEstablishmentDto[]> {

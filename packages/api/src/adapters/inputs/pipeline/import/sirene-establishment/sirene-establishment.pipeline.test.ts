@@ -10,11 +10,9 @@ import { SireneEstablishmentPipeline } from "./sirene-establishment.pipeline";
 
 describe("SireneEstablishmentPipeline", () => {
     const parser = { parse: jest.fn() } as unknown as jest.Mocked<SireneEstablishmentParser>;
-    const postalCodesBySiren = [{ siren: SIRENE_ESTABLISHMENT_DTO.siren, postalCodes: ["75001"] }];
     const establishmentPort = {
         upsertMany: jest.fn(),
-        computeNbEstab: jest.fn().mockResolvedValue([]),
-        getPostalCodesBySirens: jest.fn(),
+        getComputedFields: jest.fn().mockResolvedValue([]),
     } as unknown as jest.Mocked<SireneEstablishmentPort>;
     const sireneUniteLegale = { filterExistingSirens: jest.fn() } as unknown as jest.Mocked<SireneUniteLegalePort>;
     const searchPort = {
@@ -31,11 +29,16 @@ describe("SireneEstablishmentPipeline", () => {
             searchPort,
             dataLog,
         );
+
+        const PARTIAL_MAP = new Map([
+            [SIRENE_ESTABLISHMENT_DTO.siren, { siren: SIRENE_ESTABLISHMENT_DTO.siren, address: {} }],
+        ]);
+
         const mockGetAddressesToUpdate = jest
             // @ts-expect-error: mock private method
             .spyOn(pipeline, "getAddressesToUpdate")
             // @ts-expect-error: mock private method
-            .mockReturnValue([SIRENE_ESTABLISHMENT_DTO]);
+            .mockReturnValue(PARTIAL_MAP);
         // @ts-expect-error: mock private method
         const mockUpdateAssociationSearch = jest.spyOn(pipeline, "updateAssociationSearch").mockResolvedValue();
 
@@ -44,7 +47,6 @@ describe("SireneEstablishmentPipeline", () => {
             // @ts-expect-error: mock parse
             parser.parse.mockImplementation(async (_filePath, onBatch) => onBatch([SIRENE_ESTABLISHMENT_DTO]));
             establishmentPort.upsertMany.mockResolvedValue(1);
-            establishmentPort.getPostalCodesBySirens.mockResolvedValue(postalCodesBySiren);
             sireneUniteLegale.filterExistingSirens.mockResolvedValue([SIRENE_ESTABLISHMENT_DTO.siren]);
             dataLog.getLastEditionDateByProvider.mockResolvedValue(null);
         });
@@ -72,12 +74,7 @@ describe("SireneEstablishmentPipeline", () => {
 
         it("updates association-search", async () => {
             await pipeline.run("file.parquet");
-            expect(mockUpdateAssociationSearch).toHaveBeenCalledWith([SIRENE_ESTABLISHMENT_DTO]);
-        });
-
-        it("updates association-search postal codes from imported establishment sirens", async () => {
-            await pipeline.run("file.parquet");
-            expect(searchPort.updatePostalCodesBySirens).toHaveBeenCalledWith(postalCodesBySiren);
+            expect(mockUpdateAssociationSearch).toHaveBeenCalledWith(PARTIAL_MAP);
         });
 
         it("returns import report", async () => {
@@ -111,7 +108,12 @@ describe("SireneEstablishmentPipeline", () => {
         });
 
         it("return updates", async () => {
-            const expected = [ASSOCIATION_SEARCH];
+            const expected = new Map(
+                DTOS.map(_dto => [
+                    ASSOCIATION_SEARCH.siren,
+                    { siren: ASSOCIATION_SEARCH.siren, address: ASSOCIATION_SEARCH.address },
+                ]),
+            );
             // @ts-expect-error: test private method
             const actual = await pipeline.getAddressesToUpdate(DTOS);
             expect(actual).toEqual(expected);
@@ -132,19 +134,33 @@ describe("SireneEstablishmentPipeline", () => {
         };
 
         const NB_ESTABS = 4;
-
+        const POST_CODES = ["75000", "35000", "73000", "29000"];
         // @ts-expect-error: mock iterable
-        establishmentPort.computeNbEstab.mockReturnValue([
-            { siren: SIRENE_ESTABLISHMENT_DTO.siren, nbEstabs: NB_ESTABS },
+        establishmentPort.getComputedFields.mockReturnValue([
+            {
+                siren: SIRENE_ESTABLISHMENT_DTO.siren,
+                nbEstabs: NB_ESTABS,
+                postalCodes: ["75000", "35000", "73000", "29000"],
+            },
         ]);
 
         it("updates association search ", async () => {
             // @ts-expect-error: test private method
-            await pipeline.updateAssociationSearch([
-                { siren: ASSOCIATION_SEARCH.siren, address: ASSOCIATION_SEARCH.address },
-            ]);
+            await pipeline.updateAssociationSearch(
+                new Map([
+                    [
+                        ASSOCIATION_SEARCH.siren,
+                        { siren: ASSOCIATION_SEARCH.siren, address: ASSOCIATION_SEARCH.address },
+                    ],
+                ]),
+            );
             expect(searchPort.upsertMany).toHaveBeenCalledWith([
-                { siren: ASSOCIATION_SEARCH.siren, address: ASSOCIATION_SEARCH.address, nbEstabs: NB_ESTABS },
+                {
+                    siren: ASSOCIATION_SEARCH.siren,
+                    address: ASSOCIATION_SEARCH.address,
+                    nbEstabs: NB_ESTABS,
+                    postalCodes: POST_CODES,
+                },
             ]);
         });
     });

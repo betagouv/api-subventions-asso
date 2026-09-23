@@ -8,6 +8,5 @@ export type AssociationSearchPostalCodes = Pick<AssociationSearchDbo, "siren"> &
 export interface SireneEstablishmentPort {
     upsertMany(dtos: SireneEstablishmentDto[]): Promise<number>;
     getAllBySiren(siren: Siren): Promise<EstablishmentEntity[]>;
-    computeNbEstab(): AsyncIterable<{ siren: string; nbEstabs: number }>;
-    getPostalCodesBySirens(sirens: string[]): Promise<AssociationSearchPostalCodes[]>;
+    getComputedFields(sirens: string[]): AsyncIterable<{ siren: string; nbEstabs: number; postalCodes: string[] }>;
 }

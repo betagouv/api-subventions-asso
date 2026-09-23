@@ -11,8 +11,7 @@ import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.
 import stateBudgetProgramAdapter from "../../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
 import sireneUniteLegaleAdapter from "../../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import uniteLegaleEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
-import { SireneUniteLegaleEntity } from "../../../../src/entities/SireneUniteLegaleEntity";
-import { Rna, Siren } from "../../../../src/identifier-objects";
+import { Siren } from "../../../../src/identifier-objects";
 import { PROGRAMS } from "../../../__fixtures__/paymentsFlat.fixture";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../src/shared/LegalCategoriesAccepted";
 import chorusAdapter from "../../../../src/adapters/outputs/db/providers/chorus/chorus.adapter";
@@ -128,9 +127,9 @@ describe("Chorus CRON", () => {
             stateBudgetProgramAdapter.replace(PROGRAMS),
             // make siren 100000000 belong to asso
             db.collection("sirene").insertOne({
-                siren: new Siren("100000000"),
-                identifiantAssociationUniteLegale: new Rna(DEFAULT_ASSOCIATION.rna), // mandatory
-            } as SireneUniteLegaleEntity),
+                siren: "100000000",
+                identifiantAssociationUniteLegale: DEFAULT_ASSOCIATION.rna, // mandatory
+            }),
             // make siren 30000000 belong to an entreprise
             uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
         ]);

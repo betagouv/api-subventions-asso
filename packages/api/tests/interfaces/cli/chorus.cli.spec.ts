@@ -62,7 +62,7 @@ describe("ChorusCli", () => {
             });
         });
 
-        it.only("should save association but not companies' payments", async () => {
+        it("should save association but not companies' payments", async () => {
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
             const actual = await chorusAdapter.cursorFind({}, { _id: 0 }).toArray();
