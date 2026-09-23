@@ -7,14 +7,17 @@ import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-en
 import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
 
 export class AssociationNameService {
-    async find(value: string): Promise<Partial<AssociationSearchEntity>[]> {
+    async find(value: string, postalCode?: string): Promise<Partial<AssociationSearchEntity>[]> {
         let associationNames: Partial<AssociationSearchEntity>[];
         let gotCompany = false;
-        const searchEntreprisesCatch = (value: string) =>
-            rechercheEntreprisesService.getSearchResult(value).catch(() => {
+        const searchEntreprisesCatch = (value: string) => {
+            if (postalCode) return Promise.resolve([]);
+
+            return rechercheEntreprisesService.getSearchResult(value).catch(() => {
                 gotCompany = true;
                 return [];
             });
+        };
 
         if (Rna.isRna(value) || Siren.isSiren(value)) {
             let identifier: Rna | Siren;
@@ -36,7 +39,9 @@ export class AssociationNameService {
 
             const promiseResults = [
                 ...(await Promise.all(
-                    identifiers.map(identifierStr => AssociationSearchService.searchBySirenSiretName(identifierStr)),
+                    identifiers.map(identifierStr =>
+                        AssociationSearchService.searchBySirenSiretName(identifierStr, postalCode),
+                    ),
                 )),
                 ...(await Promise.all(identifiers.map(identifierStr => searchEntreprisesCatch(identifierStr)))),
             ];
@@ -46,7 +51,7 @@ export class AssociationNameService {
             // Siret Or Name
 
             const promiseResults = [
-                ...(await AssociationSearchService.searchBySirenSiretName(value.toLowerCase().trim())),
+                ...(await AssociationSearchService.searchBySirenSiretName(value.toLowerCase().trim(), postalCode)),
                 ...(await searchEntreprisesCatch(value)),
             ];
 

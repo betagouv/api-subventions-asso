@@ -40,13 +40,16 @@ export class SearchHttp extends Controller {
     @Response<HttpErrorInterface>("404", "Aucune association trouvée", {
         message: "Could not match any association with given input : ${input}",
     })
+    @Response<HttpErrorInterface>("400", "Code postal invalide")
     public async findAssociations(
         @Path() input: string,
         @Query() page = "1",
+        @Query() postalCode?: string,
     ): Promise<PaginatedResultDto<RechercheAssociationDto[]>> {
         const { results, ...search } = await searchService.getPaginatedResult(
             decodeURIComponent(input),
             Number.parseInt(page),
+            postalCode,
         );
         return {
             ...search,

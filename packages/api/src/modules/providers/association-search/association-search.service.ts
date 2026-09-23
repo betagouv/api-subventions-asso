@@ -8,18 +8,18 @@ import { removeAccents } from "../../../shared/helpers/StringHelper";
 
 export class AssociationSearchService {
     //@TODO: make value either a string (name) or a Siren
-    async searchBySirenSiretName(value: string): Promise<AssociationSearchEntity[]> {
+    async searchBySirenSiretName(value: string, postalCode?: string): Promise<AssociationSearchEntity[]> {
         if (Siret.isStartOfSiret(value)) value = Siren.fromPartialSiretStr(value).value;
         // value is always siren or name
         // if siret it is transformed into siren
         // if rna uniteLegaleName will never return a thing as it search on siren + name
         if (Siren.isSiren(value)) {
-            const association = await associationSearchAdapter.findOneBySiren(new Siren(value));
+            const association = await associationSearchAdapter.findOneBySiren(new Siren(value), postalCode);
             if (association) return [association];
             return [];
         } else {
             // by text
-            const associations = await associationSearchAdapter.findByText(value);
+            const associations = await associationSearchAdapter.findByText(value, postalCode);
             const groupedNameByStructures = associations.reduce(
                 (acc, entity) => {
                     const sirenStr = entity.siren.value;

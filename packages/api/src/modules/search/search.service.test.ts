@@ -1,6 +1,7 @@
 import searchService from "./search.service";
 import searchCacheAdapter from "../../adapters/outputs/db/search/search.adapter";
 import associationNameService from "../association-name/associationName.service";
+import { BadRequestError } from "core";
 
 jest.mock("../../adapters/outputs/db/search/search.adapter");
 jest.mock("../association-name/associationName.service");
@@ -35,7 +36,24 @@ describe("SearchService", () => {
         it("gets fresh result if nothing from cache", async () => {
             jest.mocked(searchCacheAdapter.getResults).mockResolvedValue(null);
             await searchService.getAssociationsKeys(SEARCH_TOKEN);
-            expect(associationNameService.find).toHaveBeenCalledWith(SEARCH_TOKEN);
+            expect(associationNameService.find).toHaveBeenCalledWith(SEARCH_TOKEN, undefined);
+        });
+
+        it("uses postal code in cache key", async () => {
+            jest.clearAllMocks();
+            const DATE_NOW = new Date(2024, 0, 2);
+            jest.useFakeTimers();
+            jest.setSystemTime(DATE_NOW);
+            await searchService.getAssociationsKeys(SEARCH_TOKEN, "75");
+            jest.useRealTimers();
+            expect(searchCacheAdapter.getResults).toHaveBeenCalledWith(
+                `${SEARCH_TOKEN}__postalCode:75`,
+                new Date(2024, 0, 1),
+            );
+        });
+
+        it("throws BadRequestError for invalid postal code", async () => {
+            await expect(searchService.getAssociationsKeys(SEARCH_TOKEN, "7A")).rejects.toThrow(BadRequestError);
         });
 
         it("save found results", async () => {

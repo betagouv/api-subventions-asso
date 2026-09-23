@@ -20,4 +20,5 @@ export default interface AssociationSearchDbo {
     searchObject: string | null; // sanitized object for the search engine
     address: Address | null;
     nbEstabs: number | null;
+    postalCodes?: string[];
 }

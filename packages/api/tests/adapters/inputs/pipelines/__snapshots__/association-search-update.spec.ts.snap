@@ -14,6 +14,9 @@ exports[`Association Search Update should be the merge of unite legale and rna 1
     "name": "ASSOCIATION 2",
     "nbEstabs": 1,
     "object": "object association 2",
+    "postalCodes": [
+      "75003",
+    ],
     "rna": "W000000002",
     "searchName": "ASSOCIATION 2",
     "searchObject": "object association 2",
