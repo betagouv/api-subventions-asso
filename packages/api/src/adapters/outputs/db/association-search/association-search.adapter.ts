@@ -10,13 +10,9 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
 
     async createIndexes(): Promise<void> {
         await this.collection.createIndex(
-            { searchKey: 1 },
-            {
-                unique: true,
-                sparse: true,
-            },
+            { siren: 1 },
+            { unique: true, partialFilterExpression: { fieldName: { $exists: true } } },
         );
-        await this.collection.createIndex({ siren: 1 });
     }
 
     findByText(text: string): Promise<AssociationSearchEntity[]> {

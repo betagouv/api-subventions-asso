@@ -11,7 +11,7 @@ export default interface SireneUniteLegaleDto {
     prenom4UniteLegale: string | null;
     prenomUsuelUniteLegale: string | null;
     pseudonymeUniteLegale: string | null;
-    identifiantAssociationUniteLegale: string; // always define (checked on 2026/09/17)
+    identifiantAssociationUniteLegale: string | null; // always define (checked on 2026/09/17)
     trancheEffectifsUniteLegale: string | null;
     anneeEffectifsUniteLegale: bigint | null; // bigint to number
     dateDernierTraitementUniteLegale: Date;

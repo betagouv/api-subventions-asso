@@ -1,5 +1,4 @@
 import { ParquetRow } from "../../../parquet.parser";
-import { UniteLegaleEntrepriseEntity } from "../../../../../entities/UniteLegaleEntrepriseEntity";
 import { SireneUniteLegalePipeline } from "./sirene-unite-legale.pipeline";
 import { SIRENE_UNITE_LEGALE_DTOS } from "./__fixtures__/sirene-unite-legale.dto.fixture";
 import SireneUniteLegaleDto from "./SireneUniteLegaleDto";
@@ -40,32 +39,121 @@ describe("SireneUniteLegalePipeline", () => {
             expect(parser.parse).toHaveBeenCalledWith(FILE_PATH);
         });
 
-        it("filters purged units and invalid sirens", async () => {
-            const { sirenePort, entrepriseService, pipeline } = createPipeline([
-                [
-                    { ...SIRENE_UNITE_LEGALE_DTOS[0] },
-                    { ...SIRENE_UNITE_LEGALE_DTOS[1], unitePurgeeUniteLegale: false },
-                    SIRENE_UNITE_LEGALE_DTOS[2],
-                    SIRENE_UNITE_LEGALE_DTOS[3],
-                    { ...SIRENE_UNITE_LEGALE_DTOS[0], siren: "invalid" },
-                ],
-            ]);
+        it("filters importable dtos", async () => {
+            const BATCHES = [SIRENE_UNITE_LEGALE_DTOS];
+
+            const { pipeline } = createPipeline(BATCHES);
+
+            const mockIsImportable = jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isImportable")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(false);
+
+            await pipeline.run(FILE_PATH);
+            BATCHES[0].forEach((dto, index) => {
+                expect(mockIsImportable).toHaveBeenNthCalledWith(index + 1, dto);
+            });
+        });
+
+        it("splits associations and companies", async () => {
+            const BATCHES = [SIRENE_UNITE_LEGALE_DTOS];
+
+            const { pipeline } = createPipeline(BATCHES);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isImportable")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(false);
+
+            const mockIsAssociation = jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isAssociation")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(true)
+                .mockReturnValueOnce(false);
 
             await pipeline.run(FILE_PATH);
 
-            const actual = {
-                associations: sirenePort.upsertMany.mock.calls.flatMap(([batch]) =>
-                    batch.map(entity => entity.siren.value),
-                ),
-                entreprises: entrepriseService.insertManyEntrepriseSiren.mock.calls.flatMap(([batch]) =>
-                    batch.map((entity: UniteLegaleEntrepriseEntity) => entity.siren.value),
-                ),
-            };
-
-            expect(actual).toEqual({
-                associations: [SIRENE_UNITE_LEGALE_DTOS[0].siren, SIRENE_UNITE_LEGALE_DTOS[1].siren],
-                entreprises: [SIRENE_UNITE_LEGALE_DTOS[2].siren],
+            // slice the first one as defined "not importable"
+            BATCHES[0].slice(1).forEach((dto, index) => {
+                expect(mockIsAssociation).toHaveBeenNthCalledWith(index + 1, dto);
             });
+        });
+
+        it("saves associations", async () => {
+            const BATCHES = [SIRENE_UNITE_LEGALE_DTOS];
+
+            const { pipeline } = createPipeline(BATCHES);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isImportable")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(false);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isAssociation")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(true)
+                .mockReturnValueOnce(false);
+
+            const mockSaveAssociation = jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "saveAssociations")
+                // @ts-expect-error: mock private method
+                .mockResolvedValue();
+
+            await pipeline.run(FILE_PATH);
+
+            const IMPORTABLES = BATCHES[0].slice(1);
+            IMPORTABLES.splice(1, 1); // remove company
+
+            expect(mockSaveAssociation).toHaveBeenCalledWith(IMPORTABLES);
+        });
+
+        it("saves establishments", async () => {
+            const BATCHES = [SIRENE_UNITE_LEGALE_DTOS];
+
+            const { pipeline } = createPipeline(BATCHES);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isImportable")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(false);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isAssociation")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(true)
+                .mockReturnValueOnce(false);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "saveAssociations")
+                // @ts-expect-error: mock private method
+                .mockResolvedValue();
+
+            const mockSaveEntreprises = jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "saveEntreprises")
+                // @ts-expect-error: mock private method
+                .mockResolvedValue();
+
+            await pipeline.run(FILE_PATH);
+
+            expect(mockSaveEntreprises).toHaveBeenCalledWith(BATCHES[0].slice(1).slice(1, 2));
         });
 
         it("persists every parquet batch", async () => {

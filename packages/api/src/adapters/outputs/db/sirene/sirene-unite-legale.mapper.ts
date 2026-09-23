@@ -10,15 +10,4 @@ export default class SireneUniteLegaleMapper {
             siren: new Siren(raw.siren),
         };
     }
-
-    static entityToDbo(entity: SireneUniteLegaleEntity): SireneUniteLegaleDbo {
-        return {
-            ...entity,
-            identifiantAssociationUniteLegale:
-                entity.identifiantAssociationUniteLegale instanceof Rna
-                    ? entity.identifiantAssociationUniteLegale.value
-                    : "",
-            siren: entity.siren.value,
-        };
-    }
 }

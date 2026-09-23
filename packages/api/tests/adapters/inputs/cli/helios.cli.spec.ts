@@ -18,6 +18,7 @@ import { CheckSirenIsFromAssoUseCase } from "../../../../src/modules/association
 import rnaSirenAdapter from "../../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
 import { SIRENE_UNITE_LEGAL_ENTITIES } from "../../../../src/domain/__fixtures__/unite-legale.fixture";
 import { ProviderValue } from "dto";
+import db from "../../../../src/shared/MongoConnection";
 
 jest.mock("../../../../src/modules/providers/api-asso/api-asso.service");
 
@@ -33,9 +34,10 @@ describe("Helios CLI", () => {
      */
     describe("parse", () => {
         beforeEach(async () => {
-            await sireneUniteLegaleAdapter.insertOne({
+            await db.collection("sirene").insertOne({
                 ...SIRENE_UNITE_LEGAL_ENTITIES[0],
-                siren: new Siren(DEFAULT_ASSOCIATION.siren),
+                siren: DEFAULT_ASSOCIATION.siren,
+                identifiantAssociationUniteLegale: DEFAULT_ASSOCIATION.rna,
             });
             await uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("900000000") }]);
             jest.spyOn(apiAssoService, "findAssociationBySiren").mockResolvedValue({

@@ -14,24 +14,16 @@ export class SireneUniteLegaleAdapter extends MongoAdapter<SireneUniteLegaleDbo>
         await this.collection.createIndex({ identifiantAssociationUniteLegale: 1 });
     }
 
-    public async upsertMany(entities: SireneUniteLegaleEntity[]): Promise<void> {
-        if (!entities.length) return;
-        const bulk = entities.map(entity => ({
+    public async upsertMany(dbos: SireneUniteLegaleDbo[]): Promise<void> {
+        if (!dbos.length) return;
+        const bulk = dbos.map(dbo => ({
             updateOne: {
-                filter: { siren: entity.siren.value },
-                update: { $set: SireneUniteLegaleMapper.entityToDbo(entity) },
+                filter: { siren: dbo.siren },
+                update: { $set: dbo },
                 upsert: true,
             },
         }));
         await this.collection.bulkWrite(bulk, { ordered: false });
-    }
-
-    public async insertOne(entity: SireneUniteLegaleEntity): Promise<void> {
-        await this.collection.insertOne(SireneUniteLegaleMapper.entityToDbo(entity));
-    }
-
-    public async updateOne(entity: SireneUniteLegaleEntity): Promise<void> {
-        await this.collection.updateOne({ siren: entity.siren }, { $set: SireneUniteLegaleMapper.entityToDbo(entity) });
     }
 
     public async findAll(): Promise<SireneUniteLegaleEntity[]> {

@@ -31,6 +31,7 @@ import updateFlatByExercise from "../../../../src/modules/providers/chorus/use-c
 import { TagImportedFile } from "../../../../src/modules/s3-file/use-cases/tag-imported-file";
 import DownloadFile from "../../../../src/usecases/download-file";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
+import db from "../../../../src/shared/MongoConnection";
 
 jest.mock("../../../../src/modules/providers/api-asso/api-asso.service");
 
@@ -126,7 +127,7 @@ describe("Chorus CRON", () => {
         await Promise.all([
             stateBudgetProgramAdapter.replace(PROGRAMS),
             // make siren 100000000 belong to asso
-            sireneUniteLegaleAdapter.insertOne({
+            db.collection("sirene").insertOne({
                 siren: new Siren("100000000"),
                 identifiantAssociationUniteLegale: new Rna(DEFAULT_ASSOCIATION.rna), // mandatory
             } as SireneUniteLegaleEntity),

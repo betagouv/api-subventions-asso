@@ -1,7 +1,15 @@
-import { ENTITIES } from "../../../../../domain/__fixtures__/unite-legale.fixture";
+import { SIRENE_UNITE_LEGAL_ENTITIES } from "../../../../../domain/__fixtures__/unite-legale.fixture";
 import { SireneUniteLegaleDbo } from "../SireneUniteLegaleDbo";
 
-export const DBOS: SireneUniteLegaleDbo[] = [
-    { ...ENTITIES[0], siren: ENTITIES[0].siren.value, identifiantAssociationUniteLegale: ENTITIES[0].rna?.value },
-    { ...ENTITIES[1], siren: ENTITIES[1].siren.value, identifiantAssociationUniteLegale: ENTITIES[1].rna?.value },
+export const SIRENE_UNITE_LEGALE_DBOS: SireneUniteLegaleDbo[] = [
+    {
+        ...SIRENE_UNITE_LEGAL_ENTITIES[0],
+        siren: SIRENE_UNITE_LEGAL_ENTITIES[0].siren.value,
+        identifiantAssociationUniteLegale: SIRENE_UNITE_LEGAL_ENTITIES[0].identifiantAssociationUniteLegale?.value,
+    },
+    {
+        ...SIRENE_UNITE_LEGAL_ENTITIES[1],
+        siren: SIRENE_UNITE_LEGAL_ENTITIES[1].siren.value,
+        identifiantAssociationUniteLegale: SIRENE_UNITE_LEGAL_ENTITIES[1].identifiantAssociationUniteLegale?.value,
+    },
 ];
