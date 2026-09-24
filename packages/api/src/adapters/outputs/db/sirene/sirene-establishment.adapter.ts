@@ -38,6 +38,35 @@ export class SireneEstablishmentAdapter
         if (!dbos) return [];
         return dbos.map(dbo => toEntity(dbo));
     }
+
+    public getComputedFields(sirens: string[]) {
+        return this.collection.aggregate<{ siren: string; nbEstabs: number; postalCodes: string[] }>([
+            { $match: { siren: { $in: sirens } } },
+            {
+                $group: {
+                    _id: "$siren",
+                    nbEstabs: {
+                        $sum: 1,
+                    },
+                    postalCodes: { $addToSet: "$codePostalEtablissement" },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    siren: "$_id",
+                    nbEstabs: 1,
+                    postalCodes: {
+                        $filter: {
+                            input: "$postalCodes",
+                            as: "postalCode",
+                            cond: { $ne: ["$$postalCode", null] },
+                        },
+                    },
+                },
+            },
+        ]);
+    }
 }
 
 const sireneEstablishmentAdapter = new SireneEstablishmentAdapter();

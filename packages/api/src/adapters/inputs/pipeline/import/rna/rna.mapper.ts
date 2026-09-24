@@ -1,9 +1,11 @@
 import { stringToDateOrNull } from "../../../../../shared/helpers/DateHelper";
+import { removeAccents } from "../../../../../shared/helpers/StringHelper";
+import AssociationSearchDbo from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import RnaDbo from "../../../../outputs/db/rna/rna.dbo";
 import { RnaWaldecDto } from "./rna.dto";
 
 export class RnaMapper {
-    map(dto: RnaWaldecDto): RnaDbo {
+    toDbo(dto: RnaWaldecDto): RnaDbo {
         return {
             id: dto.id,
             "id-ex": dto.id_ex,
@@ -44,6 +46,17 @@ export class RnaMapper {
             observation: dto.observation,
             position: dto.position,
             "maj-time": new Date(dto.maj_time),
+        };
+    }
+
+    toAssociationSearch(dbo: Omit<RnaDbo, "titre"> & { titre: string }): Partial<AssociationSearchDbo> {
+        if (!dbo.titre) throw new Error("Rna data must contain titre to be transformed into AssociationSearch");
+        return {
+            rna: dbo.id,
+            name: dbo.titre,
+            searchName: removeAccents(dbo.titre),
+            object: dbo.objet,
+            searchObject: dbo.objet ? removeAccents(dbo.objet) : null,
         };
     }
 }

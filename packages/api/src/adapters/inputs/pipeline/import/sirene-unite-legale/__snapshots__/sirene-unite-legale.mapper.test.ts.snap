@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SireneUniteLegale Mapper toAssociationSearch maps to partial AssociationSearchDbo 1`] = `
+{
+  "mainEstablishmentSiret": "10000000000001",
+  "rna": "W000000000",
+  "siren": "100000000",
+}
+`;
+
+exports[`SireneUniteLegale Mapper toDbo maps to dbo 1`] = `
+{
+  "activitePrincipaleNAF25UniteLegale": "94.99Y",
+  "activitePrincipaleUniteLegale": "94.99Z",
+  "anneeCategorieEntreprise": 2022n,
+  "anneeEffectifsUniteLegale": 2021n,
+  "caractereEmployeurUniteLegale": null,
+  "categorieEntreprise": "PME",
+  "categorieJuridiqueUniteLegale": "9220",
+  "dateCreationUniteLegale": 1989-02-01T00:00:00.000Z,
+  "dateDebut": 2022-01-01T00:00:00.000Z,
+  "dateDernierTraitementUniteLegale": 2023-01-01T14:26:06.000Z,
+  "denominationUniteLegale": "asso coeur",
+  "denominationUsuelle1UniteLegale": null,
+  "denominationUsuelle2UniteLegale": null,
+  "denominationUsuelle3UniteLegale": null,
+  "economieSocialeSolidaireUniteLegale": "O",
+  "etatAdministratifUniteLegale": "A",
+  "identifiantAssociationUniteLegale": "W000000000",
+  "nicSiegeUniteLegale": "00001",
+  "nomUniteLegale": null,
+  "nomUsageUniteLegale": null,
+  "nombrePeriodesUniteLegale": 5n,
+  "nomenclatureActivitePrincipaleUniteLegale": "NAFRev2",
+  "prenom1UniteLegale": null,
+  "prenom2UniteLegale": null,
+  "prenom3UniteLegale": null,
+  "prenom4UniteLegale": null,
+  "prenomUsuelUniteLegale": null,
+  "pseudonymeUniteLegale": null,
+  "sexeUniteLegale": null,
+  "sigleUniteLegale": "sigle",
+  "siren": "100000000",
+  "societeMissionUniteLegale": null,
+  "statutDiffusionUniteLegale": "0",
+  "trancheEffectifsUniteLegale": null,
+  "unitePurgeeUniteLegale": null,
+}
+`;

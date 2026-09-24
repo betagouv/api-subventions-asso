@@ -6,6 +6,7 @@ import notifyService from "../../../../src/modules/notify/notify.service";
 import { NotificationType } from "../../../../src/modules/notify/@types/NotificationType";
 import RnaDbo from "../../../../src/adapters/outputs/db/rna/rna.dbo";
 import { DataLogSource } from "../../../../src/modules/data-log/entities/dataLogEntity";
+import AssociationSearchDbo from "../../../../src/adapters/outputs/db/association-search/@types/AssociationSearchDbo";
 
 describe("RNA CLI", () => {
     const cli = new RnaCli(rnaPipeline);
@@ -69,11 +70,24 @@ describe("RNA CLI", () => {
             const FILE_PATH = path.resolve(__dirname, "../__fixtures__/diff-maj-time.rna-waldec.parquet");
             await cli.parse(FILE_PATH, EXPORT_DATE_STR);
 
-            // sample only 5 documents to snapshot
             const documents = (await db
                 .collection("rna")
                 .find({}, { projection: { _id: 0 } })
                 .toArray()) as unknown as RnaDbo[];
+
+            expect(documents).toMatchSnapshot();
+        });
+
+        it("updates association-search", async () => {
+            await cli.parse(
+                path.resolve(__dirname, "../__fixtures__/multiple-batch.rna-waldec.parquet"),
+                EXPORT_DATE_STR,
+            );
+
+            const documents = (await db
+                .collection("association-search")
+                .find({}, { projection: { _id: 0 }, limit: 5 }) // limit to 5 to avoid big snapshot
+                .toArray()) as unknown as AssociationSearchDbo[];
 
             expect(documents).toMatchSnapshot();
         });

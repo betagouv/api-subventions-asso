@@ -1,27 +1,27 @@
 import { ParquetRow } from "../../../parquet.parser";
-import { UniteLegaleEntrepriseEntity } from "../../../../../entities/UniteLegaleEntrepriseEntity";
-import { DTOS } from "../../../../../modules/providers/sirene/__fixtures__/sirene-unite-legale.fixture";
 import { SireneUniteLegalePipeline } from "./sirene-unite-legale.pipeline";
+import { SIRENE_UNITE_LEGALE_DTOS } from "./__fixtures__/sirene-unite-legale.dto.fixture";
+import SireneUniteLegaleDto from "./SireneUniteLegaleDto";
 
-async function* fakeParse(batches: ParquetRow[][]): AsyncGenerator<ParquetRow[]> {
+async function* fakeParse(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
     for (const batch of batches) yield batch;
 }
 
-function createPipeline(batches: ParquetRow[][]) {
+function createPipeline(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
     const parser = { parse: jest.fn().mockImplementation(() => fakeParse(batches)) };
     const sirenePort = { upsertMany: jest.fn().mockResolvedValue(undefined) };
-    const nameService = { upsertMany: jest.fn().mockResolvedValue(undefined) };
+    const searchPort = { upsertMany: jest.fn().mockResolvedValue(undefined) };
     const entrepriseService = { insertManyEntrepriseSiren: jest.fn().mockResolvedValue(undefined) };
 
     return {
         parser,
         sirenePort,
-        nameService,
+        searchPort,
         entrepriseService,
         pipeline: new SireneUniteLegalePipeline(
             parser as never,
             sirenePort as never,
-            nameService as never,
+            searchPort as never,
             entrepriseService as never,
         ),
     };
@@ -32,56 +32,155 @@ describe("SireneUniteLegalePipeline", () => {
 
     describe("run", () => {
         it("parses the given file", async () => {
-            const { parser, pipeline } = createPipeline([[DTOS[0]]]);
+            const { parser, pipeline } = createPipeline([[{ ...SIRENE_UNITE_LEGALE_DTOS[0] }]]);
 
             await pipeline.run(FILE_PATH);
 
             expect(parser.parse).toHaveBeenCalledWith(FILE_PATH);
         });
 
-        it("filters purged units and invalid sirens", async () => {
-            const { sirenePort, entrepriseService, pipeline } = createPipeline([
-                [
-                    DTOS[0],
-                    { ...DTOS[1], unitePurgeeUniteLegale: false },
-                    DTOS[2],
-                    DTOS[3],
-                    { ...DTOS[0], siren: "invalid" },
-                ],
+        it("filters importable dtos", async () => {
+            const BATCHES = [SIRENE_UNITE_LEGALE_DTOS];
+
+            const { pipeline } = createPipeline(BATCHES);
+
+            const mockIsImportable = jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isImportable")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(false);
+
+            await pipeline.run(FILE_PATH);
+            BATCHES[0].forEach((dto, index) => {
+                expect(mockIsImportable).toHaveBeenNthCalledWith(index + 1, dto);
+            });
+        });
+
+        it("splits associations and companies", async () => {
+            const BATCHES = [SIRENE_UNITE_LEGALE_DTOS];
+
+            const { pipeline } = createPipeline(BATCHES);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isImportable")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(false);
+
+            const mockIsAssociation = jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isAssociation")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(true)
+                .mockReturnValueOnce(false);
+
+            await pipeline.run(FILE_PATH);
+
+            // slice the first one as defined "not importable"
+            BATCHES[0].slice(1).forEach((dto, index) => {
+                expect(mockIsAssociation).toHaveBeenNthCalledWith(index + 1, dto);
+            });
+        });
+
+        it("saves associations", async () => {
+            const BATCHES = [SIRENE_UNITE_LEGALE_DTOS];
+
+            const { pipeline } = createPipeline(BATCHES);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isImportable")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(false);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isAssociation")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(true)
+                .mockReturnValueOnce(false);
+
+            const mockSaveAssociation = jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "saveAssociations")
+                // @ts-expect-error: mock private method
+                .mockResolvedValue();
+
+            await pipeline.run(FILE_PATH);
+
+            const IMPORTABLES = BATCHES[0].slice(1);
+            IMPORTABLES.splice(1, 1); // remove company
+
+            expect(mockSaveAssociation).toHaveBeenCalledWith(IMPORTABLES);
+        });
+
+        it("saves establishments", async () => {
+            const BATCHES = [SIRENE_UNITE_LEGALE_DTOS];
+
+            const { pipeline } = createPipeline(BATCHES);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isImportable")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(false);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "isAssociation")
+                // @ts-expect-error: mock private method
+                .mockReturnValue(true)
+                .mockReturnValueOnce(true)
+                .mockReturnValueOnce(false);
+
+            jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "saveAssociations")
+                // @ts-expect-error: mock private method
+                .mockResolvedValue();
+
+            const mockSaveEntreprises = jest
+                // @ts-expect-error: mock private method
+                .spyOn(pipeline, "saveEntreprises")
+                // @ts-expect-error: mock private method
+                .mockResolvedValue();
+
+            await pipeline.run(FILE_PATH);
+
+            expect(mockSaveEntreprises).toHaveBeenCalledWith(BATCHES[0].slice(1).slice(1, 2));
+        });
+
+        it("persists every parquet batch", async () => {
+            const { sirenePort, searchPort, pipeline } = createPipeline([
+                [SIRENE_UNITE_LEGALE_DTOS[0]],
+                [SIRENE_UNITE_LEGALE_DTOS[1]],
             ]);
 
             await pipeline.run(FILE_PATH);
 
             const actual = {
-                associations: sirenePort.upsertMany.mock.calls.flatMap(([batch]) =>
-                    batch.map(entity => entity.siren.value),
-                ),
-                entreprises: entrepriseService.insertManyEntrepriseSiren.mock.calls.flatMap(([batch]) =>
-                    batch.map((entity: UniteLegaleEntrepriseEntity) => entity.siren.value),
-                ),
-            };
-
-            expect(actual).toEqual({
-                associations: [DTOS[0].siren, DTOS[1].siren],
-                entreprises: [DTOS[2].siren],
-            });
-        });
-
-        it("persists every parquet batch", async () => {
-            const { sirenePort, nameService, pipeline } = createPipeline([[DTOS[0]], [DTOS[1]]]);
-
-            await pipeline.run(FILE_PATH);
-
-            const actual = {
                 sireneBatchSizes: sirenePort.upsertMany.mock.calls.map(([batch]) => batch.length),
-                nameBatchSizes: nameService.upsertMany.mock.calls.map(([batch]) => batch.length),
+                nameBatchSizes: searchPort.upsertMany.mock.calls.map(([batch]) => batch.length),
             };
 
             expect(actual).toEqual({ sireneBatchSizes: [1, 1], nameBatchSizes: [1, 1] });
         });
 
         it("returns the import report", async () => {
-            const { pipeline } = createPipeline([[DTOS[0], DTOS[2], DTOS[3], { ...DTOS[0], siren: "invalid" }]]);
+            const { pipeline } = createPipeline([
+                [
+                    SIRENE_UNITE_LEGALE_DTOS[0],
+                    SIRENE_UNITE_LEGALE_DTOS[2],
+                    SIRENE_UNITE_LEGALE_DTOS[3],
+                    { ...SIRENE_UNITE_LEGALE_DTOS[0], siren: "invalid" },
+                ],
+            ]);
 
             const actual = await pipeline.run(FILE_PATH);
 

@@ -22,12 +22,16 @@ import notifyService from "../notify/notify.service";
 import { NotificationType } from "../notify/@types/NotificationType";
 import { isUserAdmin } from "../../shared/helpers/UserHelper";
 import { DepositLogPort } from "../../adapters/outputs/db/deposit-log/deposit-log.port";
-import associationNameService from "../association-name/associationName.service";
 import ExerciceLineCount from "./entities/exerciceLineCount";
 import UserEntity from "../../domain/users/UserEntity";
+import { AssociationSearchPort } from "../../adapters/outputs/db/association-search/association-search.port";
+import { Siren } from "../../identifier-objects";
 
 export class DepositScdlProcessService {
-    constructor(private readonly depositLogPort: DepositLogPort) {}
+    constructor(
+        private readonly depositLogPort: DepositLogPort,
+        private readonly associationSearchPort: AssociationSearchPort,
+    ) {}
 
     FIRST_STEP = 1;
     SECOND_STEP = 2;
@@ -104,9 +108,10 @@ export class DepositScdlProcessService {
         }
 
         try {
-            const result = await associationNameService.find(siret);
-            return result.length ? result[0].name : undefined;
-        } catch {
+            const result = await this.associationSearchPort.findByIdentifier(new Siren(Siret.getSiren(siret)));
+            return result ? result.name : undefined;
+        } catch (e) {
+            console.log(e);
             console.error(`Error while looking up allocator name for siret ${siret}`);
             return undefined;
         }

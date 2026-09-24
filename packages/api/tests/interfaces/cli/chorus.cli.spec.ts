@@ -3,7 +3,6 @@ import path from "path";
 import chorusAdapter from "../../../src/adapters/outputs/db/providers/chorus/chorus.adapter";
 import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
 import uniteLegaleEntrepriseAdapter from "../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
-import sireneUniteLegaleAdapter from "../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import apiAssoService from "../../../src/modules/providers/api-asso/api-asso.service";
 import { AssociationWithProviderValues } from "dto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../src/shared/LegalCategoriesAccepted";
@@ -18,8 +17,9 @@ import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.a
 import { toArray } from "../../__helpers__/ayncIterableHelper";
 import { PROGRAMS } from "../../adapters/outputs/db/__fixtures__/state-budget-program.fixtures";
 import chorusImport from "../../../src/adapters/inputs/pipeline/import/chorus/chorus.import";
-import { SireneUniteLegaleEntity } from "../../../src/entities/SireneUniteLegaleEntity";
 import updateFlatByExercise from "../../../src/modules/providers/chorus/use-cases/update-flat-by-exercise";
+import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
+import db from "../../../src/shared/MongoConnection";
 
 describe("ChorusCli", () => {
     // it contains :
@@ -38,7 +38,10 @@ describe("ChorusCli", () => {
         await Promise.all([
             stateBudgetProgramAdapter.replace(PROGRAMS),
             // make siren 100000000 belong to asso
-            sireneUniteLegaleAdapter.insertOne({ siren: new Siren("100000000") } as SireneUniteLegaleEntity),
+            db.collection("sirene").insertOne({
+                siren: "100000000",
+                identifiantAssociationUniteLegale: DEFAULT_ASSOCIATION.rna,
+            }),
             // make siren 30000000 belong to an entreprise
             uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
         ]);

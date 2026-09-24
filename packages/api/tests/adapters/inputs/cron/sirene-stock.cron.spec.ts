@@ -45,8 +45,8 @@ describe("Sriene stock CRON", () => {
         });
 
         it("imports data", async () => {
-            // fixture only got lines with siren 100000000
-            await db.collection("sirene").insertOne({ siren: "100000000" });
+            // fixture only got lines with siren 100000001
+            await db.collection("sirene").insertOne({ siren: "100000001" });
             await sireneStockCron.importEstablishments();
             const dbos = await db
                 .collection("etablissement")

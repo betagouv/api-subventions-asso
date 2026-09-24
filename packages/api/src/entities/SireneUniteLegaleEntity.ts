@@ -1,4 +1,5 @@
 import Siren from "../identifier-objects/Siren";
+import { Rna } from "../identifier-objects";
 
 export interface SireneUniteLegaleEntity {
     siren: Siren;
@@ -13,7 +14,7 @@ export interface SireneUniteLegaleEntity {
     prenom4UniteLegale: string | null;
     prenomUsuelUniteLegale: string | null;
     pseudonymeUniteLegale: string | null;
-    identifiantAssociationUniteLegale: string | null;
+    identifiantAssociationUniteLegale: Rna;
     trancheEffectifsUniteLegale: string | null;
     anneeEffectifsUniteLegale: number | null;
     dateDernierTraitementUniteLegale: Date;
@@ -31,7 +32,7 @@ export interface SireneUniteLegaleEntity {
     categorieJuridiqueUniteLegale: string | null;
     activitePrincipaleUniteLegale: string | null;
     nomenclatureActivitePrincipaleUniteLegale: string | null;
-    nicSiegeUniteLegale: string | null;
+    nicSiegeUniteLegale: string;
     economieSocialeSolidaireUniteLegale: string | null;
     societeMissionUniteLegale: string | null;
     caractereEmployeurUniteLegale: string | null;

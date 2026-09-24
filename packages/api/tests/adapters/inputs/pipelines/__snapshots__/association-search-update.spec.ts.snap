@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Association Search Update should be the merge of unite legale and rna 1`] = `
+[
+  {
+    "address": {
+      "city": "PARIS",
+      "name": "LOULOU",
+      "number": "3",
+      "postalCode": "75003",
+      "type": "RUE",
+    },
+    "mainEstablishmentSiret": "10000000200022",
+    "name": "ASSOCIATION 2",
+    "nbEstabs": 1,
+    "object": "object association 2",
+    "postalCodes": [
+      "75003",
+    ],
+    "rna": "W000000002",
+    "searchName": "ASSOCIATION 2",
+    "searchObject": "object association 2",
+    "siren": "100000002",
+  },
+  {
+    "mainEstablishmentSiret": "10000000300015",
+    "name": "ASSOCIATION 3",
+    "object": "object association 3",
+    "rna": "W000000003",
+    "searchName": "ASSOCIATION 3",
+    "searchObject": "object association 3",
+    "siren": "100000003",
+  },
+  {
+    "mainEstablishmentSiret": "10000000400010",
+    "rna": "W000000004",
+    "siren": "100000004",
+  },
+  {
+    "mainEstablishmentSiret": "10000000500018",
+    "rna": "W000000005",
+    "siren": "100000005",
+  },
+  {
+    "name": "ASSOCIATION 1",
+    "object": "objet association 1",
+    "rna": "W000000001",
+    "searchName": "ASSOCIATION 1",
+    "searchObject": "objet association 1",
+  },
+]
+`;

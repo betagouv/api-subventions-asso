@@ -23,7 +23,6 @@ import Siret from "../../../identifier-objects/Siret";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import { sirenStructureFixture } from "../../providers/api-asso/__fixtures__/SirenStructureFixture";
 import { ApiAssoService } from "../../providers/api-asso/api-asso.service";
-import { STOCK_UNITE_LEGALE_ENTITY } from "../../providers/sirene/@types/__fixtures__/sirene-stock-unite-legale.fixture";
 import { CheckIdentifierIsFromAssoUseCase } from "./check-identifier-is-from-asso.use-case";
 import { CheckSirenIsFromAssoUseCase } from "./check-siren-is-from-asso.use-case";
 import { FindSiretFromAssociationIdentifierUseCase } from "./find-siret-from-association-identifier.use-case";
@@ -33,6 +32,8 @@ import { GetAssociation } from "./get-association";
 import { GetIdentifierFromStringUseCase } from "./get-identifier-from-string.use-case";
 import { GetRnaStructureData } from "./get-rna-structure-data";
 import { GetSirenStructureData } from "./get-siren-structure-data";
+import { SIRENE_UNITE_LEGAL_ENTITIES } from "../../../domain/__fixtures__/unite-legale.fixture";
+import { ProviderValue } from "dto";
 
 describe("Association Use Cases", () => {
     const RNA = new Rna(DEFAULT_ASSOCIATION.rna);
@@ -187,8 +188,7 @@ describe("Association Use Cases", () => {
 
         it("returns true when structure from api asso match legal category", async () => {
             jest.mocked(mockApiAssoService.findAssociationBySiren).mockResolvedValueOnce({
-                // @ts-expect-error: mock provider value
-                categorie_juridique: [{ value: "9220" }],
+                categorie_juridique: [{ value: "9220" } as unknown as ProviderValue<string>],
             });
             const expected = true;
             const actual = await useCase.execute(SIREN);
@@ -201,8 +201,8 @@ describe("Association Use Cases", () => {
             find: jest.fn().mockResolvedValue([{ siren: SIREN, rna: RNA }]),
         };
         const mockSirenePort = {
-            findOneByRna: jest.fn().mockResolvedValue(STOCK_UNITE_LEGALE_ENTITY),
-            findOneBySiren: jest.fn().mockResolvedValue(STOCK_UNITE_LEGALE_ENTITY),
+            findOneByRna: jest.fn().mockResolvedValue(SIRENE_UNITE_LEGAL_ENTITIES[0]),
+            findOneBySiren: jest.fn().mockResolvedValue(SIRENE_UNITE_LEGAL_ENTITIES[0]),
         };
 
         // @ts-expect-error: inject mock
@@ -234,7 +234,7 @@ describe("Association Use Cases", () => {
 
     describe("FindSiretFromSiren", () => {
         const mockSirenePort = {
-            findOneBySiren: jest.fn().mockResolvedValue(STOCK_UNITE_LEGALE_ENTITY),
+            findOneBySiren: jest.fn().mockResolvedValue(SIRENE_UNITE_LEGAL_ENTITIES[0]),
         };
 
         // @ts-expect-error inject mock
@@ -312,7 +312,7 @@ describe("Association Use Cases", () => {
             getRecordsBySiren: jest.fn().mockResolvedValue(BODACC_ENTITY),
         } as unknown as jest.Mocked<BodaccPort>;
         const mockUniteLegalePort = {
-            findOneBySiren: jest.fn().mockResolvedValue(STOCK_UNITE_LEGALE_ENTITY),
+            findOneBySiren: jest.fn().mockResolvedValue(SIRENE_UNITE_LEGAL_ENTITIES[0]),
         } as unknown as jest.Mocked<SireneUniteLegalePort>;
         const mockEstablishmentPort = {
             getAllBySiren: jest.fn().mockResolvedValue(ESTABLISHMENT_ENTITY),

@@ -1,6 +1,6 @@
 import { loadHyparquet } from "./hyparquet.loader";
 
-export type ParquetRow = Record<string, unknown>;
+export type ParquetRow<T = Record<string, unknown>> = T;
 
 export class ParquetParser {
     static READ_BATCH_SIZE = 5000;

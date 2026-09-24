@@ -26,6 +26,6 @@ export class AdminStructureAdapter implements AdminStructurePort {
     }
 }
 
-const associationNameAdapter = new AdminStructureAdapter();
+const adminStructureAdaper = new AdminStructureAdapter();
 
-export default associationNameAdapter;
+export default adminStructureAdaper;
