@@ -14,7 +14,7 @@ export class AssociationSearchService {
         // if siret it is transformed into siren
         // if rna uniteLegaleName will never return a thing as it search on siren + name
         if (Siren.isSiren(value)) {
-            const association = await associationSearchAdapter.findOneBySiren(new Siren(value), postalCode);
+            const association = await associationSearchAdapter.findByIdentifier(new Siren(value), postalCode);
             if (association) return [association];
             return [];
         } else {

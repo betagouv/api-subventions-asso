@@ -3,8 +3,6 @@ import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
 import associationSearchAdapter from "../../src/adapters/outputs/db/association-search/association-search.adapter";
 import apiEntrepriseService from "../../src/modules/providers/api-entreprise/api-entreprise.service";
-import rechercheEntreprisesAdapter from "../../src/adapters/outputs/api/recherche-entreprises/recherche-entreprises.adapter";
-import { EMPTY_RECHERCHE_ENTREPRISES_DTO } from "../../src/adapters/outputs/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
 import { ASSOCIATION_SEARCH_DBOS } from "../../src/adapters/outputs/db/association-search/__fixtures__/association-search.fixture";
 
 const g = global as unknown as { app: App };
@@ -12,9 +10,6 @@ const g = global as unknown as { app: App };
 describe("/search", () => {
     beforeAll(() => {
         jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementation(async () => null);
-        jest.spyOn(rechercheEntreprisesAdapter, "search").mockImplementation(
-            async () => EMPTY_RECHERCHE_ENTREPRISES_DTO,
-        );
     });
 
     describe("/associations/{input}", () => {
@@ -69,7 +64,7 @@ describe("/search", () => {
 
         it("should return no text search result when postal code does not match", async () => {
             const response = await request(g.app)
-                .get(`/search/associations/${ASSOCIATION_SEARCH_DBOS[0].name}?postalCode=69`)
+                .get(`/search/associations/${ASSOCIATION_SEARCH_DBOS[0].name}?postalCode=35`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect({ statusCode: response.statusCode, body: response.body }).toEqual({

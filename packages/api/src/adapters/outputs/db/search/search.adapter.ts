@@ -17,13 +17,13 @@ function toEntity(dbo: SearchResultDbo): AssociationSearchEntity {
 function toDbo(searchToken: string, searchResult: Partial<AssociationSearchEntity>[]): SearchCacheEntity {
     return new SearchCacheEntity(
         searchToken,
-        searchResult.map(associationName => {
+        searchResult.map(associationSearch => {
             return {
-                name: associationName.name,
-                rna: associationName.rna?.value,
-                siren: associationName.siren!.value, // should always be defined but all search cache will be refactored / removed soon
-                address: associationName.address,
-                nbEstabs: associationName.nbEstabs,
+                name: associationSearch.name,
+                rna: associationSearch.rna?.value,
+                siren: associationSearch.siren!.value, // should always be defined but all search cache will be refactored / removed soon
+                address: associationSearch.address,
+                nbEstabs: associationSearch.nbEstabs,
             };
         }) as SearchResultDbo[],
     );

@@ -7,6 +7,7 @@ import AssociationSearchMapper from "./association-search.mapper";
 import AssociationSearchDbo, { AssociationSearchPartialUpdate } from "./@types/AssociationSearchDbo";
 import type { AssociationSearchPostalCodes } from "../sirene/sirene-establishment.port";
 import { removeAccents } from "../../../../shared/helpers/StringHelper";
+import { Rna } from "../../../../identifier-objects";
 
 export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo> implements AssociationSearchPort {
     collectionName = "association-search";
@@ -36,10 +37,9 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
      * @param {Siren} siren
      * @returns the latest name associate at the siren
      */
-    async findOneBySiren(siren: Siren, postalCode?: string): Promise<AssociationSearchEntity | null> {
-        const cursor = this.collection
-            .find(this.buildQueryWithPostalCodeFilter({ siren: siren.value }, postalCode))
-            .sort({ updateDate: 1 });
+    async findByIdentifier(identifier: Siren | Rna, postalCode?: string): Promise<AssociationSearchEntity | null> {
+        const query = identifier instanceof Siren ? { siren: identifier.value } : { rna: identifier.value };
+        const cursor = this.collection.find(this.buildQueryWithPostalCodeFilter(query, postalCode));
 
         if (!cursor.hasNext()) return null;
         const dbo = await cursor.next();

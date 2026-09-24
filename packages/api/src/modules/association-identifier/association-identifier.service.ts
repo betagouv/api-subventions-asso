@@ -1,38 +1,72 @@
-import { MultipleAssociationsError } from "core";
+import { MultipleAssociationsError, NotAssociationError } from "core";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
 import Siret from "../../identifier-objects/Siret";
 import { IdentifierError } from "./IdentifierError";
 import rnaSirenService from "../rna-siren/rna-siren.service";
-import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
 import { AssociationIdType } from "../../identifier-objects/@types/IdentifierType";
+import sireneUniteLegaleAdapter from "../../adapters/outputs/db/sirene/sirene-unite-legale.adapter";
+import rnaAdapter from "../../adapters/outputs/db/rna/rna.adapter";
 
 export class AssociationIdentifierService {
-    async findFromRechercheEntreprises(identifier: AssociationIdType) {
-        const reResult = await rechercheEntreprisesService.getSearchResult(identifier.value);
-        if (reResult.length === 0) return [AssociationIdentifier.fromId(identifier)];
-        if (identifier.name === Siren.getName())
-            return reResult.map(entity => {
-                if (entity.rna) return AssociationIdentifier.fromSirenAndRna(identifier, entity.rna!);
-                else return AssociationIdentifier.fromSiren(identifier);
-            });
-        else return reResult.map(entity => AssociationIdentifier.fromSirenAndRna(entity.siren!, identifier));
-    }
-
     async getAssociationIdentifiers(id: string): Promise<AssociationIdentifier[]> {
         const associationIdentifier = this.identifierStringToEntity(id);
 
         const rnaSirenEntities = await rnaSirenService.find(associationIdentifier);
         if (!rnaSirenEntities || rnaSirenEntities?.length === 0) {
-            const reResults = await this.findFromRechercheEntreprises(associationIdentifier);
-            rnaSirenService.insertManyAssociationIdentifer(reResults);
-            return reResults;
+            const results: AssociationIdentifier[] = [];
+            if (associationIdentifier instanceof Rna) {
+                const sireneResult = await sireneUniteLegaleAdapter.findOneByRna(associationIdentifier);
+                if (
+                    sireneResult &&
+                    associationIdentifier.value === sireneResult.identifiantAssociationUniteLegale.value
+                )
+                    results.push(
+                        AssociationIdentifier.fromSirenAndRna(
+                            sireneResult.siren,
+                            sireneResult.identifiantAssociationUniteLegale,
+                        ),
+                    );
+                const rnaResult = await rnaAdapter.getByRna(associationIdentifier);
+                if (rnaResult && rnaResult.siret)
+                    results.push(
+                        AssociationIdentifier.fromSirenAndRna(
+                            new Siren(Siret.getSiren(rnaResult.siret.value)),
+                            rnaResult.id,
+                        ),
+                    );
+            } else {
+                const sireneResult = await sireneUniteLegaleAdapter.findOneBySiren(associationIdentifier);
+                if (sireneResult?.identifiantAssociationUniteLegale)
+                    results.push(
+                        AssociationIdentifier.fromSirenAndRna(
+                            sireneResult.siren,
+                            sireneResult.identifiantAssociationUniteLegale,
+                        ),
+                    );
+            }
+
+            const filteredResults = this.filterDuplicates(results);
+            rnaSirenService.insertManyAssociationIdentifer(filteredResults);
+
+            return filteredResults;
         }
 
         return rnaSirenEntities.map(rnaSirenEntity =>
             AssociationIdentifier.fromSirenAndRna(rnaSirenEntity.siren, rnaSirenEntity.rna),
         );
+    }
+
+    private filterDuplicates(identifiers: AssociationIdentifier[]) {
+        return identifiers.reduce((acc, associationIdentifier) => {
+            if (acc.length > 0) {
+                if (acc.find(ai => ai.rna !== associationIdentifier.rna && ai.siren !== associationIdentifier.siren)) {
+                    acc.push(associationIdentifier);
+                }
+            } else acc.push(associationIdentifier);
+            return acc;
+        }, [] as AssociationIdentifier[]);
     }
 
     async getOneAssociationIdentifier(id: string): Promise<AssociationIdentifier> {
@@ -41,7 +75,7 @@ export class AssociationIdentifierService {
         if (identifiers.length > 1) {
             throw new MultipleAssociationsError();
         } else if (identifiers.length === 0) {
-            throw new Error("No association found with this identifier");
+            throw new NotAssociationError();
         }
 
         return identifiers[0];

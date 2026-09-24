@@ -1,14 +1,16 @@
 import { BadRequestError } from "core";
-import associationNameService from "../association-name/associationName.service";
 import searchAdapter from "../../adapters/outputs/db/search/search.adapter";
 import PaginatedResult from "../../@types/PaginatedResult";
 import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
+import search, { Search } from "../../usecases/search/search";
 
 const POSTAL_CODE_REGEX = /^\d{2,5}$/;
 
 export class SearchService {
     PAGE_SIZE = 12;
     CACHE_LIFESPAN_MS = 24 * 60 * 60 * 1000;
+
+    constructor(private search: Search) {}
 
     public async getAssociationsKeys(value: string, postalCode?: string): Promise<Partial<AssociationSearchEntity>[]> {
         const validPostalCode = this.validatePostalCode(postalCode);
@@ -22,7 +24,7 @@ export class SearchService {
 
         // nothing in cache
         // @TODO: pagination has been removed because not used properly but we should limit the result of the find
-        const entities = await associationNameService.find(value, validPostalCode);
+        const entities = await this.search.execute({ value, postalCode });
         searchAdapter.saveResults(searchToken, entities);
 
         return entities;
@@ -61,6 +63,6 @@ export class SearchService {
     }
 }
 
-const searchService = new SearchService();
+const searchService = new SearchService(search);
 
 export default searchService;

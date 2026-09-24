@@ -1,6 +1,5 @@
 import { Controller, Get, Response, Route, Security, Tags, Query, Path, Example } from "tsoa";
 import { HttpErrorInterface } from "core";
-import searchUseCase from "../../../../usecases/search/search";
 import searchService from "../../../../modules/search/search.service";
 import { RechercheAssociationDto, PaginatedResultDto } from "dto";
 import { toDto } from "./search.mapper";
@@ -41,11 +40,12 @@ export class SearchHttp extends Controller {
         message: "Could not match any association with given input : ${input}",
     })
     @Response<HttpErrorInterface>("400", "Code postal invalide")
-    public async findAssociations(
+    public async search(
         @Path() input: string,
         @Query() page = "1",
         @Query() postalCode?: string,
     ): Promise<PaginatedResultDto<RechercheAssociationDto[]>> {
+        // @TODO: transform in use case
         const { results, ...search } = await searchService.getPaginatedResult(
             decodeURIComponent(input),
             Number.parseInt(page),
@@ -55,9 +55,5 @@ export class SearchHttp extends Controller {
             ...search,
             resultats: results.map(toDto),
         };
-    }
-
-    public search(@Path() input: string, @Query() page = "1"): Promise<unknown> {
-        return searchUseCase.execute({ value: input, page });
     }
 }

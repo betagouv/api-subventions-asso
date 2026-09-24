@@ -1,82 +1,123 @@
-import { RNA_STR, SIREN_STR } from "../../../tests/__fixtures__/association.fixture";
+import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
 import Rna from "../../identifier-objects/Rna";
 import associationIdentifierService from "./association-identifier.service";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import Siren from "../../identifier-objects/Siren";
-import rechercheEntreprisesService from "../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service";
-import { ASSOCIATION_SEARCH_ENTITIES } from "../../domain/__fixtures__/association-search.fixture";
+import rnaAdapter from "../../adapters/outputs/db/rna/rna.adapter";
+import sireneUniteLegaleAdapter from "../../adapters/outputs/db/sirene/sirene-unite-legale.adapter";
+import { RNA_ENTITY } from "../../domain/__fixtures__/rna.fixture";
+import { SIRENE_UNITE_LEGAL_ENTITIES } from "../../domain/__fixtures__/unite-legale.fixture";
 
+jest.mock("../../adapters/outputs/db/rna/rna.adapter");
+jest.mock("../../adapters/outputs/db/sirene/sirene-unite-legale.adapter");
 jest.mock("../rna-siren/rna-siren.service");
-jest.mock("../../adapters/outputs/api/recherche-entreprises/recherche-entreprises.service");
 
 describe("AssociationIdentifierService", () => {
-    const SIREN = new Siren(SIREN_STR);
-    const RNA = new Rna(RNA_STR);
+    const SIREN = new Siren(DEFAULT_ASSOCIATION.siren);
+    const RNA = new Rna(DEFAULT_ASSOCIATION.rna);
     const ASSOCIATIONS_IDENTIFIERS = [AssociationIdentifier.fromSirenAndRna(SIREN, RNA)];
-
-    describe("findFromRechercheEntreprises", () => {
-        beforeEach(() => {
-            jest.mocked(rechercheEntreprisesService.getSearchResult).mockResolvedValue(ASSOCIATION_SEARCH_ENTITIES);
-        });
-
-        it("search for identifiers from Recherche Entreprise API", async () => {
-            await associationIdentifierService.findFromRechercheEntreprises(RNA);
-            expect(rechercheEntreprisesService.getSearchResult).toHaveBeenCalledWith(RNA.value);
-        });
-
-        it("returns an array containing a partial AssociationIdentifier when nothing is returned from the API", async () => {
-            jest.mocked(rechercheEntreprisesService.getSearchResult).mockResolvedValueOnce([]);
-            const expected = [AssociationIdentifier.fromRna(RNA)];
-            const actual = await associationIdentifierService.findFromRechercheEntreprises(RNA);
-            expect(actual).toEqual(expected);
-        });
-
-        it.each`
-            identifier | identifierName
-            ${RNA}     | ${"RNA"}
-            ${SIREN}   | ${"SIREN"}
-        `(
-            `returns an array of complete AssociationIdentifier when searching from a $identifierName`,
-            async ({ identifier }) => {
-                const expected = [AssociationIdentifier.fromSirenAndRna(SIREN, RNA)];
-                const actual = await associationIdentifierService.findFromRechercheEntreprises(identifier);
-                expect(actual).toEqual(expected);
-            },
-        );
-    });
+    const UNITE_LEGALE_ENTITY = { ...SIRENE_UNITE_LEGAL_ENTITIES[0] };
 
     describe("getAssociationIdentifiers", () => {
         let mockIdentifierStringToEntity: jest.SpyInstance;
-        let mockFindFromRechercheEntreprise: jest.SpyInstance;
-
+        const mockGetByRna = jest.spyOn(rnaAdapter, "getByRna").mockResolvedValue(RNA_ENTITY);
+        const mockFindOneByRna = jest.spyOn(sireneUniteLegaleAdapter, "findOneByRna");
+        const mockFindOneBySiren = jest.spyOn(sireneUniteLegaleAdapter, "findOneBySiren");
+        // @ts-expect-error: mock private method
+        const mockFilterDuplicates = jest.spyOn(associationIdentifierService, "filterDuplicates");
         beforeEach(() => {
             mockIdentifierStringToEntity = jest
                 .spyOn(associationIdentifierService, "identifierStringToEntity")
                 .mockReturnValue(RNA);
-            mockFindFromRechercheEntreprise = jest
-                .spyOn(associationIdentifierService, "findFromRechercheEntreprises")
-                .mockResolvedValue(ASSOCIATIONS_IDENTIFIERS);
+
             jest.mocked(rnaSirenService.find).mockResolvedValue(null);
+            mockGetByRna.mockResolvedValue(RNA_ENTITY);
+            mockFindOneByRna.mockResolvedValue(UNITE_LEGALE_ENTITY);
+            mockFindOneBySiren.mockResolvedValue(UNITE_LEGALE_ENTITY);
+            // @ts-expect-error: mock private method return value
+            mockFilterDuplicates.mockReturnValue(ASSOCIATIONS_IDENTIFIERS);
         });
 
         afterAll(() => {
-            [mockFindFromRechercheEntreprise, mockIdentifierStringToEntity].forEach(mock => mock.mockRestore());
+            [mockIdentifierStringToEntity, mockFilterDuplicates].forEach(mock => mock.mockRestore());
         });
 
-        it("try to find matches from API RechercheEntreprise", async () => {
-            await associationIdentifierService.getAssociationIdentifiers(RNA_STR);
-            expect(mockFindFromRechercheEntreprise).toHaveBeenLastCalledWith(RNA);
+        it("returns results from rnaSiren", async () => {
+            jest.mocked(rnaSirenService.find).mockResolvedValueOnce([
+                { rna: new Rna(DEFAULT_ASSOCIATION.rna), siren: new Siren(DEFAULT_ASSOCIATION.siren) },
+            ]);
+            const expected = [
+                AssociationIdentifier.fromSirenAndRna(
+                    new Siren(DEFAULT_ASSOCIATION.siren),
+                    new Rna(DEFAULT_ASSOCIATION.rna),
+                ),
+            ];
+            const actual = await associationIdentifierService.getAssociationIdentifiers(RNA.value);
+            expect(actual).toEqual(expected);
+        });
+
+        describe("when identifier is Rna", () => {
+            beforeEach(() => {
+                mockIdentifierStringToEntity = jest
+                    .spyOn(associationIdentifierService, "identifierStringToEntity")
+                    .mockReturnValue(RNA);
+            });
+            it("get result from rna adapter", async () => {
+                await associationIdentifierService.getAssociationIdentifiers(RNA.value);
+                expect(mockGetByRna).toHaveBeenCalledWith(RNA);
+            });
+
+            it("get result from unite legale adapter by rna", async () => {
+                await associationIdentifierService.getAssociationIdentifiers(RNA.value);
+                expect(mockFindOneByRna).toHaveBeenCalledWith(RNA);
+            });
+
+            it("returns results", async () => {
+                const expected = ASSOCIATIONS_IDENTIFIERS; // filterDuplicates mock
+                const actual = await associationIdentifierService.getAssociationIdentifiers(RNA.value);
+                expect(actual).toEqual(expected);
+            });
+        });
+
+        describe("when identifier is Siren", () => {
+            beforeEach(() => {
+                mockIdentifierStringToEntity = jest
+                    .spyOn(associationIdentifierService, "identifierStringToEntity")
+                    .mockReturnValue(SIREN);
+            });
+
+            it("get result from unite legale adapter by rna", async () => {
+                await associationIdentifierService.getAssociationIdentifiers(SIREN.value);
+                expect(mockFindOneBySiren).toHaveBeenCalledWith(SIREN);
+            });
+
+            it("returns results ", async () => {
+                const expected = [
+                    AssociationIdentifier.fromSirenAndRna(
+                        UNITE_LEGALE_ENTITY.siren,
+                        UNITE_LEGALE_ENTITY.identifiantAssociationUniteLegale,
+                    ),
+                ]; // filterDuplicates mock
+                const actual = await associationIdentifierService.getAssociationIdentifiers(SIREN.value);
+                expect(actual).toEqual(expected);
+            });
         });
 
         it("persists match in rna-siren collection", async () => {
-            await associationIdentifierService.getAssociationIdentifiers(RNA_STR);
+            await associationIdentifierService.getAssociationIdentifiers(RNA.value);
             expect(rnaSirenService.insertManyAssociationIdentifer).toHaveBeenLastCalledWith(ASSOCIATIONS_IDENTIFIERS);
         });
+    });
 
-        it("returns API RechercheEntreprise matches", async () => {
+    describe("filterDuplicates", () => {
+        it("removes duplicate AssociationIdentifier", () => {
             const expected = ASSOCIATIONS_IDENTIFIERS;
-            const actual = await associationIdentifierService.getAssociationIdentifiers(RNA_STR);
+            // @ts-expect-error: test private method
+            const actual = associationIdentifierService.filterDuplicates([
+                ...ASSOCIATIONS_IDENTIFIERS,
+                ASSOCIATIONS_IDENTIFIERS[0],
+            ]);
             expect(actual).toEqual(expected);
         });
     });

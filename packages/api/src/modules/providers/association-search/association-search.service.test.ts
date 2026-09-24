@@ -61,9 +61,9 @@ describe("AssociationSearchService", () => {
         });
 
         it("should pass postal code filter to siren search", async () => {
-            mockedAssociationSearch.findOneBySiren.mockResolvedValueOnce(fakeAssociationSearchEntity);
+            mockedAssociationSearch.findByIdentifier.mockResolvedValueOnce(fakeAssociationSearchEntity);
             await AssociationSearchService.searchBySirenSiretName(SIREN.value, "75");
-            expect(mockedAssociationSearch.findOneBySiren).toHaveBeenCalledWith(SIREN, "75");
+            expect(mockedAssociationSearch.findByIdentifier).toHaveBeenCalledWith(SIREN, "75");
         });
 
         it("should handle cases where there are multiple rnaSiren entities for the same siren", async () => {
@@ -96,7 +96,7 @@ describe("AssociationSearchService", () => {
         });
 
         it("should return association when the value is a start of siret", async () => {
-            mockedAssociationSearch.findOneBySiren.mockResolvedValueOnce(fakeAssociationSearchEntity);
+            mockedAssociationSearch.findByIdentifier.mockResolvedValueOnce(fakeAssociationSearchEntity);
             isStartOfSiretMock.mockReturnValue(true);
             const expected = new AssociationSearchEntity({
                 name: fakeAssociationSearchEntity.name,
@@ -110,14 +110,14 @@ describe("AssociationSearchService", () => {
         });
 
         it("should check whether the value is a start of siret", async () => {
-            mockedAssociationSearch.findOneBySiren.mockResolvedValueOnce(fakeAssociationSearchEntity);
+            mockedAssociationSearch.findByIdentifier.mockResolvedValueOnce(fakeAssociationSearchEntity);
             isStartOfSiretMock.mockReturnValue(true);
             await AssociationSearchService.searchBySirenSiretName(SIREN.value);
             expect(isStartOfSiretMock).toHaveBeenCalledWith(SIREN.value);
         });
 
         it("should transform partial siret into siren", async () => {
-            mockedAssociationSearch.findOneBySiren.mockResolvedValueOnce(fakeAssociationSearchEntity);
+            mockedAssociationSearch.findByIdentifier.mockResolvedValueOnce(fakeAssociationSearchEntity);
             isStartOfSiretMock.mockReturnValue(true);
             await AssociationSearchService.searchBySirenSiretName(SIREN.value);
             expect(fromPartialSiretStrMock).toHaveBeenCalledWith(SIREN.value);
