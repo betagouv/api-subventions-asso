@@ -14,7 +14,7 @@ export interface SireneUniteLegaleEntity {
     prenom4UniteLegale: string | null;
     prenomUsuelUniteLegale: string | null;
     pseudonymeUniteLegale: string | null;
-    identifiantAssociationUniteLegale: Rna;
+    identifiantAssociationUniteLegale: Rna | null;
     trancheEffectifsUniteLegale: string | null;
     anneeEffectifsUniteLegale: number | null;
     dateDernierTraitementUniteLegale: Date;

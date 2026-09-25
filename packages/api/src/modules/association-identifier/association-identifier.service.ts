@@ -18,33 +18,40 @@ export class AssociationIdentifierService {
             const results: AssociationIdentifier[] = [];
             if (associationIdentifier instanceof Rna) {
                 const sireneResult = await sireneUniteLegaleAdapter.findOneByRna(associationIdentifier);
-                if (
-                    sireneResult &&
-                    associationIdentifier.value === sireneResult.identifiantAssociationUniteLegale.value
-                )
-                    results.push(
-                        AssociationIdentifier.fromSirenAndRna(
-                            sireneResult.siren,
-                            sireneResult.identifiantAssociationUniteLegale,
-                        ),
-                    );
+                if (sireneResult) {
+                    // here might be update if we want to display all the rna-siren duplicates
+                    if (associationIdentifier.value === sireneResult.identifiantAssociationUniteLegale?.value)
+                        results.push(
+                            AssociationIdentifier.fromSirenAndRna(
+                                sireneResult.siren,
+                                sireneResult.identifiantAssociationUniteLegale,
+                            ),
+                        );
+                    else results.push(AssociationIdentifier.fromSiren(sireneResult.siren));
+                }
                 const rnaResult = await rnaAdapter.getByRna(associationIdentifier);
-                if (rnaResult && rnaResult.siret)
-                    results.push(
-                        AssociationIdentifier.fromSirenAndRna(
-                            new Siren(Siret.getSiren(rnaResult.siret.value)),
-                            rnaResult.id,
-                        ),
-                    );
+                if (rnaResult) {
+                    if (rnaResult.siret)
+                        results.push(
+                            AssociationIdentifier.fromSirenAndRna(
+                                new Siren(Siret.getSiren(rnaResult.siret.value)),
+                                rnaResult.id,
+                            ),
+                        );
+                    else results.push(AssociationIdentifier.fromRna(rnaResult.id));
+                }
             } else {
                 const sireneResult = await sireneUniteLegaleAdapter.findOneBySiren(associationIdentifier);
-                if (sireneResult?.identifiantAssociationUniteLegale)
-                    results.push(
-                        AssociationIdentifier.fromSirenAndRna(
-                            sireneResult.siren,
-                            sireneResult.identifiantAssociationUniteLegale,
-                        ),
-                    );
+                if (sireneResult) {
+                    if (sireneResult?.identifiantAssociationUniteLegale)
+                        results.push(
+                            AssociationIdentifier.fromSirenAndRna(
+                                sireneResult.siren,
+                                sireneResult.identifiantAssociationUniteLegale,
+                            ),
+                        );
+                    else results.push(AssociationIdentifier.fromSiren(sireneResult.siren));
+                }
             }
 
             const filteredResults = this.filterDuplicates(results);

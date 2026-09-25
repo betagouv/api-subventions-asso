@@ -13,13 +13,10 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     collectionName = "association-search";
 
     async createIndexes(): Promise<void> {
-        await this.collection.createIndex(
-            { siren: 1 },
-            { unique: true, partialFilterExpression: { siren: { $exists: true } } },
-        );
+        await this.collection.createIndex({ siren: 1, rna: 1 }, { unique: true });
+        await this.collection.createIndex({ rna: 1 });
         await this.collection.createIndex({
             postalCodes: 1,
-            siren: 1,
         });
     }
 
@@ -50,6 +47,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
 
     // becarefull as here we do not pass entities but partial dbos
     public async upsertMany(dbos: Partial<AssociationSearchPartialUpdate>[]): Promise<void> {
+        console.log("upserting dbos...", dbos[0]);
         const operations = dbos.map(dbo => ({
             updateOne: {
                 filter: dbo.siren ? { siren: dbo.siren } : { rna: dbo.rna }, // most of the time we update from siren
@@ -57,8 +55,10 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
                 upsert: true,
             },
         }));
-
+        console.log("before bulk", operations.length, JSON.stringify(operations[0]), JSON.stringify(operations[1000]));
         await this.collection.bulkWrite(operations);
+        console.log("after bulk");
+        return;
     }
 
     public async updatePostalCodesBySirens(dbos: AssociationSearchPostalCodes[]): Promise<void> {

@@ -6,7 +6,9 @@ export default class SireneUniteLegaleMapper {
     static toEntity(raw: SireneUniteLegaleDbo): SireneUniteLegaleEntity {
         return {
             ...raw,
-            identifiantAssociationUniteLegale: new Rna(raw.identifiantAssociationUniteLegale),
+            identifiantAssociationUniteLegale: raw.identifiantAssociationUniteLegale
+                ? new Rna(raw.identifiantAssociationUniteLegale)
+                : null,
             siren: new Siren(raw.siren),
         };
     }

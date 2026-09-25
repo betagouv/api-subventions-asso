@@ -1,39 +1,35 @@
 import { pipeline } from "stream/promises";
-import rnaParser, { RnaParser } from "./rna.parser";
 import rnaMapper, { RnaMapper } from "./rna.mapper";
 import rnaAdapter from "../../../../outputs/db/rna/rna.adapter";
 import { Readable, Transform, Writable } from "stream";
 import { RnaWaldecDto } from "./rna.dto";
 import RnaDbo from "../../../../outputs/db/rna/rna.dbo";
-import { ImportReport } from "../../../../../@types/ImportReport";
 import { RnaPort } from "../../../../outputs/db/rna/rna.port";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import dataLogAdapter from "../../../../outputs/db/data-log/data-log.adapter";
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
+import { ImportPipeline } from "../ImportPipeline";
+import { ParquetParser } from "../../../parquet.parser";
 
-export class RnaPipeline {
+export class RnaPipeline extends ImportPipeline {
     constructor(
-        public parser: RnaParser,
+        public parser: ParquetParser<RnaWaldecDto>,
         public mapper: RnaMapper,
         public rnaPort: RnaPort,
         public searchPort: AssociationSearchPort,
         public logPort: DataLogPort,
-    ) {}
+    ) {
+        super();
+    }
 
     async run(filePath: string) {
-        const report: ImportReport = {
-            parsedCount: 0,
-            importedCount: 0,
-            errorCount: 0, // no validation or format error here
-        };
-
         const stages: (Readable | Transform | Writable)[] = [Readable.from(this.parser.parse(filePath))];
 
         const lastImportDate = await this.logPort.getLastImportByProvider("rna");
 
         if (lastImportDate) {
-            console.log(`updating RNA Waldec since ${lastImportDate}`);
+            console.log(`Updating RNA Waldec since ${lastImportDate}`);
             stages.push(
                 new Transform({
                     objectMode: true,
@@ -49,13 +45,13 @@ export class RnaPipeline {
                     },
                 }),
             );
-        } else console.log("starting first RNA waldec importation");
+        } else console.log("Starting first RNA waldec importation");
 
         stages.push(
             new Transform({
                 objectMode: true,
                 transform: (batch: RnaWaldecDto[], _enc, callback) => {
-                    report.parsedCount += batch.length;
+                    this.report.parsedCount += batch.length;
                     try {
                         const dbos = batch.map(row => this.mapper.toDbo(row));
                         callback(null, dbos);
@@ -79,12 +75,11 @@ export class RnaPipeline {
                                         ),
                                     ),
                             );
-
-                            console.log("Persist new ");
+                            console.log("Update rna collection...");
                             if (lastImportDate) await this.rnaPort.upsertMany(dbos);
                             else await this.rnaPort.insertMany(dbos);
-                            report.importedCount += dbos.length;
-                            console.log(`inserted ${dbos.length} new Rna documents`);
+                            this.report.importedCount += dbos.length;
+                            console.log(`Upserted ${dbos.length} new Rna documents`);
                         }
                         callback();
                     } catch (err) {
@@ -95,10 +90,15 @@ export class RnaPipeline {
         );
 
         await pipeline(stages);
-
-        return report;
+        return this.report;
     }
 }
 
-const rnaPipeline = new RnaPipeline(rnaParser, rnaMapper, rnaAdapter, associationSearchAdapter, dataLogAdapter);
+const rnaPipeline = new RnaPipeline(
+    new ParquetParser<RnaWaldecDto>(),
+    rnaMapper,
+    rnaAdapter,
+    associationSearchAdapter,
+    dataLogAdapter,
+);
 export default rnaPipeline;

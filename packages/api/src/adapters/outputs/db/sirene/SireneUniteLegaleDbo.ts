@@ -1,10 +1,14 @@
-import { OptionalId } from "mongodb";
-import { SireneUniteLegaleEntity } from "../../../../entities/SireneUniteLegaleEntity";
+import SireneUniteLegaleDto from "../../../inputs/pipeline/import/sirene-unite-legale/SireneUniteLegaleDto";
 
 export type SireneUniteLegaleDbo = Omit<
-    OptionalId<SireneUniteLegaleEntity>,
-    "siren" | "identifiantAssociationUniteLegale"
+    SireneUniteLegaleDto,
+    | "categorieJuridiqueUniteLegale"
+    | "anneeEffectifsUniteLegale"
+    | "nombrePeriodesUniteLegale"
+    | "anneeCategorieEntreprise"
 > & {
-    siren: string;
-    identifiantAssociationUniteLegale: string;
+    categorieJuridiqueUniteLegale: string;
+    anneeEffectifsUniteLegale: number;
+    nombrePeriodesUniteLegale: number;
+    anneeCategorieEntreprise: number;
 };
