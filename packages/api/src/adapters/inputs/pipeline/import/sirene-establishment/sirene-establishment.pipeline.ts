@@ -2,66 +2,101 @@ import { ImportReport } from "../../../../../@types/ImportReport";
 import sireneEstablishmentAdapter from "../../../../outputs/db/sirene/sirene-establishment.adapter";
 import { SireneEstablishmentPort } from "../../../../outputs/db/sirene/sirene-establishment.port";
 import SireneEstablishmentDto from "./sirene-establishment.dto";
-import SireneEstablishmentParser from "./sirene-establishment.parser";
 import dataLogAdapter from "../../../../outputs/db/data-log/data-log.adapter";
-import sireneUniteLegaleAdapter from "../../../../outputs/db/sirene/sirene-unite-legale.adapter";
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
 import AssociationSearchDbo from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import { SireneEstablishmentMapper } from "./sirene-establishment.mapper";
-import { SireneUniteLegalePort } from "../../../../outputs/db/sirene/sirene-unite-legale.port";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
+import { ImportPipeline } from "../ImportPipeline";
+import { addMonths } from "../../../../../shared/helpers/DateHelper";
+import { ParquetParser } from "../../../parquet.parser";
+import { Readable, Transform, Writable } from "stream";
+import { pipeline } from "stream/promises";
+import { SireneUniteLegalePort } from "../../../../outputs/db/sirene/sirene-unite-legale.port";
+import sireneUniteLegaleAdapter from "../../../../outputs/db/sirene/sirene-unite-legale.adapter";
 
 const SIRENE_ESTABLISHMENT_PROVIDER_ID = "sirene-establishment";
 
-export class SireneEstablishmentPipeline {
+export class SireneEstablishmentPipeline extends ImportPipeline {
     constructor(
-        private parser: SireneEstablishmentParser,
+        private parser: ParquetParser<SireneEstablishmentDto>,
         private establishmentPort: SireneEstablishmentPort,
         private uniteLegalePort: SireneUniteLegalePort,
         private searchPort: AssociationSearchPort,
         private logAdapter: DataLogPort,
-    ) {}
+    ) {
+        super();
+    }
 
     public async run(filePath: string): Promise<ImportReport> {
-        const report: ImportReport = {
-            parsedCount: 0,
-            importedCount: 0,
-            errorCount: 0,
-        };
+        // import should occur each month, we secure by taking one more month to be sure to take all new data
+        const lastEditionDate = addMonths(
+            await this.logAdapter.getLastEditionDateByProvider(SIRENE_ESTABLISHMENT_PROVIDER_ID),
+            -1,
+        );
 
-        const lastEditionDate = await this.logAdapter.getLastEditionDateByProvider(SIRENE_ESTABLISHMENT_PROVIDER_ID);
+        const stages: (Readable | Transform | Writable)[] = [Readable.from(this.parser.parse(filePath))];
+
+        if (lastEditionDate) {
+            console.log(`Updating Sirene Stock Etablissement since ${lastEditionDate}`);
+            stages.push(
+                new Transform({
+                    objectMode: true,
+                    transform: (batch: SireneEstablishmentDto[], _enc, callback) => {
+                        try {
+                            callback(
+                                null,
+                                batch.filter(dto => new Date(dto.dateDernierTraitementEtablissement) > lastEditionDate),
+                            );
+                        } catch (err) {
+                            callback(err as Error);
+                        }
+                    },
+                }),
+            );
+        } else console.log("Starting first Sirene Stock Etablissement importation");
 
         let partialAssociationSearchMap: Map<
             string,
             Pick<AssociationSearchDbo, "siren"> & Partial<Pick<AssociationSearchDbo, "address">>
         > = new Map();
 
-        await this.parser.parse(filePath, async batch => {
-            report.parsedCount += batch.length;
+        stages.push(
+            new Writable({
+                objectMode: true,
+                write: async (batch: SireneEstablishmentDto[], _enc, callback) => {
+                    try {
+                        this.report.parsedCount += batch.length;
 
-            // build partials association-search to be updated
-            partialAssociationSearchMap = new Map([
-                // build object from each siren
-                ...new Map(this.extractSirens(batch).map(siren => [siren, { siren }])),
-                // merge with previous objects
-                // order matters or previous assocationSearch with address could be erased
-                ...partialAssociationSearchMap,
-                // merge addresses to update
-                ...this.getAddressesToUpdate(batch),
-            ]);
+                        // build partials association-search to be updated
+                        partialAssociationSearchMap = new Map([
+                            // build object from each siren
+                            ...new Map(this.extractSirens(batch).map(siren => [siren, { siren }])),
+                            // merge with previous objects
+                            // order matters or previous assocationSearch with address could be erased
+                            ...partialAssociationSearchMap,
+                            // merge addresses to update
+                            ...this.getAddressesToUpdate(batch),
+                        ]);
 
-            const updatedDtos = this.filterUpdatedEstablishments(batch, lastEditionDate);
-            const associationDtos = await this.filterAssociationEstablishments(updatedDtos);
+                        const associationDtos = await this.filterAssociationEstablishments(batch);
 
-            const importedCount = await this.establishmentPort.upsertMany(associationDtos);
+                        this.report.importedCount += await this.establishmentPort.upsertMany(associationDtos);
 
-            report.importedCount += importedCount;
-        });
+                        callback();
+                    } catch (err) {
+                        callback(err as Error);
+                    }
+                },
+            }),
+        );
+
+        await pipeline(stages);
 
         await this.updateAssociationSearch(partialAssociationSearchMap);
 
-        return report;
+        return this.report;
     }
 
     private async updateAssociationSearch(
@@ -106,26 +141,18 @@ export class SireneEstablishmentPipeline {
         return updates;
     }
 
-    private async filterAssociationEstablishments(batch: SireneEstablishmentDto[]): Promise<SireneEstablishmentDto[]> {
-        const existingSirens = new Set(await this.uniteLegalePort.filterExistingSirens(this.extractSirens(batch)));
-        return batch.filter(dto => existingSirens.has(dto.siren));
-    }
-
     private extractSirens(batch: SireneEstablishmentDto[]): string[] {
         return [...new Set(batch.map(dto => dto.siren))];
     }
 
-    private filterUpdatedEstablishments(
-        batch: SireneEstablishmentDto[],
-        lastEditionDate: Date | null,
-    ): SireneEstablishmentDto[] {
-        if (!lastEditionDate) return batch;
-        return batch.filter(dto => dto.dateDernierTraitementEtablissement > lastEditionDate);
+    private async filterAssociationEstablishments(batch: SireneEstablishmentDto[]): Promise<SireneEstablishmentDto[]> {
+        const existingSirens = new Set(await this.uniteLegalePort.filterExistingSirens(this.extractSirens(batch)));
+        return batch.filter(dto => existingSirens.has(dto.siren));
     }
 }
 
 const sireneEstablishmentPipeline = new SireneEstablishmentPipeline(
-    new SireneEstablishmentParser(),
+    new ParquetParser<SireneEstablishmentDto>(),
     sireneEstablishmentAdapter,
     sireneUniteLegaleAdapter,
     associationSearchAdapter,

@@ -3,10 +3,10 @@ import { AssociationSearchAdapter } from "../../../../outputs/db/association-sea
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { RnaAdapter } from "../../../../outputs/db/rna/rna.adapter";
 import { RNA_DBO } from "../../../../outputs/db/rna/rna.dbo.fixture";
+import { ParquetParser } from "../../../parquet.parser";
 import { RnaWaldecDto } from "./rna.dto";
 import { RNA_WALDEC_DTO } from "./rna.dto.fixture";
 import { RnaMapper } from "./rna.mapper";
-import { RnaParser } from "./rna.parser";
 import { RnaPipeline } from "./rna.pipeline";
 
 function* fakeParse(batches: RnaWaldecDto[][]) {
@@ -27,7 +27,7 @@ describe("RNA pipeline", () => {
 
     const parser = {
         parse: jest.fn().mockImplementation(() => fakeParse(BATCHES)),
-    } as unknown as RnaParser;
+    } as unknown as ParquetParser<RnaWaldecDto>;
 
     const mapper = {
         toDbo: jest.fn().mockImplementation(_dto => RNA_DBO),

@@ -1,15 +1,16 @@
 import { ASSOCIATION_SEARCH_ENTITIES } from "../../../../../domain/__fixtures__/association-search.fixture";
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
+import { SireneEstablishmentDbo } from "../../../../outputs/db/sirene/sirene-establishment.dbo";
 import { SireneEstablishmentPort } from "../../../../outputs/db/sirene/sirene-establishment.port";
 import { SireneUniteLegalePort } from "../../../../outputs/db/sirene/sirene-unite-legale.port";
+import { ParquetParser } from "../../../parquet.parser";
 import { SIRENE_ESTABLISHMENT_DTO } from "./sirene-establishment.fixture";
 import { SireneEstablishmentMapper } from "./sirene-establishment.mapper";
-import SireneEstablishmentParser from "./sirene-establishment.parser";
 import { SireneEstablishmentPipeline } from "./sirene-establishment.pipeline";
 
 describe("SireneEstablishmentPipeline", () => {
-    const parser = { parse: jest.fn() } as unknown as jest.Mocked<SireneEstablishmentParser>;
+    const parser = { parse: jest.fn() } as unknown as jest.Mocked<ParquetParser<SireneEstablishmentDbo>>;
     const establishmentPort = {
         upsertMany: jest.fn(),
         getComputedFields: jest.fn().mockResolvedValue([]),
