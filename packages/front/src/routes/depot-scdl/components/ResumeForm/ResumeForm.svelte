@@ -1,7 +1,7 @@
 <script lang="ts">
     import ResumeFormController from "./ResumeForm.controller";
 
-    let { onresume = () => {}, onrestart = () => {} } = $props();
+    let { resume = () => {}, restart = () => {} } = $props();
 
     const ctrl = new ResumeFormController();
     const { fileInfos, currentView, subTitle, descState, allocatorSiret, formattedDate, filename } = ctrl;
@@ -9,7 +9,7 @@
     async function handleRestartDeposit() {
         const success = await ctrl.handleRestartDeposit();
         if (success) {
-            onrestart();
+            restart();
         }
     }
 </script>
@@ -68,7 +68,7 @@
     {/if}
 
     <div>
-        <button onclick={onresume} class="fr-btn fr-mr-3v" type="button">Reprendre mon dépôt</button>
+        <button onclick={resume} class="fr-btn fr-mr-3v" type="button">Reprendre mon dépôt</button>
 
         <button onclick={handleRestartDeposit} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
             Commencer un nouveau dépôt

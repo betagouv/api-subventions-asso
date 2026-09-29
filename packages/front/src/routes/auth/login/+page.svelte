@@ -17,11 +17,16 @@
         "Data.subvention étant réservé aux agents publics, il est nécessaire d'être doté d'une adresse e-mail professionnelle du service public ou d'utiliser le service ProConnect.";
 
     const controller = $state(new LoginController(query));
-
+    let email = $state(controller.email);
+    let password = $state(controller.password);
     const { error, showSuccessMessage, successMessage } = controller;
     onMount(() => controller.onMount(alertElement));
     $effect(() => {
         controller.formElt = form;
+    });
+    $effect(() => {
+        controller.email = email;
+        controller.password = password;
     });
 </script>
 
@@ -75,13 +80,13 @@
                     type="email"
                     label="Email"
                     autocomplete="email"
-                    bind:value={controller.email}
+                    bind:value={email}
                     required={true} />
             </div>
             <div class="fr-fieldset__element fr-mt-2v">
                 <PasswordInput
                     label="Mot de passe"
-                    bind:value={controller.password}
+                    bind:value={password}
                     forgetPasswordUrl={controller.forgetPasswordUrl} />
             </div>
 

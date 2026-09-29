@@ -33,7 +33,7 @@
                         <Input bind:value={$newDomain} label="Ajouter un nom de domaine" />
                     {/snippet}
                     {#snippet action()}
-                        <Button onclick={() => ctrl.addDomain()}>Ajouter</Button>
+                        <Button onclick={() => ctrl.addDomain()} trackerName="admin.users.domains.add">Ajouter</Button>
                     {/snippet}
                 </ActionGroup>
             </div>
@@ -50,7 +50,9 @@
                     </div>
                     <div class="fr-col fr-col-md-6">
                         <div class="fr-grid-row fr-grid-row--right">
-                            <Button onclick={() => ctrl.downloadUsersCsv()}>Télécharger la liste en CSV</Button>
+                            <Button onclick={() => ctrl.downloadUsersCsv()} trackerName="admin.users.download-csv">
+                                Télécharger la liste en CSV
+                            </Button>
                         </div>
                     </div>
                 </div>

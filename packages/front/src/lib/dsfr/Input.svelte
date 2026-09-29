@@ -37,14 +37,8 @@
         onchange = () => {},
     }: Props = $props();
 
-    let spellcheck = $state(true);
-
-    const descErrorElement = `${name}-desc-error`;
-
-    // DSFR best practices
-    if (["given-name", "family-name"].includes(name)) {
-        spellcheck = false;
-    }
+    const spellcheck = $derived(!["given-name", "family-name"].includes(name));
+    const descErrorElement = $derived(`${name}-desc-error`);
 
     /*
     svelte needs to know beforehand the input type to manage reactivity

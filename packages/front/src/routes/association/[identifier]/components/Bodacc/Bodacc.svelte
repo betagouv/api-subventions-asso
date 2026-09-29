@@ -6,10 +6,10 @@
     import type { BodaccRecord } from "dto";
 
     interface Props {
-        bodacc: BodaccRecord[];
+        bodacc?: BodaccRecord[];
     }
 
-    let { bodacc }: Props = $props();
+    let { bodacc = [] }: Props = $props();
     let element = $state<HTMLElement>();
 
     const ctrl = $derived(new BodaccController(bodacc));
@@ -26,7 +26,7 @@
         professionnel, modifications, radiations et dépôt des comptes.
     </Alert>
 
-    {#if announcements}
+    {#if announcements?.length}
         <div class="fr-mt-17v">
             {#each announcements as announcement, index (index)}
                 <Announcement {announcement} />

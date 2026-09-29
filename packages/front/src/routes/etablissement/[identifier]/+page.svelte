@@ -7,12 +7,14 @@
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import StructureTitle from "$lib/components/StructureTitle/StructureTitle.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
+    import type { PageProps } from "./$types";
 
-    let { data } = $props();
-    const { identifier: id } = data.params;
+    let { params }: PageProps = $props();
+    const id = $derived(params.identifier);
 
-    const controller = new EstablishmentController(id);
-    const { promises, titles } = controller;
+    const controller = $derived(new EstablishmentController(id));
+    const promises = $derived(controller.promises);
+    const titles = $derived(controller.titles);
 </script>
 
 {#await promises}

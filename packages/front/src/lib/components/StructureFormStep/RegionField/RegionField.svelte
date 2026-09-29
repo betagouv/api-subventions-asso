@@ -7,9 +7,10 @@
         value: string;
         label?: string;
         hint?: string;
+        onchange?: () => void;
     }
 
-    let { value = $bindable(), label = "Quelle est votre région ?", hint = "" }: Props = $props();
+    let { value = $bindable(), label = "Quelle est votre région ?", hint = "", onchange = () => {} }: Props = $props();
     let element = $state();
 
     const ctrl = new RegionFieldController();
@@ -19,5 +20,11 @@
 </script>
 
 <div class="container" bind:this={element}>
-    <AutocompleteSelect options={$regionOptions} bind:value {label} onchange placeholder="Ex : Occitanie" {hint} />
+    <AutocompleteSelect
+        options={$regionOptions}
+        bind:value
+        {label}
+        onchange={() => onchange()}
+        placeholder="Ex : Occitanie"
+        {hint} />
 </div>

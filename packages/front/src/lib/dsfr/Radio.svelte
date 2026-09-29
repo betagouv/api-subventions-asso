@@ -29,7 +29,7 @@
         onchange = () => {},
     }: Props = $props();
 
-    const descErrorElement = `${id}-desc-error`;
+    const descErrorElement = $derived(`${id}-desc-error`);
 </script>
 
 <fieldset class="fr-fieldset" {id} aria-labelledby="{id}-legend {id}-messages" class:fr-fieldset--error={errorMsgHtml}>

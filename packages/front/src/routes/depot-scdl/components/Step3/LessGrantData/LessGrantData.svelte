@@ -5,10 +5,10 @@
     import TableRow from "$lib/dsfr/TableRow.svelte";
     interface Props {
         children?: import("svelte").Snippet;
-        onprevStep?: () => void;
+        prevStep?: () => void;
     }
 
-    let { children, onprevStep = () => {} }: Props = $props();
+    let { children, prevStep = () => {} }: Props = $props();
 
     const headerLabels = ["Exercice", "Lignes actuellement en base", "Lignes traitées dans votre fichier"];
     const tableId = "grant-by-exercice-table";
@@ -99,9 +99,9 @@
     </p>
 
     <div class="fr-mt-4v">
-        <button onclick={onprevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
+        <button onclick={prevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
-        <button onclick={onprevStep} class="fr-btn fr-mr-3v" type="button">Réimporter mon fichier</button>
+        <button onclick={prevStep} class="fr-btn fr-mr-3v" type="button">Réimporter mon fichier</button>
     </div>
 </div>
 

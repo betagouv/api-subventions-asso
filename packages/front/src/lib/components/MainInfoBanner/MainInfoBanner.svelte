@@ -1,17 +1,23 @@
 <script lang="ts">
     import { MainInfoBannerController } from "./MainInfoBanner.controller";
     import InformationBanner from "$lib/dsfr/InformationBanner.svelte";
+    import type { Component } from "svelte";
 
     const ctrl = $state(new MainInfoBannerController());
     const { mainInfoBanner } = ctrl;
     const promise = ctrl.init();
+    let component: Component | undefined = $state();
+
+    $effect(() => {
+        ctrl.component = component;
+    });
 </script>
 
 <div class="custom-notice-container">
     {#await promise then}
         {#if $mainInfoBanner.title || $mainInfoBanner.desc}
             <InformationBanner
-                bind:this={ctrl.component}
+                bind:this={component}
                 onclose={() => ctrl.close()}
                 closeBtn={true}
                 title={$mainInfoBanner.title}

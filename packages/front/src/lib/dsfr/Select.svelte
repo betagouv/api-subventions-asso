@@ -25,7 +25,7 @@
         onchange = () => {},
     }: Props = $props();
 
-    const name = `select-${id}`;
+    const name = $derived(`select-${id}`);
 
     function onChange(e: Event) {
         onchange((e.target as HTMLSelectElement).selectedIndex - 1);

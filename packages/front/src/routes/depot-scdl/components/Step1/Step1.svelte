@@ -4,7 +4,7 @@
     import Input from "$lib/dsfr/Input.svelte";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
-    let { onnextStep = () => {}, onprevStep = () => {}, onresumeForm = () => {} } = $props();
+    let { nextStep = () => {}, prevStep = () => {}, resumeForm = () => {} } = $props();
 
     const ctrl = new Step1Controller();
     const { inputValue, hasError, isDisabled } = ctrl;
@@ -14,9 +14,9 @@
     async function handleValidate() {
         const result = await ctrl.handleValidate();
         if (result === "success") {
-            onnextStep();
+            nextStep();
         } else if (result === "resume") {
-            onresumeForm();
+            resumeForm();
         }
     }
 </script>
@@ -29,7 +29,6 @@
         bind:value={$inputValue}
         label="Indiquez le SIRET de l’attribuant :"
         hint="La collectivité ou l’organisme qui attribue les subventions dans ce fichier."
-        onchange
         onblur={() => ctrl.setTouch(true)}
         error={$hasError ? "true" : ""}
         errorMsg="Le SIRET doit contenir 14 chiffres" />
@@ -50,7 +49,7 @@
     </div>
 
     <div>
-        <button onclick={onprevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
+        <button onclick={prevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
         <button onclick={() => handleValidate()} disabled={$isDisabled} class="fr-btn fr-mr-3v" type="button">
             Valider

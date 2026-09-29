@@ -6,13 +6,18 @@
     import SearchBar from "$lib/components/SearchBar/SearchBar.svelte";
     import Pagination from "$lib/dsfr/Pagination.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
+    import type { PageProps } from "./$types";
 
-    let { data } = $props();
-    const { name } = data.params;
+    let { params }: PageProps = $props();
+    const name = $derived(params.name);
 
-    const ctrl = new SearchController(name);
-    const { searchPromise, associations, inputSearch, duplicatesFromIdentifier, currentPage, isLastSearchCompany } =
-        ctrl;
+    const ctrl = $derived(new SearchController(name));
+    const searchPromise = $derived(ctrl.searchPromise);
+    const associations = $derived(ctrl.associations);
+    const inputSearch = $derived(ctrl.inputSearch);
+    const duplicatesFromIdentifier = $derived(ctrl.duplicatesFromIdentifier);
+    const currentPage = $derived(ctrl.currentPage);
+    const isLastSearchCompany = $derived(ctrl.isLastSearchCompany);
 
     let nbResultLabel = $state();
 

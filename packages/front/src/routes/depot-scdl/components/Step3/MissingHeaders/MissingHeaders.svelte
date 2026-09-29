@@ -3,10 +3,10 @@
     import depositLogService from "$lib/resources/deposit-log/depositLog.service";
     import MissingHeadersController from "./MissingHeaders.controller";
 
-    let { onprevStep = () => {}, onrestartNewForm = () => {} } = $props();
+    let { prevStep = () => {}, restartNewForm = () => {} } = $props();
     const dispatch = (event: string) => {
-        if (event === "prevStep") onprevStep();
-        else if (event === "restartNewForm") onrestartNewForm();
+        if (event === "prevStep") prevStep();
+        else if (event === "restartNewForm") restartNewForm();
     };
     const { missingMandatoryHeaders, missingOptionalHeaders, allocatorSiret, allocatorName } =
         new MissingHeadersController();
@@ -45,7 +45,7 @@
     {/if}
 
     <div class="fr-mt-4v">
-        <button onclick={onprevStep} class="fr-btn fr-mr-3v" type="button">Réimporter mon fichier</button>
+        <button onclick={prevStep} class="fr-btn fr-mr-3v" type="button">Réimporter mon fichier</button>
 
         <button
             onclick={() => depositLogService.restartNewDeposit(dispatch)}

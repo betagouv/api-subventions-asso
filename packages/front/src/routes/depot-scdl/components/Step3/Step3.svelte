@@ -8,18 +8,18 @@
     import NeedHelpInfoBox from "../NeedHelpInfoBox.svelte";
 
     let {
-        onprevStep = () => {},
-        onnextStep = () => {},
-        onloading = (_message: string) => {},
-        onendLoading = () => {},
-        onrestartNewForm = () => {},
+        prevStep = () => {},
+        nextStep = () => {},
+        loading = (_message: string) => {},
+        endLoading = () => {},
+        restartNewForm = () => {},
     } = $props();
     const dispatch = (event: string, detail?: string) => {
-        if (event === "prevStep") onprevStep();
-        else if (event === "nextStep") onnextStep();
-        else if (event === "loading") onloading(detail ?? "");
-        else if (event === "endLoading") onendLoading();
-        else if (event === "restartNewForm") onrestartNewForm();
+        if (event === "prevStep") prevStep();
+        else if (event === "nextStep") nextStep();
+        else if (event === "loading") loading(detail ?? "");
+        else if (event === "endLoading") endLoading();
+        else if (event === "restartNewForm") restartNewForm();
     };
     const ctrl = new Step3Controller(dispatch);
     const { view } = ctrl;
@@ -28,19 +28,17 @@
 <div>
     <div class="fr-grid-row fr-grid-row--gutters">
         {#if $view === "missingHeaders"}
-            <MissingHeaders
-                onprevStep={() => ctrl.handlePrevStep()}
-                onrestartNewForm={() => ctrl.handleRestartNewForm()} />
+            <MissingHeaders prevStep={() => ctrl.handlePrevStep()} restartNewForm={() => ctrl.handleRestartNewForm()} />
         {:else if $view === "multipleAllocator"}
             <MultipleAllocators
-                onprevStep={() => ctrl.handlePrevStep()}
-                onrestartNewForm={() => ctrl.handleRestartNewForm()} />
+                prevStep={() => ctrl.handlePrevStep()}
+                restartNewForm={() => ctrl.handleRestartNewForm()} />
         {:else if $view === "lessGrantData"}
-            <LessGrantData onprevStep={() => ctrl.handlePrevStep()} />
+            <LessGrantData prevStep={() => ctrl.handlePrevStep()} />
         {:else if $view === "blockingErrors"}
-            <BlockingErrors onprevStep={() => ctrl.handlePrevStep()} />
+            <BlockingErrors prevStep={() => ctrl.handlePrevStep()} />
         {:else if $view === "confirmDataAdd"}
-            <ConfirmDataAdd onprevStep={() => ctrl.handlePrevStep()} onsubmitDatas={() => ctrl.submitDatas()} />
+            <ConfirmDataAdd prevStep={() => ctrl.handlePrevStep()} submitDatas={() => ctrl.submitDatas()} />
         {/if}
 
         <div class="fr-col-12 fr-col-md-4">

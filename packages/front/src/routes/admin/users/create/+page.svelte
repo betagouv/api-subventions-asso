@@ -22,7 +22,7 @@
 <div class="input-layout">
     <Input label="Email" bind:value={email} />
 </div>
-<Button onclick={createUser}>Envoyer</Button>
+<Button onclick={createUser} trackerName="admin.users.create.submit">Envoyer</Button>
 
 <style>
     .input-layout {

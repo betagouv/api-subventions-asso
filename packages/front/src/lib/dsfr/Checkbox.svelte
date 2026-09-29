@@ -16,7 +16,7 @@
     }
 
     let {
-        value = $bindable([]),
+        value = $bindable(),
         label = null,
         options = [],
         id = nanoid(7),
@@ -27,7 +27,9 @@
         onchange = () => {},
     }: Props = $props();
 
-    const descErrorElement = `${id}-desc-error`;
+    if (value === undefined) value = [];
+
+    const descErrorElement = $derived(`${id}-desc-error`);
 
     // if hints are necessary refer to radio component
 </script>

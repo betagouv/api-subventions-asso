@@ -4,7 +4,7 @@
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
     import InfoBox from "$lib/components/InfoBox.svelte";
 
-    let { onprevStep = () => {} } = $props();
+    let { prevStep = () => {} } = $props();
     const ctrl = new BlockingErrorsController();
 </script>
 
@@ -55,8 +55,8 @@
     <p>Ce fichier contient le détail des lignes concernées, les colonnes en erreur, et les corrections attendues.</p>
 
     <div class="fr-mt-4v">
-        <button onclick={onprevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
+        <button onclick={prevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
-        <button onclick={onprevStep} class="fr-btn fr-mr-3v" type="button">Réimporter mon fichier</button>
+        <button onclick={prevStep} class="fr-btn fr-mr-3v" type="button">Réimporter mon fichier</button>
     </div>
 </div>

@@ -6,12 +6,13 @@
     interface Props {
         document: DocumentEntity;
         value?: DocumentEntity | undefined;
+        onchange?: (value: DocumentEntity | undefined) => void;
     }
 
-    let { document, value = $bindable(undefined) }: Props = $props();
+    let { document, value = $bindable(undefined), onchange = () => {} }: Props = $props();
 
-    const controller = new DocumentCardController(document);
-    const { isSelected } = controller;
+    const controller = $derived(new DocumentCardController(document));
+    const isSelected = $derived(controller.isSelected);
     $effect(() => {
         $isSelected = value !== undefined;
     });
@@ -26,7 +27,10 @@
                 aria-describedby="description-document-{controller.checkBoxId}"
                 type="checkbox"
                 bind:checked={$isSelected}
-                onchange={() => (value = controller.newValueOnCheck())} />
+                onchange={() => {
+                    value = controller.newValueOnCheck();
+                    onchange(value);
+                }} />
             <label class="fr-label fr-sr-only" for="documents-to-download-{controller.checkBoxId}">
                 Sélectionner pour téléchargement groupé
             </label>

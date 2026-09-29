@@ -9,6 +9,8 @@
         error?: boolean;
         errorMsg?: string | null;
         forgetPasswordUrl?: string;
+        oninput?: (event: Event) => void;
+        onchange?: (event: Event) => void;
     }
 
     let {
@@ -19,9 +21,11 @@
         error = false,
         errorMsg = null,
         forgetPasswordUrl = undefined,
+        oninput = () => {},
+        onchange = () => {},
     }: Props = $props();
 
-    const descErrorElement = `${name}-desc-error`;
+    const descErrorElement = $derived(`${name}-desc-error`);
 
     // define validation class
     let inputClasses = $derived(`fr-password__input fr-input ${error ? "fr-input--error" : ""}`);
@@ -41,6 +45,8 @@
             aria-invalid={error ? "true" : undefined}
             aria-errormessage={errorMsg ? descErrorElement : undefined}
             data-fr-error={error ? "en erreur" : undefined}
+            {oninput}
+            {onchange}
             required />
         {#if error && errorMsg}
             <p id={descErrorElement} class="fr-error-text">{errorMsg}</p>

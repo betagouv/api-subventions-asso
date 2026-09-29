@@ -11,13 +11,19 @@
         onvalid = () => {},
     } = $props();
 
-    const ctrl = new AgentTypeStepController(context, event => (event === "error" ? onerror() : onvalid()));
-    const { errorMessage } = ctrl;
+    const ctrl = $derived(new AgentTypeStepController(context, event => (event === "error" ? onerror() : onvalid())));
+    const errorMessage = $derived(ctrl.errorMessage);
+    let agentType = $derived(values.agentType);
+
+    function updateAgentType(detail: Parameters<typeof ctrl.onUpdate>[0]) {
+        values.agentType = agentType;
+        ctrl.onUpdate(detail);
+    }
 </script>
 
 <Radio
     options={ctrl.options}
     label="Vous êtes :"
-    bind:value={values.agentType}
-    onchange={detail => ctrl.onUpdate(detail)}
+    bind:value={agentType}
+    onchange={detail => updateAgentType(detail)}
     errorMsgHtml={$errorMessage} />

@@ -31,6 +31,7 @@
                 <h2 class="fr-h5">Vos informations de profil</h2>
                 <button
                     type="button"
+                    aria-label="Ouvrir la modale de sortie sans enregistrement"
                     data-fr-opened="false"
                     hidden
                     aria-controls="fr-modal"
@@ -82,7 +83,7 @@
                     onchange={() => controller.onChange()}
                     onvalid={() => controller.updateValidation(true)}
                     onerror={() => controller.updateValidation(false)} />
-                <Button trakerName="profile.save" disabled={$isSubmitBlocked} htmlType="submit">
+                <Button trackerName="profile.save" disabled={$isSubmitBlocked} htmlType="submit">
                     Enregistrer les modifications
                 </Button>
             </form>

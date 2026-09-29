@@ -10,9 +10,18 @@
     interface Props {
         user: SignupUser;
         readOnly?: boolean;
+        onchange?: () => void;
     }
 
-    let { user = $bindable(), readOnly = false }: Props = $props();
+    let { user = $bindable(), readOnly = false, onchange = () => {} }: Props = $props();
+    let firstName = $state(user.firstName);
+    let lastName = $state(user.lastName);
+
+    function updateUser() {
+        user.firstName = firstName;
+        user.lastName = lastName;
+        onchange();
+    }
 </script>
 
 <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
@@ -20,9 +29,9 @@
         label="Prénom :"
         autocomplete="given-name"
         id="signup-given-name"
-        bind:value={user.firstName}
+        bind:value={firstName}
         disabled={readOnly ? "true" : undefined}
-        onchange
+        onchange={() => updateUser()}
         required={true} />
 </div>
 <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
@@ -30,10 +39,10 @@
         label="NOM :"
         autocomplete="family-name"
         id="signup-family-name"
-        bind:value={user.lastName}
+        bind:value={lastName}
         disabled={readOnly ? "true" : undefined}
         required={true}
-        onchange />
+        onchange={() => updateUser()} />
 </div>
 <div class="fr-fieldset__element fr-mt-4v">
     <Input
@@ -42,6 +51,6 @@
         hint="A ce jour, l’adresse e-mail n’est pas modifiable."
         value={user.email}
         required={true}
-        onchange
+        onchange={() => onchange()}
         disabled={true} />
 </div>

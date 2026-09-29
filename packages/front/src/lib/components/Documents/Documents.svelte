@@ -20,17 +20,19 @@
 
     let { resource, resourceType = "association" }: Props = $props();
 
-    const controller = $state(new DocumentsController(resourceType, resource, $currentIdentifiers));
-    const documentsPromise = controller.documentsPromise;
-    const zipPromise = controller.zipPromise;
-    const { selectedDocsOrNull } = controller;
+    const controller = $derived(new DocumentsController(resourceType, resource, $currentIdentifiers));
+    const documentsPromise = $derived(controller.documentsPromise);
+    const zipPromise = $derived(controller.zipPromise);
+    const selectedDocsOrNull = $derived(controller.selectedDocsOrNull);
+    let element: HTMLElement = $state()!;
 
     onMount(() => {
+        controller.element = element;
         controller.onMount();
     });
 </script>
 
-<div bind:this={controller.element}>
+<div bind:this={element}>
     <h2 class="fr-sr-only">Pièces administratives pour {controller.resourceNameWithDemonstrative}</h2>
     {#await $documentsPromise}
         <Spinner description="Chargement des pièces administratives en cours ..." />

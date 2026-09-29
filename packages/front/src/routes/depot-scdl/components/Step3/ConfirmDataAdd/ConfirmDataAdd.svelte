@@ -6,11 +6,11 @@
     import TableRow from "$lib/dsfr/TableRow.svelte";
     interface Props {
         children?: import("svelte").Snippet;
-        onprevStep?: () => void;
-        onsubmitDatas?: () => void;
+        prevStep?: () => void;
+        submitDatas?: () => void;
     }
 
-    let { children, onprevStep = () => {}, onsubmitDatas = () => {} }: Props = $props();
+    let { children, prevStep = () => {}, submitDatas = () => {} }: Props = $props();
 
     const headerLabels = ["Exercice", "Lignes actuellement en base", "Lignes traitées dans votre fichier"];
     const tableId = "grant-by-exercice-table";
@@ -135,10 +135,10 @@
     </div>
 
     <div class="fr-mt-4v">
-        <button onclick={onprevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
+        <button onclick={prevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
         <button
-            onclick={onsubmitDatas}
+            onclick={submitDatas}
             class="fr-btn fr-mr-3v"
             type="button"
             disabled={!selectedValues.includes(checkboxOptions[0].value)}>

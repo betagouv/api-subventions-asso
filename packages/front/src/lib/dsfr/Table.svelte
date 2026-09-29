@@ -15,7 +15,8 @@
         // remove outer border
         customLight?: boolean;
         titleClass?: string;
-        headers?: import("svelte").Snippet;
+        headers?: import("svelte").Snippet | string[];
+        headersSize?: string[];
         children?: import("svelte").Snippet;
     }
 
@@ -32,15 +33,19 @@
         customLight = false,
         titleClass = "",
         headers,
+        headersSize = [],
         children,
     }: Props = $props();
 
-    let tableClasses: string[] = ["fr-table", `fr-table--${size}`];
-    if (!scrollable) tableClasses.push("fr-table--no-scroll");
-    if (bordered) tableClasses.push("fr-table--bordered");
+    const tableClasses = $derived.by(() => {
+        const classes = ["fr-table", `fr-table--${size}`];
+        if (!scrollable) classes.push("fr-table--no-scroll");
+        if (bordered) classes.push("fr-table--bordered");
+        return classes.join(" ");
+    });
 </script>
 
-<div class={tableClasses.join(" ")} id="table-component-{id}" class:custom-table={custom}>
+<div class={tableClasses} id="table-component-{id}" class:custom-table={custom}>
     <div class="fr-table__wrapper">
         <div class="fr-table__container">
             <div class="fr-table__content">
@@ -48,7 +53,15 @@
                     <caption class:fr-sr-only={hideTitle} class={titleClass} aria-hidden={hideTitle}>{title}</caption>
                     <thead>
                         <tr>
-                            {@render headers?.()}
+                            {#if typeof headers === "function"}
+                                {@render headers()}
+                            {:else if Array.isArray(headers)}
+                                {#each headers as header, index (header)}
+                                    <th class={headersSize[index] ? `fr-cell--${headersSize[index]}` : ""}>
+                                        {header}
+                                    </th>
+                                {/each}
+                            {/if}
                         </tr>
                     </thead>
                     <tbody>

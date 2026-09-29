@@ -30,11 +30,41 @@
     });
 
     const { errors, subStep } = ctrl;
+    let service = $derived(values.service);
+    let jobType = $derived(values.jobType);
+    let phoneNumber = $derived(values.phoneNumber);
+    let registrationSrc = $derived(values.registrationSrc);
+    let registrationSrcEmail = $derived(values.registrationSrcEmail);
+    let registrationSrcDetails = $derived(values.registrationSrcDetails);
+
+    function syncValues() {
+        values.service = service;
+        values.jobType = jobType;
+        values.phoneNumber = phoneNumber;
+        values.registrationSrc = registrationSrc;
+        values.registrationSrcEmail = registrationSrcEmail;
+        values.registrationSrcDetails = registrationSrcDetails;
+    }
+
+    function notifyChange() {
+        syncValues();
+        onchange();
+    }
+
+    function updateField(field: string) {
+        syncValues();
+        ctrl.onUpdate(values, field);
+    }
+
+    function updateRegistrationSrc() {
+        syncValues();
+        ctrl.onUpdateRegistrationSrc(values);
+    }
 </script>
 
 {#if $subStep}
     {@const SvelteComponent = $subStep.component}
-    <SvelteComponent bind:values onchange />
+    <SvelteComponent bind:values onchange={() => onchange()} />
 {/if}
 
 <fieldset class="fr-fieldset">
@@ -43,19 +73,19 @@
             id="service-input"
             type="text"
             label="Quel est votre service ?"
-            bind:value={values.service}
+            bind:value={service}
             errorMsg={$errors.service}
             error={$errors.service}
-            onchange
-            onblur={() => ctrl.onUpdate(values, "service")} />
+            onchange={() => notifyChange()}
+            onblur={() => updateField("service")} />
     </div>
     <div class="fr-fieldset__element fr-mb-0 fr-mt-4v">
         <Checkbox
             options={ctrl.jobTypeOptions}
             label="Quel type de poste occupez-vous ?"
             errorMsg={$errors.jobType}
-            onchange={() => ctrl.onUpdate(values, "jobType")}
-            bind:value={values.jobType} />
+            onchange={() => updateField("jobType")}
+            bind:value={jobType} />
     </div>
     <div class="fr-fieldset__element">
         <Input
@@ -65,11 +95,11 @@
             hint="Cette information est demandée à des fins d'authentification. Vous pouvez renseigner un numéro fixe ou mobile."
             autocomplete="tel"
             placeholder="Ex : +33 1 00 00 00 00"
-            bind:value={values.phoneNumber}
+            bind:value={phoneNumber}
             errorMsg={$errors.phoneNumber}
             error={$errors.phoneNumber}
-            onchange
-            onblur={() => ctrl.onUpdate(values, "phoneNumber")} />
+            onchange={() => notifyChange()}
+            onblur={() => updateField("phoneNumber")} />
     </div>
 
     <div class="fr-fieldset__element fr-mb-0 fr-mt-4v">
@@ -77,33 +107,33 @@
             options={ctrl.registrationSrcOptions}
             label="Comment avez-vous connu Data.Subvention ?"
             errorMsg={$errors.registrationSrc}
-            onchange={() => ctrl.onUpdateRegistrationSrc(values)}
-            bind:value={values.registrationSrc} />
+            onchange={() => updateRegistrationSrc()}
+            bind:value={registrationSrc} />
     </div>
 
-    {#if ctrl.isRegistrationSrcEmailVisible(values.registrationSrc)}
+    {#if ctrl.isRegistrationSrcEmailVisible(registrationSrc)}
         <div class="fr-fieldset__element">
             <Input
                 id="registrationSrcEmail-input"
                 type="email"
                 label="Pouvez-vous nous indiquer son email ?"
                 autocomplete="email"
-                bind:value={values.registrationSrcEmail}
+                bind:value={registrationSrcEmail}
                 errorMsg={$errors.registrationSrcEmail}
                 error={$errors.registrationSrcEmail}
-                onchange
-                onblur={() => ctrl.onUpdate(values, "registrationSrcEmail")} />
+                onchange={() => notifyChange()}
+                onblur={() => updateField("registrationSrcEmail")} />
         </div>
     {/if}
-    {#if ctrl.isRegistrationSrcDetailsVisible(values.registrationSrc)}
+    {#if ctrl.isRegistrationSrcDetailsVisible(registrationSrc)}
         <div class="fr-fieldset__element">
             <Input
                 id="registrationSrcDetails-input"
                 type="text"
                 label="Précisez"
-                bind:value={values.registrationSrcDetails}
-                onchange
-                onblur={() => ctrl.onUpdate(values, "registrationSrcDetails")} />
+                bind:value={registrationSrcDetails}
+                onchange={() => notifyChange()}
+                onblur={() => updateField("registrationSrcDetails")} />
         </div>
     {/if}
 </fieldset>

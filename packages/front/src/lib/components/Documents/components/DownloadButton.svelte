@@ -12,8 +12,9 @@
 
     let { docsStore, ondownload = () => {}, onreset = () => {} }: Props = $props();
 
-    const ctrl = new DownloadButtonController(docsStore);
-    const { downloadBtnLabel, resetBtnDisabled } = ctrl;
+    const ctrl = $derived(new DownloadButtonController(docsStore));
+    const downloadBtnLabel = $derived(ctrl.downloadBtnLabel);
+    const resetBtnDisabled = $derived(ctrl.resetBtnDisabled);
 </script>
 
 <ul

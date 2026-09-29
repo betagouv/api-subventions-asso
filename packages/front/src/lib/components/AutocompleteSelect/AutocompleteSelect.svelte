@@ -31,7 +31,7 @@
     }
 
     let {
-        value = $bindable(""),
+        value = $bindable(),
         id = nanoid(7),
         name = id,
         options,
@@ -41,7 +41,9 @@
         onchange = () => {},
     }: Props = $props();
 
-    const listId = `list-${id}`;
+    if (value === undefined) value = "";
+
+    const listId = $derived(`list-${id}`);
     let inputElement: HTMLElement = $state(),
         buttonElement: HTMLElement = $state(),
         listElement: HTMLElement = $state();

@@ -6,14 +6,15 @@
 
     interface Props {
         excelSheets: string[];
-        onsheetSelected?: (sheet: string) => void;
-        onrestartUpload?: () => void;
+        sheetSelected?: (sheet: string) => void;
+        restartUpload?: () => void;
     }
 
-    let { excelSheets, onsheetSelected = () => {}, onrestartUpload = () => {} }: Props = $props();
+    let { excelSheets, sheetSelected = () => {}, restartUpload = () => {} }: Props = $props();
 
-    const ctrl = new SheetSelectorController(excelSheets);
-    const { selectedOption, radioObj } = ctrl;
+    const ctrl = $derived(new SheetSelectorController(excelSheets));
+    const selectedOption = $derived(ctrl.selectedOption);
+    const radioObj = $derived(ctrl.radioObj);
 </script>
 
 <div>
@@ -33,10 +34,10 @@
         </Callout>
 
         <div>
-            <button onclick={onrestartUpload} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
+            <button onclick={restartUpload} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
             <button
-                onclick={() => onsheetSelected($selectedOption)}
+                onclick={() => sheetSelected($selectedOption)}
                 disabled={$selectedOption === ""}
                 class="fr-btn fr-mr-3v"
                 type="button">

@@ -24,9 +24,9 @@
     <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--center">
             {#if $currentView === "welcome"}
-                <WelcomeForm onstart={() => ctrl.startNewForm()} />
+                <WelcomeForm start={() => ctrl.startNewForm()} />
             {:else if $currentView === "resume"}
-                <ResumeForm onresume={() => ctrl.resumeForm()} onrestart={() => ctrl.restartNewForm()} />
+                <ResumeForm resume={() => ctrl.resumeForm()} restart={() => ctrl.restartNewForm()} />
             {:else if $currentView === "form" && $currentStep}
                 {@const SvelteComponent = $currentStepComponent}
                 <div class="fr-col-12 fr-col-lg-10">
@@ -34,12 +34,15 @@
                         <StepIndicator currentStep={$currentStep} {stepsDesc}></StepIndicator>
                     </div>
                     <div class="form-container">
-                        <SvelteComponent
-                            onnextStep={() => ctrl.nextStep()}
-                            onprevStep={() => ctrl.prevStep()}
-                            onloading={message => ctrl.loading(message)}
-                            onendLoading={() => ctrl.endLoading()}
-                            onrestartNewForm={() => ctrl.restartNewForm()} />
+                        {#key $currentStep}
+                            <SvelteComponent
+                                nextStep={() => ctrl.nextStep()}
+                                prevStep={() => ctrl.prevStep()}
+                                resumeForm={() => ctrl.resumeForm()}
+                                loading={message => ctrl.loading(message)}
+                                endLoading={() => ctrl.endLoading()}
+                                restartNewForm={() => ctrl.restartNewForm()} />
+                        {/key}
 
                         {#if $isLoading}
                             <div class="loading-overlay">

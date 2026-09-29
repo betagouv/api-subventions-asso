@@ -17,7 +17,9 @@
 <div class="fr-modal__footer">
     <div
         class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
-        <Button type="primary" ariaControls="fr-modal">Non</Button>
-        <Button type="secondary" onclick={$action} ariaControls="fr-modal">Oui</Button>
+        <Button type="primary" ariaControls="fr-modal" trackerName="admin.users.remove.cancel">Non</Button>
+        <Button type="secondary" onclick={$action} ariaControls="fr-modal" trackerName="admin.users.remove.confirm">
+            Oui
+        </Button>
     </div>
 </div>

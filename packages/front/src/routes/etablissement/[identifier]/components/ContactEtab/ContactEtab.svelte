@@ -10,8 +10,13 @@
     let { contacts = [], siret } = $props();
 
     const tableId = "contact-etab";
-    const controller = $state(new ContactEtabController(contacts, siret));
-    const { contacts: _contacts } = controller;
+    const controller = $derived(new ContactEtabController(contacts, siret));
+    const contactsStore = $derived(controller.contacts);
+    let inputName = $state("");
+
+    $effect(() => {
+        controller.inputName = inputName;
+    });
 </script>
 
 <ActionGroup>
@@ -32,7 +37,7 @@
 {#if controller.hasContact}
     <div class="fr-grid-row fr-grid-row--gutters">
         <div class="fr-col-6">
-            <Input label="Rechercher un nom, un prénom" bind:value={controller.inputName} />
+            <Input label="Rechercher un nom, un prénom" bind:value={inputName} />
         </div>
         <div class="fr-col-6">
             <Select
@@ -49,7 +54,7 @@
                 headers={controller.headers}
                 headersSize={controller.headersSize}
                 scrollable={false}>
-                {#each $_contacts as contact, index (index)}
+                {#each $contactsStore as contact, index (index)}
                     <TableRow id={tableId} {index}>
                         <td>
                             {contact.civilite}

@@ -51,7 +51,9 @@
         htmlType = "button";
     }
 
-    if (!trackerName && !trackingDisable) console.error("Please add tracker name on button");
+    $effect(() => {
+        if (!trackerName && !trackingDisable) console.error("Please add tracker name on button");
+    });
 
     const classBySize = {
         small: "fr-btn--sm",
@@ -85,8 +87,10 @@
         else return classByType[type][1];
     }
 
-    const classes = `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${getIconClass(icon)}
-     ${getSpecificIconClass()} ${styleClass}`;
+    const classes = $derived(
+        `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${getIconClass(icon)}
+     ${getSpecificIconClass()} ${styleClass}`,
+    );
 
     function track() {
         if (!trackingDisable) trackerService.buttonClickEvent(trackerName, title);

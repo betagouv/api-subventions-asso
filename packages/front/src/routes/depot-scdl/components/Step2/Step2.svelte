@@ -9,16 +9,16 @@
     import OverwriteExercices from "./OverwriteExercices.svelte";
 
     let {
-        onprevStep = () => {},
-        onnextStep = () => {},
-        onloading = (_message: string) => {},
-        onendLoading = () => {},
+        prevStep = () => {},
+        nextStep = () => {},
+        loading = (_message: string) => {},
+        endLoading = () => {},
     } = $props();
     const dispatch = (event: string, detail?: string) => {
-        if (event === "prevStep") onprevStep();
-        else if (event === "nextStep") onnextStep();
-        else if (event === "loading") onloading(detail ?? "");
-        else if (event === "endLoading") onendLoading();
+        if (event === "prevStep") prevStep();
+        else if (event === "nextStep") nextStep();
+        else if (event === "loading") loading(detail ?? "");
+        else if (event === "endLoading") endLoading();
     };
     const ctrl = new Step2Controller(dispatch);
     const {
@@ -47,12 +47,12 @@
     {#if $view === "sheetSelector"}
         <SheetSelector
             excelSheets={$excelSheets}
-            onsheetSelected={sheet => ctrl.handleSheetSelected({ detail: sheet } as CustomEvent<string>)}
-            onrestartUpload={() => ctrl.handleRestartUpload()} />
+            sheetSelected={sheet => ctrl.handleSheetSelected({ detail: sheet } as CustomEvent<string>)}
+            restartUpload={() => ctrl.handleRestartUpload()} />
     {:else if $view === "overwriteExercices"}
         <OverwriteExercices
-            onvalidate={({ checkedExercises }) => ctrl.uploadFile(undefined, checkedExercises)}
-            ontoFileSelect={() => ctrl.goToFileSelection()} />
+            validate={({ checkedExercises }) => ctrl.uploadFile(undefined, checkedExercises)}
+            toFileSelect={() => ctrl.goToFileSelection()} />
     {:else}
         <div>
             <div class="fr-mb-6v">
@@ -115,12 +115,12 @@
                     error={$uploadError}
                     errorMessage={$uploadErrorMessage}
                     name="file"
-                    onfileChange={detail =>
+                    fileChange={detail =>
                         ctrl.handleFileChange({ detail } as CustomEvent<{ files: FileList | null }>)} />
             </div>
 
             <div>
-                <button onclick={onprevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
+                <button onclick={prevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
                 <button
                     onclick={() => ctrl.handleValidate()}

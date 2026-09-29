@@ -8,8 +8,8 @@
 
     let { duplicates }: Props = $props();
 
-    const ctrl = new DuplicateAlertController(duplicates);
-    const title = `Attention, plusieurs ${ctrl.duplicateType} seraient liés au ${ctrl.otherType}`;
+    const ctrl = $derived(new DuplicateAlertController(duplicates));
+    const title = $derived(`Attention, plusieurs ${ctrl.duplicateType} seraient liés au ${ctrl.otherType}`);
 </script>
 
 <Alert type="warning" {title}>

@@ -6,11 +6,11 @@
     import NeedHelpInfoBox from "../NeedHelpInfoBox.svelte";
     interface Props {
         children?: import("svelte").Snippet;
-        ontoFileSelect?: () => void;
-        onvalidate?: (detail: { checkedExercises: number[] }) => void;
+        toFileSelect?: () => void;
+        validate?: (detail: { checkedExercises: number[] }) => void;
     }
 
-    let { children, ontoFileSelect = () => {}, onvalidate = () => {} }: Props = $props();
+    let { children, toFileSelect = () => {}, validate = () => {} }: Props = $props();
 
     const headerLabels = ["Exercice", "Lignes actuellement en base", "Lignes traitées dans votre fichier"];
     const tableId = "grant-by-exercice-table";
@@ -111,10 +111,10 @@
         </div>
 
         <div class="fr-mt-4v">
-            <button onclick={ontoFileSelect} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
+            <button onclick={toFileSelect} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
             <button
-                onclick={() => onvalidate({ checkedExercises: [...$checkedExercices] })}
+                onclick={() => validate({ checkedExercises: [...$checkedExercices] })}
                 disabled={$checkedExercices.length === 0}
                 class="fr-btn fr-mr-3v"
                 type="button">

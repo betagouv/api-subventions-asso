@@ -3,7 +3,7 @@
     import { goToUrl } from "$lib/services/router.service";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
-    let { onrestartNewForm = () => {} } = $props();
+    let { restartNewForm = () => {} } = $props();
 </script>
 
 <div>
@@ -32,7 +32,7 @@
     <div style="text-align: center;">
         <button onclick={() => goToUrl("/")} class="fr-btn fr-btn fr-mr-3v" type="button">Voir sur le portail</button>
 
-        <button onclick={onrestartNewForm} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
+        <button onclick={restartNewForm} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
             Déposer un nouveau fichier
         </button>
     </div>

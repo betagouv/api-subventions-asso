@@ -5,13 +5,22 @@
     import DefinePassword from "$lib/components/DefinePassword/DefinePassword.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
-    let { data } = $props();
-    const { token } = data.params;
+    import type { PageProps } from "./$types";
 
-    const ctrl = new ResetPwdController(token);
+    let { params }: PageProps = $props();
+    const token = $derived(params.token);
 
-    ctrl.init();
-    const { promise, values, isSubmitActive, validationTokenStore, title } = ctrl;
+    const ctrl = $derived(new ResetPwdController(token));
+
+    $effect(() => {
+        ctrl.init();
+    });
+
+    const promise = $derived(ctrl.promise);
+    const values = $derived(ctrl.values);
+    const isSubmitActive = $derived(ctrl.isSubmitActive);
+    const validationTokenStore = $derived(ctrl.validationTokenStore);
+    const title = $derived(ctrl.title);
 </script>
 
 <div class="fr-mb-8w">

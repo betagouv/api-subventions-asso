@@ -3,15 +3,17 @@
     import PasswordErrorAlert from "$lib/components/DefinePassword/PasswordErrorAlert.svelte";
     import MultiStepForm from "$lib/components/MultiStepForm/MultiStepForm.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
+    import type { PageProps } from "./$types";
 
-    let { data } = $props();
+    let { params }: PageProps = $props();
+    const token = $derived(params.token);
 
-    const { token } = data.params;
+    const controller = $derived(new ActivateAccount(token));
+    const validationTokenStore = $derived(controller.validationTokenStore);
 
-    const controller = new ActivateAccount(token);
-    const { validationTokenStore } = controller;
-
-    controller.init();
+    $effect(() => {
+        controller.init();
+    });
 </script>
 
 {#if $validationTokenStore === "waiting"}

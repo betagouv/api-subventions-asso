@@ -11,7 +11,7 @@
         id?: string;
         name?: string;
         acceptedFormats?: FileFormat[];
-        onfileChange?: (detail: { files: FileList | null }) => void;
+        fileChange?: (detail: { files: FileList | null }) => void;
     }
 
     let {
@@ -24,7 +24,7 @@
         id = "upload",
         name = "upload",
         acceptedFormats = [],
-        onfileChange = () => {},
+        fileChange = () => {},
     }: Props = $props();
 
     let acceptValue = $derived(
@@ -34,7 +34,7 @@
     function handleFileChange(event: Event) {
         const target = event.target as HTMLInputElement;
         const files = target.files;
-        onfileChange({ files });
+        fileChange({ files });
     }
 </script>
 

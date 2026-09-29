@@ -2,7 +2,7 @@
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
 
-    let { onstart = () => {} } = $props();
+    let { start = () => {} } = $props();
 </script>
 
 <div class="fr-col-12 fr-col-lg-9">
@@ -35,6 +35,6 @@
     </Alert>
 
     <div class="text-center">
-        <button onclick={onstart} class="fr-btn" type="button">Débuter</button>
+        <button onclick={start} class="fr-btn" type="button">Débuter</button>
     </div>
 </div>

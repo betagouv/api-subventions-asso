@@ -9,10 +9,7 @@
 
     let { type = "success", label = "", color = undefined, small = false, noIcon = false }: Props = $props();
 
-    let otherClasses = $state("fr-badge ");
-
-    if (type) otherClasses += `fr-badge--${type} `;
-    if (color) otherClasses += `fr-badge--${color} `;
+    const otherClasses = $derived(`fr-badge ${type ? `fr-badge--${type} ` : ""}${color ? `fr-badge--${color} ` : ""}`);
 </script>
 
 <p class={otherClasses} class:fr-badge--sm={small} class:fr-badge--no-icon={noIcon}>
