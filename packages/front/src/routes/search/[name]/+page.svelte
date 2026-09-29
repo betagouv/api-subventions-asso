@@ -2,7 +2,7 @@
     import DuplicateAlert from "../../association/[identifier]/components/DuplicateAlert.svelte";
     import SearchController from "./Search.controller";
     import Spinner from "$lib/components/Spinner.svelte";
-    import AssociationCard from "$lib/components/AssociationCard/AssociationCard.svelte";
+    import AssociationItem from "$lib/components/AssociationItem/AssociationItem.svelte";
     import SearchBar from "$lib/components/SearchBar/SearchBar.svelte";
     import Pagination from "$lib/dsfr/Pagination.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
@@ -70,9 +70,9 @@
             {/if}
         </div>
 
-        <div class="fr-grid-row fr-grid-row--gutters search-layout">
+        <div class="fr-grid-row search-layout">
             {#each $associations.results as simplifiedAsso (simplifiedAsso.siren + "-" + simplifiedAsso.rna)}
-                <AssociationCard {simplifiedAsso} searchKey={$inputSearch} />
+                <AssociationItem {simplifiedAsso} searchKey={$inputSearch} />
             {/each}
         </div>
 
@@ -90,5 +90,6 @@
     .search-layout {
         display: flex;
         flex-wrap: wrap;
+        row-gap: 1rem;
     }
 </style>
