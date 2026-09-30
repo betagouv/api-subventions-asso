@@ -1,8 +1,8 @@
 import AssociationSearchDbo from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
-import SireneEstablishmentDto from "./sirene-establishment.dto";
+import { AssociationSearchFields } from "./sirene-establishment.dto";
 
 export class SireneEstablishmentMapper {
-    static toAssociationSearch(dto: SireneEstablishmentDto) {
+    static toAssociationSearch(dto: AssociationSearchFields) {
         return {
             siren: dto.siren,
             address: {

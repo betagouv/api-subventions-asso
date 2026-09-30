@@ -45,11 +45,9 @@ describe("SireneEstablishmentPipeline", () => {
         .mockReturnValue(ASSOCIATION_SEARCH);
 
     type PipelineWithPrivates = { [K in keyof SireneEstablishmentPipeline]: SireneEstablishmentPipeline[K] } & {
-        filterMostRecent: SireneEstablishmentPipeline["filterMostRecent"];
         filterMainEstab: SireneEstablishmentPipeline["filterMainEstab"];
         updateAssociationSearch: SireneEstablishmentPipeline["updateAssociationSearch"];
         filterAssociationEstablishments: SireneEstablishmentPipeline["filterAssociationEstablishments"];
-        getMostRecentDto: SireneEstablishmentPipeline["getMostRecentDto"];
     };
 
     const pipeline = new SireneEstablishmentPipeline(
@@ -61,30 +59,16 @@ describe("SireneEstablishmentPipeline", () => {
     ) as unknown as PipelineWithPrivates;
 
     describe("run", () => {
-        const PARTIAL_DBO = {
-            siren: SIRENE_ESTABLISHMENT_DTO.siren,
-            numeroVoieEtablissement: SIRENE_ESTABLISHMENT_DTO.numeroVoieEtablissement,
-            typeVoieEtablissement: SIRENE_ESTABLISHMENT_DTO.typeVoieEtablissement,
-            libelleVoieEtablissement: SIRENE_ESTABLISHMENT_DTO.libelleVoieEtablissement,
-            libelleCommuneEtablissement: SIRENE_ESTABLISHMENT_DTO.libelleCommuneEtablissement,
-            codePostalEtablissement: SIRENE_ESTABLISHMENT_DTO.codePostalEtablissement,
-            dateDernierTraitementEtablissement: SIRENE_ESTABLISHMENT_DTO.dateDernierTraitementEtablissement,
-        };
-
         const mockFilterMainEstab = jest.spyOn(pipeline as PipelineWithPrivates, "filterMainEstab");
 
         const mockUpdateAssociationSearch = jest.spyOn(pipeline, "updateAssociationSearch");
-
-        const mockFilterMostRecent = jest.spyOn(pipeline, "filterMostRecent");
 
         const mockFilterAssociationEstablishments = jest.spyOn(pipeline, "filterAssociationEstablishments");
 
         beforeEach(() => {
             // @ts-expect-error: mock implementation / bypass the filtering
             mockFilterAssociationEstablishments.mockImplementation(dtos => dtos);
-            // @ts-expect-error: mock implementation / bypass the filtering
-            mockFilterMostRecent.mockImplementation(dtos => dtos);
-            mockFilterMainEstab.mockReturnValue([PARTIAL_DBO]);
+            mockFilterMainEstab.mockReturnValue([SIRENE_ESTABLISHMENT_DTO]);
             mockUpdateAssociationSearch.mockResolvedValue();
             establishmentPort.upsertMany.mockResolvedValue(1);
             sireneUniteLegale.filterExistingSirens.mockResolvedValue([SIRENE_ESTABLISHMENT_DTO.siren]);
@@ -92,12 +76,9 @@ describe("SireneEstablishmentPipeline", () => {
         });
 
         afterAll(() => {
-            [
-                mockFilterMainEstab,
-                mockUpdateAssociationSearch,
-                mockFilterMostRecent,
-                mockFilterAssociationEstablishments,
-            ].forEach(mock => mock.mockRestore());
+            [mockFilterMainEstab, mockUpdateAssociationSearch, mockFilterAssociationEstablishments].forEach(mock =>
+                mock.mockRestore(),
+            );
         });
 
         it("filters establishments with existing association sirens", async () => {
@@ -118,15 +99,10 @@ describe("SireneEstablishmentPipeline", () => {
             expect(mockFilterMainEstab).toHaveBeenCalledWith([SIRENE_ESTABLISHMENT_DTO]);
         });
 
-        it("only keeps most recent dtos by siren", async () => {
-            await pipeline.run("file.parquet");
-            expect(mockFilterMostRecent).toHaveBeenCalledWith([SIRENE_ESTABLISHMENT_DTO]);
-        });
-
         it("transforms most recent dtos into association-search", async () => {
             await pipeline.run("file.parquet");
             // mockFilterMainEstab only return one PARTIAL_DBO so we replace each batch with only one PARTIAL_DBO
-            BATCHES.map(_batch => PARTIAL_DBO).forEach((partial, index) => {
+            BATCHES.map(_batch => SIRENE_ESTABLISHMENT_DTO).forEach((partial, index) => {
                 expect(spyToAssociationSearch).toHaveBeenNthCalledWith(index + 1, partial); // this is from mockFilterMainEstab
             });
         });
@@ -151,15 +127,7 @@ describe("SireneEstablishmentPipeline", () => {
         ];
 
         it("returns partial main establishment dto", async () => {
-            const expected = DTOS.filter(dto => dto.etablissementSiege).map(dto => ({
-                siren: dto.siren,
-                numeroVoieEtablissement: dto.numeroVoieEtablissement,
-                typeVoieEtablissement: dto.typeVoieEtablissement,
-                libelleVoieEtablissement: dto.libelleVoieEtablissement,
-                libelleCommuneEtablissement: dto.libelleCommuneEtablissement,
-                codePostalEtablissement: dto.codePostalEtablissement,
-                dateDernierTraitementEtablissement: dto.dateDernierTraitementEtablissement,
-            }));
+            const expected = DTOS.filter(dto => dto.etablissementSiege);
             const actual = await pipeline.filterMainEstab(DTOS);
             expect(actual).toEqual(expected);
         });
@@ -189,57 +157,6 @@ describe("SireneEstablishmentPipeline", () => {
                     postalCodes: POST_CODES,
                 },
             ]);
-        });
-    });
-
-    describe("filterMostRecent", () => {
-        const mockGetMostRecentDto = jest.spyOn(pipeline, "getMostRecentDto");
-
-        const OTHER_SIREN_DTO = { ...SIRENE_ESTABLISHMENT_DTO, siren: "200000000" };
-        const SAME_SIREN_DTOS: SireneEstablishmentDto[] = [
-            { ...SIRENE_ESTABLISHMENT_DTO },
-            { ...SIRENE_ESTABLISHMENT_DTO },
-        ];
-
-        beforeEach(() => {
-            // @ts-expect-error: mock implementation
-            mockGetMostRecentDto.mockImplementation((dtos: SireneEstablishmentDto[]) => {
-                if (dtos[0].siren === OTHER_SIREN_DTO.siren) return OTHER_SIREN_DTO;
-                else return SIRENE_ESTABLISHMENT_DTO;
-            });
-        });
-
-        afterAll(() => {
-            mockGetMostRecentDto.mockRestore();
-        });
-
-        it("filters most recent dto for each siren", () => {
-            const expected = [SIRENE_ESTABLISHMENT_DTO, OTHER_SIREN_DTO];
-
-            const actual = pipeline.filterMostRecent([...SAME_SIREN_DTOS, OTHER_SIREN_DTO]);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getMostRecentDto", () => {
-        const OLD_DTO = { ...SIRENE_ESTABLISHMENT_DTO };
-        const RECENT_DTO = {
-            ...OLD_DTO,
-            dateDernierTraitementEtablissement: addMonths(OLD_DTO.dateDernierTraitementEtablissement, 1),
-        };
-
-        it("returns most recent dto with ordered dtos", () => {
-            const expected = RECENT_DTO;
-
-            const actual = pipeline.getMostRecentDto([OLD_DTO, RECENT_DTO]);
-            expect(actual).toEqual(expected);
-        });
-
-        it("returns most recent dto with unordered dtos", () => {
-            const expected = RECENT_DTO;
-
-            const actual = pipeline.getMostRecentDto([RECENT_DTO, OLD_DTO]);
-            expect(actual).toEqual(expected);
         });
     });
 });

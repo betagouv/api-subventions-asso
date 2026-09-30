@@ -36,7 +36,7 @@ describe("Establishment CLI", () => {
             });
         });
 
-        it.only("notify results", async () => {
+        it("notify results", async () => {
             const EXPORT_DATE_STR = "2026-07-21";
             const spyNotify = jest.spyOn(notifyService, "notify");
 
@@ -51,9 +51,8 @@ describe("Establishment CLI", () => {
                 exportDate: new Date(EXPORT_DATE_STR),
                 details: {
                     fileName: "multiple-batch.sirene-establishment.parquet",
-                    parsedCount: 5001, // 5001 rows in the .parquet file
-                    // @TODO: to be more robust edit the multiple-batch file to include more siren ?
-                    importedCount: 2, // only two different siren (we only take the most recent by siren)
+                    parsedCount: 5001,
+                    importedCount: 5001,
                     errorCount: 0,
                     durationMs: expect.any(Number),
                     fileCount: 1,
