@@ -1,32 +1,59 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import { getIconClass } from "./helper";
     import trackerService from "$lib/services/tracker.service";
     import { HTML_BUTTON_TYPES, isValidButtonType } from "$lib/helpers/htmlHelper";
     import { uuid } from "$lib/helpers/stringHelper";
 
-    export let id = "btn-" + uuid();
-    export let trackerName = "";
-    export let trackingDisable = false;
-    export let type = "primary";
-    export let size = "medium";
-    export let outline = true;
-    export let disabled = false;
-    export let styleClass = "";
-    export let title = "";
-    export let icon = "";
-    export let iconPosition = "";
-    export let ariaControls = "";
-    export let htmlType: (typeof HTML_BUTTON_TYPES)[number] = "button";
+    type ButtonStyle = "primary" | "secondary" | "tertiary";
+    type ButtonSize = "small" | "medium" | "large";
+    type IconPosition = "right" | "left" | "";
+
+    interface Props {
+        id?: string;
+        trackerName?: string;
+        trackingDisable?: boolean;
+        type?: ButtonStyle;
+        size?: ButtonSize;
+        outline?: boolean;
+        disabled?: boolean;
+        styleClass?: string;
+        title?: string;
+        icon?: string;
+        iconPosition?: IconPosition;
+        ariaControls?: string;
+        htmlType?: (typeof HTML_BUTTON_TYPES)[number];
+        onclick?: () => void;
+        onsubmit?: () => void;
+        children?: import("svelte").Snippet;
+    }
+
+    let {
+        id = "btn-" + uuid(),
+        trackerName = "",
+        trackingDisable = false,
+        type = "primary",
+        size = "medium",
+        outline = true,
+        disabled = false,
+        styleClass = "",
+        title = "",
+        icon = "",
+        iconPosition = "",
+        ariaControls = "",
+        htmlType = $bindable("button"),
+        onclick = () => {},
+        onsubmit = () => {},
+        children,
+    }: Props = $props();
 
     if (!isValidButtonType(htmlType)) {
         console.warn(`${htmlType} is not a valid button type. Use default button type instead`);
         htmlType = "button";
     }
 
-    if (!trackerName && !trackingDisable) console.error("Please add tracker name on button");
-
-    const dispatch = createEventDispatcher<{ click: null; submit: null }>();
+    $effect(() => {
+        if (!trackerName && !trackingDisable) console.error("Please add tracker name on button");
+    });
 
     const classBySize = {
         small: "fr-btn--sm",
@@ -60,35 +87,37 @@
         else return classByType[type][1];
     }
 
-    const classes = `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${getIconClass(icon)}
-     ${getSpecificIconClass()} ${styleClass}`;
+    const classes = $derived(
+        `fr-btn ${getSpecificTypeClass()} ${getSpecificSizeClass()} ${getIconClass(icon)}
+     ${getSpecificIconClass()} ${styleClass}`,
+    );
 
     function track() {
         if (!trackingDisable) trackerService.buttonClickEvent(trackerName, title);
     }
 
     function onClick() {
-        dispatch("click");
+        onclick();
         track();
     }
 
     function onSubmit() {
-        dispatch("submit");
+        onsubmit();
         track();
     }
 </script>
 
 <button
     {id}
-    on:click={() => onClick()}
-    on:submit={() => onSubmit()}
+    onclick={() => onClick()}
+    onsubmit={() => onSubmit()}
     class={classes}
     {disabled}
     {title}
     aria-controls={ariaControls}
     data-fr-opened={ariaControls.length ? "false" : ""}
     type={htmlType}>
-    <slot />
+    {@render children?.()}
 </button>
 
 <style>

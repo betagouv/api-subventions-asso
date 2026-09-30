@@ -9,7 +9,6 @@ import {
 import { stringify } from "csv-stringify/browser/esm/sync";
 import { depositLogStore } from "$lib/store/depositLog.store";
 import errorService from "$lib/services/error.service";
-import type { EventDispatcher } from "svelte";
 
 export const FILE_VALIDATION_STATES = {
     MISSING_HEADERS: "missingHeaders",
@@ -23,6 +22,7 @@ export type FileValidationState = (typeof FILE_VALIDATION_STATES)[keyof typeof F
 type DepositEventMap = {
     restartNewForm: void;
 };
+type DepositDispatch = <K extends keyof DepositEventMap>(event: K, payload?: DepositEventMap[K]) => void;
 
 class DepositLogService {
     async getDepositLog() {
@@ -134,7 +134,7 @@ class DepositLogService {
         window.URL.revokeObjectURL(url);
     }
 
-    async restartNewDeposit(dispatch: EventDispatcher<DepositEventMap>) {
+    async restartNewDeposit(dispatch: DepositDispatch) {
         try {
             await this.deleteDepositLog();
             depositLogStore.set(null);

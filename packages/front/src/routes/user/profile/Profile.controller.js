@@ -10,6 +10,7 @@ export class ProfileController {
     agentTypeOptions = subscriptionFormService.agentTypeOptions;
 
     constructor() {
+        this.isLeaveConfirmed = false;
         this.deleteError = new Store(false);
         this.user = new Store({});
         this.saveStatus = new Store(""); // "changed", "saved" or "error"
@@ -20,17 +21,16 @@ export class ProfileController {
         );
 
         beforeNavigate(({ cancel, willUnload, to }) => {
-            if (this.saveStatus.value === "changed" && !this.confirmingLeave && !willUnload) {
+            if (this.saveStatus.value === "changed" && !this.isLeaveConfirmed && !willUnload) {
                 cancel();
                 this.modalCtrlButton.click();
                 modal.set(QuitNoSaveModal);
-                action.set(() => goto(to.url));
+                action.set(() => {
+                    this.isLeaveConfirmed = true;
+                    return goto(to.url);
+                });
             }
         });
-    }
-
-    get confirmingLeave() {
-        return this.modalCtrlButton.getAttribute("data-fr-opened") === "true";
     }
 
     onMount(saveAlertElement, modalCtrlButton) {

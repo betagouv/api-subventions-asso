@@ -1,6 +1,10 @@
-<script>
+<script lang="ts">
     import logo from "$lib/assets/images/logo-beta.png";
-    export let description = "";
+    interface Props {
+        description?: string;
+    }
+
+    let { description = "" }: Props = $props();
 </script>
 
 <div class="spinner-container">

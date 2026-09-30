@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import ContactEtab from "./ContactEtab/ContactEtab.svelte";
     import InfosBancairesEtab from "./InfosBancairesEtab/InfosBancairesEtab.svelte";
     import Tabs from "$lib/dsfr/Tabs.svelte";
@@ -6,14 +6,12 @@
     import Documents from "$lib/components/Documents/Documents.svelte";
     import GrantDashboard from "$lib/components/GrantDashboard/GrantDashboard.svelte";
 
-    export let establishment;
-    export let titles;
-    export let identifier;
+    let { establishment, titles, identifier } = $props();
 </script>
 
 <div class="tabs-etab">
     <Tabs {titles}>
-        <svelte:fragment slot="tab-content">
+        {#snippet tabContent()}
             {#each titles as _title, index (_title)}
                 <TabContent selected={index === 0} {index}>
                     {#if index === 0}
@@ -27,6 +25,6 @@
                     {/if}
                 </TabContent>
             {/each}
-        </svelte:fragment>
+        {/snippet}
     </Tabs>
 </div>

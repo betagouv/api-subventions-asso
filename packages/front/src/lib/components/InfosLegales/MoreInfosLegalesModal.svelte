@@ -5,6 +5,11 @@
 
     import Alert from "$lib/dsfr/Alert.svelte";
     import ModalContent from "$lib/dsfr/ModalContent.svelte";
+    interface Props {
+        children?: import("svelte").Snippet;
+    }
+
+    let { children }: Props = $props();
     const dataWithType = data as unknown as Store<{
         headers: string[];
         rows: string[][];
@@ -14,10 +19,12 @@
 <ModalContent title="Détail des informations recueillies">
     <Alert small={true}>Certaines formulations peuvent différer selon les fournisseurs de données</Alert>
     <Table hideTitle={true} rows={$dataWithType.rows} bordered={false} scrollable={false}>
-        <slot slot="headers">
-            {#each $dataWithType.headers as header (header)}
-                <th>{header}</th>
-            {/each}
-        </slot>
+        {#snippet headers()}
+            {#if children}{@render children()}{:else}
+                {#each $dataWithType.headers as header (header)}
+                    <th>{header}</th>
+                {/each}
+            {/if}
+        {/snippet}
     </Table>
 </ModalContent>

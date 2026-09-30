@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
     import { StatusLabelController } from "./StatusLabel.controller";
 
-    export let status;
+    let { status } = $props();
 
     const { label, classes } = new StatusLabelController(status);
 </script>

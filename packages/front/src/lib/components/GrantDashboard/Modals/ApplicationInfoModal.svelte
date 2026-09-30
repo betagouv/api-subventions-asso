@@ -16,16 +16,16 @@
     // used to type data
     const modalData = data as Store<ApplicationModalData>;
 
-    let osirisDetails: Promise<OsirisActions> | null = null;
+    let osirisDetails: Promise<OsirisActions> | null = $state(null);
 
-    $: {
+    $effect(() => {
         const appData = $data as ApplicationModalData;
         if (appData?.application.fournisseur === ProviderName.osiris) {
             osirisDetails = (appData as ApplicationModalData<OsirisActions>).details;
         } else {
             osirisDetails = null;
         }
-    }
+    });
 </script>
 
 <section>
@@ -91,7 +91,8 @@
         margin-bottom: 0;
     }
 
-    section h4:is([class*=" fr-fi-"], h4[class*=" fr-icon-"], h4[class^="fr-fi-"], h4[class^="fr-icon-"])::before {
+    section
+        h4:is(:global([class*=" fr-fi-"], h4[class*=" fr-icon-"], h4[class^="fr-fi-"], h4[class^="fr-icon-"]))::before {
         margin-right: 0.5rem;
     }
 </style>

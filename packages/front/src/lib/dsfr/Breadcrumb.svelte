@@ -1,5 +1,5 @@
-<script>
-    export let crumbs;
+<script lang="ts">
+    let { crumbs } = $props();
 </script>
 
 <nav class="fr-breadcrumb" aria-label="vous êtes ici :">

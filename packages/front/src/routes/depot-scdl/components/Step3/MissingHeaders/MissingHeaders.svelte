@@ -1,10 +1,13 @@
 <script lang="ts">
     import Alert from "$lib/dsfr/Alert.svelte";
-    import { createEventDispatcher } from "svelte";
     import depositLogService from "$lib/resources/deposit-log/depositLog.service";
     import MissingHeadersController from "./MissingHeaders.controller";
 
-    const dispatch = createEventDispatcher<{ prevStep: void }>();
+    let { prevStep = () => {}, restartNewForm = () => {} } = $props();
+    const dispatch = (event: string) => {
+        if (event === "prevStep") prevStep();
+        else if (event === "restartNewForm") restartNewForm();
+    };
     const { missingMandatoryHeaders, missingOptionalHeaders, allocatorSiret, allocatorName } =
         new MissingHeadersController();
 </script>
@@ -42,12 +45,10 @@
     {/if}
 
     <div class="fr-mt-4v">
-        <button on:click={() => dispatch("prevStep")} class="fr-btn fr-mr-3v" type="button">
-            Réimporter mon fichier
-        </button>
+        <button onclick={prevStep} class="fr-btn fr-mr-3v" type="button">Réimporter mon fichier</button>
 
         <button
-            on:click={() => depositLogService.restartNewDeposit(dispatch)}
+            onclick={() => depositLogService.restartNewDeposit(dispatch)}
             class="fr-btn fr-btn--secondary fr-mr-3v"
             type="button">
             Recommencer un nouveau dépôt

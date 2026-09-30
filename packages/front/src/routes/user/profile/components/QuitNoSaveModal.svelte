@@ -8,4 +8,8 @@
 <ModalContent title="Souhaitez-vous quitter sans enregistrer ?">
     Vous avez des modifications non enregistrées.
 </ModalContent>
-<ModalFooter confirmLabel="Quitter la page" confirmAction={$action} />
+<ModalFooter
+    confirmLabel="Quitter la page"
+    confirmAction={$action}
+    cancelTrackerName="profile.quit-no-save.cancel"
+    confirmTrackerName="profile.quit-no-save.confirm" />

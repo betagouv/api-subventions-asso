@@ -1,10 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
-
-    export let sortDirection;
-    export let id;
-
-    const dispatch = createEventDispatcher<{ click: null }>();
+    let { sortDirection, id, onclick = () => {} } = $props();
 </script>
 
-<button {id} on:click={() => dispatch("click")} class="fr-btn--sort" aria-sort={sortDirection}></button>
+<button {id} {onclick} class="fr-btn--sort" aria-sort={sortDirection}></button>

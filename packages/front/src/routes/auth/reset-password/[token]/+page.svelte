@@ -1,17 +1,26 @@
-<script>
+<script lang="ts">
     import { ResetPwdController } from "./ResetPwd.controller";
     import PasswordFormatAlert from "$lib/components/DefinePassword/PasswordFormatAlert.svelte";
     import PasswordErrorAlert from "$lib/components/DefinePassword/PasswordErrorAlert.svelte";
     import DefinePassword from "$lib/components/DefinePassword/DefinePassword.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
-    export let data;
-    const { token } = data.params;
+    import type { PageProps } from "./$types";
 
-    const ctrl = new ResetPwdController(token);
+    let { params }: PageProps = $props();
+    const token = $derived(params.token);
 
-    ctrl.init();
-    const { promise, values, isSubmitActive, validationTokenStore, title } = ctrl;
+    const ctrl = $derived(new ResetPwdController(token));
+
+    $effect(() => {
+        ctrl.init();
+    });
+
+    const promise = $derived(ctrl.promise);
+    const values = $derived(ctrl.values);
+    const isSubmitActive = $derived(ctrl.isSubmitActive);
+    const validationTokenStore = $derived(ctrl.validationTokenStore);
+    const title = $derived(ctrl.title);
 </script>
 
 <div class="fr-mb-8w">
@@ -36,10 +45,16 @@
                     <PasswordErrorAlert {error} />
                 {/await}
 
-                <form action="#" method="GET" on:submit|preventDefault={() => ctrl.onSubmit()}>
+                <form
+                    action="#"
+                    method="GET"
+                    onsubmit={event => {
+                        event.preventDefault();
+                        ctrl.onSubmit();
+                    }}>
                     <DefinePassword
-                        on:error={() => ctrl.disableSubmit()}
-                        on:valid={() => ctrl.enableSubmit()}
+                        onerror={() => ctrl.disableSubmit()}
+                        onvalid={() => ctrl.enableSubmit()}
                         bind:values={$values} />
                     <div class="fr-input-group fr-my-4w">
                         <Button

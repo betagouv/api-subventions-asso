@@ -1,14 +1,15 @@
-<script>
+<script lang="ts">
     import { InfosBancairesEtabController } from "./InfosBancairesEtab.controller";
     import Table from "$lib/dsfr/Table.svelte";
     import TableRow from "$lib/dsfr/TableRow.svelte";
 
-    export let elements; // informations_bancaires
+    let { elements } = $props();
 
     const tableId = "infos-bancaires-etab";
 
-    const controller = new InfosBancairesEtabController(elements);
-    const { infosBancaires, headers } = controller;
+    const controller = $derived(new InfosBancairesEtabController(elements));
+    const infosBancaires = $derived(controller.infosBancaires);
+    const headers = $derived(controller.headers);
 </script>
 
 <h2>Informations bancaires</h2>

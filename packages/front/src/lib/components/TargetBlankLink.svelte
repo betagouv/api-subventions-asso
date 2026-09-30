@@ -1,8 +1,21 @@
 <script lang="ts">
-    export let href: string;
-    export let title: string | undefined = undefined;
-    export let ariaDescribedBy: string | undefined = undefined;
-    export let linkClass: string = "fr-link";
+    interface Props {
+        href: string;
+        title?: string | undefined;
+        ariaDescribedBy?: string | undefined;
+        linkClass?: string;
+        onclick?: (event: MouseEvent) => void;
+        children?: import("svelte").Snippet;
+    }
+
+    let {
+        href,
+        title = undefined,
+        ariaDescribedBy = undefined,
+        linkClass = "fr-link",
+        onclick = () => {},
+        children,
+    }: Props = $props();
 </script>
 
 <a
@@ -12,6 +25,6 @@
     {...ariaDescribedBy ? { "aria-describedby": ariaDescribedBy } : {}}
     target="_blank"
     rel="noopener noreferrer"
-    on:click>
-    <slot />
+    {onclick}>
+    {@render children?.()}
 </a>

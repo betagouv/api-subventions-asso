@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
     import Badge from "$lib/dsfr/Badge.svelte";
 
-    export let badges = [];
+    let { badges = [] } = $props();
 </script>
 
 {#each badges as badge, index (index)}

@@ -79,10 +79,12 @@ export class DepositScdlController {
 
         if (step === this.lastStep) {
             goToUrl("/");
+            return;
         }
 
         if (step === 1) {
             this.restartNewForm();
+            return;
         }
 
         this.currentStep.set(step - 1);
