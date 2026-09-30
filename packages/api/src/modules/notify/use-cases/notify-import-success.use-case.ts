@@ -4,6 +4,7 @@ import { ImportReport } from "../../../@types/ImportReport";
 import { NotifyImportSuccessContext } from "../../../@types/NotifyImportSuccessContext";
 import { NotificationType } from "../@types/NotificationType";
 import notifyService, { NotifyService } from "../notify.service";
+import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 
 export interface ImportSuccessPayload {
     providerName: string;
@@ -25,15 +26,19 @@ export default class NotifyImportSuccessUseCase {
             errorCount: report.errorCount,
             durationMs: context.durationMs,
             fileCount: context.fileCount,
-            exerciseYear: context.exerciseYear,
         };
 
-        await this.notifier.notify(NotificationType.DATA_IMPORT_SUCCESS, {
+        if (context.exerciseYear) details.exerciseYear = context.exerciseYear;
+
+        const notifyData: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS] = {
             providerName,
-            providerSiret: context.providerSiret,
             exportDate: context.exportDate,
             details,
-        });
+        };
+
+        if (context.providerSiret) notifyData.providerSiret = context.providerSiret;
+
+        await this.notifier.notify(NotificationType.DATA_IMPORT_SUCCESS, notifyData);
     }
 }
 

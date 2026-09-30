@@ -8,7 +8,7 @@ import associationSearchAdapter from "../../../../outputs/db/association-search/
 import AssociationSearchDbo from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import { SireneEstablishmentMapper } from "./sirene-establishment.mapper";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
-import { ImportPipeline } from "../ImportPipeline";
+import { ImportPipeline } from "../import-pipeline";
 import { addMonths } from "../../../../../shared/helpers/DateHelper";
 import { ParquetParser } from "../../../parquet.parser";
 import { Readable, Transform, Writable } from "stream";
@@ -17,6 +17,19 @@ import { SireneUniteLegalePort } from "../../../../outputs/db/sirene/sirene-unit
 import sireneUniteLegaleAdapter from "../../../../outputs/db/sirene/sirene-unite-legale.adapter";
 
 const SIRENE_ESTABLISHMENT_PROVIDER_ID = "sirene-establishment";
+
+type MostRecentUpdatesFields = Pick<
+    SireneEstablishmentDto,
+    | "siren"
+    | "numeroVoieEtablissement"
+    | "typeVoieEtablissement"
+    | "libelleVoieEtablissement"
+    | "libelleCommuneEtablissement"
+    | "codePostalEtablissement"
+    | "dateDernierTraitementEtablissement"
+>;
+
+type FullOrUpdateEstab = Partial<SireneEstablishmentDto> & MostRecentUpdatesFields;
 
 export class SireneEstablishmentPipeline extends ImportPipeline {
     constructor(
@@ -57,10 +70,7 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
             );
         } else console.log("Starting first Sirene Stock Etablissement importation");
 
-        let partialAssociationSearchMap: Map<
-            string,
-            Pick<AssociationSearchDbo, "siren"> & Partial<Pick<AssociationSearchDbo, "address">>
-        > = new Map();
+        const mostRecentUpdates: MostRecentUpdatesFields[] = [];
 
         stages.push(
             new Writable({
@@ -69,21 +79,17 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
                     try {
                         this.report.parsedCount += batch.length;
 
-                        // build partials association-search to be updated
-                        partialAssociationSearchMap = new Map([
-                            // build object from each siren
-                            ...new Map(this.extractSirens(batch).map(siren => [siren, { siren }])),
-                            // merge with previous objects
-                            // order matters or previous assocationSearch with address could be erased
-                            ...partialAssociationSearchMap,
-                            // merge addresses to update
-                            ...this.getAddressesToUpdate(batch),
-                        ]);
-
                         const associationDtos = await this.filterAssociationEstablishments(batch);
 
-                        this.report.importedCount += await this.establishmentPort.upsertMany(associationDtos);
+                        if (associationDtos.length === 0) {
+                            return callback();
+                        }
 
+                        const mostRecentDtos = this.filterMostRecent(associationDtos);
+
+                        mostRecentUpdates.push(...this.filterMainEstab(mostRecentDtos));
+
+                        this.report.importedCount += await this.establishmentPort.upsertMany(mostRecentDtos);
                         callback();
                     } catch (err) {
                         callback(err as Error);
@@ -94,51 +100,83 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
 
         await pipeline(stages);
 
-        await this.updateAssociationSearch(partialAssociationSearchMap);
+        await this.updateAssociationSearch(
+            // reapply the filter on the whole array after each batch did the same internally
+            this.filterMostRecent(mostRecentUpdates).map(dto => SireneEstablishmentMapper.toAssociationSearch(dto)),
+        );
 
         return this.report;
     }
 
-    private async updateAssociationSearch(
-        map: Map<string, Pick<AssociationSearchDbo, "siren"> & Partial<Pick<AssociationSearchDbo, "address">>>,
-    ) {
-        const iterable = this.establishmentPort.getComputedFields([...map.keys()]);
+    private async updateAssociationSearch(mostRecentUpdates: Pick<AssociationSearchDbo, "siren" | "address">[]) {
+        const CHUNK_SIZE = 10000;
 
-        let batch: Partial<Pick<AssociationSearchDbo, "siren" | "address" | "nbEstabs" | "postalCodes">>[] = [];
+        console.log(`starting upserting ${mostRecentUpdates.length} association-search...`);
 
-        for await (const item of iterable) {
-            const match = map.get(item.siren);
-            if (match) Object.assign(item, match);
-            batch.push(item);
-            if (batch.length === 1000) {
-                await this.searchPort.upsertMany(batch);
-                batch = [];
+        for (let i = 0; i < mostRecentUpdates.length; i += CHUNK_SIZE) {
+            console.time("chunk");
+            // const tmpAssociationSearch = await this.searchPort.getTmpCollection();
+
+            const chunk = mostRecentUpdates.slice(i, i + CHUNK_SIZE);
+
+            // Should not have duplicate siren as it is already handled by filterMostRecent
+            const mainEstabUpdateMap = new Map(chunk.map(dbo => [dbo.siren, dbo]));
+
+            const iterable = this.establishmentPort.getComputedFields(chunk.map(dbo => dbo.siren));
+
+            const associationSearch: Partial<
+                Pick<AssociationSearchDbo, "siren" | "address" | "nbEstabs" | "postalCodes">
+            >[] = [];
+
+            // affecte main estab address updates in each AssociationSearch received from getComputedField
+            for await (const item of iterable) {
+                const match = mainEstabUpdateMap.get(item.siren);
+                if (match) Object.assign(item, match);
+                associationSearch.push(item);
             }
-        }
 
-        if (batch.length) {
-            await this.searchPort.upsertMany(batch);
+            await this.searchPort.upsertMany(associationSearch);
+            console.timeEnd("chunk");
         }
     }
 
-    private getAddressesToUpdate(dtos: SireneEstablishmentDto[]) {
-        // group by siren
-        const mapBySiren = dtos.reduce((groups, dto) => {
-            const siren = dto.siren;
-            if (groups.has(siren)) groups.set(siren, [...groups.get(siren)!, dto]);
-            else groups.set(siren, [dto]);
-            return groups;
-        }, new Map<string, SireneEstablishmentDto[]>());
-
+    // Returns partial main establishment dtos use to create association-search
+    private filterMainEstab(dtos: SireneEstablishmentDto[]) {
         // for each group filter main and update address
-        const updates: Map<string, Pick<AssociationSearchDbo, "siren" | "address">> = new Map();
-        for (const [_key, group] of mapBySiren) {
-            const mainEstablishment = group.find(dto => dto.etablissementSiege);
-            if (mainEstablishment)
-                updates.set(mainEstablishment.siren, SireneEstablishmentMapper.toAssociationSearch(mainEstablishment));
+        const updates: MostRecentUpdatesFields[] = [];
+        for (const dto of dtos) {
+            if (dto.etablissementSiege)
+                updates.push({
+                    siren: dto.siren,
+                    numeroVoieEtablissement: dto.numeroVoieEtablissement,
+                    typeVoieEtablissement: dto.typeVoieEtablissement,
+                    libelleVoieEtablissement: dto.libelleVoieEtablissement,
+                    libelleCommuneEtablissement: dto.libelleCommuneEtablissement,
+                    codePostalEtablissement: dto.codePostalEtablissement,
+                    dateDernierTraitementEtablissement: dto.dateDernierTraitementEtablissement,
+                });
         }
 
         return updates;
+    }
+
+    // Filter same siren dto inside a batch to avoid upsert twice for nothing
+    private filterMostRecent(dtos: FullOrUpdateEstab[]): SireneEstablishmentDto[] {
+        const groupBySiren = dtos.reduce((map, dto) => {
+            const group = map.get(dto.siren);
+            if (!group) map.set(dto.siren, [dto]);
+            else map.set(dto.siren, [...group, dto]);
+            return map;
+        }, new Map<string, FullOrUpdateEstab[]>());
+        return [...groupBySiren.values()].map(group => this.getMostRecentDto(group) as SireneEstablishmentDto);
+    }
+
+    private getMostRecentDto(dtos: FullOrUpdateEstab[]) {
+        if (!dtos.length) return null;
+        if (dtos.length === 1) return dtos[0];
+        return dtos.reduce((max, current) => {
+            return current.dateDernierTraitementEtablissement > max.dateDernierTraitementEtablissement ? current : max;
+        }) as SireneEstablishmentDto;
     }
 
     private extractSirens(batch: SireneEstablishmentDto[]): string[] {

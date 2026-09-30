@@ -8,7 +8,7 @@ export type SireneUniteLegaleDbo = Omit<
     | "anneeCategorieEntreprise"
 > & {
     categorieJuridiqueUniteLegale: string;
-    anneeEffectifsUniteLegale: number;
-    nombrePeriodesUniteLegale: number;
-    anneeCategorieEntreprise: number;
+    anneeEffectifsUniteLegale: number | null;
+    nombrePeriodesUniteLegale: number | null;
+    anneeCategorieEntreprise: number | null;
 };

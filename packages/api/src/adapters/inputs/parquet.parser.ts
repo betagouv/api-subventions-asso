@@ -13,15 +13,14 @@ export class ParquetParser<T> {
         const file = await asyncBufferFromFile(filePath);
         const metadata = await parquetMetadataAsync(file);
 
-        for (const [index, group] of metadata.row_groups.entries()) {
-            console.log(`Row groupe ${index} size: `, group.num_rows);
-        }
-
         let groupStart = 0;
+
+        console.log(`File is ${metadata.num_rows} rows long`);
 
         // iterate of each row group to avoid reading multiple time the same groups
         for (const group of metadata.row_groups) {
             const groupEnd = groupStart + Number(group.num_rows);
+            console.log("parsing rows ", groupStart, " to ", groupEnd);
 
             const rows = (await parquetReadObjects({
                 file,

@@ -9,7 +9,7 @@ import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import dataLogAdapter from "../../../../outputs/db/data-log/data-log.adapter";
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
-import { ImportPipeline } from "../ImportPipeline";
+import { ImportPipeline } from "../import-pipeline";
 import { ParquetParser } from "../../../parquet.parser";
 
 export class RnaPipeline extends ImportPipeline {
@@ -63,11 +63,12 @@ export class RnaPipeline extends ImportPipeline {
             new Writable({
                 objectMode: true,
                 write: async (dbos: RnaDbo[], _enc, callback) => {
+                    console.log(`Writting ${dbos.length} RNA documents`);
                     try {
                         if (dbos.length > 0) {
-                            console.log("Update association-search collection...");
                             await this.searchPort.upsertMany(
                                 dbos
+                                    // @TODO: remove this filter if we also use siren name
                                     .filter(dbo => dbo.titre) // in rare cases rna document can miss the titre and this would break association-search update
                                     .map(dbo =>
                                         this.mapper.toAssociationSearch(
@@ -75,7 +76,6 @@ export class RnaPipeline extends ImportPipeline {
                                         ),
                                     ),
                             );
-                            console.log("Update rna collection...");
                             if (lastImportDate) await this.rnaPort.upsertMany(dbos);
                             else await this.rnaPort.insertMany(dbos);
                             this.report.importedCount += dbos.length;

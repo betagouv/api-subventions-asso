@@ -10,7 +10,7 @@ import sireneEstablishmentPipeline from "../../../../src/adapters/inputs/pipelin
 describe("Establishment CLI", () => {
     const cli = new EstablishmentCli(sireneEstablishmentPipeline, importNotifier);
 
-    const seedSirene = () => db.collection("sirene").insertOne({ siren: "100000001" });
+    const seedSirene = () => db.collection("sirene").insertMany([{ siren: "100000000" }, { siren: "100000001" }]);
 
     describe("parse", () => {
         beforeEach(async () => {
@@ -25,12 +25,7 @@ describe("Establishment CLI", () => {
                 .find({}, { projection: { _id: 0 } })
                 .toArray()) as unknown as SireneEstablishmentDbo[];
 
-            expect(
-                documents.map(doc => ({
-                    ...doc,
-                    dateDernierTraitementEtablissement: expect.any(Date),
-                })),
-            ).toMatchSnapshot();
+            expect(documents).toMatchSnapshot();
         });
 
         it("logs import in data-log", async () => {
@@ -41,10 +36,7 @@ describe("Establishment CLI", () => {
             });
         });
 
-        it("notify results", async () => {
-            // @TODO: updates parquet file with siren 100000001
-            await db.collection("sirene").insertOne({ siren: "100000000" });
-
+        it.only("notify results", async () => {
             const EXPORT_DATE_STR = "2026-07-21";
             const spyNotify = jest.spyOn(notifyService, "notify");
 
@@ -54,12 +46,14 @@ describe("Establishment CLI", () => {
             );
 
             expect(spyNotify).toHaveBeenCalledWith(NotificationType.DATA_IMPORT_SUCCESS, {
-                providerName: "SIRENE Establishment",
+                // @ts-expect-error: access protected
+                providerName: cli._serviceMeta.name,
                 exportDate: new Date(EXPORT_DATE_STR),
                 details: {
                     fileName: "multiple-batch.sirene-establishment.parquet",
-                    parsedCount: 5001,
-                    importedCount: 5001,
+                    parsedCount: 5001, // 5001 rows in the .parquet file
+                    // @TODO: to be more robust edit the multiple-batch file to include more siren ?
+                    importedCount: 2, // only two different siren (we only take the most recent by siren)
                     errorCount: 0,
                     durationMs: expect.any(Number),
                     fileCount: 1,

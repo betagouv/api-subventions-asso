@@ -2,6 +2,8 @@ import { ParquetRow } from "../../../parquet.parser";
 import { SireneUniteLegalePipeline } from "./sirene-unite-legale.pipeline";
 import { SIRENE_UNITE_LEGALE_DTOS } from "./__fixtures__/sirene-unite-legale.dto.fixture";
 import SireneUniteLegaleDto from "./SireneUniteLegaleDto";
+import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
+import { addMonths } from "../../../../../shared/helpers/DateHelper";
 
 async function* fakeParse(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
     for (const batch of batches) yield batch;
@@ -12,6 +14,11 @@ function createPipeline(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
     const sirenePort = { upsertMany: jest.fn().mockResolvedValue(undefined) };
     const searchPort = { upsertMany: jest.fn().mockResolvedValue(undefined) };
     const entrepriseService = { insertManyEntrepriseSiren: jest.fn().mockResolvedValue(undefined) };
+    const logPort = {
+        getLastImportByProvider: jest
+            .fn()
+            .mockResolvedValue(addMonths(SIRENE_UNITE_LEGALE_DTOS[0].dateDernierTraitementUniteLegale, -1)),
+    } as unknown as jest.Mocked<DataLogPort>;
 
     return {
         parser,
@@ -23,6 +30,7 @@ function createPipeline(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
             sirenePort as never,
             searchPort as never,
             entrepriseService as never,
+            logPort,
         ),
     };
 }

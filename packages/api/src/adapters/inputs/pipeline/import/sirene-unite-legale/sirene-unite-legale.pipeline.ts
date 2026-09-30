@@ -15,7 +15,7 @@ import { ParquetParser } from "../../../parquet.parser";
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
 import SireneUniteLegaleMapper from "./sirene-unite-legale.mapper";
-import { ImportPipeline } from "../ImportPipeline";
+import { ImportPipeline } from "../import-pipeline";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { addMonths } from "../../../../../shared/helpers/DateHelper";
 import dataLogAdapter from "../../../../outputs/db/data-log/data-log.adapter";
@@ -44,10 +44,6 @@ export class SireneUniteLegalePipeline extends ImportPipeline {
                 new Transform({
                     objectMode: true,
                     transform: (batch: SireneUniteLegaleDto[], _enc, callback) => {
-                        console.log(
-                            batch[0].dateDernierTraitementUniteLegale,
-                            typeof batch[0].dateDernierTraitementUniteLegale,
-                        );
                         try {
                             callback(
                                 null,
