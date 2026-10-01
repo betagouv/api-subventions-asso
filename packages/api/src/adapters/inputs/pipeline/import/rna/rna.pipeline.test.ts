@@ -1,4 +1,5 @@
 import { ASSOCIATION_SEARCH_ENTITIES } from "../../../../../domain/__fixtures__/association-search.fixture";
+import { addMonths } from "../../../../../shared/helpers/DateHelper";
 import { AssociationSearchAdapter } from "../../../../outputs/db/association-search/association-search.adapter";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { RnaAdapter } from "../../../../outputs/db/rna/rna.adapter";
@@ -54,6 +55,22 @@ describe("RNA pipeline", () => {
     });
 
     describe("run", () => {
+        it("throws an error if sirene import has not been done before", async () => {
+            // sirene import has not been done
+            mockLogsAdapter.getLastImportByProvider.mockResolvedValueOnce(null);
+            await expect(() => pipeline.run(FILE_PATH)).rejects.toThrow(
+                "You must import data from Sirene Unité Légale before Rna",
+            );
+        });
+
+        it("throws an error if sirene import has not been updated after last rna import date", async () => {
+            // makes Sirene import date lower than Rna one's
+            mockLogsAdapter.getLastImportByProvider.mockResolvedValueOnce(addMonths(IMPORT_DATE, -1));
+            await expect(() => pipeline.run(FILE_PATH)).rejects.toThrow(
+                "You must import data from Sirene Unité Légale before Rna",
+            );
+        });
+
         it("parses file from given filepath", async () => {
             await pipeline.run(FILE_PATH);
 
@@ -108,6 +125,9 @@ describe("RNA pipeline", () => {
         });
 
         it("persists all data", async () => {
+            // make sirene import ok
+            mockLogsAdapter.getLastImportByProvider.mockResolvedValueOnce(IMPORT_DATE);
+            // no rna import yet
             mockLogsAdapter.getLastImportByProvider.mockResolvedValueOnce(null);
             await pipeline.run(FILE_PATH);
 

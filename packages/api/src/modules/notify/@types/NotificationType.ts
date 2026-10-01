@@ -22,4 +22,5 @@ export enum NotificationType {
     MONGO_CONNECTION_LOST,
     BATCH_DEPOSIT_RENEWAL,
     USECASE_ERROR,
+    CRON_BLOCKED,
 }

@@ -11,6 +11,7 @@ import { AssociationSearchPort } from "../../../../outputs/db/association-search
 import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
 import { ImportPipeline } from "../import-pipeline";
 import { ParquetParser } from "../../../parquet.parser";
+import { NoSireneImportError } from "../errors/no-sirene-import.error";
 
 export class RnaPipeline extends ImportPipeline {
     constructor(
@@ -26,10 +27,15 @@ export class RnaPipeline extends ImportPipeline {
     async run(filePath: string) {
         const stages: (Readable | Transform | Writable)[] = [Readable.from(this.parser.parse(filePath))];
 
-        const lastImportDate = await this.logPort.getLastImportByProvider("rna");
+        const lastSireneImport = await this.logPort.getLastImportByProvider("sirene-unite-legale");
+        const lastRnaImport = await this.logPort.getLastImportByProvider("rna");
 
-        if (lastImportDate) {
-            console.log(`Updating RNA Waldec since ${lastImportDate}`);
+        const orderError = new NoSireneImportError();
+        if (!lastSireneImport) throw orderError;
+        if (lastRnaImport && lastSireneImport < lastRnaImport) throw orderError;
+
+        if (lastRnaImport) {
+            console.log(`Updating RNA Waldec since ${lastRnaImport}`);
             stages.push(
                 new Transform({
                     objectMode: true,
@@ -37,7 +43,7 @@ export class RnaPipeline extends ImportPipeline {
                         try {
                             callback(
                                 null,
-                                batch.filter(dto => new Date(dto.maj_time!) > lastImportDate),
+                                batch.filter(dto => new Date(dto.maj_time!) > lastRnaImport),
                             );
                         } catch (err) {
                             callback(err as Error);
@@ -76,7 +82,7 @@ export class RnaPipeline extends ImportPipeline {
                                         ),
                                     ),
                             );
-                            if (lastImportDate) await this.rnaPort.upsertMany(dbos);
+                            if (lastRnaImport) await this.rnaPort.upsertMany(dbos);
                             else await this.rnaPort.insertMany(dbos);
                             this.report.importedCount += dbos.length;
                             console.log(`Upserted ${dbos.length} new Rna documents`);

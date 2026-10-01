@@ -115,4 +115,7 @@ export interface NotificationDataTypes {
         message: string;
         object: Record<string, unknown>;
     };
+    [NotificationType.CRON_BLOCKED]: {
+        message: string;
+    };
 }

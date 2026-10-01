@@ -7,9 +7,21 @@ import { NotificationType } from "../../../../src/modules/notify/@types/Notifica
 import RnaDbo from "../../../../src/adapters/outputs/db/rna/rna.dbo";
 import { DataLogSource } from "../../../../src/modules/data-log/entities/dataLogEntity";
 import AssociationSearchDbo from "../../../../src/adapters/outputs/db/association-search/@types/AssociationSearchDbo";
+import dataLogAdapter from "../../../../src/adapters/outputs/db/data-log/data-log.adapter";
+import { addMonths } from "../../../../src/shared/helpers/DateHelper";
 
 describe("RNA CLI", () => {
     const cli = new RnaCli(rnaPipeline);
+
+    beforeEach(async () => {
+        await dataLogAdapter.insert({
+            providerId: "sirene-unite-legale",
+            providerName: "SIRENE Unité Légale",
+            fileName: "stock-stockunitelegale-parquet.parquet",
+            source: DataLogSource.FILE,
+            integrationDate: addMonths(new Date(), -1),
+        });
+    });
 
     describe("parse", () => {
         const EXPORT_DATE_STR = "2026-07-17";
@@ -32,7 +44,9 @@ describe("RNA CLI", () => {
                 path.resolve(__dirname, "../__fixtures__/multiple-batch.rna-waldec.parquet"),
                 EXPORT_DATE_STR,
             );
-            expect(await db.collection("data-log").findOne({}, { projection: { _id: 0 } })).toMatchSnapshot({
+            expect(
+                await db.collection("data-log").findOne({ providerId: "rna" }, { projection: { _id: 0 } }),
+            ).toMatchSnapshot({
                 integrationDate: expect.any(Date),
             });
         });
