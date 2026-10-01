@@ -32,6 +32,7 @@ import { DepositScdlLogDto } from "dto";
 import { ASSOCIATION_SEARCH_ENTITIES } from "../../domain/__fixtures__/association-search.fixture";
 import { AssociationSearchPort } from "../../adapters/outputs/db/association-search/association-search.port";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
+import { GetAssociationName } from "../../usecases/search/get-association-name";
 
 jest.mock("./check/deposit-scdl-process.check.service");
 jest.mock("../../adapters/outputs/db/deposit-log/deposit-log.port");
@@ -99,10 +100,19 @@ describe("DepositScdlProcessService", () => {
         findByIdentifier: jest.fn(),
     } as unknown as jest.Mocked<AssociationSearchPort>;
 
+    const ALLOCATOR_NAME = "ALLOCATOR_NAME";
+    const mockGetName = {
+        execute: jest.fn().mockReturnValue(ALLOCATOR_NAME),
+    } as unknown as jest.Mocked<GetAssociationName>;
+
     beforeEach(() => {
         mockAssociationSearchPort.findByIdentifier.mockResolvedValue(ASSOCIATION_SEARCH_ENTITIES[0]);
         mockDepositLogPort = createMockDepositLogPort();
-        depositScdlProcessService = new DepositScdlProcessService(mockDepositLogPort, mockAssociationSearchPort);
+        depositScdlProcessService = new DepositScdlProcessService(
+            mockDepositLogPort,
+            mockAssociationSearchPort,
+            mockGetName,
+        );
 
         mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog");
         mockFindDepositLog = jest.spyOn(depositScdlProcessService, "findAll");
@@ -293,11 +303,11 @@ describe("DepositScdlProcessService", () => {
                 step,
                 userId: USER_ID_STR,
                 ...DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
-                allocatorName: ASSOCIATION_SEARCH_ENTITIES[0].name,
+                allocatorName: ALLOCATOR_NAME,
             });
         });
 
-        it("Should resolve name when updating siret", async () => {
+        it("Should update deposit log", async () => {
             mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
 
             const dto: DepositScdlLogDto = {
@@ -313,7 +323,7 @@ describe("DepositScdlProcessService", () => {
                 step,
                 userId: USER_ID_STR,
                 allocatorSiret: dto.allocatorSiret,
-                allocatorName: ASSOCIATION_SEARCH_ENTITIES[0].name,
+                allocatorName: ALLOCATOR_NAME,
             });
         });
     });
@@ -646,7 +656,7 @@ describe("DepositScdlProcessService", () => {
         it("return name if found in DB", async () => {
             // @ts-expect-error - test private method
             const result = await depositScdlProcessService.resolveAllocatorName(DEFAULT_ASSOCIATION.siret);
-            expect(result).toBe(ASSOCIATION_SEARCH_ENTITIES[0].name);
+            expect(result).toBe(ALLOCATOR_NAME);
         });
 
         it("return undefined when adapter throws", async () => {

@@ -39,6 +39,7 @@ export interface NotifierMethodType {
     (type: NotificationType.EXTERNAL_API_ERROR, data: NotificationDataTypes[NotificationType.EXTERNAL_API_ERROR]);
     (type: NotificationType.MONGO_CONNECTION_LOST, data: NotificationDataTypes[NotificationType.MONGO_CONNECTION_LOST]);
     (type: NotificationType.BATCH_DEPOSIT_RENEWAL, data: NotificationDataTypes[NotificationType.BATCH_DEPOSIT_RENEWAL]);
+    (type: NotificationType.USECASE_ERROR, data: NotificationDataTypes[NotificationType.USECASE_ERROR]);
 }
 
 export interface NotifyOutPipe {

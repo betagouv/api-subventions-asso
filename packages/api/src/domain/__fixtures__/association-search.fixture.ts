@@ -6,7 +6,7 @@ export const ASSOCIATION_SEARCH_ENTITIES: AssociationSearchEntity[] = [
         siren: DEFAULT_ASSOCIATION.siren,
         mainEstablishmentSiret: DEFAULT_ASSOCIATION.siret,
         rna: DEFAULT_ASSOCIATION.rna,
-        name: DEFAULT_ASSOCIATION.name,
+        name: { rna: DEFAULT_ASSOCIATION.name, sirene: DEFAULT_ASSOCIATION.name },
         object: "ROLE AND DEFINITION OF THE ASSOCIATION",
         address: {
             number: "1",

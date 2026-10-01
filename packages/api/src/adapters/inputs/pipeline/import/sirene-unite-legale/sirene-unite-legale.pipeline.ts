@@ -119,7 +119,7 @@ export class SireneUniteLegalePipeline extends ImportPipeline {
 
         await Promise.all([
             this.sirenePort.upsertMany(dbos),
-            this.searchPort.upsertMany(dbos.map(dbo => SireneUniteLegaleMapper.toAssociationSearch(dbo))),
+            this.searchPort.upsertFromSirene(dbos.map(dbo => SireneUniteLegaleMapper.toAssociationSearch(dbo))),
         ]);
     }
 

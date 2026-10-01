@@ -5,7 +5,10 @@ export const ASSOCIATION_SEARCH_DBOS = [
         siren: DEFAULT_ASSOCIATION.siren,
         mainEstablishmentSiret: DEFAULT_ASSOCIATION.siret,
         rna: DEFAULT_ASSOCIATION.rna,
-        name: DEFAULT_ASSOCIATION.name,
+        name: {
+            rna: `rna-${DEFAULT_ASSOCIATION.name}`,
+            sirene: `sirene-${DEFAULT_ASSOCIATION.name}`,
+        },
         searchName: DEFAULT_ASSOCIATION.name.toLowerCase(),
         object: "ROLE AND DEFINITION OF THE ASSOCIATION",
         searchObject: "ROLE AND DEFINITION OF THE ASSOCIATION".toLowerCase(),
@@ -24,7 +27,10 @@ export const ASSOCIATION_SEARCH_DBOS = [
         siren: "200000000",
         mainEstablishmentSiret: "20000000000020",
         rna: "W200000000",
-        name: "LYON ASSOCIATION",
+        name: {
+            rna: `rna-LYON ASSOCIATION`,
+            sirene: `sirene-LYON ASSOCIATION`,
+        },
         searchName: "lyon association",
         object: "ROLE AND DEFINITION OF THE ASSOCIATION",
         searchObject: "ROLE AND DEFINITION OF THE ASSOCIATION".toLowerCase(),

@@ -12,6 +12,6 @@ export class SireneEstablishmentMapper {
                 city: dto.libelleCommuneEtablissement,
                 postalCode: dto.codePostalEtablissement,
             },
-        } as Pick<AssociationSearchDbo, "siren" | "address">;
+        } as Required<Pick<AssociationSearchDbo, "siren" | "address">>;
     }
 }

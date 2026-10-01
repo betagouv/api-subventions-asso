@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`RnaMapper toAssociationSearch returns AssociationSearchDbo 1`] = `
+{
+  "name": {
+    "rna": "ASSOCIATION 1",
+  },
+  "object": "objet association 1",
+  "rna": "W000000001",
+  "searchName": "ASSOCIATION 1",
+  "searchObject": "objet association 1",
+}
+`;
+
 exports[`RnaMapper toDbo returns dbo 1`] = `
 {
   "adrg-achemine": "LARAJASSE",

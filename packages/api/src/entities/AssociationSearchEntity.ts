@@ -2,11 +2,11 @@ import { Address } from "../@types/Address";
 import { Rna, Siret } from "../identifier-objects";
 import Siren from "../identifier-objects/Siren";
 
-interface AssociationSearchProps {
-    siren: string;
-    rna: string;
-    mainEstablishmentSiret: string;
-    name: string;
+export interface AssociationSearchProps {
+    siren?: string;
+    rna?: string;
+    mainEstablishmentSiret?: string;
+    name: { rna?: string; sirene: string } | { rna: string; sirene?: string };
     object?: string;
     address?: Address;
     nbEstabs?: number;
@@ -14,21 +14,23 @@ interface AssociationSearchProps {
 
 // Only used for the search itself, to return data from API call in a well formatted way
 export default class AssociationSearchEntity {
-    public siren: Siren;
-    public rna: Rna;
-    public mainEstablishmentSiret: Siret;
-    public name: string;
-    public object: string | null;
-    public address: Address | null;
-    public nbEstabs: number | null;
+    public name: AssociationSearchProps["name"];
+    public siren?: Siren;
+    public rna?: Rna;
+    public mainEstablishmentSiret?: Siret;
+    public object?: AssociationSearchProps["object"];
+    public address?: AssociationSearchProps["address"];
+    public nbEstabs?: AssociationSearchProps["nbEstabs"];
 
     constructor(props: AssociationSearchProps) {
-        this.siren = new Siren(props.siren);
-        this.mainEstablishmentSiret = new Siret(props.mainEstablishmentSiret);
-        this.rna = new Rna(props.rna);
+        this.siren = Siren.isSiren(props.siren) ? new Siren(props.siren as string) : undefined;
+        this.mainEstablishmentSiret = Siret.isSiret(props.mainEstablishmentSiret)
+            ? new Siret(props.mainEstablishmentSiret as string)
+            : undefined;
+        this.rna = Rna.isRna(props.rna) ? new Rna(props.rna as string) : undefined;
         this.name = props.name;
-        this.object = props.object ?? null;
-        this.address = props.address ?? null;
-        this.nbEstabs = props.nbEstabs ?? null;
+        this.object = props.object;
+        this.address = props.address;
+        this.nbEstabs = props.nbEstabs;
     }
 }

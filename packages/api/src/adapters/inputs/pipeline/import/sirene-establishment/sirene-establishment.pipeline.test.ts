@@ -1,5 +1,6 @@
 import { ASSOCIATION_SEARCH_ENTITIES } from "../../../../../domain/__fixtures__/association-search.fixture";
 import { addMonths } from "../../../../../shared/helpers/DateHelper";
+import AssociationSearchDbo from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { SireneEstablishmentDbo } from "../../../../outputs/db/sirene/sirene-establishment.dbo";
@@ -30,14 +31,14 @@ describe("SireneEstablishmentPipeline", () => {
     } as unknown as jest.Mocked<SireneEstablishmentPort>;
     const sireneUniteLegale = { filterExistingSirens: jest.fn() } as unknown as jest.Mocked<SireneUniteLegalePort>;
     const searchPort = {
-        upsertMany: jest.fn(),
+        upsertFromEstablishment: jest.fn(),
         updatePostalCodesBySirens: jest.fn(),
     } as unknown as jest.Mocked<AssociationSearchPort>;
     const dataLog = { getLastEditionDateByProvider: jest.fn() } as unknown as jest.Mocked<DataLogPort>;
 
-    const ASSOCIATION_SEARCH = {
-        siren: ASSOCIATION_SEARCH_ENTITIES[0].siren.value,
-        address: ASSOCIATION_SEARCH_ENTITIES[0].address,
+    const ASSOCIATION_SEARCH: Required<Pick<AssociationSearchDbo, "siren" | "address">> = {
+        siren: ASSOCIATION_SEARCH_ENTITIES[0].siren!.value,
+        address: ASSOCIATION_SEARCH_ENTITIES[0].address!,
     };
 
     const spyToAssociationSearch = jest
@@ -127,7 +128,15 @@ describe("SireneEstablishmentPipeline", () => {
         ];
 
         it("returns partial main establishment dto", async () => {
-            const expected = DTOS.filter(dto => dto.etablissementSiege);
+            const expected = DTOS.filter(dto => dto.etablissementSiege).map(dto => ({
+                siren: dto.siren,
+                numeroVoieEtablissement: dto.numeroVoieEtablissement,
+                typeVoieEtablissement: dto.typeVoieEtablissement,
+                libelleVoieEtablissement: dto.libelleVoieEtablissement,
+                libelleCommuneEtablissement: dto.libelleCommuneEtablissement,
+                codePostalEtablissement: dto.codePostalEtablissement,
+                dateDernierTraitementEtablissement: dto.dateDernierTraitementEtablissement,
+            }));
             const actual = await pipeline.filterMainEstab(DTOS);
             expect(actual).toEqual(expected);
         });
@@ -149,7 +158,7 @@ describe("SireneEstablishmentPipeline", () => {
             await pipeline.updateAssociationSearch([
                 { siren: ASSOCIATION_SEARCH.siren, address: ASSOCIATION_SEARCH.address },
             ]);
-            expect(searchPort.upsertMany).toHaveBeenCalledWith([
+            expect(searchPort.upsertFromEstablishment).toHaveBeenCalledWith([
                 {
                     siren: ASSOCIATION_SEARCH.siren,
                     address: ASSOCIATION_SEARCH.address,

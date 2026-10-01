@@ -12,7 +12,7 @@ async function* fakeParse(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
 function createPipeline(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
     const parser = { parse: jest.fn().mockImplementation(() => fakeParse(batches)) };
     const sirenePort = { upsertMany: jest.fn().mockResolvedValue(undefined) };
-    const searchPort = { upsertMany: jest.fn().mockResolvedValue(undefined) };
+    const searchPort = { upsertFromSirene: jest.fn().mockResolvedValue(undefined) };
     const entrepriseService = { insertManyEntrepriseSiren: jest.fn().mockResolvedValue(undefined) };
     const logPort = {
         getLastImportByProvider: jest
@@ -174,7 +174,7 @@ describe("SireneUniteLegalePipeline", () => {
 
             const actual = {
                 sireneBatchSizes: sirenePort.upsertMany.mock.calls.map(([batch]) => batch.length),
-                nameBatchSizes: searchPort.upsertMany.mock.calls.map(([batch]) => batch.length),
+                nameBatchSizes: searchPort.upsertFromSirene.mock.calls.map(([batch]) => batch.length),
             };
 
             expect(actual).toEqual({ sireneBatchSizes: [1, 1], nameBatchSizes: [1, 1] });

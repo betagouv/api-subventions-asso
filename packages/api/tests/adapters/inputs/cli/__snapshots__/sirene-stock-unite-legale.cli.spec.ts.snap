@@ -4,22 +4,38 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
 [
   {
     "mainEstablishmentSiret": "10000000200022",
+    "name": {
+      "sirene": "ASSOCIATION 100000002",
+    },
     "rna": "W000000002",
+    "searchName": "ASSOCIATION 100000002",
     "siren": "100000002",
   },
   {
     "mainEstablishmentSiret": "10000000300015",
+    "name": {
+      "sirene": "ASSOCIATION 100000003",
+    },
     "rna": "W000000003",
+    "searchName": "ASSOCIATION 100000003",
     "siren": "100000003",
   },
   {
     "mainEstablishmentSiret": "10000000400010",
+    "name": {
+      "sirene": "ASSOCIATION 100000004",
+    },
     "rna": "W000000004",
+    "searchName": "ASSOCIATION 100000004",
     "siren": "100000004",
   },
   {
     "mainEstablishmentSiret": "10000000500018",
+    "name": {
+      "sirene": "ASSOCIATION 100000005",
+    },
     "rna": "W000000005",
+    "searchName": "ASSOCIATION 100000005",
     "siren": "100000005",
   },
 ]

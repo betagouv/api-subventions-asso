@@ -40,7 +40,7 @@ describe("RNA pipeline", () => {
     } as unknown as RnaAdapter;
 
     const searchAdapter = {
-        upsertMany: jest.fn().mockResolvedValue(undefined),
+        upsertFromRna: jest.fn().mockResolvedValue(undefined),
     } as unknown as AssociationSearchAdapter;
 
     const mockLogsAdapter = {
@@ -89,7 +89,7 @@ describe("RNA pipeline", () => {
             await pipeline.run(FILE_PATH);
 
             BATCHES.forEach((_dto, index) => {
-                expect(searchAdapter.upsertMany).toHaveBeenNthCalledWith(
+                expect(searchAdapter.upsertFromRna).toHaveBeenNthCalledWith(
                     index + 1,
                     BATCHES[index].map(_dbo => ASSOCIATION_SEARCH_ENTITIES[0]),
                 );

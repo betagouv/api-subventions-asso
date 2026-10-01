@@ -1,5 +1,5 @@
-import { Rna } from "../../../../../identifier-objects";
-import AssociationSearchDbo from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
+import { removeAccents } from "../../../../../shared/helpers/StringHelper";
+import { UniteLegaleAssociationSearch } from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import { SireneUniteLegaleDbo } from "../../../../outputs/db/sirene/SireneUniteLegaleDbo";
 import SireneUniteLegaleDto from "./SireneUniteLegaleDto";
 
@@ -15,10 +15,18 @@ export default class SireneUniteLegaleMapper {
     }
 
     static toAssociationSearch(dbo: SireneUniteLegaleDbo) {
-        return {
+        const rna = dbo.identifiantAssociationUniteLegale;
+
+        const associationSearch: UniteLegaleAssociationSearch = {
             siren: dbo.siren,
-            rna: Rna.isRna(dbo.identifiantAssociationUniteLegale) ? dbo.identifiantAssociationUniteLegale : undefined,
+            name: {
+                sirene: dbo.denominationUniteLegale,
+            },
+            searchName: removeAccents(dbo.denominationUniteLegale),
             mainEstablishmentSiret: dbo.siren + dbo.nicSiegeUniteLegale,
-        } as Pick<AssociationSearchDbo, "siren" | "rna" | "mainEstablishmentSiret">;
+        };
+
+        if (rna) associationSearch.rna = rna;
+        return associationSearch;
     }
 }

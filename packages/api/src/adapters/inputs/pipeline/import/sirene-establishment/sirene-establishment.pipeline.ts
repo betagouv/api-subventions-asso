@@ -5,7 +5,9 @@ import SireneEstablishmentDto, { AssociationSearchFields } from "./sirene-establ
 import dataLogAdapter from "../../../../outputs/db/data-log/data-log.adapter";
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
-import AssociationSearchDbo from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
+import AssociationSearchDbo, {
+    EstablishmentAssociationSearch,
+} from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import { SireneEstablishmentMapper } from "./sirene-establishment.mapper";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { ImportPipeline } from "../import-pipeline";
@@ -92,7 +94,9 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
         return this.report;
     }
 
-    private async updateAssociationSearch(mostRecentUpdates: Pick<AssociationSearchDbo, "siren" | "address">[]) {
+    private async updateAssociationSearch(
+        mostRecentUpdates: Required<Pick<AssociationSearchDbo, "siren" | "address">>[],
+    ) {
         const CHUNK_SIZE = 10000;
 
         console.log(`starting upserting ${mostRecentUpdates.length} association-search...`);
@@ -108,9 +112,7 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
 
             const iterable = this.establishmentPort.getComputedFields(chunk.map(dbo => dbo.siren));
 
-            const associationSearch: Partial<
-                Pick<AssociationSearchDbo, "siren" | "address" | "nbEstabs" | "postalCodes">
-            >[] = [];
+            const associationSearch: EstablishmentAssociationSearch[] = [];
 
             // affecte main estab address updates in each AssociationSearch received from getComputedField
             for await (const item of iterable) {
@@ -119,7 +121,7 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
                 associationSearch.push(item);
             }
 
-            await this.searchPort.upsertMany(associationSearch);
+            await this.searchPort.upsertFromEstablishment(associationSearch);
             console.timeEnd("chunk");
         }
     }

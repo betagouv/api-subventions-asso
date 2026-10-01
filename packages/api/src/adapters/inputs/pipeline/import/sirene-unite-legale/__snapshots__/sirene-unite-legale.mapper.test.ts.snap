@@ -3,7 +3,11 @@
 exports[`SireneUniteLegale Mapper toAssociationSearch maps to partial AssociationSearchDbo 1`] = `
 {
   "mainEstablishmentSiret": "10000000000001",
+  "name": {
+    "sirene": "asso coeur",
+  },
   "rna": "W000000000",
+  "searchName": "asso coeur",
   "siren": "100000000",
 }
 `;

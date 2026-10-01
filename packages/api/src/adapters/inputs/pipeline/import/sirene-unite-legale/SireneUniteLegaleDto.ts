@@ -22,7 +22,7 @@ export default interface SireneUniteLegaleDto {
     etatAdministratifUniteLegale: string | null;
     nomUniteLegale: string | null;
     nomUsageUniteLegale: string | null;
-    denominationUniteLegale: string | null;
+    denominationUniteLegale: string;
     denominationUsuelle1UniteLegale: string | null;
     denominationUsuelle2UniteLegale: string | null;
     denominationUsuelle3UniteLegale: string | null;

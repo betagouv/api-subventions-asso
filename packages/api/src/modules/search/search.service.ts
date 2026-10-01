@@ -12,7 +12,7 @@ export class SearchService {
 
     constructor(private search: Search) {}
 
-    public async getAssociationsKeys(value: string, postalCode?: string): Promise<Partial<AssociationSearchEntity>[]> {
+    public async getAssociationsKeys(value: string, postalCode?: string): Promise<AssociationSearchEntity[]> {
         const validPostalCode = this.validatePostalCode(postalCode);
         const searchToken = this.buildSearchToken(value, validPostalCode);
         const resultsFromCache = await searchAdapter.getResults(
@@ -30,11 +30,7 @@ export class SearchService {
         return entities;
     }
 
-    public async getPaginatedResult(
-        value: string,
-        page: number,
-        postalCode?: string,
-    ): Promise<PaginatedResult<Partial<AssociationSearchEntity>[]>> {
+    public async getPaginatedResult(value: string, page: number, postalCode?: string) {
         const results = await this.getAssociationsKeys(value, postalCode);
         const paginatedResult = results.slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE);
         return {
@@ -42,7 +38,7 @@ export class SearchService {
             page,
             nbPages: Math.ceil(results.length / this.PAGE_SIZE),
             total: results.length,
-        };
+        } as PaginatedResult<AssociationSearchEntity[]>;
     }
 
     public cleanCache() {

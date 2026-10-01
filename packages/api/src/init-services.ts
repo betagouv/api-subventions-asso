@@ -5,7 +5,12 @@ import { ScdlDepositCronService } from "./modules/deposit-scdl-process/scdl-depo
 import dataLogAdapter from "./adapters/outputs/db/data-log/data-log.adapter";
 import userAdapter from "./adapters/outputs/db/user/user.adapter";
 import associationSearchAdapter from "./adapters/outputs/db/association-search/association-search.adapter";
+import getAssociationName from "./usecases/search/get-association-name";
 
-export const depositScdlProcessService = new DepositScdlProcessService(depositLogAdapter, associationSearchAdapter);
+export const depositScdlProcessService = new DepositScdlProcessService(
+    depositLogAdapter,
+    associationSearchAdapter,
+    getAssociationName,
+);
 export const scdlDepositCronService = new ScdlDepositCronService(depositLogAdapter, dataLogAdapter, userAdapter);
 export const dumpService = new DumpService(depositScdlProcessService);

@@ -11,11 +11,9 @@ describe("RnaMapper", () => {
     });
 
     describe("toAssociationSearch", () => {
-        it("throws an error if no titre provided", () => {
-            // @ts-expect-error: bypass type check
-            expect(() => rnaMapper.toAssociationSearch({ ...RNA_DBO, titre: null })).toThrow(
-                "Rna data must contain titre to be transformed into AssociationSearch",
-            );
+        it("returns AssociationSearchDbo", () => {
+            const actual = rnaMapper.toAssociationSearch(RNA_DBO);
+            expect(actual).toMatchSnapshot();
         });
     });
 });

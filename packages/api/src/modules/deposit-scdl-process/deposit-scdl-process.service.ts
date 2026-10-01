@@ -26,11 +26,13 @@ import ExerciceLineCount from "./entities/exerciceLineCount";
 import UserEntity from "../../domain/users/UserEntity";
 import { AssociationSearchPort } from "../../adapters/outputs/db/association-search/association-search.port";
 import { Siren } from "../../identifier-objects";
+import { GetAssociationName } from "../../usecases/search/get-association-name";
 
 export class DepositScdlProcessService {
     constructor(
         private readonly depositLogPort: DepositLogPort,
         private readonly associationSearchPort: AssociationSearchPort,
+        private getName: GetAssociationName,
     ) {}
 
     FIRST_STEP = 1;
@@ -109,7 +111,8 @@ export class DepositScdlProcessService {
 
         try {
             const result = await this.associationSearchPort.findByIdentifier(new Siren(Siret.getSiren(siret)));
-            return result ? result.name : undefined;
+            if (!result) return undefined;
+            else return this.getName.execute(result);
         } catch (e) {
             console.log(e);
             console.error(`Error while looking up allocator name for siret ${siret}`);

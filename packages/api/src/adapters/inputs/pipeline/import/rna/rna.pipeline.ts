@@ -66,7 +66,7 @@ export class RnaPipeline extends ImportPipeline {
                     console.log(`Writting ${dbos.length} RNA documents`);
                     try {
                         if (dbos.length > 0) {
-                            await this.searchPort.upsertMany(
+                            await this.searchPort.upsertFromRna(
                                 dbos
                                     // @TODO: remove this filter if we also use siren name
                                     .filter(dbo => dbo.titre) // in rare cases rna document can miss the titre and this would break association-search update
