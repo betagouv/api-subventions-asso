@@ -1,4 +1,4 @@
-import { Filter } from "mongodb";
+import { AnyBulkWriteOperation, Filter } from "mongodb";
 import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 import MongoAdapter from "../MongoAdapter";
 import Siren from "../../../../identifier-objects/Siren";
@@ -74,16 +74,34 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     }
 
     public async upsertFromRna(dbos: RnaAssociationSearch[]) {
-        const operations = dbos.map(dbo => {
-            const { rna, name, searchName, object, searchObject } = dbo;
-            return {
-                updateOne: {
-                    filter: { rna: rna },
-                    update: { $set: { searchName, object, searchObject, "name.rna": name.rna } },
-                    upsert: true,
-                },
-            };
-        });
+        const operations = dbos
+            .map(dbo => {
+                const { rna, siren, name, searchName, object, searchObject } = dbo;
+                const ops: AnyBulkWriteOperation<AssociationSearchDbo>[] = [];
+
+                // 1. refresh siren only if no Siren import yet (no name from siren)
+                if (siren)
+                    ops.push({
+                        updateOne: {
+                            filter: { rna: rna, "name.siren": { $exists: false } },
+                            update: { $set: { siren } },
+                        },
+                    });
+
+                // 2. upsert the reset; siren is only set on insert (otherwise it comes from Siren or from 1.)
+                ops.push({
+                    updateOne: {
+                        filter: { rna: rna },
+                        update: {
+                            $set: { searchName, object, searchObject, "name.rna": name.rna },
+                            ...(siren && { $setOnInsert: { siren } }),
+                        },
+                        upsert: true,
+                    },
+                });
+                return ops;
+            })
+            .flat();
         await this.collection.bulkWrite(operations);
         return;
     }

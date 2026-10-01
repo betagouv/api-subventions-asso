@@ -25,11 +25,13 @@ export type EstablishmentAssociationSearch = Required<
     Pick<AssociationSearchDbo, "siren" | "nbEstabs" | "postalCodes">
 > &
     Pick<AssociationSearchDbo, "address">;
+
 export type UniteLegaleAssociationSearch = Required<
     Pick<AssociationSearchDbo, "siren" | "mainEstablishmentSiret" | "searchName">
 > & {
     name: { sirene: string };
 } & Pick<AssociationSearchDbo, "rna">;
+
 export type RnaAssociationSearch = Required<Pick<AssociationSearchDbo, "rna" | "searchName">> & {
     name: { rna: string };
 } & Pick<AssociationSearchDbo, "siren" | "object" | "searchObject">;

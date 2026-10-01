@@ -1,3 +1,4 @@
+import { Siret } from "../../../../../identifier-objects";
 import { stringToDateOrNull } from "../../../../../shared/helpers/DateHelper";
 import { removeAccents } from "../../../../../shared/helpers/StringHelper";
 import { RnaAssociationSearch } from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
@@ -52,6 +53,7 @@ export class RnaMapper {
     toAssociationSearch(dbo: Omit<RnaDbo, "titre"> & { titre: string }): RnaAssociationSearch {
         const object = dbo.objet;
         const searchObject = dbo.objet ? removeAccents(dbo.objet) : undefined;
+        const siren = dbo.siret ? Siret.getSiren(dbo.siret) : undefined;
 
         const associationSearch: RnaAssociationSearch = {
             rna: dbo.id,
@@ -61,6 +63,7 @@ export class RnaMapper {
             searchName: removeAccents(dbo.titre),
         };
 
+        if (siren) associationSearch.siren = siren;
         if (object) associationSearch.object = object;
         if (searchObject) associationSearch.searchObject = searchObject;
         return associationSearch;

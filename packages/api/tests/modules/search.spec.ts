@@ -1,9 +1,9 @@
 import { App } from "supertest/types";
 import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
-import associationSearchAdapter from "../../src/adapters/outputs/db/association-search/association-search.adapter";
 import apiEntrepriseService from "../../src/modules/providers/api-entreprise/api-entreprise.service";
 import { ASSOCIATION_SEARCH_DBOS } from "../../src/adapters/outputs/db/association-search/__fixtures__/association-search.fixture";
+import db from "../../src/shared/MongoConnection";
 
 const g = global as unknown as { app: App };
 
@@ -14,7 +14,7 @@ describe("/search", () => {
 
     describe("/associations/{input}", () => {
         beforeEach(async () => {
-            await associationSearchAdapter.upsertMany(ASSOCIATION_SEARCH_DBOS);
+            await db.collection("association-search").insertMany(ASSOCIATION_SEARCH_DBOS);
         });
 
         it("should return 200", async () => {

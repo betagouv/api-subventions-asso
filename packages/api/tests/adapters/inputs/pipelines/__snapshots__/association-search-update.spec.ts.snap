@@ -11,7 +11,10 @@ exports[`Association Search Update should be the merge of unite legale and rna 1
       "type": "RUE",
     },
     "mainEstablishmentSiret": "10000000200022",
-    "name": "ASSOCIATION 2",
+    "name": {
+      "rna": "ASSOCIATION 2",
+      "sirene": "ASSOCIATION 100000002",
+    },
     "nbEstabs": 1,
     "object": "object association 2",
     "postalCodes": [
@@ -24,7 +27,10 @@ exports[`Association Search Update should be the merge of unite legale and rna 1
   },
   {
     "mainEstablishmentSiret": "10000000300015",
-    "name": "ASSOCIATION 3",
+    "name": {
+      "rna": "ASSOCIATION 3",
+      "sirene": "ASSOCIATION 100000003",
+    },
     "object": "object association 3",
     "rna": "W000000003",
     "searchName": "ASSOCIATION 3",
@@ -33,16 +39,26 @@ exports[`Association Search Update should be the merge of unite legale and rna 1
   },
   {
     "mainEstablishmentSiret": "10000000400010",
+    "name": {
+      "sirene": "ASSOCIATION 100000004",
+    },
     "rna": "W000000004",
+    "searchName": "ASSOCIATION 100000004",
     "siren": "100000004",
   },
   {
     "mainEstablishmentSiret": "10000000500018",
+    "name": {
+      "sirene": "ASSOCIATION 100000005",
+    },
     "rna": "W000000005",
+    "searchName": "ASSOCIATION 100000005",
     "siren": "100000005",
   },
   {
-    "name": "ASSOCIATION 1",
+    "name": {
+      "rna": "ASSOCIATION 1",
+    },
     "object": "objet association 1",
     "rna": "W000000001",
     "searchName": "ASSOCIATION 1",
