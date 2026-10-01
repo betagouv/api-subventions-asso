@@ -47,8 +47,6 @@ import fonjepTiersAdapter from "../../../src/adapters/outputs/db/providers/fonje
 import fonjepVersementsAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
 import fonjepTypePosteAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.typePoste.adapter";
 import AssociationIdentifier from "../../../src/identifier-objects/AssociationIdentifier";
-import rechercheEntreprisesAdapter from "../../../src/adapters/outputs/api/recherche-entreprises/recherche-entreprises.adapter";
-import { RECHERCHE_ENTREPRISES_DTO } from "../../../src/adapters/outputs/api/recherche-entreprises/__fixtures__/recherche-entreprise.fixture";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../adapters/outputs/db/__fixtures__/scdl.fixtures";
 import { DAUPHIN_GISPRO_DBOS } from "../../adapters/outputs/db/__fixtures__/dauphin-gispro.fixtures";
 import {
@@ -58,6 +56,7 @@ import {
 import getAssociation from "../../../src/modules/associations/use-cases/get-association";
 import bodaccAdapter from "../../../src/adapters/outputs/api/bodacc/bodacc.adapter";
 import { BODACC_ENTITY } from "../../../src/domain/__fixtures__/bodacc.fixture";
+import { NotAssociationError } from "core";
 
 jest.mock("../../../src/modules/provider-request/provider-request.service");
 
@@ -197,16 +196,13 @@ describe("/association", () => {
             expect(subventions).toMatchSnapshot();
         });
 
-        it("should return empty array if RNA does not match a SIREN", async () => {
-            const response = await request(g.app)
+        it("throws NotAssociationError if identifier not found in DB", async () => {
+            await request(g.app)
                 .get(`/association/${LONELY_RNA}/subventions`)
                 .set("x-access-token", await createAndGetUserToken())
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(200);
-
-            const actual = response.body.subventions;
-            expect(actual).toHaveLength(0);
+                .set("Accept", "application/json")
+                .expect(422)
+                .expect(response => expect(response.text).toContain(new NotAssociationError().message));
         });
     });
 
@@ -307,17 +303,9 @@ describe("/association", () => {
     // we assume that only testing one entrypoint is enough to test the middleware
     // @THOUGHTS: should we test this elsewhere, and maybe creating its own file ?
     describe("isAssoIdentifierFromAssoMiddleware", () => {
-        const API_RE_SIREN = "900000000";
         let spyGetAssociation: jest.SpyInstance;
         beforeEach(() => {
             spyGetAssociation = jest.spyOn(getAssociation, "execute");
-            // set Recherche Entreprise to only search for one page
-            jest.spyOn(rechercheEntreprisesAdapter, "search").mockResolvedValue({
-                ...RECHERCHE_ENTREPRISES_DTO,
-                total_pages: 1,
-                page: 1,
-                total_results: 1,
-            });
         });
 
         it("fills AssociationIdentifier with rna-siren collection", async () => {
@@ -328,17 +316,6 @@ describe("/association", () => {
 
             expect(spyGetAssociation).toHaveBeenCalledWith(
                 AssociationIdentifier.fromSirenAndRna(new Siren(SIREN_STR), new Rna(RNA_STR)),
-            );
-        });
-
-        it("calls API Recherche Entreprise when rna-siren does not contains a match", async () => {
-            await request(g.app)
-                .get(`/association/${LONELY_RNA}`)
-                .set("x-access-token", await createAndGetUserToken())
-                .set("Accept", "application/json");
-
-            expect(spyGetAssociation).toHaveBeenCalledWith(
-                AssociationIdentifier.fromSirenAndRna(new Siren(API_RE_SIREN), new Rna(LONELY_RNA)),
             );
         });
     });

@@ -111,4 +111,11 @@ export interface NotificationDataTypes {
     [NotificationType.BATCH_DEPOSIT_RENEWAL]: {
         emails: string[];
     };
+    [NotificationType.USECASE_ERROR]: {
+        message: string;
+        object: Record<string, unknown>;
+    };
+    [NotificationType.CRON_BLOCKED]: {
+        message: string;
+    };
 }

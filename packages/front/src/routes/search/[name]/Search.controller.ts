@@ -1,4 +1,4 @@
-import type { PaginatedAssociationNameDto, SiretDto } from "dto";
+import type { PaginatedAssociationSearchDto, SiretDto } from "dto";
 import { goto } from "$app/navigation";
 import Store from "$lib/core/Store";
 import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
@@ -9,7 +9,7 @@ import { removeWhiteSpace } from "$lib/helpers/stringHelper";
 
 export default class SearchController {
     inputSearch: Store<string | undefined>;
-    associations = new Store<PaginatedAssociationNameDto>({ nbPages: 1, page: 1, total: 0, results: [] });
+    associations = new Store<PaginatedAssociationSearchDto>({ nbPages: 1, page: 1, total: 0, results: [] });
     searchPromise: Store<Promise<unknown>>;
     duplicatesFromIdentifier: Store<string[] | null>;
     currentPage = new Store(1);

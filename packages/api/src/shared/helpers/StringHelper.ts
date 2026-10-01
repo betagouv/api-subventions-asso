@@ -39,6 +39,10 @@ export function removeWhitespace(str: string) {
     return str.replace(/\s+/g, "");
 }
 
+export function removeAccents(str: string) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 export function sanitizeHeader(value: string): string {
     return value
         .normalize("NFD") // Remove accents + other special characters

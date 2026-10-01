@@ -41,7 +41,10 @@ export class DataLogAdapter extends MongoAdapter<DataLogEntity> implements DataL
     }
 
     async getLastEditionDateByProvider(providerId: string): Promise<Date | null> {
-        const result = await this.collection.findOne({ providerId, editionDate: { $exists: true } });
+        const result = await this.collection.findOne(
+            { providerId, editionDate: { $exists: true } },
+            { projection: { _id: 0 }, sort: { editionDate: -1 } },
+        );
         return result?.editionDate || null;
     }
 

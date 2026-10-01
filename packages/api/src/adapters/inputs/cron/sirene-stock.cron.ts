@@ -1,5 +1,7 @@
 import { CronController } from "../../../@types/CronController";
 import { AsyncCron } from "../../../decorators/cron.decorator";
+import { NotificationType } from "../../../modules/notify/@types/NotificationType";
+import notifyService, { NotifyService } from "../../../modules/notify/notify.service";
 import DownloadFile from "../../../usecases/download-file";
 import { RemoveFile } from "../../../usecases/remove-file";
 import {
@@ -16,6 +18,7 @@ export class SireneStockCron implements CronController {
     constructor(
         private ulPipeline: DownloadAndImport,
         private estabPipeline: DownloadAndImport,
+        private notifier: NotifyService,
     ) {}
 
     // every month on day 2 (00:00)
@@ -26,11 +29,27 @@ export class SireneStockCron implements CronController {
     }
 
     async importUnitesLegale() {
-        return this.ulPipeline.run();
+        try {
+            return this.ulPipeline.run();
+        } catch (e) {
+            this.notifier.notify(NotificationType.FAILED_CRON, {
+                cronName: `${this.name} - unité légale`,
+                error: e as Error,
+            });
+            throw e;
+        }
     }
 
     async importEstablishments() {
-        return this.estabPipeline.run();
+        try {
+            return this.estabPipeline.run();
+        } catch (e) {
+            this.notifier.notify(NotificationType.FAILED_CRON, {
+                cronName: `${this.name} - établissement`,
+                error: e as Error,
+            });
+            throw e;
+        }
     }
 }
 
@@ -45,6 +64,7 @@ const sireneStockCron = new SireneStockCron(
         new DownloadFile(sireneStockEstablishmentAdapter),
         new RemoveFile(),
     ),
+    notifyService,
 );
 
 export default sireneStockCron;

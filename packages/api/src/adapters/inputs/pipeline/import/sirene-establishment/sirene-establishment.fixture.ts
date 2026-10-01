@@ -1,7 +1,8 @@
+import DEFAULT_ASSOCIATION from "../../../../../../tests/__fixtures__/association.fixture";
 import SireneEstablishmentDto from "./sirene-establishment.dto";
 
 export const SIRENE_ESTABLISHMENT_DTO: SireneEstablishmentDto = {
-    siren: "123456789",
+    siren: DEFAULT_ASSOCIATION.siren,
     nic: "00012",
     siret: "12345678900012",
     dateDernierTraitementEtablissement: new Date("2026-07-08T12:00:00"),

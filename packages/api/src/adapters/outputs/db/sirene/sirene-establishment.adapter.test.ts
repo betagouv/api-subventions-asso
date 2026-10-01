@@ -12,8 +12,14 @@ describe("SireneEstablishmentAdapter", () => {
     const mockCreateIndex = jest.fn();
     const mockBulkWrite = jest.fn();
     const mockFind = jest.fn();
+    const mockAggregate = jest.fn();
 
     const DBO = { siren: DEFAULT_ASSOCIATION.siren } as unknown as SireneEstablishmentDbo;
+    const AGGREGATE_DBO = {
+        siren: DEFAULT_ASSOCIATION.siren,
+        nbEstabs: 2,
+        postalCodes: ["75002", "75001"],
+    };
 
     beforeAll(() => {
         jest
@@ -25,6 +31,9 @@ describe("SireneEstablishmentAdapter", () => {
                 bulkWrite: mockBulkWrite,
                 find: mockFind.mockImplementation(() => ({
                     toArray: async () => [DBO],
+                })),
+                aggregate: mockAggregate.mockImplementation(() => ({
+                    toArray: async () => [AGGREGATE_DBO],
                 })),
             });
     });
@@ -67,6 +76,43 @@ describe("SireneEstablishmentAdapter", () => {
         it("maps dbos to entities", async () => {
             await sireneEstablishmentAdapter.getAllBySiren(new Siren(DEFAULT_ASSOCIATION.siren));
             expect(toEntity).toHaveBeenCalledWith(DBO);
+        });
+    });
+
+    describe("getComputedFields", () => {
+        it("returns sorted postal codes", async () => {
+            const actual = await sireneEstablishmentAdapter.getComputedFields([DEFAULT_ASSOCIATION.siren]).toArray();
+            expect(actual).toEqual([AGGREGATE_DBO]);
+        });
+
+        it("projects postal codes without null values", async () => {
+            await sireneEstablishmentAdapter.getComputedFields([DEFAULT_ASSOCIATION.siren]);
+            expect(mockAggregate).toHaveBeenCalledWith([
+                { $match: { siren: { $in: [DEFAULT_ASSOCIATION.siren] } } },
+                {
+                    $group: {
+                        _id: "$siren",
+                        nbEstabs: {
+                            $sum: 1,
+                        },
+                        postalCodes: { $addToSet: "$codePostalEtablissement" },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        siren: "$_id",
+                        nbEstabs: 1,
+                        postalCodes: {
+                            $filter: {
+                                input: "$postalCodes",
+                                as: "postalCode",
+                                cond: { $ne: ["$$postalCode", null] },
+                            },
+                        },
+                    },
+                },
+            ]);
         });
     });
 });

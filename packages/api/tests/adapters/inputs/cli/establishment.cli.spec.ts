@@ -10,28 +10,22 @@ import sireneEstablishmentPipeline from "../../../../src/adapters/inputs/pipelin
 describe("Establishment CLI", () => {
     const cli = new EstablishmentCli(sireneEstablishmentPipeline, importNotifier);
 
-    const seedSirene = () => db.collection("sirene").insertOne({ siren: "100000000" });
+    const seedSirene = () => db.collection("sirene").insertMany([{ siren: "100000000" }, { siren: "100000001" }]);
 
     describe("parse", () => {
         beforeEach(async () => {
             await seedSirene();
         });
 
-        it.only("it persist data in collection", async () => {
+        it("it persist data in collection", async () => {
             await cli.parse(path.resolve(__dirname, "../__fixtures__/sirene-establishment.parquet"), "2026-07-21");
 
             const documents = (await db
                 .collection("etablissement")
                 .find({}, { projection: { _id: 0 } })
-                .sort({ siret: 1 })
                 .toArray()) as unknown as SireneEstablishmentDbo[];
 
-            expect(
-                documents.map(doc => ({
-                    ...doc,
-                    dateDernierTraitementEtablissement: expect.any(Date),
-                })),
-            ).toMatchSnapshot();
+            expect(documents).toMatchSnapshot();
         });
 
         it("logs import in data-log", async () => {
@@ -52,7 +46,8 @@ describe("Establishment CLI", () => {
             );
 
             expect(spyNotify).toHaveBeenCalledWith(NotificationType.DATA_IMPORT_SUCCESS, {
-                providerName: "SIRENE Establishment",
+                // @ts-expect-error: access protected
+                providerName: cli._serviceMeta.name,
                 exportDate: new Date(EXPORT_DATE_STR),
                 details: {
                     fileName: "multiple-batch.sirene-establishment.parquet",

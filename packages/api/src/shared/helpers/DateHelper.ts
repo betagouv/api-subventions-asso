@@ -86,6 +86,12 @@ export const shortISOPeriodRegExp = new RegExp(/\d{4}-[01]\d-[0-3]\d\/\d{4}-[01]
 export const addDaysToDate = (date: Date, nbOfDays = 1) =>
     new Date(new Date(date).setUTCDate(date.getUTCDate() + nbOfDays));
 
+export const addMonths = (date, months = 1) => {
+    const newDate = new Date(date);
+    newDate.setMonth(newDate.getMonth() + months);
+    return newDate;
+};
+
 /**
  *
  * @param dateStr dd-mm-yyyy or dd/mm/yyyy string date - i.e 11/06/2025 for 11 june 2025

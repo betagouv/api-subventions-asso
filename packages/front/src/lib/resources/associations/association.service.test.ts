@@ -1,7 +1,7 @@
 import associationService from "./association.service";
 
 import associationPort from "./association.port";
-import type { PaginatedAssociationNameDto } from "dto";
+import type { PaginatedAssociationSearchDto } from "dto";
 vi.mock("./association.port", () => ({
     default: {
         incExtractData: vi.fn(),
@@ -168,7 +168,7 @@ describe("AssociationService", () => {
         });
 
         it("returns result from port", async () => {
-            const expected = "test" as unknown as PaginatedAssociationNameDto;
+            const expected = "test" as unknown as PaginatedAssociationSearchDto;
             mockedAssociationPort.search.mockResolvedValue(expected);
             const actual = await associationService._searchByText(SIREN);
             expect(actual).toBe(expected);
@@ -180,7 +180,7 @@ describe("AssociationService", () => {
         beforeAll(() => {
             mockByText = vi
                 .spyOn(associationService, "_searchByText")
-                .mockResolvedValue({} as unknown as PaginatedAssociationNameDto);
+                .mockResolvedValue({} as unknown as PaginatedAssociationSearchDto);
             mockByIdentifier = vi.spyOn(associationService, "_searchByIdentifier").mockResolvedValue([]);
         });
         afterAll(() => {

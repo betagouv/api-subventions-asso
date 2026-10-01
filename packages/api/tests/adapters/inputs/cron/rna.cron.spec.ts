@@ -3,6 +3,9 @@ import db from "../../../../src/shared/MongoConnection";
 import fs from "fs";
 import path from "path";
 import axios from "axios";
+import dataLogAdapter from "../../../../src/adapters/outputs/db/data-log/data-log.adapter";
+import { DataLogSource } from "../../../../src/modules/data-log/entities/dataLogEntity";
+import { addMonths } from "../../../../src/shared/helpers/DateHelper";
 
 jest.mock("axios");
 
@@ -21,6 +24,14 @@ describe("RNA CRON", () => {
 
     describe("import", () => {
         it("import RNA", async () => {
+            await dataLogAdapter.insert({
+                providerId: "sirene-unite-legale",
+                providerName: "SIRENE Unité Légale",
+                fileName: "stock-stockunitelegale-parquet.parquet",
+                source: DataLogSource.FILE,
+                integrationDate: addMonths(new Date(), -1),
+            });
+
             await rnaCron.import();
             const dbos = await db
                 .collection("rna")

@@ -1,9 +1,12 @@
+import { Siret } from "../../../../../identifier-objects";
 import { stringToDateOrNull } from "../../../../../shared/helpers/DateHelper";
+import { removeAccents } from "../../../../../shared/helpers/StringHelper";
+import { RnaAssociationSearch } from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import RnaDbo from "../../../../outputs/db/rna/rna.dbo";
 import { RnaWaldecDto } from "./rna.dto";
 
 export class RnaMapper {
-    map(dto: RnaWaldecDto): RnaDbo {
+    toDbo(dto: RnaWaldecDto): RnaDbo {
         return {
             id: dto.id,
             "id-ex": dto.id_ex,
@@ -45,6 +48,25 @@ export class RnaMapper {
             position: dto.position,
             "maj-time": new Date(dto.maj_time),
         };
+    }
+
+    toAssociationSearch(dbo: Omit<RnaDbo, "titre"> & { titre: string }): RnaAssociationSearch {
+        const object = dbo.objet;
+        const searchObject = dbo.objet ? removeAccents(dbo.objet) : undefined;
+        const siren = dbo.siret ? Siret.getSiren(dbo.siret) : undefined;
+
+        const associationSearch: RnaAssociationSearch = {
+            rna: dbo.id,
+            name: {
+                rna: dbo.titre,
+            },
+            searchName: removeAccents(dbo.titre),
+        };
+
+        if (siren) associationSearch.siren = siren;
+        if (object) associationSearch.object = object;
+        if (searchObject) associationSearch.searchObject = searchObject;
+        return associationSearch;
     }
 }
 const rnaMapper = new RnaMapper();

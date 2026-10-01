@@ -21,4 +21,6 @@ export enum NotificationType {
     EXTERNAL_API_ERROR,
     MONGO_CONNECTION_LOST,
     BATCH_DEPOSIT_RENEWAL,
+    USECASE_ERROR,
+    CRON_BLOCKED,
 }
