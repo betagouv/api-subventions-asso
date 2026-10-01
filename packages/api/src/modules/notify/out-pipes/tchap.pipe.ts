@@ -25,6 +25,8 @@ export class TchapPipe implements NotifyOutPipe {
                 return this.badEmailDomain(data);
             case NotificationType.FAILED_CRON:
                 return this.failedCron(data);
+            case NotificationType.CRON_BLOCKED:
+                return this.cronBlocked(data);
             case NotificationType.DEPOSIT_UNFINISHED:
                 return this.depositUnfinished(data);
             case NotificationType.DATA_IMPORT_SUCCESS:
@@ -196,6 +198,10 @@ export class TchapPipe implements NotifyOutPipe {
         const stack = new Error(error).stack ?? String(error);
         const message = `Le cron <code>${cronName}</code> a échoué<br><br>${this.formatCodeBlock(stack)}`;
 
+        return this.sendMessage(TchapRooms.DEV, "Police du Cron", "⏰", message);
+    }
+
+    private cronBlocked({ message }) {
         return this.sendMessage(TchapRooms.DEV, "Police du Cron", "⏰", message);
     }
 
