@@ -4,11 +4,6 @@
     import { valueOrNotFound } from "$lib/helpers/dataHelper";
     import type { RechercheAssociationDto } from "dto";
 
-    export let simplifiedAsso: RechercheAssociationDto;
-    // only used for search page
-    // TODO: make AssociationCard component a dumb component and pass the redirection action to parent component ?
-    export let searchKey: string | undefined = undefined;
-
     interface Props {
         simplifiedAsso: RechercheAssociationDto;
         // TODO: make AssociationCard component a dumb component and pass the redirection action to parent component ?
