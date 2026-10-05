@@ -1,6 +1,10 @@
 module.exports = {
     async up(db) {
-        await db.collection("association-search").drop(); // created from indexes
+        try {
+            await db.collection("association-search").drop();
+        } catch (err) {
+            if (err.codeName !== "NamespaceNotFound") throw err;
+        }
         await db.renameCollection("unite-legal-names", "association-search");
     },
 };
