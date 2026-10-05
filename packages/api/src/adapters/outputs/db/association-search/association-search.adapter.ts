@@ -27,6 +27,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
 
     findByText(text: string, postalCode?: string): Promise<AssociationSearchEntity[]> {
         const cleanText = removeAccents(text.trim().toLowerCase());
+
         return this.collection
             .find(
                 this.buildQueryWithPostalCodeFilter(

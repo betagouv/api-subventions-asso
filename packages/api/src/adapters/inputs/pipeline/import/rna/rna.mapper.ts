@@ -61,7 +61,7 @@ export class RnaMapper {
 
     toAssociationSearch(dbo: Omit<RnaDbo, "titre"> & { titre: string }): RnaAssociationSearch {
         const object = dbo.objet;
-        const searchObject = dbo.objet ? removeAccents(dbo.objet) : undefined;
+        const searchObject = dbo.objet ? removeAccents(dbo.objet).toLowerCase() : undefined;
         const siren = this.getSiren(dbo.siret);
 
         const associationSearch: RnaAssociationSearch = {
@@ -69,7 +69,7 @@ export class RnaMapper {
             name: {
                 rna: dbo.titre,
             },
-            searchName: removeAccents(dbo.titre),
+            searchName: removeAccents(dbo.titre).toLowerCase(),
         };
 
         if (siren) associationSearch.siren = siren;

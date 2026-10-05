@@ -3,10 +3,10 @@ import AssociationSearchEntity from "../../../../entities/AssociationSearchEntit
 
 export function toDto(entity: AssociationSearchEntity): RechercheAssociationDto {
     return {
-        siren: entity.siren!.value,
+        siren: entity.siren?.value ?? null,
         rna: entity.rna?.value ?? null,
         siretSiege: entity.mainEstablishmentSiret?.value ?? null,
-        name: entity.name.rna ? entity.name.rna : entity.name.sirene!,
+        name: entity.name.rna ? entity.name.rna : (entity.name.sirene ?? null),
         adresse: {
             numero: entity.address?.number ?? null,
             type_voie: entity.address?.type ?? null,

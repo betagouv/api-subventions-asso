@@ -11,14 +11,14 @@
     const { name } = data.params;
 
     const ctrl = new SearchController(name);
-    const { searchPromise, associations, inputSearch, duplicatesFromIdentifier, currentPage, isLastSearchCompany } =
+    const { searchPromise, searchResults, inputSearch, duplicatesFromIdentifier, currentPage, isLastSearchCompany } =
         ctrl;
 
     let nbResultLabel;
 
     // TODO: #3374
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    $: ($associations, (nbResultLabel = ctrl.updateNbEtabsLabel()));
+    $: ($searchResults, (nbResultLabel = ctrl.updateNbEtabsLabel()));
 </script>
 
 <div class="fr-grid-row fr-grid-row--center fr-my-6v">
@@ -51,7 +51,7 @@
             <p class="fr-mb-2w">
                 {nbResultLabel}
             </p>
-            {#if $associations.nbPages > 1}
+            {#if $searchResults.nbPages > 1}
                 <p class="fr-mb-2w fr-text--bold">
                     Pour faciliter l’affichage des résultats, tapez directement le SIREN ou RNA de l’association
                     recherchée.
@@ -65,16 +65,16 @@
         </div>
 
         <div class="fr-grid-row fr-grid-row--gutters search-layout">
-            {#each $associations.results as simplifiedAsso (simplifiedAsso.siren + "-" + simplifiedAsso.rna)}
+            {#each $searchResults.resultats as simplifiedAsso (simplifiedAsso.siren + "-" + simplifiedAsso.rna)}
                 <AssociationCard {simplifiedAsso} searchKey={$inputSearch} />
             {/each}
         </div>
 
-        {#if $associations.nbPages > 1}
+        {#if $searchResults.nbPages > 1}
             <div class="fr-grid-row fr-mt-5w">
                 <div class="fr-mx-auto">
                     <Pagination
-                        totalPages={$associations.nbPages}
+                        totalPages={$searchResults.nbPages}
                         {currentPage}
                         on:change={e => ctrl.onChangePage(e)} />
                 </div>

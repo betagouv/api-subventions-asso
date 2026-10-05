@@ -2,8 +2,9 @@
     import AssociationCardController from "./AssociationCard.controller";
     import Card from "$lib/dsfr/Card.svelte";
     import { valueOrNotFound } from "$lib/helpers/dataHelper";
+    import type { RechercheAssociationDto } from "dto";
 
-    export let simplifiedAsso;
+    export let simplifiedAsso: RechercheAssociationDto;
     // only used for search page
     // TODO: make AssociationCard component a dumb component and pass the redirection action to parent component ?
     export let searchKey: string | undefined = undefined;
@@ -28,7 +29,7 @@
     </div>
     <div class="address">
         <!-- if history was created before we saved the address, do not display -->
-        {#if simplifiedAsso.address}
+        {#if simplifiedAsso.adresse}
             <div>
                 <span class="icon-address fr-mr-1w fr-icon-map-pin-2-line" />
             </div>

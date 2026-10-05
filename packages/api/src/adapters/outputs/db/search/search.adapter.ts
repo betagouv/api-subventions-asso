@@ -15,18 +15,21 @@ function toEntity(dbo: SearchResultDbo): AssociationSearchEntity {
 }
 
 function toDbo(searchToken: string, searchResult: Partial<AssociationSearchEntity>[]): SearchCacheEntity {
-    return new SearchCacheEntity(
-        searchToken,
-        searchResult.map(associationSearch => {
+    let resultats;
+
+    if (searchResult.length > 0) {
+        resultats = searchResult.map(associationSearch => {
             return {
                 name: associationSearch.name,
                 rna: associationSearch.rna?.value,
-                siren: associationSearch.siren!.value, // should always be defined but all search cache will be refactored / removed soon
+                siren: associationSearch.siren?.value,
                 address: associationSearch.address,
                 nbEstabs: associationSearch.nbEstabs,
             };
-        }) as SearchResultDbo[],
-    );
+        }) as SearchResultDbo[];
+    } else resultats = [];
+
+    return new SearchCacheEntity(searchToken, resultats);
 }
 
 export class SearchCacheAdapter implements SearchPort {
@@ -47,6 +50,7 @@ export class SearchCacheAdapter implements SearchPort {
                 },
             ])
             .toArray()) as SearchCacheEntity[];
+
         if (!aggregationResult[0]) return null;
         return aggregationResult[0].results.map(toEntity);
     }

@@ -14,7 +14,7 @@ export class SearchHttp extends Controller {
      * @param input Identifiant RNA ou Identifiant Siren ou Nom d'une association (peut-être encodé via encodeURIComponent())
      * @param page default to 1
      */
-    @Example<PaginatedResultDto<RechercheAssociationDto[]>>({
+    @Example<PaginatedResultDto<RechercheAssociationDto>>({
         resultats: [
             {
                 siren: "123456789",
@@ -44,7 +44,7 @@ export class SearchHttp extends Controller {
         @Path() input: string,
         @Query() page = "1",
         @Query() postalCode?: string,
-    ): Promise<PaginatedResultDto<RechercheAssociationDto[]>> {
+    ): Promise<PaginatedResultDto<RechercheAssociationDto>> {
         // @TODO: transform in use case
         const { results, ...search } = await searchService.getPaginatedResult(
             decodeURIComponent(input),

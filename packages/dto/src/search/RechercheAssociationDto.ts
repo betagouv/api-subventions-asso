@@ -1,9 +1,9 @@
 import { Adresse, RnaDto, SirenDto } from "../shared";
 export interface RechercheAssociationDto {
-    siren: SirenDto;
-    name: string;
-    rna: RnaDto | null; // after association search refactor finished this should never be null
-    siretSiege: string | null; // after association search refactor finished this should never be null
-    adresse: Adresse;
-    nbEtabs: number | null; // after association search refactor finished this should never be null
+    siren: SirenDto | null;
+    name: string | null; // should not be null but we guard ourselves
+    rna: RnaDto | null;
+    siretSiege: string | null; // should not be null but we guard ourselves
+    adresse: Adresse | null;
+    nbEtabs: number | null; // should not be null but we guard ourselves
 }
