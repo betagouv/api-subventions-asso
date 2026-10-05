@@ -9,13 +9,21 @@
     // TODO: make AssociationCard component a dumb component and pass the redirection action to parent component ?
     export let searchKey: string | undefined = undefined;
 
+    interface Props {
+        simplifiedAsso: RechercheAssociationDto;
+        // TODO: make AssociationCard component a dumb component and pass the redirection action to parent component ?
+        searchKey?: string | undefined;
+    }
+
+    let { simplifiedAsso, searchKey = undefined }: Props = $props();
+
     const ctrl = new AssociationCardController(simplifiedAsso, searchKey);
 </script>
 
 <Card title={simplifiedAsso.name} url={ctrl.url} titleStyle="h6" keepSpaceForTitle={true}>
-    <svelte:fragment slot="card-start">
+    {#snippet cardStart()}
         <p class="card-start fr-card__detail fr-text--sm fr-icon-community-line">Association</p>
-    </svelte:fragment>
+    {/snippet}
     <div class="flex">
         <p>
             <b>RNA</b>
@@ -31,7 +39,7 @@
         <!-- if history was created before we saved the address, do not display -->
         {#if simplifiedAsso.adresse}
             <div>
-                <span class="icon-address fr-mr-1w fr-icon-map-pin-2-line" />
+                <span class="icon-address fr-mr-1w fr-icon-map-pin-2-line"></span>
             </div>
             <div class="ellipsis">
                 <span class="fr-text--bold ellipsis">{ctrl.street}</span>
@@ -40,14 +48,14 @@
             </div>
         {/if}
     </div>
-    <div slot="card-end">
+    {#snippet cardEnd()}
         <!-- if history was created before we saved the nb of estabs, do not display -->
         {#if simplifiedAsso.nbEtabs}
             <p class="info fr-card__detail fr-icon-info-fill fr-text--sm">
                 {ctrl.nbEtabsLabel}
             </p>
         {/if}
-    </div>
+    {/snippet}
 </Card>
 
 <style>

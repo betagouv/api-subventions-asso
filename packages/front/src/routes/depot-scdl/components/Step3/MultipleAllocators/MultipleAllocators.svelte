@@ -2,9 +2,12 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import { depositLogStore } from "$lib/store/depositLog.store";
     import depositLogService from "$lib/resources/deposit-log/depositLog.service";
-    import { createEventDispatcher } from "svelte";
 
-    const dispatch = createEventDispatcher<{ prevStep: void; restartNewForm: void }>();
+    let { prevStep = () => {}, restartNewForm = () => {} } = $props();
+    const dispatch = (event: string) => {
+        if (event === "prevStep") prevStep();
+        else if (event === "restartNewForm") restartNewForm();
+    };
 </script>
 
 <div class="fr-col-12 fr-col-md-8">
@@ -46,12 +49,10 @@
     </ul>
 
     <div class="fr-mt-4v">
-        <button on:click={() => dispatch("prevStep")} class="fr-btn fr-mr-3v" type="button">
-            Réimporter mon fichier
-        </button>
+        <button onclick={prevStep} class="fr-btn fr-mr-3v" type="button">Réimporter mon fichier</button>
 
         <button
-            on:click={() => depositLogService.restartNewDeposit(dispatch)}
+            onclick={() => depositLogService.restartNewDeposit(dispatch)}
             class="fr-btn fr-btn--secondary fr-mr-3v"
             type="button">
             Recommencer un nouveau dépôt

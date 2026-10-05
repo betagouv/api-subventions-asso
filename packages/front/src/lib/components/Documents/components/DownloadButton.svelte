@@ -1,15 +1,20 @@
 <script lang="ts">
     import Button from "$lib/dsfr/Button.svelte";
-    import Dispatch from "$lib/core/Dispatch";
     import DownloadButtonController from "$lib/components/Documents/components/DownloadButton.controller";
     import type { ReadStore } from "$lib/core/Store";
     import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 
-    export let docsStore: ReadStore<DocumentEntity[]>;
-    const dispatch = Dispatch.getDispatcher();
+    interface Props {
+        docsStore: ReadStore<DocumentEntity[]>;
+        ondownload?: () => void;
+        onreset?: () => void;
+    }
 
-    const ctrl = new DownloadButtonController(docsStore);
-    const { downloadBtnLabel, resetBtnDisabled } = ctrl;
+    let { docsStore, ondownload = () => {}, onreset = () => {} }: Props = $props();
+
+    const ctrl = $derived(new DownloadButtonController(docsStore));
+    const downloadBtnLabel = $derived(ctrl.downloadBtnLabel);
+    const resetBtnDisabled = $derived(ctrl.resetBtnDisabled);
 </script>
 
 <ul
@@ -20,7 +25,7 @@
             icon="download-line"
             trackerName="download-zip"
             title={$downloadBtnLabel}
-            on:click={() => dispatch("download")}>
+            onclick={ondownload}>
             {$downloadBtnLabel}
         </Button>
     </li>
@@ -31,7 +36,7 @@
             disabled={$resetBtnDisabled}
             trackerName="reset-docs-selection"
             title="Réinitialiser la sélection de documents"
-            on:click={() => dispatch("reset")}>
+            onclick={onreset}>
             Tout désélectionner
         </Button>
     </li>

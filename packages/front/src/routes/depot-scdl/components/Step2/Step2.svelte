@@ -3,19 +3,23 @@
     import InfoBox from "$lib/components/InfoBox.svelte";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
     import Upload from "$lib/dsfr/Upload.svelte";
-    import { createEventDispatcher } from "svelte";
     import SheetSelector from "./SheetSelector.svelte";
     import Step2Controller from "./Step2.controller";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
     import OverwriteExercices from "./OverwriteExercices.svelte";
 
-    const dispatch = createEventDispatcher<{
-        prevStep: void;
-        nextStep: void;
-        loading: string;
-        endLoading: void;
-        error: string;
-    }>();
+    let {
+        prevStep = () => {},
+        nextStep = () => {},
+        loading = (_message: string) => {},
+        endLoading = () => {},
+    } = $props();
+    const dispatch = (event: string, detail?: string) => {
+        if (event === "prevStep") prevStep();
+        else if (event === "nextStep") nextStep();
+        else if (event === "loading") loading(detail ?? "");
+        else if (event === "endLoading") endLoading();
+    };
     const ctrl = new Step2Controller(dispatch);
     const {
         noFileOrInvalid,
@@ -36,19 +40,19 @@
             value: "agreement",
         },
     ];
-    let selectedValues: string[] = [];
+    let selectedValues: string[] = $state([]);
 </script>
 
 <div>
     {#if $view === "sheetSelector"}
         <SheetSelector
             excelSheets={$excelSheets}
-            on:sheetSelected={e => ctrl.handleSheetSelected(e)}
-            on:restartUpload={() => ctrl.handleRestartUpload()} />
+            sheetSelected={sheet => ctrl.handleSheetSelected({ detail: sheet } as CustomEvent<string>)}
+            restartUpload={() => ctrl.handleRestartUpload()} />
     {:else if $view === "overwriteExercices"}
         <OverwriteExercices
-            on:validate={e => ctrl.uploadFile(undefined, e.detail.checkedExercises)}
-            on:toFileSelect={() => ctrl.goToFileSelection()} />
+            validate={({ checkedExercises }) => ctrl.uploadFile(undefined, checkedExercises)}
+            toFileSelect={() => ctrl.goToFileSelection()} />
     {:else}
         <div>
             <div class="fr-mb-6v">
@@ -111,16 +115,15 @@
                     error={$uploadError}
                     errorMessage={$uploadErrorMessage}
                     name="file"
-                    on:fileChange={e => ctrl.handleFileChange(e)} />
+                    fileChange={detail =>
+                        ctrl.handleFileChange({ detail } as CustomEvent<{ files: FileList | null }>)} />
             </div>
 
             <div>
-                <button on:click={() => dispatch("prevStep")} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
-                    Retour
-                </button>
+                <button onclick={prevStep} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
 
                 <button
-                    on:click={() => ctrl.handleValidate()}
+                    onclick={() => ctrl.handleValidate()}
                     disabled={$noFileOrInvalid || !selectedValues.includes(checkboxOptions[0].value)}
                     class="fr-btn fr-mr-3v"
                     type="button">

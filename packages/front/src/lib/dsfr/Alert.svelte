@@ -1,9 +1,21 @@
-<script>
-    export let title = "";
-    export let type = "warning";
-    export let small = false;
-    export let closeButton = false;
-    export let visible = true;
+<script lang="ts">
+    interface Props {
+        title?: string;
+        type?: string;
+        small?: boolean;
+        closeButton?: boolean;
+        visible?: boolean;
+        children?: import("svelte").Snippet;
+    }
+
+    let {
+        title = "",
+        type = "warning",
+        small = false,
+        closeButton = false,
+        visible = $bindable(true),
+        children,
+    }: Props = $props();
 </script>
 
 {#if visible}
@@ -12,12 +24,12 @@
             <p class="fr-alert__title">{title}</p>
         {/if}
 
-        <slot />
+        {@render children?.()}
 
         {#if closeButton}
             <button
                 title="Masquer le message"
-                on:click={() => (visible = false)}
+                onclick={() => (visible = false)}
                 type="button"
                 class="fr-btn--close fr-btn">
                 Masquer le message

@@ -1,19 +1,25 @@
-<script>
+<script lang="ts">
     import { tick } from "svelte";
     import { MonthlyGraphTooltipController } from "./MonthlyGraphTooltip.controller";
 
-    export let resource = "";
-    export let context = {};
-    export let withPreviousValue = false;
-    export let year;
+    interface Props {
+        resource?: string;
+        context?: Record<string, unknown>;
+        withPreviousValue?: boolean;
+        year: string | number;
+    }
+
+    let { resource = "", context = {}, withPreviousValue = false, year }: Props = $props();
 
     const ctrl = new MonthlyGraphTooltipController(withPreviousValue, year);
     const { style, date, number } = ctrl;
 
-    $: (async () => {
-        await tick(); // without tick, tooltipContext is not up-to-date
-        ctrl.update(context);
-    })();
+    $effect(() => {
+        (async () => {
+            await tick(); // without tick, tooltipContext is not up-to-date
+            ctrl.update(context);
+        })();
+    });
 </script>
 
 <div class="tooltip-container" style={$style} role="tooltip">
@@ -56,13 +62,17 @@
         bottom: calc(-1 * calc(var(--size) / 2));
         left: 50%;
         margin-left: calc(-1 * calc(var(--size) / 2));
-        box-shadow: 0 0.5rem 0.5rem var(--shadow-color-one), 0 0.5rem 1rem var(--shadow-colo-two);
+        box-shadow:
+            0 0.5rem 0.5rem var(--shadow-color-one),
+            0 0.5rem 1rem var(--shadow-colo-two);
         background: var(--background-default-grey);
         rotate: 45deg;
     }
 
     .tooltip-content {
-        box-shadow: 0 0.5rem 0.5rem var(--shadow-color-one), 0 0.5rem 1rem var(--shadow-colo-two);
+        box-shadow:
+            0 0.5rem 0.5rem var(--shadow-color-one),
+            0 0.5rem 1rem var(--shadow-colo-two);
         background: var(--background-default-grey);
         border-radius: 10% / 20%;
         text-align: end;

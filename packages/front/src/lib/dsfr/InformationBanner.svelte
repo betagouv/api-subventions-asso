@@ -1,15 +1,17 @@
-<script>
-    import { createEventDispatcher } from "svelte";
-
-    export let closeBtn = false;
-    export let title = undefined;
-    export let desc = undefined;
+<script lang="ts">
     // info | warning | alert |
     // weather-orange | weather-red | weather-purple |
-    // attack | witness | cyberattack
-    export let type = "info";
 
-    const dispatch = createEventDispatcher();
+    interface Props {
+        closeBtn?: boolean;
+        title?: string;
+        desc?: string;
+        // attack | witness | cyberattack
+        type?: string;
+        onclose?: () => void;
+    }
+
+    let { closeBtn = false, title = undefined, desc = undefined, type = "info", onclose = () => {} }: Props = $props();
 </script>
 
 <div class="fr-notice fr-notice--{type}">
@@ -21,7 +23,7 @@
                 <span class="fr-notice__desc">{@html desc}</span>{/if}
 
             {#if closeBtn}
-                <button on:click={() => dispatch("close")} class="fr-btn--close fr-btn" title="Masquer le message">
+                <button onclick={onclose} class="fr-btn--close fr-btn" title="Masquer le message">
                     Masquer le message
                 </button>
             {/if}

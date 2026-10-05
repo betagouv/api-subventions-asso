@@ -1,14 +1,15 @@
 <script lang="ts">
-    export let type: "success" | "error" | "info" | "warning" | "new" = "success";
-    export let label = "";
-    export let color = undefined;
-    export let small = false;
-    export let noIcon = false;
+    interface Props {
+        type?: "success" | "error" | "info" | "warning" | "new";
+        label?: string;
+        color?: string;
+        small?: boolean;
+        noIcon?: boolean;
+    }
 
-    let otherClasses = "fr-badge ";
+    let { type = "success", label = "", color = undefined, small = false, noIcon = false }: Props = $props();
 
-    if (type) otherClasses += `fr-badge--${type} `;
-    if (color) otherClasses += `fr-badge--${color} `;
+    const otherClasses = $derived(`fr-badge ${type ? `fr-badge--${type} ` : ""}${color ? `fr-badge--${color} ` : ""}`);
 </script>
 
 <p class={otherClasses} class:fr-badge--sm={small} class:fr-badge--no-icon={noIcon}>

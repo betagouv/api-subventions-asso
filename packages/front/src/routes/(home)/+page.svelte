@@ -4,7 +4,7 @@
     import AssociationCard from "$lib/components/AssociationCard/AssociationCard.svelte";
     import SearchBar from "$lib/components/SearchBar/SearchBar.svelte";
 
-    export let data;
+    let { data } = $props();
     const { query } = data;
 
     const ctrl = new HomeController(query);
@@ -27,7 +27,7 @@
 <div class="fr-grid-row fr-grid-row--center fr-mt-6v">
     <div class="fr-col-8">
         <div class="search-bar">
-            <SearchBar on:submit={e => ctrl.onSubmit(e.detail)} />
+            <SearchBar onsubmit={value => ctrl.onSubmit(value)} />
             <p class="fr-mt-3w text-center fr-text--lg">
                 Pour effectuer une recherche, privilégiez une entrée par RNA, SIREN ou SIRET. Vous pouvez également
                 rechercher une association par nom.

@@ -1,34 +1,51 @@
 <script lang="ts">
     import { nanoid } from "nanoid";
 
-    export let label;
-    export let value;
-    export let id = nanoid(7);
-    export let required = false;
-    export let disabled = false;
-    export let type = "text";
-    export let name = `input-${id}`;
-    export let autocomplete = "false";
-    export let placeholder = "";
-    export let error = "";
-    export let errorMsg: string | null = null;
-    export let hint = "";
-
-    let spellcheck = true;
-
-    const descErrorElement = `${name}-desc-error`;
-
-    // DSFR best practices
-    if (["given-name", "family-name"].includes(name)) {
-        spellcheck = false;
+    interface Props {
+        label: string;
+        value: string | number | undefined;
+        id?: string;
+        required?: boolean;
+        disabled?: boolean | "true";
+        type?: string;
+        name?: string;
+        autocomplete?: string;
+        placeholder?: string;
+        error?: string;
+        errorMsg?: string | null;
+        hint?: string;
+        onblur?: (event: FocusEvent) => void;
+        oninput?: (event: Event) => void;
+        onchange?: (event: Event) => void;
     }
+
+    let {
+        label,
+        value = $bindable(),
+        id = nanoid(7),
+        required = false,
+        disabled = false,
+        type = "text",
+        name = `input-${id}`,
+        autocomplete = "false",
+        placeholder = "",
+        error = "",
+        errorMsg = null,
+        hint = "",
+        onblur = () => {},
+        oninput = () => {},
+        onchange = () => {},
+    }: Props = $props();
+
+    const spellcheck = $derived(!["given-name", "family-name"].includes(name));
+    const descErrorElement = $derived(`${name}-desc-error`);
 
     /*
     svelte needs to know beforehand the input type to manage reactivity
     use:typeAction is a workaround
     cf https://stackoverflow.com/a/71193441
     * */
-    function typeAction(node) {
+    function typeAction(node: HTMLInputElement) {
         node.type = type;
     }
 </script>
@@ -53,9 +70,9 @@
         use:typeAction
         aria-invalid={errorMsg ? "true" : undefined}
         aria-errormessage={errorMsg ? descErrorElement : undefined}
-        on:blur
-        on:input
-        on:change />
+        {onblur}
+        {oninput}
+        {onchange} />
     {#if error && errorMsg}
         <p id={descErrorElement} class="fr-error-text">{errorMsg}</p>
     {/if}

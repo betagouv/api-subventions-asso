@@ -1,8 +1,12 @@
-<script>
+<script lang="ts">
     import logo from "$lib/assets/images/logo-beta.png";
 
-    export let percent = 0;
-    export let loadingText = "";
+    interface Props {
+        percent?: number;
+        loadingText?: string;
+    }
+
+    let { percent = 0, loadingText = "" }: Props = $props();
 </script>
 
 <div class="text-container">
@@ -11,7 +15,7 @@
 <div class="progress-container">
     <div class="progress-bar">
         <span class="bar">
-            <span class="progress" style="width: {percent}%" />
+            <span class="progress" style="width: {percent}%"></span>
         </span>
     </div>
     <img src={logo} class="spinner" alt="Chargement en cours" />

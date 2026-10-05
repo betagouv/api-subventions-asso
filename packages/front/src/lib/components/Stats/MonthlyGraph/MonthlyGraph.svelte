@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { MonthlyGraphController } from "./MonthlyGraph.controller";
     import ErrorAlert from "$lib/components/ErrorAlert.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
@@ -6,18 +6,24 @@
     import Widget from "$lib/components/Widget.svelte";
     import MonthlyGraphTooltip from "$lib/components/Stats/MonthlyGraphTooltip/MonthlyGraphTooltip.svelte";
 
-    let canvas;
-    let tooltip;
-    export let loadData;
-    export let title = "";
-    export let resourceName = "";
-    export let withPreviousValue = false;
+    let canvas = $state();
+    let tooltip = $state();
+    interface Props {
+        loadData: (...args: unknown[]) => unknown;
+        title?: string;
+        resourceName?: string;
+        withPreviousValue?: boolean;
+    }
+
+    let { loadData, title = "", resourceName = "", withPreviousValue = false }: Props = $props();
 
     const ctrl = new MonthlyGraphController(loadData, title, resourceName, withPreviousValue);
     ctrl.init();
     const { year, dataPromise, yearOptions } = ctrl;
 
-    $: if (canvas && tooltip) ctrl.onCanvasMount(canvas, tooltip);
+    $effect(() => {
+        if (canvas && tooltip) ctrl.onCanvasMount(canvas, tooltip);
+    });
 </script>
 
 <Widget title={ctrl.title}>
@@ -29,7 +35,7 @@
                 <div class="fr-col-9 fr-pr-10w">
                     <Select
                         id={title}
-                        on:change={e => ctrl.updateYear(e.detail)}
+                        onchange={year => ctrl.updateYear(year)}
                         label="Année"
                         options={yearOptions}
                         bind:selected={$year}

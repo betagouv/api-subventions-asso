@@ -3,12 +3,19 @@
     import type { DocumentEntity } from "$lib/entities/DocumentEntity";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
-    export let document: DocumentEntity;
-    export let value: DocumentEntity | undefined = undefined;
+    interface Props {
+        document: DocumentEntity;
+        value?: DocumentEntity | undefined;
+        onchange?: (value: DocumentEntity | undefined) => void;
+    }
 
-    const controller = new DocumentCardController(document);
-    const { isSelected } = controller;
-    $: $isSelected = value !== undefined;
+    let { document, value = $bindable(undefined), onchange = () => {} }: Props = $props();
+
+    const controller = $derived(new DocumentCardController(document));
+    const isSelected = $derived(controller.isSelected);
+    $effect(() => {
+        $isSelected = value !== undefined;
+    });
 </script>
 
 <div class="card-container fr-grid-row fr-col-12" class:--selected={$isSelected}>
@@ -20,7 +27,10 @@
                 aria-describedby="description-document-{controller.checkBoxId}"
                 type="checkbox"
                 bind:checked={$isSelected}
-                on:change={() => (value = controller.newValueOnCheck())} />
+                onchange={() => {
+                    value = controller.newValueOnCheck();
+                    onchange(value);
+                }} />
             <label class="fr-label fr-sr-only" for="documents-to-download-{controller.checkBoxId}">
                 Sélectionner pour téléchargement groupé
             </label>

@@ -12,21 +12,27 @@
     import DownloadButton from "$lib/components/Documents/components/DownloadButton.svelte";
     import DocumentSection from "$lib/components/Documents/components/DocumentSection.svelte";
 
-    // TODO: replace unknown with EstablishmentEntity when created | linked to #2078
-    export let resource: AssociationEntity | unknown;
-    export let resourceType: ResourceType = "association";
+    interface Props {
+        // TODO: replace unknown with EstablishmentEntity when created | linked to #2078
+        resource: AssociationEntity | unknown;
+        resourceType?: ResourceType;
+    }
 
-    const controller = new DocumentsController(resourceType, resource, $currentIdentifiers);
-    const documentsPromise = controller.documentsPromise;
-    const zipPromise = controller.zipPromise;
-    const { selectedDocsOrNull } = controller;
+    let { resource, resourceType = "association" }: Props = $props();
+
+    const controller = $derived(new DocumentsController(resourceType, resource, $currentIdentifiers));
+    const documentsPromise = $derived(controller.documentsPromise);
+    const zipPromise = $derived(controller.zipPromise);
+    const selectedDocsOrNull = $derived(controller.selectedDocsOrNull);
+    let element: HTMLElement = $state()!;
 
     onMount(() => {
+        controller.element = element;
         controller.onMount();
     });
 </script>
 
-<div bind:this={controller.element}>
+<div bind:this={element}>
     <h2 class="fr-sr-only">Pièces administratives pour {controller.resourceNameWithDemonstrative}</h2>
     {#await $documentsPromise}
         <Spinner description="Chargement des pièces administratives en cours ..." />
@@ -45,8 +51,8 @@
                 <div class="fr-ml-auto">
                     <DownloadButton
                         docsStore={controller.flatSelectedDocs}
-                        on:download={() => controller.download()}
-                        on:reset={() => controller.resetSelection()} />
+                        ondownload={() => controller.download()}
+                        onreset={() => controller.resetSelection()} />
                 </div>
             </div>
 
@@ -61,14 +67,14 @@
                 title="Pièces provenant de l’INSEE et du RNA"
                 bind:selectedDocs={$selectedDocsOrNull.assoDocs} />
 
-            <div class="fr-mt-6w" />
+            <div class="fr-mt-6w"></div>
 
             <DocumentSection
                 documents={documents.estabDocs}
                 title="Pièces complémentaires déposées par l’établissement secondaire"
                 bind:selectedDocs={$selectedDocsOrNull.estabDocs} />
 
-            <div class="fr-mt-6w" />
+            <div class="fr-mt-6w"></div>
 
             <DocumentSection
                 documents={documents.headDocs}
@@ -79,8 +85,8 @@
                 <div class="fr-ml-auto">
                     <DownloadButton
                         docsStore={controller.flatSelectedDocs}
-                        on:download={() => controller.download()}
-                        on:reset={() => controller.resetSelection()} />
+                        ondownload={() => controller.download()}
+                        onreset={() => controller.resetSelection()} />
                 </div>
             </div>
         {:else}

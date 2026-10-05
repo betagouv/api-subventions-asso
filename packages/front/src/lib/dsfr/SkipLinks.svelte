@@ -1,5 +1,9 @@
 <script lang="ts">
-    export let links: { label: string; anchor: string }[];
+    interface Props {
+        links: { label: string; anchor: string }[];
+    }
+
+    let { links }: Props = $props();
 </script>
 
 <div class="fr-skiplinks">

@@ -6,25 +6,32 @@
     import SearchBar from "$lib/components/SearchBar/SearchBar.svelte";
     import Pagination from "$lib/dsfr/Pagination.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
+    import type { PageProps } from "./$types";
 
-    export let data;
-    const { name } = data.params;
+    let { params }: PageProps = $props();
+    const name = $derived(params.name);
 
-    const ctrl = new SearchController(name);
-    const { searchPromise, searchResults, inputSearch, duplicatesFromIdentifier, currentPage, isLastSearchCompany } =
-        ctrl;
 
-    let nbResultLabel;
+    const ctrl = $derived(new SearchController(name));
+    const searchPromise = $derived(ctrl.searchPromise);
+    const searchResults = $derived(ctrl.searchResults);
+    const inputSearch = $derived(ctrl.inputSearch);
+    const duplicatesFromIdentifier = $derived(ctrl.duplicatesFromIdentifier);
+    const currentPage = $derived(ctrl.currentPage);
+    const isLastSearchCompany = $derived(ctrl.isLastSearchCompany);
 
-    // TODO: #3374
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    $: ($searchResults, (nbResultLabel = ctrl.updateNbEtabsLabel()));
+    let nbResultLabel = $state();
+
+    $effect(() => {
+        void $searchResults;
+        nbResultLabel = ctrl.updateNbEtabsLabel();
+    });
 </script>
 
 <div class="fr-grid-row fr-grid-row--center fr-my-6v">
     <div class="fr-col-8">
         <div class="search-bar">
-            <SearchBar bind:value={$inputSearch} on:submit={e => ctrl.onSubmit(e.detail)} />
+            <SearchBar bind:value={$inputSearch} onsubmit={value => ctrl.onSubmit(value)} />
         </div>
     </div>
 </div>
@@ -73,10 +80,7 @@
         {#if $searchResults.nbPages > 1}
             <div class="fr-grid-row fr-mt-5w">
                 <div class="fr-mx-auto">
-                    <Pagination
-                        totalPages={$searchResults.nbPages}
-                        {currentPage}
-                        on:change={e => ctrl.onChangePage(e)} />
+                    <Pagination totalPages={$searchResults.nbPages} {currentPage} onchange={e => ctrl.onChangePage(e)} />
                 </div>
             </div>
         {/if}

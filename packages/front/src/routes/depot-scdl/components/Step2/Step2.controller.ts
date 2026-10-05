@@ -11,7 +11,6 @@ import FileSizeError from "$lib/errors/file-errors/FileSizeError";
 import FileFormatError from "$lib/errors/file-errors/FileFormatError";
 import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
 import { depositLogStore } from "$lib/store/depositLog.store";
-import type { EventDispatcher } from "svelte";
 import type { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 
 type EventMap = {
@@ -21,14 +20,15 @@ type EventMap = {
     endLoading: void;
     error: string;
 };
+type Dispatch = <K extends keyof EventMap>(event: K, payload?: EventMap[K]) => void;
 
 export default class Step2Controller {
     private selectedFile: File | null = null;
     private MAX_MO_FILE_SIZE = 30;
     private MIN_LOADING_TIME = 2000;
-    private readonly dispatch: EventDispatcher<EventMap>;
+    private readonly dispatch: Dispatch;
 
-    constructor(dispatch: EventDispatcher<EventMap>) {
+    constructor(dispatch: Dispatch) {
         this.dispatch = dispatch;
         this.allocatorSiret = depositLogStore.value!.allocatorSiret!;
         this.allocatorName = depositLogStore.value!.allocatorName;

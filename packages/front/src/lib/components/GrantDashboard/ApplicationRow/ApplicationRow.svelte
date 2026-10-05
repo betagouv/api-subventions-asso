@@ -5,7 +5,12 @@
     import TableCellDesc from "$lib/dsfr/TableCellDesc.svelte";
     import StatusLabel from "$lib/components/GrantDashboard/StatutLabel/StatusLabel.svelte";
 
-    export let cells: TableCell[] | null;
+    interface Props {
+        cells: TableCell[] | null;
+        onclick?: () => void;
+    }
+
+    let { cells, onclick = () => {} }: Props = $props();
 
     // TODO: find a way with TS to infer type on key check (line 26-28)
     // hint: type annotations is supposed to work with Svelte 5
@@ -20,7 +25,7 @@
     {#each cells as cell, i (i)}
         <td
             class="clickable application"
-            on:click
+            {onclick}
             aria-controls={openModal ? "fr-modal" : ""}
             data-fr-opened={openModal ? "true" : "false"}>
             {#if cell.badge}
@@ -55,8 +60,8 @@
         cursor: pointer;
     }
 
-    :global(tr):has(td.application:hover) td.clickable.application,
-    :global(tr):has(td.application:focus-within) td.clickable.application {
+    :global(tr):has(:global(td.application:hover)) td.clickable.application,
+    :global(tr):has(:global(td.application:focus-within)) td.clickable.application {
         background-color: var(--background-alt-grey);
     }
 </style>

@@ -1,10 +1,8 @@
 import type { AdminStructureDto } from "dto";
 import { AdminTerritorialLevel, AgentTypeEnum } from "dto";
-import type { EventDispatcher } from "svelte";
 import Store from "$lib/core/Store";
 import geoService from "$lib/resources/externals/geo/geo.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionForm.service";
-import Dispatch from "$lib/core/Dispatch";
 import type { Option } from "$lib/types/FieldOption";
 
 export default class DecentralizedSubStepController {
@@ -19,14 +17,13 @@ export default class DecentralizedSubStepController {
         { value: AdminTerritorialLevel.OVERSEAS, label: "Collectivité d'outre-mer à statut particulier" },
     ];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private dispatch: EventDispatcher<any>;
+    private dispatch: (_: "change") => void;
 
-    constructor() {
+    constructor(dispatch: (_: "change") => void = () => {}) {
         this.departmentOptions = new Store([]);
         this.structureOptions = new Store([]);
         this.allStructures = [];
-        this.dispatch = Dispatch.getDispatcher();
+        this.dispatch = dispatch;
     }
 
     async init(data: Record<string, unknown> = {}): Promise<void> {

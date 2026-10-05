@@ -1,21 +1,34 @@
-<script>
-    import { createEventDispatcher } from "svelte";
+<script lang="ts">
     import { nanoid } from "nanoid";
 
-    export let options;
-    export let selected = undefined;
-    export let label = undefined;
-    export let narrow = false;
-    export let id = nanoid(7);
-    export let required = false;
-    export let disabled = false;
+    type SelectOption = string | { label: string; value?: string | number };
 
-    const name = `select-${id}`;
+    interface Props {
+        options: SelectOption[];
+        selected?: string | number | undefined;
+        label?: string;
+        narrow?: boolean;
+        id?: string;
+        required?: boolean;
+        disabled?: boolean;
+        onchange?: (selectedIndex: number) => void;
+    }
 
-    const dispatch = createEventDispatcher();
+    let {
+        options,
+        selected = $bindable(undefined),
+        label = undefined,
+        narrow = false,
+        id = nanoid(7),
+        required = false,
+        disabled = false,
+        onchange = () => {},
+    }: Props = $props();
 
-    function onChange(e) {
-        dispatch("change", e.target.selectedIndex - 1);
+    const name = $derived(`select-${id}`);
+
+    function onChange(e: Event) {
+        onchange((e.target as HTMLSelectElement).selectedIndex - 1);
     }
 </script>
 
@@ -27,7 +40,7 @@
         bind:value={selected}
         required={required ? "required" : undefined}
         disabled={disabled ? "disabled" : undefined}
-        on:change={onChange}
+        onchange={onChange}
         class="fr-select"
         {name}
         id={name}>

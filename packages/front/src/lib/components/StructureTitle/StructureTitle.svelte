@@ -3,7 +3,7 @@
     import { currentAssociation, currentIdentifiers } from "$lib/store/association.store";
     import Badge from "$lib/dsfr/Badge.svelte";
     import AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
-    export let siret = undefined;
+    let { siret = undefined } = $props();
 
     // If we are here we know that we got a currentAssociation
     const controller = new StructureTitleController(

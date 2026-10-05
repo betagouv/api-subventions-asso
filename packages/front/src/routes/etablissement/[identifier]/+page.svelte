@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import TabsEtab from "./components/TabsEtab.svelte";
     import { EstablishmentController } from "./Establishment.controller";
     import DataNotFound from "$lib/components/DataNotFound.svelte";
@@ -7,12 +7,14 @@
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import StructureTitle from "$lib/components/StructureTitle/StructureTitle.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
+    import type { PageProps } from "./$types";
 
-    export let data;
-    const { identifier: id } = data.params;
+    let { params }: PageProps = $props();
+    const id = $derived(params.identifier);
 
-    const controller = new EstablishmentController(id);
-    const { promises, titles } = controller;
+    const controller = $derived(new EstablishmentController(id));
+    const promises = $derived(controller.promises);
+    const titles = $derived(controller.titles);
 </script>
 
 {#await promises}

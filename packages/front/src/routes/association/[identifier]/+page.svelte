@@ -8,25 +8,43 @@
     import DataNotFound from "$lib/components/DataNotFound.svelte";
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import StructureTitle from "$lib/components/StructureTitle/StructureTitle.svelte";
+    import type { PageProps } from "./$types";
 
-    export let data;
-    const { identifier } = data.params;
+    let { params }: PageProps = $props();
+    const identifier = $derived(params.identifier);
 
-    const controller = new AssociationController(identifier);
-    const { associationPromise, duplicatesFromRna, duplicatesFromSiren, titles } = controller;
+    const controller = $derived(new AssociationController(identifier));
+    const associationPromise = $derived(controller.associationPromise);
+    const titles = $derived(controller.titles);
+    let duplicatesFromRna: string[] | null = $state(null);
+    let duplicatesFromSiren: string[] | null = $state(null);
+
+    $effect(() => {
+        const unsubscribeDuplicatesFromRna = controller.duplicatesFromRna.subscribe(value => {
+            duplicatesFromRna = value;
+        });
+        const unsubscribeDuplicatesFromSiren = controller.duplicatesFromSiren.subscribe(value => {
+            duplicatesFromSiren = value;
+        });
+
+        return () => {
+            unsubscribeDuplicatesFromRna();
+            unsubscribeDuplicatesFromSiren();
+        };
+    });
 </script>
 
 {#await associationPromise}
     <FullPageSpinner description="Chargement de l'association {identifier} en cours ..." />
 {:then association}
-    {#if $duplicatesFromRna}
+    {#if duplicatesFromRna?.length}
         <div class="fr-mb-3w">
-            <DuplicateAlert duplicates={$duplicatesFromRna} />
+            <DuplicateAlert duplicates={duplicatesFromRna} />
         </div>
     {/if}
-    {#if $duplicatesFromSiren}
+    {#if duplicatesFromSiren?.length}
         <div class="fr-mb-3w">
-            <DuplicateAlert duplicates={$duplicatesFromSiren} />
+            <DuplicateAlert duplicates={duplicatesFromSiren} />
         </div>
     {/if}
     <div class="fr-mb-3w">
