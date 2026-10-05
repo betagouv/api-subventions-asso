@@ -20,9 +20,9 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
 
     async createIndexes(): Promise<void> {
         await this.collection.createIndex({ siren: 1, rna: 1 }, { unique: true });
-        await this.collection.createIndex({ siren: 1 }); // non-unique, for lookups
-        await this.collection.createIndex({ rna: 1 }); // non-unique, for lookups
-        await this.collection.createIndex({ postalCodes: 1, searchName: 1 });
+        await this.collection.createIndex({ rna: 1 }); // for direct search on rna (no siren)
+        await this.collection.createIndex({ searchName: 1, postalCodes: 1 });
+        await this.collection.createIndex({ searchObject: 1 });
     }
 
     findByText(text: string, postalCode?: string): Promise<AssociationSearchEntity[]> {
