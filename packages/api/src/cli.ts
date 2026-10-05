@@ -32,8 +32,7 @@ import createHeliosCli from "./adapters/inputs/cli/helios/helios.cli.factory";
 import DepositLogCli from "./adapters/inputs/cli/scdl-deposit.cli";
 import chorusImport from "./adapters/inputs/pipeline/import/chorus/chorus.import";
 import updateFlatByExercise from "./modules/providers/chorus/use-cases/update-flat-by-exercise";
-import { RnaCli } from "./adapters/inputs/cli/rna.cli";
-import rnaPipeline from "./adapters/inputs/pipeline/import/rna/rna.pipeline";
+import rnaCli, { RnaCli } from "./adapters/inputs/cli/rna.cli";
 
 async function main() {
     await connectDB();
@@ -71,7 +70,7 @@ async function main() {
         [HeliosCli.cmdName, { factory: createHeliosCli }],
         [ChorusCli.cmdName, { factory: () => new ChorusCli(chorusImport, updateFlatByExercise) }],
         [EstablishmentCli.cmdName, { factory: createEstablishmentCli }],
-        [RnaCli.cmdName, { factory: () => new RnaCli(rnaPipeline) }],
+        [RnaCli.cmdName, { factory: () => rnaCli }],
         [SireneStockUniteLegaleCli.cmdName, { factory: createSireneStockUniteLegaleCli }],
     ]);
 

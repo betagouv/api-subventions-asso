@@ -5,10 +5,9 @@ import notifyService, { NotifyService } from "../../../modules/notify/notify.ser
 import DownloadFile from "../../../usecases/download-file";
 import { RemoveFile } from "../../../usecases/remove-file";
 import { rnaWaldecAdapter } from "../../outputs/api/data-gouv/data-gouv.adapter";
-import { RnaCli } from "../cli/rna.cli";
+import rnaCli from "../cli/rna.cli";
 import { DownloadAndImport } from "../pipeline/import/download-and-import.pipeline";
 import { NoSireneImportError } from "../pipeline/import/errors/no-sirene-import.error";
-import rnaPipeline from "../pipeline/import/rna/rna.pipeline";
 
 export class RnaCron implements CronController {
     name = "rna";
@@ -40,7 +39,7 @@ export class RnaCron implements CronController {
 }
 
 const rnaCron = new RnaCron(
-    new DownloadAndImport(new RnaCli(rnaPipeline), new DownloadFile(rnaWaldecAdapter), new RemoveFile()),
+    new DownloadAndImport(rnaCli, new DownloadFile(rnaWaldecAdapter), new RemoveFile()),
     notifyService,
 );
 export default rnaCron;

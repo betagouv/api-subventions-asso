@@ -29,7 +29,7 @@ export default class SireneUniteLegaleMapper {
             name: {
                 sirene: dbo.denominationUniteLegale,
             },
-            searchName: removeAccents(dbo.denominationUniteLegale),
+            searchName: removeAccents(dbo.denominationUniteLegale).toLowerCase(),
             mainEstablishmentSiret: dbo.siren + dbo.nicSiegeUniteLegale,
         };
 

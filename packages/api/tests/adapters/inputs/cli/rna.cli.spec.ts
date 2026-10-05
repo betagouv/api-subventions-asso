@@ -1,6 +1,5 @@
 import path from "path";
-import { RnaCli } from "../../../../src/adapters/inputs/cli/rna.cli";
-import rnaPipeline from "../../../../src/adapters/inputs/pipeline/import/rna/rna.pipeline";
+import rnaCli from "../../../../src/adapters/inputs/cli/rna.cli";
 import db from "./../../../../src/shared/MongoConnection";
 import notifyService from "../../../../src/modules/notify/notify.service";
 import { NotificationType } from "../../../../src/modules/notify/@types/NotificationType";
@@ -11,7 +10,7 @@ import dataLogAdapter from "../../../../src/adapters/outputs/db/data-log/data-lo
 import { addMonths } from "../../../../src/shared/helpers/DateHelper";
 
 describe("RNA CLI", () => {
-    const cli = new RnaCli(rnaPipeline);
+    const cli = rnaCli;
 
     beforeEach(async () => {
         await dataLogAdapter.insert({

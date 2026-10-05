@@ -1,19 +1,13 @@
 import path from "path";
 import fs from "fs";
-import { RnaCli } from "../../../../src/adapters/inputs/cli/rna.cli";
+import rnaCli from "../../../../src/adapters/inputs/cli/rna.cli";
 import { createSireneStockUniteLegaleCli } from "../../../../src/adapters/inputs/cli/sirene-stock-unite-legale.cli";
-import rnaPipeline from "../../../../src/adapters/inputs/pipeline/import/rna/rna.pipeline";
 import db from "../../../../src/shared/MongoConnection";
 import { sireneStockUniteLegaleAdapter } from "../../../../src/adapters/outputs/api/data-gouv/data-gouv.adapter";
-import EstablishmentCli from "../../../../src/adapters/inputs/cli/establishment.cli";
-import importNotifier from "../../../../src/adapters/inputs/pipeline/import/import-notifier";
-import sireneEstablishmentPipeline from "../../../../src/adapters/inputs/pipeline/import/sirene-establishment/sirene-establishment.pipeline";
+import { createEstablishmentCli } from "../../../../src/adapters/inputs/cli/establishment.cli";
 
 async function importRna() {
-    await new RnaCli(rnaPipeline).parse(
-        path.resolve(__dirname, "../__fixtures__/diff-maj-time.rna-waldec.parquet"),
-        "2026-07-17",
-    );
+    await rnaCli.parse(path.resolve(__dirname, "../__fixtures__/diff-maj-time.rna-waldec.parquet"), "2026-07-17");
 }
 
 async function importUniteLegale() {
@@ -31,7 +25,7 @@ async function importUniteLegale() {
 }
 
 async function importEstablishment() {
-    await new EstablishmentCli(sireneEstablishmentPipeline, importNotifier).parse(
+    await createEstablishmentCli().parse(
         path.resolve(__dirname, "../__fixtures__/sirene-establishment.parquet"),
         "2026-07-21",
     );
