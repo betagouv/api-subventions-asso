@@ -19,21 +19,24 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     tmpCollectionName = `${this.collectionName}-tmp`;
 
     async createIndexes(): Promise<void> {
-        await this.collection.createIndex(
-            { siren: 1 },
-            { unique: true, partialFilterExpression: { siren: { $type: "string" } } },
-        );
-        await this.collection.createIndex(
-            { rna: 1 },
-            { unique: true, partialFilterExpression: { rna: { $type: "string" } } },
-        );
-        await this.collection.createIndex({ postalCodes: 1 });
+        await this.collection.createIndex({ siren: 1, rna: 1 }, { unique: true });
+        await this.collection.createIndex({ siren: 1 }); // non-unique, for lookups
+        await this.collection.createIndex({ rna: 1 }); // non-unique, for lookups
+        await this.collection.createIndex({ postalCodes: 1, searchName: 1 });
+        await this.collection.createIndex({ postalCodes: 1, searchObject: 1 });
     }
 
     findByText(text: string, postalCode?: string): Promise<AssociationSearchEntity[]> {
         const cleanText = removeAccents(text.trim().toLowerCase());
         return this.collection
-            .find(this.buildQueryWithPostalCodeFilter({ searchName: { $regex: cleanText } }, postalCode))
+            .find(
+                this.buildQueryWithPostalCodeFilter(
+                    {
+                        $or: [{ searchName: { $regex: cleanText } }, { searchObject: { $regex: cleanText } }],
+                    },
+                    postalCode,
+                ),
+            )
             .map(doc => AssociationSearchMapper.toEntity(doc))
             .toArray();
     }
@@ -58,13 +61,10 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     public async upsertFromEstablishment(dbos: EstablishmentAssociationSearch[]) {
         const operations = dbos.map(dbo => {
             const { siren, address, nbEstabs, postalCodes } = dbo;
-            const set: Required<Pick<EstablishmentAssociationSearch, "nbEstabs" | "postalCodes">> &
-                Pick<EstablishmentAssociationSearch, "address"> = { nbEstabs, postalCodes };
-            if (address) set.address = address;
             return {
-                updateOne: {
+                updateMany: {
                     filter: { siren },
-                    update: { $set: set },
+                    update: { $set: { nbEstabs, postalCodes, ...(address && { address }) } },
                     upsert: true,
                 },
             };
@@ -74,71 +74,56 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     }
 
     public async upsertFromRna(dbos: RnaAssociationSearch[]) {
-        const operations = dbos
-            .map(dbo => {
-                const { rna, siren, name, searchName, object, searchObject } = dbo;
-                const ops: AnyBulkWriteOperation<AssociationSearchDbo>[] = [];
+        const operations: AnyBulkWriteOperation<AssociationSearchDbo>[] = [];
+        dbos.forEach(dbo => {
+            const { rna, siren, name, searchName, object, searchObject } = dbo;
+            const rnaFields = { searchName, object, searchObject, "name.rna": name.rna };
 
-                // 1. refresh siren only if no Siren import yet (no name from siren)
-                if (siren)
-                    ops.push({
-                        updateOne: {
-                            filter: { rna: rna, "name.siren": { $exists: false } },
-                            update: { $set: { siren } },
-                        },
-                    });
-
-                // 2. upsert the reset; siren is only set on insert (otherwise it comes from Siren or from 1.)
-                ops.push({
-                    updateOne: {
-                        filter: { rna: rna },
-                        update: {
-                            $set: { searchName, object, searchObject, "name.rna": name.rna },
-                            ...(siren && { $setOnInsert: { siren } }),
-                        },
-                        upsert: true,
-                    },
+            if (siren) {
+                // updates the pair if it exists
+                operations.push({
+                    updateOne: { filter: { siren, rna }, update: { $set: rnaFields }, upsert: true },
                 });
-                return ops;
-            })
-            .flat();
-        await this.collection.bulkWrite(operations);
+                // updates all document with the rna
+                operations.push({ updateMany: { filter: { rna }, update: { $set: rnaFields } } });
+            } else {
+                // updates all docs with this rna, or create one
+                operations.push({ updateMany: { filter: { rna }, update: { $set: rnaFields }, upsert: true } });
+            }
+        });
+        await this.collection.bulkWrite(operations.flat());
         return;
     }
 
     public async upsertFromSirene(dbos: UniteLegaleAssociationSearch[]) {
-        const operations = dbos
-            .map(dbo => {
-                const { siren, rna, name, searchName, mainEstablishmentSiret } = dbo;
-                const rnaField = rna ? { rna } : {};
-                // Rna name has more value than sirene name
-                // we have a special process to only update name from sirene when not existing
-                // Also, half of the time sirene provide a rna. We only update it if it does not exists
-                return [
-                    // 1. refresh searchName and rna only if no Rna import yet (no name from rna)
-                    {
-                        updateOne: {
-                            filter: { siren: siren, "name.rna": { $exists: false } },
-                            update: {
-                                $set: { searchName, ...rnaField },
-                            },
-                        },
+        const operations: AnyBulkWriteOperation<AssociationSearchDbo>[] = [];
+        dbos.forEach(dbo => {
+            const { siren, rna, name, searchName, mainEstablishmentSiret } = dbo;
+            const sireneFields = { mainEstablishmentSiret, "name.sirene": name.sirene };
+
+            if (rna) {
+                // 1. updates the rna-siren pair
+                operations.push({
+                    updateOne: {
+                        filter: { siren, rna },
+                        update: { $set: sireneFields, $setOnInsert: { searchName } },
+                        upsert: true,
                     },
-                    // 2. upsert the rest; searchName is only set on insert (otherwise it comes from Rna or from 1.)
-                    {
-                        updateOne: {
-                            filter: { siren: siren },
-                            update: {
-                                $set: { mainEstablishmentSiret, "name.sirene": name.sirene },
-                                $setOnInsert: { searchName, ...rnaField },
-                            },
-                            upsert: true,
-                        },
+                });
+                // 2. updates orphans
+                operations.push({ updateMany: { filter: { siren }, update: { $set: sireneFields } } });
+            } else {
+                // updates all docs with this siren, or create one
+                operations.push({
+                    updateMany: {
+                        filter: { siren },
+                        update: { $set: sireneFields, $setOnInsert: { searchName } },
+                        upsert: true,
                     },
-                ];
-            })
-            .flat();
-        await this.collection.bulkWrite(operations);
+                });
+            }
+        });
+        await this.collection.bulkWrite(operations.flat());
         return;
     }
 

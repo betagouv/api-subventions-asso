@@ -1,4 +1,4 @@
-import { Siret } from "../../../../../identifier-objects";
+import { Siren, Siret } from "../../../../../identifier-objects";
 import { stringToDateOrNull } from "../../../../../shared/helpers/DateHelper";
 import { removeAccents } from "../../../../../shared/helpers/StringHelper";
 import { RnaAssociationSearch } from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
@@ -50,10 +50,19 @@ export class RnaMapper {
         };
     }
 
+    private getSiren(str: string | null) {
+        if (!str) return null;
+        // weird case that concerns 11 documents
+        if (str === "000000000") return null;
+        if (Siret.isSiret(str)) return Siret.getSiren(str);
+        else if (Siren.isSiren(str)) return str;
+        else return null;
+    }
+
     toAssociationSearch(dbo: Omit<RnaDbo, "titre"> & { titre: string }): RnaAssociationSearch {
         const object = dbo.objet;
         const searchObject = dbo.objet ? removeAccents(dbo.objet) : undefined;
-        const siren = dbo.siret ? Siret.getSiren(dbo.siret) : undefined;
+        const siren = this.getSiren(dbo.siret);
 
         const associationSearch: RnaAssociationSearch = {
             rna: dbo.id,
