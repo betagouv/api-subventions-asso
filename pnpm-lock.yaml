@@ -46,7 +46,7 @@ importers:
         version: 7.0.4
       lint-staged:
         specifier: ^13.3.0
-        version: 13.3.0
+        version: 13.3.0(supports-color@5.5.0)
       prettier:
         specifier: ^3.9.6
         version: 3.9.6
@@ -141,11 +141,8 @@ importers:
         specifier: ^6.0.7
         version: 6.0.7
       csv-parse:
-        specifier: ^5.6.0
-        version: 5.6.0
-      csv-parser:
-        specifier: ^3.2.1
-        version: 3.2.1
+        specifier: ^7.0.2
+        version: 7.0.2
       csv-stringify:
         specifier: ^6.8.3
         version: 6.8.3
@@ -450,7 +447,7 @@ importers:
         version: 19.0.0
       lint-staged:
         specifier: ^13.3.0
-        version: 13.3.0
+        version: 13.3.0(supports-color@5.5.0)
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -3420,13 +3417,8 @@ packages:
     resolution: {integrity: sha512-AZL67abkUzIuvcHqk7c09cezpGNcxUxU4Ioi/05xHk4DQeTkWmGYftIE6ctU6AEt+Gn4n1lDStOtj7FKycP71A==}
     engines: {node: '>=8'}
 
-  csv-parse@5.6.0:
-    resolution: {integrity: sha512-l3nz3euub2QMg5ouu5U09Ew9Wf6/wQ8I++ch1loQ0ljmzhmfZYrH9fflS22i/PQEvsPvxCwxgz5q7UB8K1JO4Q==}
-
-  csv-parser@3.2.1:
-    resolution: {integrity: sha512-v8RPMSglouR9od735SnwSxLBbCJqEPSbgm1R5qfr8yIiMUCEFjox56kRZid0SvgHJEkxeIEu3+a9QS3YRh7CuA==}
-    engines: {node: '>= 10'}
-    hasBin: true
+  csv-parse@7.0.2:
+    resolution: {integrity: sha512-uKZghv9UmPkMVLYy//KZ9HFAIJsl7wkhoEdIL0+rhuSY9pZQlhaeGEDPIe+/w7eh81MOql8Q/9+inAGWG6ZHYA==}
 
   csv-stringify@6.8.3:
     resolution: {integrity: sha512-gIeSCvq5F4VtXV3naV3VAewLhBkiZBz+PPhTOA8H3Y8h/ELa+R1ml0GZck/4/Nzo9ep2lvOluilJ6MJlbZsKMA==}
@@ -10275,8 +10267,7 @@ snapshots:
       core: link:packages/core
       cors: 2.8.6
       croner: 6.0.7
-      csv-parse: 5.6.0
-      csv-parser: 3.2.1
+      csv-parse: 7.0.2
       csv-stringify: 6.8.3
       decompress: 4.2.1
       dedent: 0.7.0
@@ -11127,9 +11118,7 @@ snapshots:
     dependencies:
       cssom: 0.3.8
 
-  csv-parse@5.6.0: {}
-
-  csv-parser@3.2.1: {}
+  csv-parse@7.0.2: {}
 
   csv-stringify@6.8.3: {}
 
@@ -13596,7 +13585,7 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  lint-staged@13.3.0:
+  lint-staged@13.3.0(supports-color@5.5.0):
     dependencies:
       chalk: 5.3.0
       commander: 11.0.0
