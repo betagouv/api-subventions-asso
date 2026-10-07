@@ -1,4 +1,4 @@
-import type { AssociationIdentifierDto, PaginatedAssociationSearchDto } from "dto";
+import type { AssociationIdentifierDto, PaginatedRechercheAssociationDto, RechercheAssociationDto } from "dto";
 import type AssociationEntity from "./entities/AssociationEntity";
 import associationPort from "./association.port";
 import { toSearchHistory } from "./association.mapper";
@@ -8,6 +8,18 @@ import { updateSearchHistory } from "$lib/services/searchHistory.service";
 import { toEstablishmentComponent } from "$lib/resources/establishments/establishment.mapper";
 import documentHelper from "$lib/helpers/document.helper";
 import { isAssociation } from "$lib/resources/associations/association.helper";
+
+export type PaginatedAssociationSearchResult = Omit<PaginatedRechercheAssociationDto, "resultats"> & {
+    results: RechercheAssociationDto[];
+};
+
+function toAssociationSearchResult(result: PaginatedRechercheAssociationDto): PaginatedAssociationSearchResult {
+    const { resultats, ...pagination } = result;
+    return {
+        ...pagination,
+        results: resultats,
+    };
+}
 
 class AssociationService {
     incExtractData(identifier) {
@@ -40,8 +52,8 @@ class AssociationService {
         return associationPort.getGrantExtract(identifier);
     }
 
-    async search(lookup, page = 1): Promise<PaginatedAssociationSearchDto> {
-        const results = await this._searchByText(lookup, page);
+    async search(lookup, page = 1, postalCode?: string): Promise<PaginatedAssociationSearchResult> {
+        const results = await this._searchByText(lookup, page, postalCode);
         if (results?.total) return results;
 
         // @TODO: remove this when /association/search/{input} will search both in RNA and Sirene collections
@@ -55,7 +67,7 @@ class AssociationService {
         return { nbPages: 1, page: 1, results: [], total: 0 };
     }
 
-    async _searchByIdentifier(identifier) {
+    async _searchByIdentifier(identifier): Promise<RechercheAssociationDto[]> {
         if (isStartOfSiret(identifier)) identifier = siretToSiren(identifier);
 
         let fullResult;
@@ -71,13 +83,16 @@ class AssociationService {
             {
                 rna: fullResult.rna,
                 siren: fullResult.siren,
+                siretSiege: null,
                 name: fullResult.denomination_rna || fullResult.denomination_siren,
+                adresse: null,
+                nbEtabs: null,
             },
         ];
     }
 
-    _searchByText(lookup: string, page = 1) {
-        return associationPort.search(lookup, page);
+    async _searchByText(lookup: string, page = 1, postalCode?: string): Promise<PaginatedAssociationSearchResult> {
+        return toAssociationSearchResult(await associationPort.search(lookup, page, postalCode));
     }
 }
 

@@ -1,13 +1,14 @@
 import associationService from "./association.service";
 
 import associationPort from "./association.port";
-import type { PaginatedAssociationSearchDto } from "dto";
+import type { PaginatedRechercheAssociationDto } from "dto";
+import type { PaginatedAssociationSearchResult } from "./association.service";
 vi.mock("./association.port", () => ({
     default: {
         incExtractData: vi.fn(),
         getByIdentifier: vi.fn(() => ({})),
         getEstablishments: vi.fn(() => []),
-        search: vi.fn(() => []),
+        search: vi.fn(() => ({ nbPages: 1, page: 1, resultats: [], total: 0 })),
     },
 }));
 const mockedAssociationPort = vi.mocked(associationPort);
@@ -54,14 +55,12 @@ describe("AssociationService", () => {
         });
 
         it("should flatten data", async () => {
-            // @ts-expect-error: mock
             mockedAssociationPort.getByIdentifier.mockResolvedValue(ASSOCIATIONS[0]);
             await associationService.getAssociation(SIREN);
             expect(providerValueHelper.flattenProviderValue).toHaveBeenCalledTimes(1);
         });
 
         it("checks if is really asso", async () => {
-            // @ts-expect-error: mock
             mockedAssociationPort.getByIdentifier.mockResolvedValue(ASSOCIATIONS[0]);
             vi.mocked(providerValueHelper.flattenProviderValue).mockReturnValueOnce(ASSOCIATIONS[0]);
             await associationService.getAssociation(SIREN);
@@ -69,7 +68,6 @@ describe("AssociationService", () => {
         });
 
         it("saves asso in search history if really asso", async () => {
-            // @ts-expect-error: mock
             mockedAssociationPort.getByIdentifier.mockResolvedValue(ASSOCIATIONS[0]);
             vi.mocked(isAssociation).mockReturnValueOnce(true);
             await associationService.getAssociation(SIREN);
@@ -77,7 +75,6 @@ describe("AssociationService", () => {
         });
 
         it("does not save in search history if not asso", async () => {
-            // @ts-expect-error: mock
             mockedAssociationPort.getByIdentifier.mockResolvedValue(ASSOCIATIONS[0]);
             await associationService.getAssociation(SIREN);
             vi.mocked(isAssociation).mockReturnValueOnce(false);
@@ -147,7 +144,10 @@ describe("AssociationService", () => {
                 {
                     rna: "RNA",
                     siren: "SIREN",
+                    siretSiege: null,
                     name: "NOM_RNA",
+                    adresse: null,
+                    nbEtabs: null,
                 },
             ];
             const actual = await associationService._searchByIdentifier(SIREN);
@@ -159,19 +159,31 @@ describe("AssociationService", () => {
         it("calls port", async () => {
             const PAGE = 2;
             await associationService._searchByText(SIREN, PAGE);
-            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, PAGE);
+            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, PAGE, undefined);
+        });
+
+        it("calls port with postal code", async () => {
+            const PAGE = 2;
+            const POSTAL_CODE = "93";
+            await associationService._searchByText(SIREN, PAGE, POSTAL_CODE);
+            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, PAGE, POSTAL_CODE);
         });
 
         it("calls port with default PAGE", async () => {
             await associationService._searchByText(SIREN);
-            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, 1);
+            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, 1, undefined);
         });
 
         it("returns result from port", async () => {
-            const expected = "test" as unknown as PaginatedAssociationSearchDto;
-            mockedAssociationPort.search.mockResolvedValue(expected);
+            const expected = { nbPages: 1, page: 1, results: ["test"], total: 1 };
+            mockedAssociationPort.search.mockResolvedValue({
+                nbPages: 1,
+                page: 1,
+                resultats: ["test"],
+                total: 1,
+            } as unknown as PaginatedRechercheAssociationDto);
             const actual = await associationService._searchByText(SIREN);
-            expect(actual).toBe(expected);
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -180,7 +192,7 @@ describe("AssociationService", () => {
         beforeAll(() => {
             mockByText = vi
                 .spyOn(associationService, "_searchByText")
-                .mockResolvedValue({} as unknown as PaginatedAssociationSearchDto);
+                .mockResolvedValue({} as unknown as PaginatedAssociationSearchResult);
             mockByIdentifier = vi.spyOn(associationService, "_searchByIdentifier").mockResolvedValue([]);
         });
         afterAll(() => {
@@ -191,12 +203,19 @@ describe("AssociationService", () => {
         it("calls _searchByText", async () => {
             const PAGE = 2;
             await associationService.search(SIREN, PAGE);
-            expect(mockByText).toHaveBeenCalledWith(SIREN, PAGE);
+            expect(mockByText).toHaveBeenCalledWith(SIREN, PAGE, undefined);
+        });
+
+        it("calls _searchByText with postal code", async () => {
+            const PAGE = 2;
+            const POSTAL_CODE = "93";
+            await associationService.search(SIREN, PAGE, POSTAL_CODE);
+            expect(mockByText).toHaveBeenCalledWith(SIREN, PAGE, POSTAL_CODE);
         });
 
         it("calls _searchByText with default PAGE", async () => {
             await associationService.search(SIREN);
-            expect(mockByText).toHaveBeenCalledWith(SIREN, 1);
+            expect(mockByText).toHaveBeenCalledWith(SIREN, 1, undefined);
         });
 
         it("returns result from search text if not empty", async () => {
