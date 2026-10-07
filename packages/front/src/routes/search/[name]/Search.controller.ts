@@ -21,11 +21,11 @@ export default class SearchController {
     duplicatesFromIdentifier: Store<string[] | null>;
     currentPage = new Store(1);
     isLastSearchCompany = new Store(false);
-    postalCode: Store<string | undefined>;
+    postalCode: Store<string>;
 
     constructor(name = "", postalCode?: string) {
         this.inputSearch = new Store(decodeQuerySearch(name).trim());
-        this.postalCode = new Store(postalCode);
+        this.postalCode = new Store(postalCode ?? "");
         this.duplicatesFromIdentifier = new Store(null);
         this.searchPromise = new Store(returnInfinitePromise());
         this.searchPromise.set(this.fetchAssociationFromName(name, 1, postalCode));
@@ -86,7 +86,7 @@ export default class SearchController {
     onSubmit(input?: string, postalCode?: string) {
         if (!input) return;
         const trimmedInput = input.trim();
-        this.postalCode.set(postalCode);
+        this.postalCode.set(postalCode ?? "");
         this.inputSearch.set(trimmedInput);
         this.searchPromise.set(this.fetchAssociationFromName(trimmedInput, 1, postalCode));
     }
