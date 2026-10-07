@@ -32,7 +32,6 @@ describe("SireneEstablishmentPipeline", () => {
     const sireneUniteLegale = { filterExistingSirens: jest.fn() } as unknown as jest.Mocked<SireneUniteLegalePort>;
     const searchPort = {
         upsertFromEstablishment: jest.fn(),
-        updatePostalCodesBySirens: jest.fn(),
     } as unknown as jest.Mocked<AssociationSearchPort>;
     const dataLog = { getLastEditionDateByProvider: jest.fn() } as unknown as jest.Mocked<DataLogPort>;
 

@@ -53,6 +53,15 @@ describe("/search", () => {
                     expect(res.body).toMatchSnapshot();
                 });
         });
+
+        it("rejects invalid postal code", async () => {
+            await request(g.app)
+                .get(`/search/associations/${DEFAULT_ASSOCIATION.rna}}?postalCode=7A`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json")
+                .expect(400)
+                .then(res => expect(res.body.message).toEqual("postalCode must contain between 2 and 5 digits"));
+        });
     });
 
     describe("/association/{text}", () => {
@@ -83,6 +92,16 @@ describe("/search", () => {
         it("returns results from object field", async () => {
             await request(g.app)
                 .get(`/search/associations/balle`) // ASSOCIATION_SEARCH_DBOS[1] and ASSOCIATION_SEARCH_DBOS[2]
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json")
+                .then(res => {
+                    expect(res.body).toMatchSnapshot();
+                });
+        });
+
+        it("search only plain words", async () => {
+            await request(g.app)
+                .get(`/search/associations/bal`) // ASSOCIATION_SEARCH_DBOS[4]
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json")
                 .then(res => {

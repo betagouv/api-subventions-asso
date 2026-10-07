@@ -5,7 +5,6 @@ import {
     RnaAssociationSearch,
     UniteLegaleAssociationSearch,
 } from "./@types/AssociationSearchDbo";
-import type { AssociationSearchPostalCodes } from "../sirene/sirene-establishment.port";
 import { Rna } from "../../../../identifier-objects";
 
 export interface AssociationSearchPort {
@@ -16,5 +15,4 @@ export interface AssociationSearchPort {
     upsertFromEstablishment(entities: EstablishmentAssociationSearch[]): Promise<void>;
     upsertFromSirene(entities: UniteLegaleAssociationSearch[]): Promise<void>;
     upsertFromRna(entities: RnaAssociationSearch[]): Promise<void>;
-    updatePostalCodesBySirens(entities: AssociationSearchPostalCodes[]): Promise<void>;
 }

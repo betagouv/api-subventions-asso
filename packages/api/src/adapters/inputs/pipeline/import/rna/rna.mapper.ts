@@ -1,11 +1,17 @@
 import { Siren, Siret } from "../../../../../identifier-objects";
 import { stringToDateOrNull } from "../../../../../shared/helpers/DateHelper";
-import { removeAccents } from "../../../../../shared/helpers/StringHelper";
+import { SanitizeSearchText } from "../../../../../usecases/search/sanitize-search-text";
+import { SplitTextInTokens } from "../../../../../usecases/search/split-text-in-tokens";
 import { RnaAssociationSearch } from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import RnaDbo from "../../../../outputs/db/rna/rna.dbo";
 import { RnaWaldecDto } from "./rna.dto";
 
 export class RnaMapper {
+    constructor(
+        private sanitize: SanitizeSearchText,
+        private split: SplitTextInTokens,
+    ) {}
+
     toDbo(dto: RnaWaldecDto): RnaDbo {
         return {
             id: dto.id,
@@ -60,8 +66,11 @@ export class RnaMapper {
     }
 
     toAssociationSearch(dbo: Omit<RnaDbo, "titre"> & { titre: string }): RnaAssociationSearch {
+        const searchName = this.sanitize.execute(dbo.titre);
+        const nameTokens = this.split.execute(searchName);
         const object = dbo.objet;
-        const searchObject = dbo.objet ? removeAccents(dbo.objet).toLowerCase() : undefined;
+        const searchObject = dbo.objet ? this.sanitize.execute(dbo.objet) : undefined;
+        const objectTokens = searchObject ? this.split.execute(searchObject) : undefined;
         const siren = this.getSiren(dbo.siret);
 
         const associationSearch: RnaAssociationSearch = {
@@ -69,14 +78,16 @@ export class RnaMapper {
             name: {
                 rna: dbo.titre,
             },
-            searchName: removeAccents(dbo.titre).toLowerCase(),
+            searchName,
+            nameTokens,
         };
 
         if (siren) associationSearch.siren = siren;
         if (object) associationSearch.object = object;
         if (searchObject) associationSearch.searchObject = searchObject;
+        if (objectTokens) associationSearch.objectTokens = objectTokens;
         return associationSearch;
     }
 }
-const rnaMapper = new RnaMapper();
+const rnaMapper = new RnaMapper(new SanitizeSearchText(), new SplitTextInTokens());
 export default rnaMapper;

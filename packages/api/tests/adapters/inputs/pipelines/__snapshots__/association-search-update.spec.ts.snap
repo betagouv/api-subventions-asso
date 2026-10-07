@@ -21,8 +21,8 @@ exports[`Association Search Update should be the merge of unite legale and rna 1
       "75003",
     ],
     "rna": "W000000002",
-    "searchName": "association 2",
-    "searchObject": "object association 2",
+    "searchName": " association 2 ",
+    "searchObject": " object association 2 ",
     "siren": "100000002",
   },
   {
@@ -33,8 +33,8 @@ exports[`Association Search Update should be the merge of unite legale and rna 1
     },
     "object": "object association 3",
     "rna": "W000000003",
-    "searchName": "association 3",
-    "searchObject": "object association 3",
+    "searchName": " association 3 ",
+    "searchObject": " object association 3 ",
     "siren": "100000003",
   },
   {
@@ -61,8 +61,8 @@ exports[`Association Search Update should be the merge of unite legale and rna 1
     },
     "object": "objet association 1",
     "rna": "W000000001",
-    "searchName": "association 1",
-    "searchObject": "objet association 1",
+    "searchName": " association 1 ",
+    "searchObject": " objet association 1 ",
   },
 ]
 `;

@@ -43,6 +43,11 @@ export function removeAccents(str: string) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
+export function extractWords(str: string) {
+    // remove everything that is not a letter or a number
+    return [...new Set(str.split(/[^\p{L}\p{N}]+/u).filter(Boolean))]; // filter on boolean act the same as trim() by removing any whitespace
+}
+
 export function sanitizeHeader(value: string): string {
     return value
         .normalize("NFD") // Remove accents + other special characters

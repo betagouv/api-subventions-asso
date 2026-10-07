@@ -275,8 +275,8 @@ exports[`RNA CLI parse updates association-search 1`] = `
     },
     "object": "Cette association a pour objet la promotion musicale",
     "rna": "W421000001",
-    "searchName": "lusine digitale",
-    "searchObject": "cette association a pour objet la promotion musicale",
+    "searchName": " lusine digitale ",
+    "searchObject": " cette association a pour objet la promotion musicale ",
   },
   {
     "name": {
@@ -284,8 +284,8 @@ exports[`RNA CLI parse updates association-search 1`] = `
     },
     "object": "Favoriser lapproche et la decouverte de cultures et pays etrangers par lorganisation dactivites physiques principalement motorisees suscitant des echanges avec les populations locales.",
     "rna": "W421000002",
-    "searchName": "team quad 42",
-    "searchObject": "favoriser lapproche et la decouverte de cultures et pays etrangers par lorganisation dactivites physiques principalement motorisees suscitant des echanges avec les populations locales.",
+    "searchName": " team quad 42 ",
+    "searchObject": " favoriser lapproche et la decouverte de cultures et pays etrangers par lorganisation dactivites physiques principalement motorisees suscitant des echanges avec les populations locales. ",
   },
   {
     "name": {
@@ -293,8 +293,8 @@ exports[`RNA CLI parse updates association-search 1`] = `
     },
     "object": "Promouvoir, orienter et coordonner le parachutisme sportif sous toutes ses formes dans le departement de la Loire.",
     "rna": "W421000003",
-    "searchName": "comite departemental parachutiste de la loire",
-    "searchObject": "promouvoir, orienter et coordonner le parachutisme sportif sous toutes ses formes dans le departement de la loire.",
+    "searchName": " comite departemental parachutiste de la loire ",
+    "searchObject": " promouvoir, orienter et coordonner le parachutisme sportif sous toutes ses formes dans le departement de la loire. ",
   },
   {
     "name": {
@@ -302,8 +302,8 @@ exports[`RNA CLI parse updates association-search 1`] = `
     },
     "object": "Associer la ville toute entiere a lorganisation des fetes par lintermediaire des groupements interesses, veiller a coordonner des activites des diverses associations afin deviter les concurrences toujours regrettables.",
     "rna": "W421000004",
-    "searchName": "comite des fetes et danimation de st sixte",
-    "searchObject": "associer la ville toute entiere a lorganisation des fetes par lintermediaire des groupements interesses, veiller a coordonner des activites des diverses associations afin deviter les concurrences toujours regrettables.",
+    "searchName": " comite des fetes et danimation de st sixte ",
+    "searchObject": " associer la ville toute entiere a lorganisation des fetes par lintermediaire des groupements interesses, veiller a coordonner des activites des diverses associations afin deviter les concurrences toujours regrettables. ",
   },
   {
     "name": {
@@ -311,8 +311,8 @@ exports[`RNA CLI parse updates association-search 1`] = `
     },
     "object": "Role de mediation entre les parents et les enseignants, aide financiere a lecole communale dans lachat doutils pedagogiques tels que logiciels, livres, fournitures scolaires",
     "rna": "W421000005",
-    "searchName": "association des parents deleves de lecole communale de boisset les montrond",
-    "searchObject": "role de mediation entre les parents et les enseignants, aide financiere a lecole communale dans lachat doutils pedagogiques tels que logiciels, livres, fournitures scolaires",
+    "searchName": " association des parents deleves de lecole communale de boisset les montrond ",
+    "searchObject": " role de mediation entre les parents et les enseignants, aide financiere a lecole communale dans lachat doutils pedagogiques tels que logiciels, livres, fournitures scolaires ",
   },
 ]
 `;

@@ -9,34 +9,94 @@ import AssociationSearchDbo, {
     RnaAssociationSearch,
     UniteLegaleAssociationSearch,
 } from "./@types/AssociationSearchDbo";
-import type { AssociationSearchPostalCodes } from "../sirene/sirene-establishment.port";
-import { removeAccents } from "../../../../shared/helpers/StringHelper";
 import { Rna } from "../../../../identifier-objects";
+import { SanitizeSearchText } from "../../../../usecases/search/sanitize-search-text";
+import { SplitTextInTokens } from "../../../../usecases/search/split-text-in-tokens";
 
 export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo> implements AssociationSearchPort {
+    constructor(
+        private sanitize: SanitizeSearchText,
+        private split: SplitTextInTokens,
+    ) {
+        super();
+    }
+
     collectionName = "association-search";
 
     tmpCollectionName = `${this.collectionName}-tmp`;
 
-    async createIndexes(): Promise<void> {
+    async createIndexes() {
         await this.collection.createIndex({ siren: 1, rna: 1 }, { unique: true });
         await this.collection.createIndex({ rna: 1 }); // for direct search on rna (no siren)
         await this.collection.createIndex({ searchName: 1, postalCodes: 1 });
+        await this.collection.createIndex({ nameTokens: 1 });
         await this.collection.createIndex({ searchObject: 1 });
+        await this.collection.createIndex({ objectTokens: 1 });
     }
 
     findByText(text: string, postalCode?: string): Promise<AssociationSearchEntity[]> {
-        const cleanText = removeAccents(text.trim().toLowerCase());
+        const words = this.split.execute(text);
+
+        if (words.length === 0) return Promise.resolve([]);
+
+        const needle = this.sanitize.execute(text); // search a needle in a haystack
 
         return this.collection
-            .find(
-                this.buildQueryWithPostalCodeFilter(
-                    {
-                        $or: [{ searchName: { $regex: cleanText } }, { searchObject: { $regex: cleanText } }],
+            .aggregate<AssociationSearchDbo & { score: number }>([
+                ...(postalCode ? [{ $match: { postalCodes: postalCode } }] : []), // filter on post code when provided
+
+                // 1. filter all documents having all given words in their name or object
+                { $match: { $or: [{ nameTokens: { $all: words } }, { objectTokens: { $all: words } }] } },
+
+                // 2. build a score for each document, based on :
+                //      4 => the phrase is present in both name and object (words in order)
+                //      3 => all words match in both name or object (in any order)
+                //      2 => all words match only in name
+                //      1 => all words match only in object
+                {
+                    $addFields: {
+                        score: {
+                            $switch: {
+                                branches: [
+                                    // 4: whole phrase, in order, in name and object
+                                    {
+                                        case: {
+                                            $and: [
+                                                { $gte: [{ $indexOfCP: ["$searchName", needle] }, 0] },
+                                                { $gte: [{ $indexOfCP: ["$searchObject", needle] }, 0] },
+                                            ],
+                                        },
+                                        then: 4,
+                                    },
+                                    // 3: all words in name and object, any order
+                                    {
+                                        case: {
+                                            $and: [
+                                                { $setIsSubset: [words, { $ifNull: ["$nameTokens", []] }] },
+                                                { $setIsSubset: [words, { $ifNull: ["$objectTokens", []] }] },
+                                            ],
+                                        },
+                                        then: 3,
+                                    },
+                                    // 2: all words in name
+                                    { case: { $setIsSubset: [words, { $ifNull: ["$nameTokens", []] }] }, then: 2 },
+                                    // 1: all words in object only
+                                    {
+                                        case: { $setIsSubset: [words, { $ifNull: ["$objectTokens", []] }] },
+                                        then: 1,
+                                    },
+                                ],
+                                default: 0,
+                            },
+                        },
                     },
-                    postalCode,
-                ),
-            )
+                },
+
+                // 3. clean up and sort
+                { $match: { score: { $gt: 0 } } },
+                { $sort: { score: -1 } },
+                { $limit: 50 },
+            ])
             .map(doc => AssociationSearchMapper.toEntity(doc))
             .toArray();
     }
@@ -127,19 +187,6 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         return;
     }
 
-    public async updatePostalCodesBySirens(dbos: AssociationSearchPostalCodes[]): Promise<void> {
-        if (!dbos.length) return;
-
-        const operations = dbos.map(({ siren, postalCodes }) => ({
-            updateOne: {
-                filter: { siren },
-                update: { $set: { postalCodes } },
-            },
-        }));
-
-        await this.collection.bulkWrite(operations);
-    }
-
     private buildQueryWithPostalCodeFilter(
         query: Filter<AssociationSearchDbo>,
         postalCode?: string,
@@ -149,6 +196,6 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     }
 }
 
-const associationSearchAdapter = new AssociationSearchAdapter();
+const associationSearchAdapter = new AssociationSearchAdapter(new SanitizeSearchText(), new SplitTextInTokens());
 
 export default associationSearchAdapter;

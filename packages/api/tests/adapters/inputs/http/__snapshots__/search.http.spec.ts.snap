@@ -152,20 +152,6 @@ exports[`/search /association/{text} returns results matching text 1`] = `
       "adresse": {
         "code_postal": "69000",
         "commune": "Lyon",
-        "numero": "14",
-        "type_voie": "avenue",
-        "voie": "de la Liberté",
-      },
-      "name": "TENNIS CLUB DE LYON",
-      "nbEtabs": 2,
-      "rna": "W300000000",
-      "siren": "300000000",
-      "siretSiege": "30000000000018",
-    },
-    {
-      "adresse": {
-        "code_postal": "69000",
-        "commune": "Lyon",
         "numero": "2",
         "type_voie": "RUE",
         "voie": "Victor Hugo",
@@ -176,7 +162,45 @@ exports[`/search /association/{text} returns results matching text 1`] = `
       "siren": "200000000",
       "siretSiege": "20000000000020",
     },
+    {
+      "adresse": {
+        "code_postal": "69000",
+        "commune": "Lyon",
+        "numero": "14",
+        "type_voie": "avenue",
+        "voie": "de la Liberté",
+      },
+      "name": "TENNIS CLUB DE LYON",
+      "nbEtabs": 2,
+      "rna": "W300000000",
+      "siren": "300000000",
+      "siretSiege": "30000000000018",
+    },
   ],
   "total": 2,
+}
+`;
+
+exports[`/search /association/{text} search only plain words 1`] = `
+{
+  "nbPages": 1,
+  "page": 1,
+  "resultats": [
+    {
+      "adresse": {
+        "code_postal": "22200",
+        "commune": "Guingamp",
+        "numero": "18",
+        "type_voie": "rue",
+        "voie": "Lavoisier",
+      },
+      "name": "Le bal masqué",
+      "nbEtabs": 1,
+      "rna": "W400000000",
+      "siren": "400000000",
+      "siretSiege": "40000000000018",
+    },
+  ],
+  "total": 1,
 }
 `;

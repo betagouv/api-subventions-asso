@@ -81,6 +81,14 @@ describe("StringHelper", () => {
         });
     });
 
+    describe("extractWords", () => {
+        it("returns an array of words", () => {
+            const expected = ["tennis", "de", "table"];
+            const actual = StringHelper.extractWords("tennis de table");
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("sanitizeHeader", () => {
         it.each`
             input                                          | expected
