@@ -36,7 +36,8 @@
                 </a>
             </p>
             <p class="search-help fr-mt-3w text-center">
-                Pour un identifiant RNA : lettre W + 9 chiffres; SIREN : 9 chiffres; SIRET : 14 chiffres.
+                Identifiant RNA : lettre W + 1 chiffre + 1 caractère alphanumérique + 7 chiffres • SIREN : 9 chiffres •
+                SIRET : 14 chiffres
             </p>
         </div>
     </div>
