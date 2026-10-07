@@ -54,6 +54,8 @@
                     class="fr-input"
                     {placeholder}
                     type="search"
+                    lang="fr"
+                    spellcheck="true"
                     id="search-input-{id}"
                     name="search-input"
                     bind:value
