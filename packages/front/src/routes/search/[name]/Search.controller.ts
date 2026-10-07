@@ -91,9 +91,7 @@ export default class SearchController {
         this.searchPromise.set(this.fetchAssociationFromName(trimmedInput, 1, postalCode));
     }
 
-    onChangePage(event: { detail: number }) {
-        this.searchPromise.set(
-            this.fetchAssociationFromName(this.inputSearch.value, event.detail, this.postalCode.value),
-        );
+    onChangePage(page: number) {
+        this.searchPromise.set(this.fetchAssociationFromName(this.inputSearch.value, page, this.postalCode.value));
     }
 }
