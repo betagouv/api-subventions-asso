@@ -196,7 +196,7 @@ describe("SearchController", () => {
             fetchSpy = vi.spyOn(controller, "fetchAssociationFromName").mockReturnValue(Promise.resolve());
             controller.inputSearch.value = SEARCH;
             controller.postalCode.value = "93";
-            controller.onChangePage({ detail: PAGE });
+            controller.onChangePage(PAGE);
             expect(fetchSpy).toHaveBeenCalledWith(SEARCH, PAGE, "93");
         });
     });
