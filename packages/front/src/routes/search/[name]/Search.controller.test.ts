@@ -21,8 +21,22 @@ vi.mock("$app/navigation");
 
 describe("SearchController", () => {
     const RNA = "RNA";
-    const RNA_SIREN_1 = { rna: RNA, siren: "SIREN_1", name: "NOM" };
-    const RNA_SIREN_2 = { rna: RNA, siren: "SIREN_2", name: "NOM" };
+    const RNA_SIREN_1 = {
+        rna: RNA,
+        siren: "SIREN_1",
+        siretSiege: null,
+        name: "NOM",
+        adresse: null,
+        nbEtabs: null,
+    };
+    const RNA_SIREN_2 = {
+        rna: RNA,
+        siren: "SIREN_2",
+        siretSiege: null,
+        name: "NOM",
+        adresse: null,
+        nbEtabs: null,
+    };
     const DUPLICATED_RESULTS = {
         nbPages: 1,
         page: 1,
@@ -49,7 +63,7 @@ describe("SearchController", () => {
         it("searches with trimmed input", async () => {
             const PAGE = 1;
             await controller.fetchAssociationFromName("  " + RNA + "  ");
-            expect(mockedAssociationService.search).toHaveBeenCalledWith(RNA, PAGE);
+            expect(mockedAssociationService.search).toHaveBeenCalledWith(RNA, PAGE, undefined);
         });
 
         it("should set duplicate store", async () => {
@@ -96,13 +110,20 @@ describe("SearchController", () => {
         it("should call with required page", async () => {
             const PAGE = 42;
             await controller.fetchAssociationFromName("name", PAGE);
-            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", PAGE);
+            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", PAGE, undefined);
         });
 
         it("should call with default page", async () => {
             const PAGE = 1;
             await controller.fetchAssociationFromName("name");
-            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", PAGE);
+            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", PAGE, undefined);
+        });
+
+        it("should call with postal code", async () => {
+            const PAGE = 1;
+            const POSTAL_CODE = "93400";
+            await controller.fetchAssociationFromName("name", PAGE, POSTAL_CODE);
+            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", PAGE, POSTAL_CODE);
         });
 
         it("should call goto with encoded input", async () => {
@@ -119,6 +140,15 @@ describe("SearchController", () => {
                 },
               ]
             `);
+        });
+
+        it("should keep postal code in url after search", async () => {
+            mockedIdentifierHelper.isRna.mockReturnValue(false);
+            mockedIdentifierHelper.isSiren.mockReturnValue(false);
+            vi.mocked(encodeQuerySearch).mockReturnValueOnce("encoded");
+            await controller.fetchAssociationFromName("name", 1, "43000");
+            const actual = vi.mocked(goto).mock.calls[1]; // first call is in constructor
+            expect(actual).toEqual(["/search/encoded?postalCode=43000", { replaceState: true }]);
         });
 
         it("sets isLastSearchCompany to true if raised exception", async () => {
@@ -145,7 +175,14 @@ describe("SearchController", () => {
         it("fetch new result on page one", () => {
             vi.mocked(isSiret).mockReturnValueOnce(false);
             controller.onSubmit(RNA);
-            expect(fetchSpy).toHaveBeenCalledWith(RNA, 1);
+            expect(fetchSpy).toHaveBeenCalledWith(RNA, 1, undefined);
+        });
+
+        it("fetch new result with postal code on page one", () => {
+            const POSTAL_CODE = "93";
+            vi.mocked(isSiret).mockReturnValueOnce(false);
+            controller.onSubmit(RNA, POSTAL_CODE);
+            expect(fetchSpy).toHaveBeenCalledWith(RNA, 1, POSTAL_CODE);
         });
     });
 
@@ -158,8 +195,9 @@ describe("SearchController", () => {
             const controller = new SearchController(RNA);
             fetchSpy = vi.spyOn(controller, "fetchAssociationFromName").mockReturnValue(Promise.resolve());
             controller.inputSearch.value = SEARCH;
+            controller.postalCode.value = "93";
             controller.onChangePage({ detail: PAGE });
-            expect(fetchSpy).toHaveBeenCalledWith(SEARCH, PAGE);
+            expect(fetchSpy).toHaveBeenCalledWith(SEARCH, PAGE, "93");
         });
     });
 });

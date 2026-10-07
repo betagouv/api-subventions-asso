@@ -12,7 +12,7 @@
 
     let { simplifiedAsso, searchKey = undefined }: Props = $props();
 
-    const ctrl = new AssociationCardController(simplifiedAsso, searchKey);
+    const ctrl = $derived(new AssociationCardController(simplifiedAsso, searchKey));
 </script>
 
 <Card title={simplifiedAsso.name} url={ctrl.url} titleStyle="h6" keepSpaceForTitle={true}>
