@@ -1,0 +1,182 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`/search /association/{identifier} filter by post code 1`] = `
+{
+  "nbPages": 0,
+  "page": 1,
+  "resultats": [],
+  "total": 0,
+}
+`;
+
+exports[`/search /association/{identifier} returns result from rna 1`] = `
+{
+  "nbPages": 1,
+  "page": 1,
+  "resultats": [
+    {
+      "adresse": {
+        "code_postal": "75000",
+        "commune": "Paris",
+        "numero": "1",
+        "type_voie": "RUE",
+        "voie": "Général de Gaulle",
+      },
+      "name": "rna-DEFAULT_ASSOCIATION",
+      "nbEtabs": 2,
+      "rna": "W000000000",
+      "siren": "100000000",
+      "siretSiege": "10000000000001",
+    },
+  ],
+  "total": 1,
+}
+`;
+
+exports[`/search /association/{identifier} returns result from siren 1`] = `
+{
+  "nbPages": 1,
+  "page": 1,
+  "resultats": [
+    {
+      "adresse": {
+        "code_postal": "75000",
+        "commune": "Paris",
+        "numero": "1",
+        "type_voie": "RUE",
+        "voie": "Général de Gaulle",
+      },
+      "name": "rna-DEFAULT_ASSOCIATION",
+      "nbEtabs": 2,
+      "rna": "W000000000",
+      "siren": "100000000",
+      "siretSiege": "10000000000001",
+    },
+  ],
+  "total": 1,
+}
+`;
+
+exports[`/search /association/{identifier} returns result from siret 1`] = `
+{
+  "nbPages": 1,
+  "page": 1,
+  "resultats": [
+    {
+      "adresse": {
+        "code_postal": "75000",
+        "commune": "Paris",
+        "numero": "1",
+        "type_voie": "RUE",
+        "voie": "Général de Gaulle",
+      },
+      "name": "rna-DEFAULT_ASSOCIATION",
+      "nbEtabs": 2,
+      "rna": "W000000000",
+      "siren": "100000000",
+      "siretSiege": "10000000000001",
+    },
+  ],
+  "total": 1,
+}
+`;
+
+exports[`/search /association/{text} filter by post code 1`] = `
+{
+  "nbPages": 1,
+  "page": 1,
+  "resultats": [
+    {
+      "adresse": {
+        "code_postal": "69000",
+        "commune": "Lyon",
+        "numero": "14",
+        "type_voie": "avenue",
+        "voie": "de la Liberté",
+      },
+      "name": "TENNIS CLUB DE LYON",
+      "nbEtabs": 2,
+      "rna": "W300000000",
+      "siren": "300000000",
+      "siretSiege": "30000000000018",
+    },
+  ],
+  "total": 1,
+}
+`;
+
+exports[`/search /association/{text} returns results from object field 1`] = `
+{
+  "nbPages": 1,
+  "page": 1,
+  "resultats": [
+    {
+      "adresse": {
+        "code_postal": "69000",
+        "commune": "Lyon",
+        "numero": "2",
+        "type_voie": "RUE",
+        "voie": "Victor Hugo",
+      },
+      "name": "TENNIS DE TABLE LYON",
+      "nbEtabs": 1,
+      "rna": "W200000000",
+      "siren": "200000000",
+      "siretSiege": "20000000000020",
+    },
+    {
+      "adresse": {
+        "code_postal": "69000",
+        "commune": "Lyon",
+        "numero": "14",
+        "type_voie": "avenue",
+        "voie": "de la Liberté",
+      },
+      "name": "TENNIS CLUB DE LYON",
+      "nbEtabs": 2,
+      "rna": "W300000000",
+      "siren": "300000000",
+      "siretSiege": "30000000000018",
+    },
+  ],
+  "total": 2,
+}
+`;
+
+exports[`/search /association/{text} returns results matching text 1`] = `
+{
+  "nbPages": 1,
+  "page": 1,
+  "resultats": [
+    {
+      "adresse": {
+        "code_postal": "69000",
+        "commune": "Lyon",
+        "numero": "14",
+        "type_voie": "avenue",
+        "voie": "de la Liberté",
+      },
+      "name": "TENNIS CLUB DE LYON",
+      "nbEtabs": 2,
+      "rna": "W300000000",
+      "siren": "300000000",
+      "siretSiege": "30000000000018",
+    },
+    {
+      "adresse": {
+        "code_postal": "69000",
+        "commune": "Lyon",
+        "numero": "2",
+        "type_voie": "RUE",
+        "voie": "Victor Hugo",
+      },
+      "name": "TENNIS DE TABLE LYON",
+      "nbEtabs": 1,
+      "rna": "W200000000",
+      "siren": "200000000",
+      "siretSiege": "20000000000020",
+    },
+  ],
+  "total": 2,
+}
+`;

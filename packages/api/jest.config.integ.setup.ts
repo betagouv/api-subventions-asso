@@ -131,7 +131,6 @@ const addBetaGouvEmailDomain = async () => {
 beforeAll(async () => {
     jest.mocked(axios.request).mockResolvedValue({ data: null });
 
-    console.log("LOGS", await db.admin().serverInfo());
     await connectDB();
     if (!existsSync("./logs")) {
         // Create folders for logs

@@ -1,5 +1,7 @@
 import DEFAULT_ASSOCIATION from "../../../../../../tests/__fixtures__/association.fixture";
 
+const COMMON_WORD = "TENNIS";
+
 export const ASSOCIATION_SEARCH_DBOS = [
     {
         siren: DEFAULT_ASSOCIATION.siren,
@@ -28,12 +30,12 @@ export const ASSOCIATION_SEARCH_DBOS = [
         mainEstablishmentSiret: "20000000000020",
         rna: "W200000000",
         name: {
-            rna: `rna-LYON ASSOCIATION`,
-            sirene: `sirene-LYON ASSOCIATION`,
+            rna: `${COMMON_WORD} DE TABLE LYON`,
+            sirene: `LE ${COMMON_WORD} DE TABLE LYONNAIS`,
         },
-        searchName: "lyon association",
-        object: "ROLE AND DEFINITION OF THE ASSOCIATION",
-        searchObject: "ROLE AND DEFINITION OF THE ASSOCIATION".toLowerCase(),
+        searchName: `${COMMON_WORD.toLowerCase()} de table lyon`,
+        object: "Jouer ensemble et s'amuser autour de la petite balle",
+        searchObject: "jouer ensemble et s amuser autour de la petite balle".toLowerCase(),
         address: {
             number: "2",
             type: "RUE",
@@ -44,5 +46,27 @@ export const ASSOCIATION_SEARCH_DBOS = [
         },
         nbEstabs: 1,
         postalCodes: ["69000"],
+    },
+    {
+        siren: "300000000",
+        mainEstablishmentSiret: "30000000000018",
+        rna: "W300000000",
+        name: {
+            rna: `${COMMON_WORD} CLUB DE LYON`,
+            sirene: `LE ${COMMON_WORD} LYONNAIS`,
+        },
+        searchName: `${COMMON_WORD.toLowerCase()} de lyon`,
+        object: "S'amuser avec une moyenne balle jaune, seul ou en équipe",
+        searchObject: "s amuser avec une moyenne balle jaune seul ou en equipe".toLowerCase(),
+        address: {
+            number: "14",
+            type: "avenue",
+            name: "de la Liberté",
+            city: "Lyon",
+            postalCode: "69000",
+            complement: null,
+        },
+        nbEstabs: 2,
+        postalCodes: ["69000", "69001"],
     },
 ];
