@@ -5,6 +5,10 @@ module.exports = {
             skipMD5: true,
         },
         autoStart: false,
-        instance: {},
+        // configured to allow "big indexes" since association-search searchName and searchObject where added
+        instance: {
+            storageEngine: "wiredTiger",
+            args: ["--setParameter", "failIndexKeyTooLong=false"],
+        },
     },
 };
