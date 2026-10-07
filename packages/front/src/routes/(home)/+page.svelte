@@ -6,9 +6,8 @@
 
     let { data } = $props();
 
-    const query = $derived(data.query);
-    const ctrl = $derived(new HomeController(query));
-    const searchHistory = $derived(ctrl.searchHistory);
+    const ctrl = new HomeController(data.query);
+    const searchHistory = ctrl.searchHistory;
 </script>
 
 {#if ctrl.successMessage}
@@ -36,8 +35,8 @@
                 </a>
             </p>
             <p class="search-help fr-mt-3w text-center">
-                Identifiant RNA : lettre W + 1 chiffre + 1 caractère alphanumérique + 7 chiffres • SIREN : 9 chiffres •
-                SIRET : 14 chiffres
+                Pour un identifiant RNA : lettre W + 1 chiffre + 1 lettre ou chiffre + 7 chiffres; SIREN : 9 chiffres;
+                SIRET : 14 chiffres.
             </p>
         </div>
     </div>
