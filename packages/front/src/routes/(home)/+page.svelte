@@ -45,7 +45,7 @@
         {#each recentSearches as search, index (search.rna || search.siren)}
             <AssociationTag simplifiedAsso={search} />
             {#if index === 2 && recentSearches.length > 3}
-                <span class="association-tags-break" aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
             {/if}
         {/each}
     </div>
@@ -57,32 +57,31 @@
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
-        column-gap: 8px;
+        column-gap: 0.5rem;
         row-gap: 0;
         margin-bottom: 3rem;
     }
 
-    .association-tags-break {
+    .association-tags > span {
         flex-basis: 100%;
-        height: 0;
     }
 
-    .association-tags-break ~ :global(.association-tag) {
-        margin-top: 8px;
+    .association-tags > span ~ :global(a) {
+        margin-top: 0.5rem;
     }
 
     @media (max-width: 62em) {
         .association-tags {
             flex-direction: column;
             flex-wrap: nowrap;
-            row-gap: 8px;
+            row-gap: 0.5rem;
         }
 
-        .association-tags-break {
+        .association-tags > span {
             display: none;
         }
 
-        .association-tags-break ~ :global(.association-tag) {
+        .association-tags > span ~ :global(a) {
             margin-top: 0;
         }
     }

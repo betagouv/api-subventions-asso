@@ -13,38 +13,19 @@
 
 <style>
     .association-tag {
+        --hover-tint: var(--hover);
+        --hover: var(--background-action-low-blue-france-hover);
+        --active: var(--background-action-low-blue-france-active);
+        --underline-img: none;
+
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        box-sizing: border-box;
-        height: 32px;
-        max-width: 100%;
-        padding: 0 1rem;
-        border-radius: 999rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
         background-color: var(--background-contrast-grey);
-        background-image: none;
         color: var(--text-title-grey);
-        font-family: Marianne, Arial, sans-serif;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 20px;
-        text-decoration: none;
-    }
-
-    .association-tag-label {
-        min-width: 0;
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        text-align: center;
-        white-space: nowrap;
-    }
-
-    .association-tag:hover {
-        background-color: var(--background-contrast-grey-hover);
-    }
-
-    .association-tag:active {
-        background-color: var(--background-contrast-grey-active);
+        font-size: 0.875rem;
+        line-height: 1.5rem;
     }
 </style>
