@@ -11,7 +11,6 @@
     let { params }: PageProps = $props();
     const name = $derived(params.name);
 
-
     const ctrl = $derived(new SearchController(name));
     const searchPromise = $derived(ctrl.searchPromise);
     const searchResults = $derived(ctrl.searchResults);
@@ -71,7 +70,7 @@
             {/if}
         </div>
 
-        <div class="fr-grid-row fr-grid-row--gutters search-layout">
+        <div class="fr-grid-row fr-grid-row--gutters">
             {#each $searchResults.resultats as simplifiedAsso (simplifiedAsso.siren + "-" + simplifiedAsso.rna)}
                 <AssociationItem {simplifiedAsso} searchKey={$inputSearch} />
             {/each}
@@ -80,17 +79,12 @@
         {#if $searchResults.nbPages > 1}
             <div class="fr-grid-row fr-mt-5w">
                 <div class="fr-mx-auto">
-                    <Pagination totalPages={$searchResults.nbPages} {currentPage} onchange={e => ctrl.onChangePage(e)} />
+                    <Pagination
+                        totalPages={$searchResults.nbPages}
+                        {currentPage}
+                        onchange={e => ctrl.onChangePage(e)} />
                 </div>
             </div>
         {/if}
     {/if}
 {/await}
-
-<style>
-    .search-layout {
-        display: flex;
-        flex-wrap: wrap;
-        row-gap: 1rem;
-    }
-</style>
