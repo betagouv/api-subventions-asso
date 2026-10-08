@@ -26,15 +26,13 @@
 <div class="fr-grid-row fr-grid-row--center fr-mt-6v">
     <div class="fr-col-8">
         <div class="search-bar">
-            <SearchBar compactHeight={true} disableIfEmpty={false} onSubmit={value => ctrl.onSubmit(value)} />
+            <SearchBar disableIfEmpty={false} onSubmit={value => ctrl.onSubmit(value)} />
             <p class="fr-mt-3w fr-mb-0 text-center">
-                <a
-                    class="advanced-search-link fr-link fr-icon-arrow-right-line fr-link--icon-right"
-                    href="/advanced-search">
+                <a class="fr-link fr-icon-arrow-right-line fr-link--icon-right" href="/advanced-search">
                     Recherche avancée
                 </a>
             </p>
-            <p class="search-help fr-mt-3w text-center">
+            <p class="help fr-text--sm fr-mt-3w text-center">
                 Pour un identifiant RNA : lettre W + 1 chiffre + 1 lettre ou chiffre + 7 chiffres; SIREN : 9 chiffres;
                 SIRET : 14 chiffres.
             </p>
@@ -54,16 +52,7 @@
 {/if}
 
 <style>
-    .advanced-search-link {
-        font-family: Marianne, Arial, sans-serif;
-        font-size: 16px;
-        font-weight: 400;
-    }
-
-    .search-help {
-        color: #666666;
-        font-family: Marianne, Arial, sans-serif;
-        font-size: 14px;
-        font-weight: 400;
+    .search-bar > .help {
+        color: var(--text-mention-grey);
     }
 </style>

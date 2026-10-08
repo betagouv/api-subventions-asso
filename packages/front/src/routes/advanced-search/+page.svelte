@@ -17,10 +17,10 @@
     }
 </script>
 
-<div class="fr-container fr-my-6w">
+<div class="fr-my-6v">
     <AdvancedSearchBar bind:value={searchValue} {onSubmit} />
 
-    <div class="advanced-search-help fr-mt-6w">
+    <div class="fr-mt-6w">
         <p class="fr-text--bold">Pour faciliter l’affichage des résultats :</p>
         <ul>
             <li>Utiliser un terme d’au moins 3 lettres</li>
@@ -29,9 +29,3 @@
         </ul>
     </div>
 </div>
-
-<style>
-    .advanced-search-help {
-        max-width: 48rem;
-    }
-</style>

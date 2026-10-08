@@ -52,15 +52,14 @@
         </div>
     {:else}
         <div class="fr-mb-3w">
-            <div class="search-results-header fr-mb-2w">
-                <p class="results-count fr-mb-0">
+            <div class="header fr-mb-2w">
+                <p class="fr-text--bold fr-mb-0">
                     {nbResultLabel}
                 </p>
-                <div class="sort-control" aria-label="Tri des résultats">
-                    <span class="sort-label">Trier par :</span>
-                    <div class="sort-buttons">
+                <div class="sort" aria-label="Tri des résultats">
+                    <span>Trier par :</span>
+                    <div class="buttons">
                         <button
-                            class="sort-button"
                             class:active={selectedSort === "relevance"}
                             type="button"
                             aria-pressed={selectedSort === "relevance"}
@@ -68,7 +67,6 @@
                             Pertinence
                         </button>
                         <button
-                            class="sort-button"
                             class:active={selectedSort === "alphabetical"}
                             type="button"
                             aria-pressed={selectedSort === "alphabetical"}
@@ -91,7 +89,7 @@
             {/if}
         </div>
 
-        <div class="fr-grid-row fr-grid-row--gutters search-layout">
+        <div class="fr-grid-row fr-grid-row--gutters results">
             {#each $searchResults.results as simplifiedAsso (simplifiedAsso.siren + "-" + simplifiedAsso.rna)}
                 <AssociationCard {simplifiedAsso} searchKey={$inputSearch} />
             {/each}
@@ -111,93 +109,37 @@
 {/await}
 
 <style>
-    .search-results-header {
+    .header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
     }
 
-    .results-count {
-        font-size: 16px;
-        font-weight: 700;
-    }
-
-    .sort-control {
+    .header > .sort {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 0.75rem;
     }
 
-    .sort-label {
-        color: #161616;
-        font-family: Marianne, Arial, sans-serif;
-        font-size: 16px;
-        font-weight: 400;
-        white-space: nowrap;
-    }
-
-    .sort-buttons {
-        display: inline-flex;
-        align-items: center;
-        height: 32px;
-        box-sizing: border-box;
-        border: 1px solid #dddddd;
-        border-radius: 4px;
-        background: var(--background-default-grey);
-    }
-
-    .sort-button {
+    .buttons > button {
         position: relative;
-        height: 30px;
-        box-sizing: border-box;
-        padding: 0 12px;
-        border: 0;
-        border-radius: 0;
-        background: var(--background-default-grey);
-        color: #161616;
-        font-family: Marianne, Arial, sans-serif;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 1;
-        white-space: nowrap;
-        box-shadow: none;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
     }
 
-    .sort-button + .sort-button {
-        border-left: 1px solid #dddddd;
+    .buttons > button.active {
+        color: var(--text-active-blue-france);
+        box-shadow: inset 0 0 0 1px var(--border-active-blue-france);
     }
 
-    .sort-button.active + .sort-button {
-        border-left: 0;
-    }
-
-    .sort-button.active {
-        position: relative;
-        z-index: 1;
-        height: 32px;
-        margin-top: -1px;
-        margin-bottom: -1px;
-        border: 1px solid #000091;
-        border-radius: 4px;
-        color: #000091;
-    }
-
-    .sort-button.active:first-child {
-        margin-left: -1px;
-    }
-
-    .sort-button.active:last-child {
-        margin-right: -1px;
-    }
-
-    .search-layout {
+    .results {
         display: flex;
         flex-wrap: wrap;
     }
 
     @media (max-width: 48em) {
-        .search-results-header {
+        .header {
             align-items: flex-start;
             flex-direction: column;
         }
