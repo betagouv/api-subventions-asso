@@ -13,7 +13,8 @@ export class HomeController {
         this.successMessage = this._getSuccessMessage(query.success);
     }
 
-    onSubmit(input) {
+    onSubmit(input?: string) {
+        if (!input) return;
         goto(`/search/${encodeQuerySearch(input)}`);
     }
 

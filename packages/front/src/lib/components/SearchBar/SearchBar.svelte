@@ -7,8 +7,9 @@
         disableIfEmpty?: boolean;
         value?: string | undefined;
         label?: string;
-        onsubmit?: (value: string | undefined) => void;
-        onreset?: () => void;
+        compactHeight?: boolean;
+        onSubmit?: (value: string | undefined) => void;
+        onReset?: () => void;
     }
 
     let {
@@ -18,16 +19,17 @@
         disableIfEmpty = true,
         value = $bindable(undefined),
         label = undefined,
-        onsubmit = () => {},
-        onreset = () => {},
+        compactHeight = false,
+        onSubmit = () => undefined,
+        onReset = () => undefined,
     }: Props = $props();
 
     async function handleReset() {
-        if (value === "") onreset();
+        if (value === "") onReset();
     }
 
     function handleSubmit() {
-        onsubmit(value);
+        onSubmit(value);
     }
 </script>
 
@@ -38,7 +40,11 @@
                 event.preventDefault();
                 handleSubmit();
             }}>
-            <div class="fr-search-bar" class:fr-search-bar--lg={large} id="search-input-{id}">
+            <div
+                class="fr-search-bar"
+                class:fr-search-bar--lg={large}
+                class:compact-height={compactHeight}
+                id="search-input-{id}">
                 {#if label}
                     <label class="fr-label" for="search-input-{id}">
                         {label}
@@ -48,6 +54,8 @@
                     class="fr-input"
                     {placeholder}
                     type="search"
+                    lang="fr"
+                    spellcheck="true"
                     id="search-input-{id}"
                     name="search-input"
                     bind:value
@@ -57,3 +65,25 @@
         </form>
     </div>
 </div>
+
+<style>
+    .fr-search-bar.compact-height {
+        height: 48px;
+    }
+
+    .fr-search-bar.compact-height .fr-input,
+    .fr-search-bar.compact-height .fr-btn {
+        height: 48px;
+        min-height: 48px;
+    }
+
+    .fr-search-bar.compact-height .fr-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 178px;
+        flex-basis: 178px;
+        padding: 0 1rem;
+        line-height: 1;
+    }
+</style>
