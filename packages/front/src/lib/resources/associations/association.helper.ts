@@ -1,4 +1,5 @@
 import { isAssoCategory } from "$lib/helpers/entrepriseHelper";
+import type { Adresse } from "dto";
 
 export const isAddressValid = address => {
     if (!address) return false;
@@ -15,7 +16,7 @@ export const addressToOneLineString = address => {
         .join(" ");
 };
 
-export const getFirstPartAddress = address => {
+export const getFirstPartAddress = (address: Adresse) => {
     if (!address) return address;
     const { numero, type_voie, voie } = address;
     return [numero, type_voie, voie]
@@ -25,7 +26,7 @@ export const getFirstPartAddress = address => {
         .join(" ");
 };
 
-export const getLastPartAddress = address => {
+export const getLastPartAddress = (address: Adresse) => {
     if (!address) return address;
     const { code_postal, commune } = address;
     return [code_postal, commune]

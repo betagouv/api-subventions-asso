@@ -78,4 +78,15 @@ type SireneEstablishmentDto = Omit<
     dateDernierTraitementEtablissement: Date;
 };
 
+export type AssociationSearchFields = Pick<
+    SireneEstablishmentDto,
+    | "siren"
+    | "numeroVoieEtablissement"
+    | "typeVoieEtablissement"
+    | "libelleVoieEtablissement"
+    | "libelleCommuneEtablissement"
+    | "codePostalEtablissement"
+    | "dateDernierTraitementEtablissement"
+>;
+
 export default SireneEstablishmentDto;

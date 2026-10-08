@@ -19,7 +19,10 @@ describe("DataLogAdapter", () => {
     describe("getLastEditionDateByProvider", () => {
         it("queries latest edition date by provider", async () => {
             await dataLogAdapter.getLastEditionDateByProvider("provider");
-            expect(mockFindOne).toHaveBeenCalledWith({ providerId: "provider", editionDate: { $exists: true } });
+            expect(mockFindOne).toHaveBeenCalledWith(
+                { providerId: "provider", editionDate: { $exists: true } },
+                { projection: { _id: 0 }, sort: { editionDate: -1 } },
+            );
         });
 
         it("returns null when no log exists", async () => {

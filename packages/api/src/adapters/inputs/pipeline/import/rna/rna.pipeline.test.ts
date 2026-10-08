@@ -1,10 +1,13 @@
+import { ASSOCIATION_SEARCH_ENTITIES } from "../../../../../domain/__fixtures__/association-search.fixture";
+import { addMonths } from "../../../../../shared/helpers/DateHelper";
+import { AssociationSearchAdapter } from "../../../../outputs/db/association-search/association-search.adapter";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { RnaAdapter } from "../../../../outputs/db/rna/rna.adapter";
 import { RNA_DBO } from "../../../../outputs/db/rna/rna.dbo.fixture";
+import { ParquetParser } from "../../../parquet.parser";
 import { RnaWaldecDto } from "./rna.dto";
 import { RNA_WALDEC_DTO } from "./rna.dto.fixture";
 import { RnaMapper } from "./rna.mapper";
-import { RnaParser } from "./rna.parser";
 import { RnaPipeline } from "./rna.pipeline";
 
 function* fakeParse(batches: RnaWaldecDto[][]) {
@@ -25,16 +28,21 @@ describe("RNA pipeline", () => {
 
     const parser = {
         parse: jest.fn().mockImplementation(() => fakeParse(BATCHES)),
-    } as unknown as RnaParser;
+    } as unknown as ParquetParser<RnaWaldecDto>;
 
     const mapper = {
-        map: jest.fn().mockImplementation(_dto => RNA_DBO),
+        toDbo: jest.fn().mockImplementation(_dto => RNA_DBO),
+        toAssociationSearch: jest.fn().mockImplementation(_dbo => ASSOCIATION_SEARCH_ENTITIES[0]),
     } as unknown as jest.Mocked<RnaMapper>;
 
     const adapter = {
         insertMany: jest.fn().mockResolvedValue(undefined),
         upsertMany: jest.fn().mockResolvedValue(undefined),
     } as unknown as RnaAdapter;
+
+    const searchAdapter = {
+        upsertFromRna: jest.fn().mockResolvedValue(undefined),
+    } as unknown as AssociationSearchAdapter;
 
     const mockLogsAdapter = {
         getLastImportByProvider: jest.fn().mockResolvedValue(IMPORT_DATE),
@@ -43,10 +51,26 @@ describe("RNA pipeline", () => {
     let pipeline: RnaPipeline;
 
     beforeEach(() => {
-        pipeline = new RnaPipeline(parser, mapper, adapter, mockLogsAdapter);
+        pipeline = new RnaPipeline(parser, mapper, adapter, searchAdapter, mockLogsAdapter);
     });
 
     describe("run", () => {
+        it("throws an error if sirene import has not been done before", async () => {
+            // sirene import has not been done
+            mockLogsAdapter.getLastImportByProvider.mockResolvedValueOnce(null);
+            await expect(() => pipeline.run(FILE_PATH)).rejects.toThrow(
+                "You must import data from Sirene Unité Légale before Rna",
+            );
+        });
+
+        it("throws an error if sirene import has not been updated after last rna import date", async () => {
+            // makes Sirene import date lower than Rna one's
+            mockLogsAdapter.getLastImportByProvider.mockResolvedValueOnce(addMonths(IMPORT_DATE, -1));
+            await expect(() => pipeline.run(FILE_PATH)).rejects.toThrow(
+                "You must import data from Sirene Unité Légale before Rna",
+            );
+        });
+
         it("parses file from given filepath", async () => {
             await pipeline.run(FILE_PATH);
 
@@ -66,7 +90,7 @@ describe("RNA pipeline", () => {
 
             // filter out filtered dto from BATCHES
             [BATCHES[0][0], BATCHES[1][0]].flat().forEach((dto, index) => {
-                expect(mapper.map).toHaveBeenNthCalledWith(index + 1, dto);
+                expect(mapper.toDbo).toHaveBeenNthCalledWith(index + 1, dto);
             });
         });
 
@@ -74,7 +98,18 @@ describe("RNA pipeline", () => {
             await pipeline.run(FILE_PATH);
 
             [BATCHES[0][0], BATCHES[1][0]].flat().forEach((dto, index) => {
-                expect(mapper.map).toHaveBeenNthCalledWith(index + 1, dto);
+                expect(mapper.toDbo).toHaveBeenNthCalledWith(index + 1, dto);
+            });
+        });
+
+        it("updates association-search collection", async () => {
+            await pipeline.run(FILE_PATH);
+
+            BATCHES.forEach((_dto, index) => {
+                expect(searchAdapter.upsertFromRna).toHaveBeenNthCalledWith(
+                    index + 1,
+                    BATCHES[index].map(_dbo => ASSOCIATION_SEARCH_ENTITIES[0]),
+                );
             });
         });
 
@@ -90,6 +125,9 @@ describe("RNA pipeline", () => {
         });
 
         it("persists all data", async () => {
+            // make sirene import ok
+            mockLogsAdapter.getLastImportByProvider.mockResolvedValueOnce(IMPORT_DATE);
+            // no rna import yet
             mockLogsAdapter.getLastImportByProvider.mockResolvedValueOnce(null);
             await pipeline.run(FILE_PATH);
 

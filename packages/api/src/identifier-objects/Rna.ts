@@ -3,7 +3,7 @@ import { IdentifierObject } from "./IdentifierObject";
 export const RNA_NAME = "rna";
 
 export default class Rna extends IdentifierObject {
-    static isRna(rna: string | undefined): boolean {
+    static isRna(rna: string | undefined | null): boolean {
         return typeof rna === "string" && /^W\d[A-Z\d]\d{7}$/.test(rna.toUpperCase());
     }
 

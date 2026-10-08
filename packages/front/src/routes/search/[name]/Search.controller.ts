@@ -1,4 +1,4 @@
-import type { PaginatedAssociationNameDto, SiretDto } from "dto";
+import type { PaginatedRechercheAssociationDto, SiretDto } from "dto";
 import { goto } from "$app/navigation";
 import Store from "$lib/core/Store";
 import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
@@ -9,7 +9,12 @@ import { removeWhiteSpace } from "$lib/helpers/stringHelper";
 
 export default class SearchController {
     inputSearch: Store<string | undefined>;
-    associations = new Store<PaginatedAssociationNameDto>({ nbPages: 1, page: 1, total: 0, results: [] });
+    searchResults = new Store<PaginatedRechercheAssociationDto>({
+        nbPages: 1,
+        page: 1,
+        total: 0,
+        resultats: [],
+    });
     searchPromise: Store<Promise<unknown>>;
     duplicatesFromIdentifier: Store<string[] | null>;
     currentPage = new Store(1);
@@ -47,7 +52,7 @@ export default class SearchController {
                 } else this.duplicatesFromIdentifier.set(null);
 
                 // search by name
-                this.associations.set(search);
+                this.searchResults.set(search);
                 this.currentPage.set(search.page);
                 // reload same page to save search in history
                 goto(`/search/${encodeQuerySearch(input)}`, { replaceState: true });
@@ -62,7 +67,7 @@ export default class SearchController {
     }
 
     updateNbEtabsLabel() {
-        const nbAssos = this.associations.value.total;
+        const nbAssos = this.searchResults.value.total;
         return nbAssos > 1 ? `${nbAssos} résultats trouvés.` : `${nbAssos} résultat trouvé.`;
     }
 

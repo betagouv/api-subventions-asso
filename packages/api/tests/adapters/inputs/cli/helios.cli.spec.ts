@@ -5,7 +5,6 @@ import { expectAnyUpdateDate } from "../../../__helpers__/expect-any.helper";
 import uniteLegaleEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 import { Siren } from "../../../../src/identifier-objects";
 import sireneUniteLegaleAdapter from "../../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
-import { ENTITIES } from "../../../../src/modules/providers/sirene/__fixtures__/sirene-unite-legale.fixture";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../src/shared/LegalCategoriesAccepted";
@@ -17,6 +16,9 @@ import saveHeliosToFlat from "../../../../src/modules/providers/helios/use-cases
 import { CheckIdentifierIsFromAssoUseCase } from "../../../../src/modules/associations/use-cases/check-identifier-is-from-asso.use-case";
 import { CheckSirenIsFromAssoUseCase } from "../../../../src/modules/associations/use-cases/check-siren-is-from-asso.use-case";
 import rnaSirenAdapter from "../../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
+import { SIRENE_UNITE_LEGAL_ENTITIES } from "../../../../src/domain/__fixtures__/unite-legale.fixture";
+import { ProviderValue } from "dto";
+import db from "../../../../src/shared/MongoConnection";
 
 jest.mock("../../../../src/modules/providers/api-asso/api-asso.service");
 
@@ -32,17 +34,17 @@ describe("Helios CLI", () => {
      */
     describe("parse", () => {
         beforeEach(async () => {
-            await sireneUniteLegaleAdapter.insertOne({
-                ...ENTITIES[0],
-                siren: new Siren(DEFAULT_ASSOCIATION.siren),
+            await db.collection("sirene").insertOne({
+                ...SIRENE_UNITE_LEGAL_ENTITIES[0],
+                siren: DEFAULT_ASSOCIATION.siren,
+                identifiantAssociationUniteLegale: DEFAULT_ASSOCIATION.rna,
             });
             await uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("900000000") }]);
             jest.spyOn(apiAssoService, "findAssociationBySiren").mockResolvedValue({
                 categorie_juridique: [],
             });
             jest.spyOn(apiAssoService, "findAssociationBySiren").mockResolvedValueOnce({
-                // @ts-expect-error: mock partial provider value
-                categorie_juridique: [{ value: LEGAL_CATEGORIES_ACCEPTED[0] }],
+                categorie_juridique: [{ value: LEGAL_CATEGORIES_ACCEPTED[0] } as unknown as ProviderValue<string>],
             });
 
             cli = new HeliosCli(

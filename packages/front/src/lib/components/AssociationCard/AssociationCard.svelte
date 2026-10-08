@@ -2,17 +2,10 @@
     import AssociationCardController from "./AssociationCard.controller";
     import Card from "$lib/dsfr/Card.svelte";
     import { valueOrNotFound } from "$lib/helpers/dataHelper";
-
-    type SimplifiedAssociation = {
-        name: string;
-        rna?: string;
-        siren?: string;
-        address?: Parameters<typeof valueOrNotFound>[0];
-        nbEtabs?: number;
-    };
+    import type { RechercheAssociationDto } from "dto";
 
     interface Props {
-        simplifiedAsso: SimplifiedAssociation;
+        simplifiedAsso: RechercheAssociationDto;
         // TODO: make AssociationCard component a dumb component and pass the redirection action to parent component ?
         searchKey?: string | undefined;
     }
@@ -39,7 +32,7 @@
     </div>
     <div class="address">
         <!-- if history was created before we saved the address, do not display -->
-        {#if simplifiedAsso.address}
+        {#if simplifiedAsso.adresse}
             <div>
                 <span class="icon-address fr-mr-1w fr-icon-map-pin-2-line"></span>
             </div>

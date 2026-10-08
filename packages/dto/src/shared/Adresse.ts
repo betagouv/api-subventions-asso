@@ -1,7 +1,7 @@
 export type Adresse = {
-    numero?: string;
-    type_voie?: string;
-    voie?: string;
-    code_postal?: string;
-    commune?: string;
+    numero?: string | null;
+    type_voie?: string | null;
+    voie?: string | null;
+    code_postal?: string | null;
+    commune?: string | null;
 };

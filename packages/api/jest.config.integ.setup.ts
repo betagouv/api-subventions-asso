@@ -131,15 +131,6 @@ const addBetaGouvEmailDomain = async () => {
 beforeAll(async () => {
     jest.mocked(axios.request).mockResolvedValue({ data: null });
 
-    // const mockIssuer = {
-    //     Client: class Client {
-    //         endSessionUrl(...args) {
-    //             return jest.fn((..._args) => {})(...args);
-    //         }
-    //     },
-    // } as unknown as Issuer;
-    // jest.spyOn(Issuer, "discover").mockResolvedValue(mockIssuer);
-
     await connectDB();
     if (!existsSync("./logs")) {
         // Create folders for logs

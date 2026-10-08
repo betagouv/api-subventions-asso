@@ -1,7 +1,7 @@
-import parquetParser from "./parquet.parser";
+import { ParquetParser } from "./parquet.parser";
 
 const BUFFER = Buffer.from([]);
-const METADATA = { num_rows: 5001 };
+const METADATA = { num_rows: 5001, row_groups: [{ num_rows: 2500 }, { num_rows: 2199 }] };
 const NATIVE_ROW = {
     date: new Date("2026-09-16T00:00:00.000Z"),
     count: 5n,
@@ -27,15 +27,17 @@ jest.mock("./hyparquet.loader", () => ({
     }),
 }));
 
-async function collectParse(filePath: string) {
-    const batches: Record<string, unknown>[][] = [];
-
-    for await (const batch of parquetParser.parse(filePath)) batches.push(batch);
-
-    return batches;
-}
-
 describe("ParquetParser", () => {
+    const parser = new ParquetParser<Record<string, unknown[]>>();
+
+    async function collectParse(filePath: string) {
+        const batches: Record<string, unknown>[][] = [];
+
+        for await (const batch of parser.parse(filePath)) batches.push(batch);
+
+        return batches;
+    }
+
     const FILE_PATH = "/path/to/file.parquet";
 
     describe("parse", () => {
@@ -50,15 +52,15 @@ describe("ParquetParser", () => {
                     metadata: METADATA,
                     rowFormat: "object",
                     rowStart: 0,
-                    rowEnd: 5000,
+                    rowEnd: 2500,
                 },
                 {
                     file: BUFFER,
                     compressors: mockCompressors,
                     metadata: METADATA,
                     rowFormat: "object",
-                    rowStart: 5000,
-                    rowEnd: 5001,
+                    rowStart: 2500,
+                    rowEnd: 2500 + 2199,
                 },
             ];
 

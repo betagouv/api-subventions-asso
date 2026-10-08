@@ -1,14 +1,24 @@
-import { AssociationNameDto } from "dto";
+import AssociationSearchEntity from "../../../../../entities/AssociationSearchEntity";
+
+export type SearchResultDbo = Omit<AssociationSearchEntity, "rna" | "siren" | "mainEstablishmentSiret"> & {
+    rna: string;
+    siren: string;
+    mainEstablishmentSiret: string;
+};
+
+export interface SearchCacheDbo {
+    timestamp: Date;
+    results: SearchResultDbo;
+    searchToken: string;
+}
 
 export default class SearchCacheEntity {
     public timestamp: Date;
-    public total: number;
 
     constructor(
         public searchToken: string,
-        public results: AssociationNameDto[],
+        public results: SearchResultDbo[],
     ) {
         this.timestamp = new Date();
-        this.total = results.length;
     }
 }

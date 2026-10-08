@@ -11,7 +11,6 @@ import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.
 import stateBudgetProgramAdapter from "../../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
 import sireneUniteLegaleAdapter from "../../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import uniteLegaleEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
-import { SireneUniteLegaleEntity } from "../../../../src/entities/SireneUniteLegaleEntity";
 import { Siren } from "../../../../src/identifier-objects";
 import { PROGRAMS } from "../../../__fixtures__/paymentsFlat.fixture";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../src/shared/LegalCategoriesAccepted";
@@ -30,6 +29,8 @@ import saveChorusFseEntities from "../../../../src/modules/providers/chorus/use-
 import updateFlatByExercise from "../../../../src/modules/providers/chorus/use-cases/update-flat-by-exercise";
 import { TagImportedFile } from "../../../../src/modules/s3-file/use-cases/tag-imported-file";
 import DownloadFile from "../../../../src/usecases/download-file";
+import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
+import db from "../../../../src/shared/MongoConnection";
 
 jest.mock("../../../../src/modules/providers/api-asso/api-asso.service");
 
@@ -125,7 +126,10 @@ describe("Chorus CRON", () => {
         await Promise.all([
             stateBudgetProgramAdapter.replace(PROGRAMS),
             // make siren 100000000 belong to asso
-            sireneUniteLegaleAdapter.insertOne({ siren: new Siren("100000000") } as SireneUniteLegaleEntity),
+            db.collection("sirene").insertOne({
+                siren: "100000000",
+                identifiantAssociationUniteLegale: DEFAULT_ASSOCIATION.rna, // mandatory
+            }),
             // make siren 30000000 belong to an entreprise
             uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
         ]);
