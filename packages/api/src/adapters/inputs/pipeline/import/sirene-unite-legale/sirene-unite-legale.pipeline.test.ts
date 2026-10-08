@@ -4,6 +4,7 @@ import { SIRENE_UNITE_LEGALE_DTOS } from "./__fixtures__/sirene-unite-legale.dto
 import SireneUniteLegaleDto from "./SireneUniteLegaleDto";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { addMonths } from "../../../../../shared/helpers/DateHelper";
+import { SireneUniteLegaleMapper } from "./sirene-unite-legale.mapper";
 
 async function* fakeParse(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
     for (const batch of batches) yield batch;
@@ -11,6 +12,10 @@ async function* fakeParse(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
 
 function createPipeline(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
     const parser = { parse: jest.fn().mockImplementation(() => fakeParse(batches)) };
+    const mapper = {
+        toAssociationSearch: jest.fn(),
+        toDbo: jest.fn(),
+    } as unknown as jest.Mocked<SireneUniteLegaleMapper>;
     const sirenePort = { upsertMany: jest.fn().mockResolvedValue(undefined) };
     const searchPort = { upsertFromSirene: jest.fn().mockResolvedValue(undefined) };
     const entrepriseService = { insertManyEntrepriseSiren: jest.fn().mockResolvedValue(undefined) };
@@ -27,6 +32,7 @@ function createPipeline(batches: ParquetRow<SireneUniteLegaleDto>[][]) {
         entrepriseService,
         pipeline: new SireneUniteLegalePipeline(
             parser as never,
+            mapper,
             sirenePort as never,
             searchPort as never,
             entrepriseService as never,

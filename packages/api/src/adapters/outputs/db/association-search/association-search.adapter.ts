@@ -135,8 +135,8 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     public async upsertFromRna(dbos: RnaAssociationSearch[]) {
         const operations: AnyBulkWriteOperation<AssociationSearchDbo>[] = [];
         dbos.forEach(dbo => {
-            const { rna, siren, name, searchName, object, searchObject } = dbo;
-            const rnaFields = { searchName, object, searchObject, "name.rna": name.rna };
+            const { rna, siren, name, searchName, nameTokens, object, searchObject, objectTokens } = dbo;
+            const rnaFields = { searchName, nameTokens, object, searchObject, objectTokens, "name.rna": name.rna };
 
             if (siren) {
                 // updates the pair if it exists
@@ -157,7 +157,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     public async upsertFromSirene(dbos: UniteLegaleAssociationSearch[]) {
         const operations: AnyBulkWriteOperation<AssociationSearchDbo>[] = [];
         dbos.forEach(dbo => {
-            const { siren, rna, name, searchName, mainEstablishmentSiret } = dbo;
+            const { siren, rna, name, searchName, nameTokens, mainEstablishmentSiret } = dbo;
             const sireneFields = { mainEstablishmentSiret, "name.sirene": name.sirene };
 
             if (rna) {
@@ -165,7 +165,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
                 operations.push({
                     updateOne: {
                         filter: { siren, rna },
-                        update: { $set: sireneFields, $setOnInsert: { searchName } },
+                        update: { $set: sireneFields, $setOnInsert: { searchName, nameTokens } },
                         upsert: true,
                     },
                 });
@@ -176,7 +176,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
                 operations.push({
                     updateMany: {
                         filter: { siren },
-                        update: { $set: sireneFields, $setOnInsert: { searchName } },
+                        update: { $set: sireneFields, $setOnInsert: { searchName, nameTokens } },
                         upsert: true,
                     },
                 });

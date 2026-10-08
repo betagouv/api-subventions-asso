@@ -6,8 +6,12 @@ exports[`SireneUniteLegale Mapper toAssociationSearch maps to partial Associatio
   "name": {
     "sirene": "asso coeur",
   },
+  "nameTokens": [
+    "asso",
+    "coeur",
+  ],
   "rna": "W000000000",
-  "searchName": "asso coeur",
+  "searchName": " asso coeur ",
   "siren": "100000000",
 }
 `;

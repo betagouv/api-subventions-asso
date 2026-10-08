@@ -13,10 +13,10 @@ export const ASSOCIATION_SEARCH_DBOS: AssociationSearchDbo[] = [
             rna: `rna-${DEFAULT_ASSOCIATION.name}`,
             sirene: `sirene-${DEFAULT_ASSOCIATION.name}`,
         },
-        searchName: DEFAULT_ASSOCIATION.name.toLowerCase(),
+        searchName: ` ${DEFAULT_ASSOCIATION.name.toLowerCase()} `,
         nameTokens: extractWords(DEFAULT_ASSOCIATION.name.toLowerCase()),
         object: "ROLE AND DEFINITION OF THE ASSOCIATION",
-        searchObject: "ROLE AND DEFINITION OF THE ASSOCIATION".toLowerCase(),
+        searchObject: " ROLE AND DEFINITION OF THE ASSOCIATION ".toLowerCase(),
         objectTokens: extractWords("ROLE AND DEFINITION OF THE ASSOCIATION".toLowerCase()),
         address: {
             number: "1",
@@ -37,10 +37,10 @@ export const ASSOCIATION_SEARCH_DBOS: AssociationSearchDbo[] = [
             rna: `${COMMON_WORD} DE TABLE LYON`,
             sirene: `LE ${COMMON_WORD} DE TABLE LYONNAIS`,
         },
-        searchName: `${COMMON_WORD.toLowerCase()} de table lyon`,
+        searchName: ` ${COMMON_WORD.toLowerCase()} de table lyon `,
         nameTokens: ["tennis", "de", "table", "lyon"],
         object: "Jouer ensemble et s'amuser autour de la petite balle",
-        searchObject: "jouer ensemble et s amuser autour de la petite balle",
+        searchObject: " jouer ensemble et s amuser autour de la petite balle ",
         objectTokens: ["jouer", "ensemble", "et", "amuser", "autour", "de", "la", "petite", "balle"], // remove élision "s"
         address: {
             number: "2",
@@ -61,10 +61,10 @@ export const ASSOCIATION_SEARCH_DBOS: AssociationSearchDbo[] = [
             rna: `${COMMON_WORD} CLUB DE LYON`,
             sirene: `LE ${COMMON_WORD} LYONNAIS`,
         },
-        searchName: `${COMMON_WORD.toLowerCase()} de lyon`,
+        searchName: ` ${COMMON_WORD.toLowerCase()} de lyon `,
         nameTokens: ["tennis", "de", "lyon"],
         object: "S'amuser avec une moyenne balle jaune, seul ou en équipe",
-        searchObject: "s amuser avec une moyenne balle jaune seul ou en equipe",
+        searchObject: " s amuser avec une moyenne balle jaune seul ou en equipe ",
         objectTokens: ["amuser", "avec", "une", "moyenne", "balle", "jaune", "seul", "ou", "en", "equipe"], // remove élision "s"
         address: {
             number: "14",
@@ -84,10 +84,10 @@ export const ASSOCIATION_SEARCH_DBOS: AssociationSearchDbo[] = [
         name: {
             rna: `Le bal masqué`,
         },
-        searchName: `le bal masque`,
+        searchName: ` le bal masque `,
         nameTokens: ["le", "bal", "masque"],
         object: "Le plaisir de l'anonymat au service du jeu",
-        searchObject: "le plaisir de l anonymat au service du jeu",
+        searchObject: " le plaisir de l anonymat au service du jeu ",
         objectTokens: ["le", "plaisir", "de", "anonymat", "au", "service", "du", "jeu"], // remove élision "l"
         address: {
             number: "18",
@@ -99,5 +99,28 @@ export const ASSOCIATION_SEARCH_DBOS: AssociationSearchDbo[] = [
         },
         nbEstabs: 1,
         postalCodes: ["22200"],
+    },
+    {
+        siren: "500000000",
+        mainEstablishmentSiret: "50000000000018",
+        rna: "W500000000",
+        name: {
+            rna: `Poupenn`,
+        },
+        searchName: ` creche parentale `,
+        nameTokens: ["creche", "parentale"],
+        object: "Veiller à l'éveil des enfants de 3 mois à 4 ans",
+        searchObject: " veiller a l eveil des enfants de 3 mois a 4 ans ",
+        objectTokens: ["veiller", "a", "eveil", "des", "enfants", "de", "3", "mois", "a", "4", "ans"], // remove élision "l"
+        address: {
+            number: "16",
+            type: "rue",
+            name: "de la fôret",
+            city: "Saint-Brieuc",
+            postalCode: "22000",
+            complement: null,
+        },
+        nbEstabs: 1,
+        postalCodes: ["22000"],
     },
 ];

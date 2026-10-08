@@ -181,7 +181,55 @@ exports[`/search /association/{text} returns results matching text 1`] = `
 }
 `;
 
-exports[`/search /association/{text} search only plain words 1`] = `
+exports[`/search /association/{text} search multiple words not ordered 1`] = `
+{
+  "nbPages": 1,
+  "page": 1,
+  "resultats": [
+    {
+      "adresse": {
+        "code_postal": "22000",
+        "commune": "Saint-Brieuc",
+        "numero": "16",
+        "type_voie": "rue",
+        "voie": "de la fôret",
+      },
+      "name": "Poupenn",
+      "nbEtabs": 1,
+      "rna": "W500000000",
+      "siren": "500000000",
+      "siretSiege": "50000000000018",
+    },
+  ],
+  "total": 1,
+}
+`;
+
+exports[`/search /association/{text} search multiple words ordered 1`] = `
+{
+  "nbPages": 1,
+  "page": 1,
+  "resultats": [
+    {
+      "adresse": {
+        "code_postal": "22000",
+        "commune": "Saint-Brieuc",
+        "numero": "16",
+        "type_voie": "rue",
+        "voie": "de la fôret",
+      },
+      "name": "Poupenn",
+      "nbEtabs": 1,
+      "rna": "W500000000",
+      "siren": "500000000",
+      "siretSiege": "50000000000018",
+    },
+  ],
+  "total": 1,
+}
+`;
+
+exports[`/search /association/{text} search only plain word 1`] = `
 {
   "nbPages": 1,
   "page": 1,

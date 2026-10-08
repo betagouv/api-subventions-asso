@@ -14,7 +14,7 @@ import { SireneUniteLegalePort } from "../../../../outputs/db/sirene/sirene-unit
 import { ParquetParser } from "../../../parquet.parser";
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
-import SireneUniteLegaleMapper from "./sirene-unite-legale.mapper";
+import sireneUniteLegaleMapper, { SireneUniteLegaleMapper } from "./sirene-unite-legale.mapper";
 import { ImportPipeline } from "../import-pipeline";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { addMonths } from "../../../../../shared/helpers/DateHelper";
@@ -23,6 +23,7 @@ import dataLogAdapter from "../../../../outputs/db/data-log/data-log.adapter";
 export class SireneUniteLegalePipeline extends ImportPipeline {
     constructor(
         private parser: ParquetParser<SireneUniteLegaleDto>,
+        private mapper: SireneUniteLegaleMapper,
         private sirenePort: SireneUniteLegalePort,
         private searchPort: AssociationSearchPort,
         private entrepriseService: UniteLegaleEntrepriseService,
@@ -115,11 +116,11 @@ export class SireneUniteLegalePipeline extends ImportPipeline {
     private async saveAssociations(dtos: SireneUniteLegaleDto[]): Promise<void> {
         if (!dtos.length) return;
 
-        const dbos = dtos.map(SireneUniteLegaleMapper.toDbo);
+        const dbos = dtos.map(this.mapper.toDbo);
 
         await Promise.all([
             this.sirenePort.upsertMany(dbos),
-            this.searchPort.upsertFromSirene(dbos.map(dbo => SireneUniteLegaleMapper.toAssociationSearch(dbo))),
+            this.searchPort.upsertFromSirene(dbos.map(dbo => this.mapper.toAssociationSearch(dbo))),
         ]);
     }
 
@@ -132,6 +133,7 @@ export class SireneUniteLegalePipeline extends ImportPipeline {
 
 const sireneUniteLegalePipeline = new SireneUniteLegalePipeline(
     new ParquetParser<SireneUniteLegaleDto>(),
+    sireneUniteLegaleMapper,
     sireneUniteLegaleAdapter,
     associationSearchAdapter,
     uniteLegaleEntrepriseService,

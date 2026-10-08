@@ -99,9 +99,29 @@ describe("/search", () => {
                 });
         });
 
-        it("search only plain words", async () => {
+        it("search only plain word", async () => {
             await request(g.app)
                 .get(`/search/associations/bal`) // ASSOCIATION_SEARCH_DBOS[4]
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json")
+                .then(res => {
+                    expect(res.body).toMatchSnapshot();
+                });
+        });
+
+        it("search multiple words ordered", async () => {
+            await request(g.app)
+                .get(`/search/associations/creche parentale`) // ASSOCIATION_SEARCH_DBOS[5]
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json")
+                .then(res => {
+                    expect(res.body).toMatchSnapshot();
+                });
+        });
+
+        it("search multiple words not ordered", async () => {
+            await request(g.app)
+                .get(`/search/associations/parentale creche`) // ASSOCIATION_SEARCH_DBOS[5]
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json")
                 .then(res => {

@@ -1,11 +1,17 @@
 import { Rna } from "../../../../../identifier-objects";
-import { removeAccents } from "../../../../../shared/helpers/StringHelper";
+import { SanitizeSearchText } from "../../../../../usecases/search/sanitize-search-text";
+import { SplitTextInTokens } from "../../../../../usecases/search/split-text-in-tokens";
 import { UniteLegaleAssociationSearch } from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import { SireneUniteLegaleDbo } from "../../../../outputs/db/sirene/SireneUniteLegaleDbo";
 import SireneUniteLegaleDto from "./SireneUniteLegaleDto";
 
-export default class SireneUniteLegaleMapper {
-    static toDbo(dto: SireneUniteLegaleDto): SireneUniteLegaleDbo {
+export class SireneUniteLegaleMapper {
+    constructor(
+        private sanitize: SanitizeSearchText,
+        private split: SplitTextInTokens,
+    ) {}
+
+    toDbo(dto: SireneUniteLegaleDto): SireneUniteLegaleDbo {
         return {
             ...dto,
             anneeEffectifsUniteLegale: !dto.anneeEffectifsUniteLegale ? null : Number(dto.anneeEffectifsUniteLegale),
@@ -15,13 +21,14 @@ export default class SireneUniteLegaleMapper {
         };
     }
 
-    private static getRna(value: string | null) {
+    private getRna(value: string | null) {
         if (!value) return null;
         else if (Rna.isRna(value)) return value;
         else return null;
     }
+    SireneUniteLegaleMapper;
 
-    static toAssociationSearch(dbo: SireneUniteLegaleDbo) {
+    toAssociationSearch(dbo: SireneUniteLegaleDbo) {
         const rna = this.getRna(dbo.identifiantAssociationUniteLegale);
 
         const associationSearch: UniteLegaleAssociationSearch = {
@@ -29,7 +36,8 @@ export default class SireneUniteLegaleMapper {
             name: {
                 sirene: dbo.denominationUniteLegale,
             },
-            searchName: removeAccents(dbo.denominationUniteLegale).toLowerCase(),
+            searchName: this.sanitize.execute(dbo.denominationUniteLegale),
+            nameTokens: this.split.execute(dbo.denominationUniteLegale),
             mainEstablishmentSiret: dbo.siren + dbo.nicSiegeUniteLegale,
         };
 
@@ -37,3 +45,6 @@ export default class SireneUniteLegaleMapper {
         return associationSearch;
     }
 }
+
+const sireneUniteLegaleMapper = new SireneUniteLegaleMapper(new SanitizeSearchText(), new SplitTextInTokens());
+export default sireneUniteLegaleMapper;
