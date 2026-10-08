@@ -8,13 +8,7 @@ export default class AssociationItemController {
     ) {}
 
     get url(): string {
-        const identifier =
-            this.searchKey === this.simplifiedAsso.rna
-                ? this.simplifiedAsso.siren
-                : this.searchKey === this.simplifiedAsso.siren
-                  ? this.simplifiedAsso.rna
-                  : this.simplifiedAsso.rna || this.simplifiedAsso.siren;
-
+        const identifier = this.simplifiedAsso.rna ?? this.simplifiedAsso.siren;
         return `/association/${identifier}`;
     }
 
