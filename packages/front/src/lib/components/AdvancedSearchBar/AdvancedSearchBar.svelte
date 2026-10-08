@@ -31,9 +31,9 @@
     }
 </script>
 
-<form class="advanced-search-bar" novalidate onsubmit={event => (event.preventDefault(), handleSubmit())}>
-    <div class="advanced-search-fields">
-        <div class="advanced-search-field advanced-search-field-main">
+<form class="search" novalidate onsubmit={event => (event.preventDefault(), handleSubmit())}>
+    <div class="fields">
+        <div>
             <label class="fr-label" for="advanced-search-name">Nom, mot-clé, identifiant</label>
             <input
                 class="fr-input"
@@ -43,7 +43,7 @@
                 type="search"
                 bind:value />
         </div>
-        <div class="advanced-search-field advanced-search-field-location">
+        <div>
             <label class="fr-label" for="advanced-search-location">Code postal ou département</label>
             <input
                 class="fr-input"
@@ -63,12 +63,12 @@
                 </p>
             {/if}
         </div>
-        <button class="fr-btn advanced-search-submit">
+        <button class="fr-btn submit">
             <span class="fr-icon-search-line" aria-hidden="true"></span>
             <span>Rechercher</span>
         </button>
     </div>
-    <div class="fr-checkbox-group advanced-search-checkbox">
+    <div class="fr-checkbox-group checkbox">
         <input
             id="advanced-search-name-only"
             name="advanced-search-name-only"
@@ -79,81 +79,33 @@
 </form>
 
 <style>
-    .advanced-search-bar {
+    .search {
         padding: 2rem;
         border: 1px solid var(--border-default-grey);
     }
 
-    .advanced-search-fields {
+    .search > .fields {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.43fr) auto;
-        align-items: start;
-        gap: 16px;
+        gap: 1rem;
     }
 
-    .advanced-search-field :global(.fr-label) {
-        margin-bottom: 0.75rem;
-        color: var(--text-title-grey);
-        font-size: 16px;
-    }
-
-    .advanced-search-field :global(.fr-input) {
-        height: 40px;
-        min-height: 40px;
-        font-size: 1.125rem;
-    }
-
-    .advanced-search-field-location {
-        position: relative;
-    }
-
-    .advanced-search-submit {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        width: 141px;
-        height: 40px;
-        min-height: 40px;
-        padding: 0 1rem;
-        margin-top: 2.25rem;
-        margin-bottom: 0;
-        white-space: nowrap;
-    }
-
-    .advanced-search-field-location :global(.fr-error-text) {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        margin-top: 0.5rem;
-        margin-bottom: 0;
-    }
-
-    .advanced-search-checkbox {
+    .search > .checkbox {
         margin-top: 1.5rem;
     }
 
-    .advanced-search-checkbox :global(.fr-label) {
-        font-size: 16px;
+    .fields > .submit {
+        margin-top: 2rem;
     }
 
     @media (max-width: 62em) {
-        .advanced-search-bar {
-            padding: 1.5rem;
-        }
-
-        .advanced-search-fields {
+        .search > .fields {
             grid-template-columns: 1fr;
             gap: 1rem;
         }
 
-        .advanced-search-submit {
-            justify-self: start;
+        .fields > .submit {
             margin-top: 0;
-        }
-
-        .advanced-search-field-location :global(.fr-error-text) {
-            position: static;
         }
     }
 </style>
