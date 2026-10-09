@@ -23,8 +23,6 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
 
     collectionName = "association-search";
 
-    tmpCollectionName = `${this.collectionName}-tmp`;
-
     async createIndexes() {
         await this.collection.createIndex({ siren: 1, rna: 1 }, { unique: true });
         await this.collection.createIndex({ rna: 1 }); // for direct search on rna (no siren)

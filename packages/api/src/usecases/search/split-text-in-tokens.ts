@@ -21,6 +21,6 @@ export class SplitTextInTokens implements UseCase<string, string[]> {
     }
 
     execute(input: string): string[] {
-        return this.removeElision(extractWords(input));
+        return this.removeElision(extractWords(input)).map(word => word.toLowerCase());
     }
 }
