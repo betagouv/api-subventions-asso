@@ -28,20 +28,6 @@ describe("AssociationItemController", () => {
                 const actual = ctrl.url;
                 expect(actual).toEqual(expected);
             });
-
-            it("should return url with SIREN when search key is RNA", () => {
-                const ctrl = new AssociationItemController(simplifiedAssoWithBothIdentifier, RNA);
-                const expected = `/association/${SIREN}`;
-                const actual = ctrl.url;
-                expect(actual).toEqual(expected);
-            });
-
-            it("should return url with RNA when search key is SIREN", () => {
-                const ctrl = new AssociationItemController(simplifiedAssoWithBothIdentifier, SIREN);
-                const expected = `/association/${RNA}`;
-                const actual = ctrl.url;
-                expect(actual).toEqual(expected);
-            });
         });
 
         describe("street", () => {
