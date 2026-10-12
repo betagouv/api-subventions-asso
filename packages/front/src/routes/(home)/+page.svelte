@@ -66,7 +66,7 @@
         align-items: center;
         justify-content: center;
         column-gap: 0.5rem;
-        row-gap: 0;
+        row-gap: 0.5rem;
         margin-bottom: 3rem;
     }
 

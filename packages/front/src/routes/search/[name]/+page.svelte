@@ -21,8 +21,11 @@
     const currentPage = $derived(ctrl.currentPage);
     const isLastSearchCompany = $derived(ctrl.isLastSearchCompany);
     const postalCode = $derived(ctrl.postalCode);
+    const nbResultLabel = $derived.by(() => {
+        void $searchResults;
+        return ctrl.updateNbEtabsLabel();
+    });
 
-    const nbResultLabel = $derived(($searchResults, ctrl.updateNbEtabsLabel()));
     let selectedSort = $state<"relevance" | "alphabetical">("relevance");
 </script>
 
