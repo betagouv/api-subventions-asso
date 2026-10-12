@@ -2,7 +2,7 @@
     import DuplicateAlert from "../../association/[identifier]/components/DuplicateAlert.svelte";
     import SearchController from "./Search.controller";
     import Spinner from "$lib/components/Spinner.svelte";
-    import AssociationCard from "$lib/components/AssociationCard/AssociationCard.svelte";
+    import AssociationItem from "$lib/components/AssociationItem/AssociationItem.svelte";
     import SearchBar from "$lib/components/SearchBar/SearchBar.svelte";
     import Pagination from "$lib/dsfr/Pagination.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
@@ -10,7 +10,6 @@
 
     let { params }: PageProps = $props();
     const name = $derived(params.name);
-
 
     const ctrl = $derived(new SearchController(name));
     const searchPromise = $derived(ctrl.searchPromise);
@@ -71,25 +70,21 @@
             {/if}
         </div>
 
-        <div class="fr-grid-row fr-grid-row--gutters search-layout">
+        <div class="fr-grid-row fr-grid-row--gutters">
             {#each $searchResults.resultats as simplifiedAsso (simplifiedAsso.siren + "-" + simplifiedAsso.rna)}
-                <AssociationCard {simplifiedAsso} searchKey={$inputSearch} />
+                <AssociationItem {simplifiedAsso} searchKey={$inputSearch} />
             {/each}
         </div>
 
         {#if $searchResults.nbPages > 1}
             <div class="fr-grid-row fr-mt-5w">
                 <div class="fr-mx-auto">
-                    <Pagination totalPages={$searchResults.nbPages} {currentPage} onchange={e => ctrl.onChangePage(e)} />
+                    <Pagination
+                        totalPages={$searchResults.nbPages}
+                        {currentPage}
+                        onchange={e => ctrl.onChangePage(e)} />
                 </div>
             </div>
         {/if}
     {/if}
 {/await}
-
-<style>
-    .search-layout {
-        display: flex;
-        flex-wrap: wrap;
-    }
-</style>
