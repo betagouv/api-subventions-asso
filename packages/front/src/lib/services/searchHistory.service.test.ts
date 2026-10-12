@@ -8,6 +8,8 @@ describe("SearchHistoryService", () => {
     const RNA_2 = "W987654321";
     const RNA_3 = "W135792468";
     const RNA_4 = "W246813579";
+    const RNA_5 = "W123123123";
+    const RNA_6 = "W456456456";
 
     afterEach(() => {
         mockedLocalStorageService.getItem.mockReset();
@@ -45,18 +47,24 @@ describe("SearchHistoryService", () => {
         ]);
     });
 
-    it("should replace first search with fourth search", () => {
+    it("should replace first search with sixth search", () => {
         const FIRST_SEARCH = { rna: RNA };
         const SECOND_SEARCH = { rna: RNA_2 };
         const THIRD_SEARCH = { rna: RNA_3 };
         const FOURTH_SEARCH = { rna: RNA_4 };
+        const FIFTH_SEARCH = { rna: RNA_5 };
+        const SIXTH_SEARCH = { rna: RNA_6 };
         // @ts-expect-error: mock
-        mockedLocalStorageService.getItem.mockReturnValueOnce({ value: [FIRST_SEARCH, SECOND_SEARCH, THIRD_SEARCH] });
-        SearchHistoryService.updateSearchHistory(FOURTH_SEARCH);
+        mockedLocalStorageService.getItem.mockReturnValueOnce({
+            value: [FIRST_SEARCH, SECOND_SEARCH, THIRD_SEARCH, FOURTH_SEARCH, FIFTH_SEARCH],
+        });
+        SearchHistoryService.updateSearchHistory(SIXTH_SEARCH);
         expect(mockedLocalStorageService.setItem).toHaveBeenCalledWith("search-history", [
             SECOND_SEARCH,
             THIRD_SEARCH,
             FOURTH_SEARCH,
+            FIFTH_SEARCH,
+            SIXTH_SEARCH,
         ]);
     });
 

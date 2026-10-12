@@ -12,7 +12,7 @@ export const updateSearchHistory = (currentSearch: SearchHistory) => {
         localStorageService.setItem("search-history", history);
     } else {
         history.push(currentSearch);
-        if (history.length > 3) history = history.slice(1);
+        if (history.length > 5) history = history.slice(1);
         localStorageService.setItem("search-history", history);
     }
 };
