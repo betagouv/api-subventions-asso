@@ -41,6 +41,8 @@
                 name="search-input"
                 placeholder="Ex : Tennis Club, 48213289100011..."
                 type="search"
+                lang="fr"
+                spellcheck="true"
                 bind:value />
         </div>
         <div>
