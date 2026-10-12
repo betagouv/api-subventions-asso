@@ -1,7 +1,7 @@
 import type {
     Association,
     DocumentDto,
-    PaginatedAssociationSearchDto,
+    PaginatedRechercheAssociationDto,
     AssociationIdentifierDto,
     GrantFlatDto,
 } from "dto";
@@ -39,9 +39,11 @@ class AssociationPort {
         return (await this.getResource(identifier, "documents"))?.data?.documents;
     }
 
-    async search(lookup: string, page = 1) {
-        const path = `/search/associations/${lookup}?page=${page}`;
-        return (await requestsService.get(path))?.data as PaginatedAssociationSearchDto;
+    async search(lookup: string, page = 1, postalCode?: string) {
+        const params = new URLSearchParams({ page: String(page) });
+        if (postalCode) params.set("postalCode", postalCode);
+        const path = `/search/associations/${lookup}?${params.toString()}`;
+        return (await requestsService.get(path))?.data as PaginatedRechercheAssociationDto;
     }
 }
 

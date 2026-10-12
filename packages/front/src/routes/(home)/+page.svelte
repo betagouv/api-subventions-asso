@@ -6,9 +6,8 @@
 
     let { data } = $props();
 
-    const query = $derived(data.query);
-    const ctrl = $derived(new HomeController(query));
-    const searchHistory = $derived(ctrl.searchHistory);
+    const ctrl = new HomeController(data.query);
+    const searchHistory = ctrl.searchHistory;
     const recentSearches = $derived([...$searchHistory].reverse());
 </script>
 
@@ -28,10 +27,15 @@
 <div class="fr-grid-row fr-grid-row--center fr-mt-6v">
     <div class="fr-col-8">
         <div class="search-bar">
-            <SearchBar onsubmit={value => ctrl.onSubmit(value)} />
-            <p class="fr-mt-3w text-center fr-text--lg">
-                Pour effectuer une recherche, privilégiez une entrée par RNA, SIREN ou SIRET. Vous pouvez également
-                rechercher une association par nom.
+            <SearchBar disableIfEmpty={false} onSubmit={value => ctrl.onSubmit(value)} />
+            <p class="fr-mt-3w fr-mb-0 text-center">
+                <a class="fr-link fr-icon-arrow-right-line fr-link--icon-right" href="/advanced-search">
+                    Recherche avancée
+                </a>
+            </p>
+            <p class="help fr-text--sm fr-mt-3w text-center">
+                Pour un identifiant RNA : lettre W + 1 chiffre + 1 lettre ou chiffre + 7 chiffres; SIREN : 9 chiffres;
+                SIRET : 14 chiffres.
             </p>
         </div>
     </div>
@@ -52,6 +56,10 @@
 {/if}
 
 <style>
+    .search-bar > .help {
+        color: var(--text-mention-grey);
+    }
+
     .association-tags {
         display: flex;
         flex-wrap: wrap;

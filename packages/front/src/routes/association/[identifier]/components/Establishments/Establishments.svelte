@@ -17,8 +17,8 @@
         <div class="fr-grid-row fr-mb-8v">
             <div class="fr-col-5">
                 <SearchBar
-                    onsubmit={filter => controller.onFilter(filter)}
-                    onreset={() => controller.resetFilter()}
+                    onSubmit={value => controller.onFilter(value)}
+                    onReset={() => controller.resetFilter()}
                     large={false}
                     placeholder="Rechercher un code postal ou un NIC"
                     disableIfEmpty={false} />

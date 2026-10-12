@@ -3,36 +3,34 @@
     import SearchController from "./Search.controller";
     import Spinner from "$lib/components/Spinner.svelte";
     import AssociationItem from "$lib/components/AssociationItem/AssociationItem.svelte";
-    import SearchBar from "$lib/components/SearchBar/SearchBar.svelte";
+    import AdvancedSearchBar from "$lib/components/AdvancedSearchBar/AdvancedSearchBar.svelte";
     import Pagination from "$lib/dsfr/Pagination.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
+    import { page } from "$lib/store/kit.store";
     import type { PageProps } from "./$types";
 
     let { params }: PageProps = $props();
     const name = $derived(params.name);
+    const initialPostalCode = $derived($page.url.searchParams.get("postalCode") ?? undefined);
 
-    const ctrl = $derived(new SearchController(name));
+    const ctrl = $derived(new SearchController(name, initialPostalCode));
     const searchPromise = $derived(ctrl.searchPromise);
     const searchResults = $derived(ctrl.searchResults);
     const inputSearch = $derived(ctrl.inputSearch);
     const duplicatesFromIdentifier = $derived(ctrl.duplicatesFromIdentifier);
     const currentPage = $derived(ctrl.currentPage);
     const isLastSearchCompany = $derived(ctrl.isLastSearchCompany);
+    const postalCode = $derived(ctrl.postalCode);
 
-    let nbResultLabel = $state();
-
-    $effect(() => {
-        void $searchResults;
-        nbResultLabel = ctrl.updateNbEtabsLabel();
-    });
+    const nbResultLabel = $derived(($searchResults, ctrl.updateNbEtabsLabel()));
+    let selectedSort = $state<"relevance" | "alphabetical">("relevance");
 </script>
 
-<div class="fr-grid-row fr-grid-row--center fr-my-6v">
-    <div class="fr-col-8">
-        <div class="search-bar">
-            <SearchBar bind:value={$inputSearch} onsubmit={value => ctrl.onSubmit(value)} />
-        </div>
-    </div>
+<div class="fr-my-6v">
+    <AdvancedSearchBar
+        bind:value={$inputSearch}
+        bind:postalCode={$postalCode}
+        onSubmit={(value, postalCode) => ctrl.onSubmit(value, postalCode)} />
 </div>
 
 {#await $searchPromise}
@@ -54,9 +52,30 @@
         </div>
     {:else}
         <div class="fr-mb-3w">
-            <p class="fr-mb-2w">
-                {nbResultLabel}
-            </p>
+            <div class="header fr-mb-2w">
+                <p class="fr-text--bold fr-mb-0">
+                    {nbResultLabel}
+                </p>
+                <div class="sort" aria-label="Tri des résultats">
+                    <span>Trier par :</span>
+                    <div class="buttons">
+                        <button
+                            class:active={selectedSort === "relevance"}
+                            type="button"
+                            aria-pressed={selectedSort === "relevance"}
+                            onclick={() => (selectedSort = "relevance")}>
+                            Pertinence
+                        </button>
+                        <button
+                            class:active={selectedSort === "alphabetical"}
+                            type="button"
+                            aria-pressed={selectedSort === "alphabetical"}
+                            onclick={() => (selectedSort = "alphabetical")}>
+                            Ordre alphabétique
+                        </button>
+                    </div>
+                </div>
+            </div>
             {#if $searchResults.nbPages > 1}
                 <p class="fr-mb-2w fr-text--bold">
                     Pour faciliter l’affichage des résultats, tapez directement le SIREN ou RNA de l’association
@@ -71,7 +90,7 @@
         </div>
 
         <div class="fr-grid-row fr-grid-row--gutters">
-            {#each $searchResults.resultats as simplifiedAsso (simplifiedAsso.siren + "-" + simplifiedAsso.rna)}
+            {#each $searchResults.results as simplifiedAsso (simplifiedAsso.siren + "-" + simplifiedAsso.rna)}
                 <AssociationItem {simplifiedAsso} searchKey={$inputSearch} />
             {/each}
         </div>
@@ -88,3 +107,36 @@
         {/if}
     {/if}
 {/await}
+
+<style>
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .header > .sort {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .buttons > button {
+        position: relative;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
+    }
+
+    .buttons > button.active {
+        color: var(--text-active-blue-france);
+        box-shadow: inset 0 0 0 1px var(--border-active-blue-france);
+    }
+
+    @media (max-width: 48em) {
+        .header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>

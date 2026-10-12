@@ -7,8 +7,8 @@
         disableIfEmpty?: boolean;
         value?: string | undefined;
         label?: string;
-        onsubmit?: (value: string | undefined) => void;
-        onreset?: () => void;
+        onSubmit?: (value: string | undefined) => void;
+        onReset?: () => void;
     }
 
     let {
@@ -18,16 +18,16 @@
         disableIfEmpty = true,
         value = $bindable(undefined),
         label = undefined,
-        onsubmit = () => {},
-        onreset = () => {},
+        onSubmit = () => undefined,
+        onReset = () => undefined,
     }: Props = $props();
 
     async function handleReset() {
-        if (value === "") onreset();
+        if (value === "") onReset();
     }
 
     function handleSubmit() {
-        onsubmit(value);
+        onSubmit(value);
     }
 </script>
 
@@ -48,6 +48,8 @@
                     class="fr-input"
                     {placeholder}
                     type="search"
+                    lang="fr"
+                    spellcheck="true"
                     id="search-input-{id}"
                     name="search-input"
                     bind:value

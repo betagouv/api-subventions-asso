@@ -81,6 +81,12 @@ describe("AssociationPort", () => {
             expect(mockedRequestService.get).toHaveBeenCalledWith(expected);
         });
 
+        it("calls requestsService get with postal code", async () => {
+            const expected = `/search/associations/${SIREN}?page=2&postalCode=93`;
+            await associationPort.search(SIREN, 2, "93");
+            expect(mockedRequestService.get).toHaveBeenCalledWith(expected);
+        });
+
         it("return paginated associations from requestsService result", async () => {
             const expected = {};
             const RES = { data: expected };
