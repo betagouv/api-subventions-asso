@@ -33,7 +33,7 @@ describe("HomeController", () => {
 
     describe("onSubmit", () => {
         it("should call goto", () => {
-            ctrl.onSubmit();
+            ctrl.onSubmit("Association test");
             expect(goto).toHaveBeenCalledTimes(1);
         });
     });
