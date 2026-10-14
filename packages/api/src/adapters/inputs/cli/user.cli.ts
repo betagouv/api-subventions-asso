@@ -45,7 +45,7 @@ export default class UserCli {
     // add to debug brevo transac email on preprod
     async testBrevoMail() {
         const result = await notifyService.notify(NotificationType.USER_FORGET_PASSWORD, {
-            email: "foo.bar@beta.gouv.fr",
+            email: "contact@datasubvention.beta.gouv.fr",
             url: "https://fake.url/activate/fake-token",
         });
         console.log(result);
