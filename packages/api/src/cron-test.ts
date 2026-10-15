@@ -1,15 +1,15 @@
 // used to manually test cron task
 
-import rnaCron from "./adapters/inputs/cron/rna.cron";
-import sireneStockCron from "./adapters/inputs/cron/sirene-stock.cron";
+import { NotificationType } from "./modules/notify/@types/NotificationType";
+import notifyService from "./modules/notify/notify.service";
 import { connectDB } from "./shared/MongoConnection";
 import { initIndexes } from "./shared/MongoInit";
 
 async function main() {
     await connectDB();
     await initIndexes();
-    await rnaCron.import();
-    await sireneStockCron.importEstablishments();
+
+    await notifyService.notify(NotificationType.BATCH_DEPOSIT_RESUME, { emails: ["foo.bar@beta.gouv.fr"] });
 }
 
 main();
