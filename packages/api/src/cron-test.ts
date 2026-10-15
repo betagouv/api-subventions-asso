@@ -1,15 +1,15 @@
 // used to manually test cron task
 
-import { NotificationType } from "./modules/notify/@types/NotificationType";
-import notifyService from "./modules/notify/notify.service";
+// import env.
+import "./configurations/env.conf";
+
 import { connectDB } from "./shared/MongoConnection";
 import { initIndexes } from "./shared/MongoInit";
 
 async function main() {
     await connectDB();
     await initIndexes();
-
-    await notifyService.notify(NotificationType.BATCH_DEPOSIT_RESUME, { emails: ["foo.bar@beta.gouv.fr"] });
+    // add the cron execution here
 }
 
 main();

@@ -112,6 +112,7 @@ export class BrevoMailPipe implements NotifyOutPipe {
             });
             return true;
         } catch (error) {
+            console.log(error);
             Sentry.captureException(error);
             return false;
         }
