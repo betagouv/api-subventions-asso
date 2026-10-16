@@ -33,14 +33,19 @@ export class SireneUniteLegalePipeline extends ImportPipeline {
     }
 
     async run(filePath: string): Promise<ImportReport> {
+        console.log("import unite legale from file: ", filePath);
+
+        const lastImportDate = await this.logPort.getLastImportByProvider("sirene-unite-legale");
         // import should occur each month
         // to be sure we don't miss somemthing between import date and dateDernierTraitementUniteLegale, we take one more month
-        const lastImportDate = addMonths(await this.logPort.getLastImportByProvider("sirene-unite-legale"), -1);
+        const safeImportDate = lastImportDate ? addMonths(lastImportDate, -1) : null;
 
         const stages: (Readable | Transform | Writable)[] = [Readable.from(this.parser.parse(filePath))];
 
-        if (lastImportDate) {
-            console.log(`Updating Stock Unité Légale since ${lastImportDate}`);
+        console.log("IMPORT DATE", safeImportDate);
+
+        if (safeImportDate) {
+            console.log(`Updating Stock Unité Légale since ${safeImportDate}`);
             stages.push(
                 new Transform({
                     objectMode: true,
@@ -48,7 +53,7 @@ export class SireneUniteLegalePipeline extends ImportPipeline {
                         try {
                             callback(
                                 null,
-                                batch.filter(dto => dto.dateDernierTraitementUniteLegale > lastImportDate),
+                                batch.filter(dto => dto.dateDernierTraitementUniteLegale > safeImportDate),
                             );
                         } catch (err) {
                             callback(err as Error);

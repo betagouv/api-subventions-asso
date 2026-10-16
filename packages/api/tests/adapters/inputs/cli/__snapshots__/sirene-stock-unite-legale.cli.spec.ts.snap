@@ -12,7 +12,9 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
       "100000002",
     ],
     "rna": "W000000002",
-    "searchName": " association 100000002 ",
+    "searchName": {
+      "sirene": " association 100000002 ",
+    },
     "siren": "100000002",
   },
   {
@@ -25,7 +27,9 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
       "100000003",
     ],
     "rna": "W000000003",
-    "searchName": " association 100000003 ",
+    "searchName": {
+      "sirene": " association 100000003 ",
+    },
     "siren": "100000003",
   },
   {
@@ -38,7 +42,9 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
       "100000004",
     ],
     "rna": "W000000004",
-    "searchName": " association 100000004 ",
+    "searchName": {
+      "sirene": " association 100000004 ",
+    },
     "siren": "100000004",
   },
   {
@@ -51,7 +57,9 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
       "100000005",
     ],
     "rna": "W000000005",
-    "searchName": " association 100000005 ",
+    "searchName": {
+      "sirene": " association 100000005 ",
+    },
     "siren": "100000005",
   },
 ]
@@ -151,7 +159,7 @@ exports[`SireneStockUniteLegaleCli import should persist sirene data 1`] = `
     "categorieJuridiqueUniteLegale": "9220",
     "dateCreationUniteLegale": 2021-09-26T00:00:00.000Z,
     "dateDebut": 1984-12-25T00:00:00.000Z,
-    "dateDernierTraitementUniteLegale": 2024-03-22T14:26:06.000Z,
+    "dateDernierTraitementUniteLegale": 2025-03-22T14:26:06.000Z,
     "denominationUniteLegale": "ASSOCIATION 100000004",
     "denominationUsuelle1UniteLegale": null,
     "denominationUsuelle2UniteLegale": null,
@@ -188,7 +196,7 @@ exports[`SireneStockUniteLegaleCli import should persist sirene data 1`] = `
     "categorieJuridiqueUniteLegale": "9220",
     "dateCreationUniteLegale": 2021-09-26T00:00:00.000Z,
     "dateDebut": 1987-12-01T00:00:00.000Z,
-    "dateDernierTraitementUniteLegale": 2024-03-22T14:26:06.000Z,
+    "dateDernierTraitementUniteLegale": 2025-03-22T14:26:06.000Z,
     "denominationUniteLegale": "ASSOCIATION 100000005",
     "denominationUsuelle1UniteLegale": null,
     "denominationUsuelle2UniteLegale": null,

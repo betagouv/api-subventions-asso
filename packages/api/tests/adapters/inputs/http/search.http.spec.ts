@@ -128,5 +128,15 @@ describe("/search", () => {
                     expect(res.body).toMatchSnapshot();
                 });
         });
+
+        it("works with accents", async () => {
+            await request(g.app)
+                .get(`/search/associations/bat karé`) // ASSOCIATION_SEARCH_DBOS[6]
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json")
+                .then(res => {
+                    expect(res.body).toMatchSnapshot();
+                });
+        });
     });
 });

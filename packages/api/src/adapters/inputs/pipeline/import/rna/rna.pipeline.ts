@@ -30,6 +30,8 @@ export class RnaPipeline extends ImportPipeline {
         const lastSireneImport = await this.logPort.getLastImportByProvider("sirene-unite-legale");
         const lastRnaImport = await this.logPort.getLastImportByProvider("rna");
 
+        console.log(lastSireneImport, lastRnaImport);
+
         const orderError = new NoSireneImportError();
         if (!lastSireneImport) throw orderError;
         if (lastRnaImport && lastSireneImport < lastRnaImport) throw orderError;

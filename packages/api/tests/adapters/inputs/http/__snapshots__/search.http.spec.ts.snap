@@ -252,3 +252,27 @@ exports[`/search /association/{text} search only plain word 1`] = `
   "total": 1,
 }
 `;
+
+exports[`/search /association/{text} works with accents 1`] = `
+{
+  "nbPages": 1,
+  "page": 1,
+  "resultats": [
+    {
+      "adresse": {
+        "code_postal": "97427",
+        "commune": "L'ETANG-SALE",
+        "numero": "20",
+        "type_voie": "CHEMIN",
+        "voie": "DU MANIRON",
+      },
+      "name": "BAT KARE",
+      "nbEtabs": 1,
+      "rna": "W600000000",
+      "siren": "600000000",
+      "siretSiege": "60000000000018",
+    },
+  ],
+  "total": 1,
+}
+`;
