@@ -8,7 +8,7 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
       "sirene": "ASSOCIATION 100000002",
     },
     "nameTokens": [
-      "ASSOCIATION",
+      "association",
       "100000002",
     ],
     "rna": "W000000002",
@@ -21,7 +21,7 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
       "sirene": "ASSOCIATION 100000003",
     },
     "nameTokens": [
-      "ASSOCIATION",
+      "association",
       "100000003",
     ],
     "rna": "W000000003",
@@ -34,7 +34,7 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
       "sirene": "ASSOCIATION 100000004",
     },
     "nameTokens": [
-      "ASSOCIATION",
+      "association",
       "100000004",
     ],
     "rna": "W000000004",
@@ -47,7 +47,7 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
       "sirene": "ASSOCIATION 100000005",
     },
     "nameTokens": [
-      "ASSOCIATION",
+      "association",
       "100000005",
     ],
     "rna": "W000000005",

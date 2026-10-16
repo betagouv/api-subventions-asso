@@ -26,7 +26,7 @@ export default interface SireneUniteLegaleDto {
     denominationUsuelle1UniteLegale: string | null;
     denominationUsuelle2UniteLegale: string | null;
     denominationUsuelle3UniteLegale: string | null;
-    categorieJuridiqueUniteLegale: bigint | null; // bigint to string
+    categorieJuridiqueUniteLegale: bigint; // bigint to string
     activitePrincipaleUniteLegale: string | null;
     nomenclatureActivitePrincipaleUniteLegale: string | null;
     nicSiegeUniteLegale: string; // always define (checked on 2026/09/18)

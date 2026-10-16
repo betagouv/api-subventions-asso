@@ -61,7 +61,7 @@ exports[`Association Search Update should be the merge of unite legale and rna 1
       "sirene": "ASSOCIATION 100000004",
     },
     "nameTokens": [
-      "ASSOCIATION",
+      "association",
       "100000004",
     ],
     "rna": "W000000004",
@@ -74,7 +74,7 @@ exports[`Association Search Update should be the merge of unite legale and rna 1
       "sirene": "ASSOCIATION 100000005",
     },
     "nameTokens": [
-      "ASSOCIATION",
+      "association",
       "100000005",
     ],
     "rna": "W000000005",
