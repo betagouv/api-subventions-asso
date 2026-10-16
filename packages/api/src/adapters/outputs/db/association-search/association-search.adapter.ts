@@ -32,11 +32,10 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     }
 
     findByText(text: string, postalCode?: string): Promise<AssociationSearchEntity[]> {
-        const words = this.split.execute(text);
+        const needle = this.sanitize.execute(text); // search a needle in a haystack
+        const words = this.split.execute(needle);
 
         if (words.length === 0) return Promise.resolve([]);
-
-        const needle = this.sanitize.execute(text); // search a needle in a haystack
 
         return this.collection
             .aggregate<AssociationSearchDbo & { score: number }>([
