@@ -36,7 +36,7 @@ export class SireneUniteLegaleMapper {
             name: {
                 sirene: dbo.denominationUniteLegale,
             },
-            searchName: this.sanitize.execute(dbo.denominationUniteLegale),
+            searchName: { sirene: this.sanitize.execute(dbo.denominationUniteLegale) },
             nameTokens: this.split.execute(dbo.denominationUniteLegale),
             mainEstablishmentSiret: dbo.siren + dbo.nicSiegeUniteLegale,
         };

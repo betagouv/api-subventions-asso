@@ -10,7 +10,7 @@ jest.mock("axios");
 describe("Sriene stock CRON", () => {
     describe("importUnitesLegale", () => {
         const fixtureStream = fs.createReadStream(
-            path.join(__dirname, "../__fixtures__", "remote.sirene-stock-unite-legale.parquet"),
+            path.join(__dirname, "../__fixtures__/unite-legale", "latest-unite-legale.parquet"),
         );
 
         beforeAll(() => {

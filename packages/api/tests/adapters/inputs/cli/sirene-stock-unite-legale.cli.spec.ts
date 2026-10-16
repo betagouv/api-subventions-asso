@@ -4,7 +4,7 @@ import { createSireneStockUniteLegaleCli } from "../../../../src/adapters/inputs
 import { sireneStockUniteLegaleAdapter } from "../../../../src/adapters/outputs/api/data-gouv/data-gouv.adapter";
 import db from "../../../../src/shared/MongoConnection";
 
-const PARQUET_PATH = path.resolve(__dirname, "./../__fixtures__");
+const PARQUET_PATH = path.resolve(__dirname, "./../__fixtures__/unite-legale");
 
 describe("SireneStockUniteLegaleCli", () => {
     let getFileStreamMock: jest.SpyInstance;
@@ -12,7 +12,7 @@ describe("SireneStockUniteLegaleCli", () => {
     beforeAll(() => {
         getFileStreamMock = jest.spyOn(sireneStockUniteLegaleAdapter, "getFileStream").mockImplementation(() =>
             Promise.resolve({
-                data: fs.createReadStream(PARQUET_PATH + "/remote.sirene-stock-unite-legale.parquet"),
+                data: fs.createReadStream(PARQUET_PATH + "/latest-unite-legale.parquet"),
                 status: 200,
                 statusText: "OK",
             }),

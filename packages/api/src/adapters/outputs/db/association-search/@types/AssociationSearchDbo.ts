@@ -1,20 +1,22 @@
 import { Address } from "../../../../../@types/Address";
 
+type RnaOrSirene =
+    | {
+          rna?: string;
+          sirene: string;
+      }
+    | {
+          rna: string;
+          sirene?: string;
+      };
+
 export default interface AssociationSearchDbo {
     siren?: string;
     mainEstablishmentSiret?: string;
     rna?: string;
-    name:
-        | {
-              rna?: string;
-              sirene: string;
-          }
-        | {
-              rna: string;
-              sirene?: string;
-          };
-    searchName?: string; // sanitized name for the search engine
-    nameTokens?: string[]; // name split in words for the search engine
+    name: RnaOrSirene;
+    searchName?: RnaOrSirene; // sanitized names for the search engine
+    nameTokens?: string[]; // names (set from rna and sirene name) split in words for the search engine
     object?: string;
     searchObject?: string; // sanitized object for the search engine
     objectTokens?: string[]; // object split in words for the search engine

@@ -59,7 +59,12 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
                                     {
                                         case: {
                                             $and: [
-                                                { $gte: [{ $indexOfCP: ["$searchName", needle] }, 0] },
+                                                {
+                                                    $or: [
+                                                        { $gte: [{ $indexOfCP: ["$searchName.rna", needle] }, 0] },
+                                                        { $gte: [{ $indexOfCP: ["$searchName.sirene", needle] }, 0] },
+                                                    ],
+                                                },
                                                 { $gte: [{ $indexOfCP: ["$searchObject", needle] }, 0] },
                                             ],
                                         },
@@ -134,21 +139,29 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         const operations: AnyBulkWriteOperation<AssociationSearchDbo>[] = [];
         dbos.forEach(dbo => {
             const { rna, siren, name, searchName, nameTokens, object, searchObject, objectTokens } = dbo;
-            const rnaFields = { searchName, nameTokens, object, searchObject, objectTokens, "name.rna": name.rna };
+
+            const updateModel = {
+                $set: { "searchName.rna": searchName.rna, object, searchObject, objectTokens, "name.rna": name.rna },
+                $addToSet: { nameTokens: { $each: nameTokens } },
+            };
+
+            const updateModelWithSiren = { ...updateModel, $set: { ...updateModel.$set, siren } };
 
             if (siren) {
-                // updates the pair if it exists
+                // 1. tranform orphan into match
+                // @ts-expect-error: mongo treats undefined and null the same but it could break with ignoreUndefined setting
+                operations.push({ updateOne: { filter: { rna, siren: null }, update: updateModelWithSiren } });
+                // 2. updates the pair if it was already matched
+                // this duplicates the ops but ensure everything is updated
                 operations.push({
-                    updateOne: { filter: { siren, rna }, update: { $set: rnaFields }, upsert: true },
+                    updateOne: { filter: { siren, rna }, update: updateModelWithSiren, upsert: true },
                 });
-                // updates all document with the rna
-                operations.push({ updateMany: { filter: { rna }, update: { $set: rnaFields } } });
             } else {
                 // updates all docs with this rna, or create one
-                operations.push({ updateMany: { filter: { rna }, update: { $set: rnaFields }, upsert: true } });
+                operations.push({ updateMany: { filter: { rna }, update: updateModel, upsert: true } });
             }
         });
-        await this.collection.bulkWrite(operations.flat());
+        await this.collection.bulkWrite(operations);
         return;
     }
 
@@ -156,31 +169,43 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         const operations: AnyBulkWriteOperation<AssociationSearchDbo>[] = [];
         dbos.forEach(dbo => {
             const { siren, rna, name, searchName, nameTokens, mainEstablishmentSiret } = dbo;
-            const sireneFields = { mainEstablishmentSiret, "name.sirene": name.sirene };
+
+            const updateModel = {
+                $set: {
+                    mainEstablishmentSiret,
+                    "name.sirene": name.sirene,
+                    "searchName.sirene": searchName.sirene,
+                },
+                $addToSet: { nameTokens: { $each: nameTokens } },
+            };
+
+            const updateModelWithRna = { ...updateModel, $set: { ...updateModel.$set, rna } };
 
             if (rna) {
-                // 1. updates the rna-siren pair
+                // 1. tranform orphan into match
+                // @ts-expect-error: mongo treats undefined and null the same but it could break with ignoreUndefined setting
+                operations.push({ updateOne: { filter: { siren, rna: null }, update: updateModelWithRna } });
+                // 2. updates the pair if it was already matched
+                // this duplicates the ops but ensure everything is updated
                 operations.push({
                     updateOne: {
                         filter: { siren, rna },
-                        update: { $set: sireneFields, $setOnInsert: { searchName, nameTokens } },
+                        update: updateModelWithRna,
                         upsert: true,
                     },
                 });
-                // 2. updates orphans
-                operations.push({ updateMany: { filter: { siren }, update: { $set: sireneFields } } });
             } else {
                 // updates all docs with this siren, or create one
                 operations.push({
                     updateMany: {
                         filter: { siren },
-                        update: { $set: sireneFields, $setOnInsert: { searchName, nameTokens } },
+                        update: updateModel,
                         upsert: true,
                     },
                 });
             }
         });
-        await this.collection.bulkWrite(operations.flat());
+        await this.collection.bulkWrite(operations);
         return;
     }
 

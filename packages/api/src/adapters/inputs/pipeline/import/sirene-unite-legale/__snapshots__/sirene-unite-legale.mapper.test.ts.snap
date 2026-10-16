@@ -11,7 +11,9 @@ exports[`SireneUniteLegale Mapper toAssociationSearch maps to partial Associatio
     "coeur",
   ],
   "rna": "W000000000",
-  "searchName": " asso coeur ",
+  "searchName": {
+    "sirene": " asso coeur ",
+  },
   "siren": "100000000",
 }
 `;
