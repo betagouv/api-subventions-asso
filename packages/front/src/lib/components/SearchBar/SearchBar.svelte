@@ -1,4 +1,6 @@
 <script lang="ts">
+    import SpellcheckedInput from "$lib/components/SpellcheckedInput/SpellcheckedInput.svelte";
+
     interface Props {
         // build a unique id from timestamp if not given
         id?: string;
@@ -38,18 +40,14 @@
                 event.preventDefault();
                 handleSubmit();
             }}>
-            <div class="fr-search-bar" class:fr-search-bar--lg={large} id="search-input-{id}">
+            <div class="fr-search-bar" class:fr-search-bar--lg={large} id="search-bar-{id}">
                 {#if label}
                     <label class="fr-label" for="search-input-{id}">
                         {label}
                     </label>
                 {/if}
-                <input
-                    class="fr-input"
+                <SpellcheckedInput
                     {placeholder}
-                    type="search"
-                    lang="fr"
-                    spellcheck="true"
                     id="search-input-{id}"
                     name="search-input"
                     bind:value

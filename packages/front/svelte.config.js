@@ -61,7 +61,7 @@ const config = {
                 "frame-src": ["self", "https://game.crisp.chat", "https://datasubvention.crisp.help"],
                 "report-uri": ["https://sentry.incubateur.net"],
                 "report-to": ["'csp-endpoint'"],
-                "worker-src": ["blob:"],
+                "worker-src": ["self", "blob:"],
             },
         },
     },
