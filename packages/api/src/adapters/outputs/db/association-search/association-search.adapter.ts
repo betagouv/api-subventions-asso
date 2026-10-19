@@ -39,7 +39,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
 
         return this.collection
             .aggregate<AssociationSearchDbo & { score: number }>([
-                ...(postalCode ? [{ $match: { postalCodes: postalCode } }] : []), // filter on post code when provided
+                ...(postalCode ? [{ $match: { postalCodes: { $regex: `^${postalCode}` } } }] : []), // filter on post code when provided
 
                 // 1. filter all documents having all given words in their name or object
                 { $match: { $or: [{ nameTokens: { $all: words } }, { objectTokens: { $all: words } }] } },
