@@ -22,6 +22,7 @@
         "test:unit": "NODE_OPTIONS='--max-old-space-size=8192 --experimental-vm-modules' jest -c jest.config.unit.ts --runInBand",
         "test:integ": "NODE_OPTIONS='--max-old-space-size=8192 --experimental-vm-modules' jest -c jest.config.integ.ts --runInBand",
         "test:cov": "pnpm run test:unit -- --coverage",
+        "test:cron": "ts-node src/cron-test.ts",
         "migration:new": "migrate-mongo create",
         "migration:status": "migrate-mongo status",
         "migration:apply": "migrate-mongo up",
