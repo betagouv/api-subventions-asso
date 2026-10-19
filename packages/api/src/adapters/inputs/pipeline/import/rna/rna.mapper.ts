@@ -66,8 +66,8 @@ export class RnaMapper {
     }
 
     toAssociationSearch(dbo: Omit<RnaDbo, "titre"> & { titre: string }): RnaAssociationSearch {
-        const searchName = this.sanitize.execute(dbo.titre);
-        const nameTokens = this.split.execute(searchName);
+        const sanitizedName = this.sanitize.execute(dbo.titre);
+        const nameTokens = this.split.execute(sanitizedName);
         const object = dbo.objet;
         const searchObject = dbo.objet ? this.sanitize.execute(dbo.objet) : undefined;
         const objectTokens = searchObject ? this.split.execute(searchObject) : undefined;
@@ -78,7 +78,7 @@ export class RnaMapper {
             name: {
                 rna: dbo.titre,
             },
-            searchName,
+            searchName: { rna: sanitizedName },
             nameTokens,
         };
 

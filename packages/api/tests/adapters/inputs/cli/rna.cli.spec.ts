@@ -71,7 +71,7 @@ describe("RNA CLI", () => {
         });
 
         it("only imports updated rows", async () => {
-            const LAST_IMPORT_DATE = new Date("2026-01-01");
+            const LAST_IMPORT_DATE = new Date("2025-01-01");
             await db.collection("data-log").insertOne({
                 providerId: "rna",
                 providerName: "RNA",
@@ -80,7 +80,7 @@ describe("RNA CLI", () => {
                 integrationDate: LAST_IMPORT_DATE,
             });
 
-            const FILE_PATH = path.resolve(__dirname, "../__fixtures__/diff-maj-time.rna-waldec.parquet");
+            const FILE_PATH = path.resolve(__dirname, "../__fixtures__/rna-waldec/latest-rna-waldec.parquet");
             await cli.parse(FILE_PATH, EXPORT_DATE_STR);
 
             const documents = (await db
