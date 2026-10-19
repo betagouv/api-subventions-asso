@@ -1,4 +1,6 @@
 <script lang="ts">
+    import SpellcheckedInput from "$lib/components/SpellcheckedInput/SpellcheckedInput.svelte";
+
     type Props = {
         value?: string;
         postalCode?: string;
@@ -35,14 +37,10 @@
     <div class="fields">
         <div>
             <label class="fr-label" for="advanced-search-name">Nom, mot-clé, identifiant</label>
-            <input
-                class="fr-input"
+            <SpellcheckedInput
                 id="advanced-search-name"
                 name="search-input"
                 placeholder="Ex : Tennis Club, 48213289100011..."
-                type="search"
-                lang="fr"
-                spellcheck="true"
                 bind:value />
         </div>
         <div>
