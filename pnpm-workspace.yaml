@@ -19,6 +19,7 @@ allowBuilds:
     "@scarf/scarf": false # Analytics, not required
     "@sentry/cli": true # Required for Sentry error tracking
     bcrypt: true
+    core-js: false
     es5-ext: false # Polyfill, not critical
     esbuild: true # Required for build
     mongodb-memory-server: true # Required for tests

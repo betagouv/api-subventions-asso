@@ -39,6 +39,8 @@ const config = {
                     "https://stats.beta.gouv.fr/",
                     "https://geo.api.gouv.fr",
                     "https://sentry.incubateur.net",
+                    process.env.POSTHOG_HOST,
+                    "https://eu-assets.i.posthog.com",
                 ],
                 "font-src": ["self", "https://client.crisp.chat"],
                 "img-src": [
@@ -53,6 +55,7 @@ const config = {
                     "https://settings.crisp.chat",
                     "https://stats.beta.gouv.fr/",
                     "https://sentry.incubateur.net",
+                    "https://eu-assets.i.posthog.com",
                 ],
                 "style-src": ["self", "https://client.crisp.chat", "unsafe-inline"],
                 "frame-src": ["self", "https://game.crisp.chat", "https://datasubvention.crisp.help"],
