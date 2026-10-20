@@ -45,12 +45,13 @@ describe("AppController", () => {
 
     describe("constructor", () => {
         const MATOMO_CONFIG = { url: "url/to/matomo", id: "appId" };
+        const POSTHOG_CONFIG = { apiKey: "key", host: "url/to/posthog", defaults: "2026-05-30" };
         let mockHandleBannerDisplay: MockInstance;
         beforeEach(() => {
             mockHandleBannerDisplay = vi
                 .spyOn(AppController.prototype, "handleBannerDisplay")
                 .mockImplementation(vi.fn());
-            controller = new AppController({ matomo: MATOMO_CONFIG });
+            controller = new AppController({ matomo: MATOMO_CONFIG, posthog: POSTHOG_CONFIG });
         });
         afterEach(() => mockHandleBannerDisplay.mockRestore());
 
@@ -59,7 +60,10 @@ describe("AppController", () => {
         });
 
         it("should call trackerService.init()", () => {
-            expect(vi.mocked(trackerService).init).toHaveBeenCalledWith(ENV, MATOMO_CONFIG);
+            expect(vi.mocked(trackerService).init).toHaveBeenCalledWith(ENV, {
+                matomo: MATOMO_CONFIG,
+                posthog: POSTHOG_CONFIG,
+            });
         });
 
         it("should subscribe to stores", () => {

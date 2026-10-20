@@ -39,7 +39,7 @@ const config = {
                     "https://stats.beta.gouv.fr/",
                     "https://geo.api.gouv.fr",
                     "https://sentry.incubateur.net",
-                    ...(process.env.POSTHOG_HOST ? [process.env.POSTHOG_HOST] : []),
+                    "https://eu.i.posthog.com",
                     "https://eu-assets.i.posthog.com",
                 ],
                 "font-src": ["self", "https://client.crisp.chat"],

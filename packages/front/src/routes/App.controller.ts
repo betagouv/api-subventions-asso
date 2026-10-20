@@ -13,7 +13,15 @@ export class AppController {
     element: HTMLElement | undefined = undefined;
     displayBanner = new Store(false);
     constructor(config) {
-        trackerService.init(PUBLIC_ENV, config.matomo);
+        trackerService.init(PUBLIC_ENV, {
+            matomo: config.matomo,
+            posthog: config.posthog,
+        });
+
+        connectedUser.subscribe(user => {
+            if (user) trackerService.registerPosthogUserProperties(user);
+        });
+
         this.initContext();
 
         // trick to subscribe two stores because we need page AND connectedUser to be defined before running script
