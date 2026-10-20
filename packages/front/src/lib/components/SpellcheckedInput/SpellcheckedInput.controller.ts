@@ -22,7 +22,7 @@ let workerRequestId = 0;
 function getWorker() {
     if (worker) return worker;
 
-    worker = new Worker(new URL("./SpellcheckedInput.worker.ts", import.meta.url), { type: "module" });
+    worker = new Worker(new URL("./spellchecked-input.worker.ts", import.meta.url), { type: "module" });
 
     worker.onmessage = ({ data }: MessageEvent<SpellcheckWorkerResponse>) => {
         const request = pendingRequests.get(data.id);
@@ -58,7 +58,7 @@ export default class SpellcheckedInputController {
         return sendRequest<string[]>({ type: "suggest", word });
     }
 
-    splitTextForHighlighting(text: string, misspelledWords: MisspelledWord[]): HighlightSegment[] {
+    splitTextForHighlighting(text = "", misspelledWords: MisspelledWord[]): HighlightSegment[] {
         const segments: HighlightSegment[] = [];
         let segmentStart = 0;
 
@@ -83,7 +83,7 @@ export default class SpellcheckedInputController {
         return misspelledWords.find(word => caretPosition >= word.start && caretPosition <= word.end);
     }
 
-    replaceMisspelledWord(text: string, misspelledWord: MisspelledWord, suggestion: string) {
+    replaceMisspelledWord(text = "", misspelledWord: MisspelledWord, suggestion: string) {
         const { start, end } = misspelledWord;
         return text.slice(0, start) + suggestion + text.slice(end);
     }
