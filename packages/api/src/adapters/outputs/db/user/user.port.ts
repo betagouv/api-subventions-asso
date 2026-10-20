@@ -22,5 +22,7 @@ export interface UserPort {
     getUserWithSecretsByEmail(email: string): Promise<UserEntity | null>;
     getUserWithSecretsById(id: string): Promise<UserEntity | null>;
     countTotalUsersOnDate(date, withAdmin: boolean): Promise<number>;
+    countUsers(): Promise<number>;
+    findUserEmailsByPeriod(begin: Date, end: Date): Promise<string[]>;
     updateNbRequests(countByUser: { count: number; _id: string }[]): Promise<void>;
 }

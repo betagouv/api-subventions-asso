@@ -5,6 +5,7 @@ import type {
     UserDtoResponse,
     UserListDtoResponse,
     UserWithResetTokenDto,
+    UserSignupStatsDtoResponse,
 } from "dto";
 import type { IdentifiedRequest } from "../../../@types";
 import {
@@ -21,6 +22,7 @@ import {
     Response,
     Example,
     Hidden,
+    Query,
 } from "tsoa";
 import { BadRequestError, HttpErrorInterface } from "core";
 import { RoleEnum } from "../../../domain/users/@types/UserRoles";
@@ -31,6 +33,7 @@ import statsService from "../../../modules/stats/stats.service";
 import { USER_DTO_ADMIN, USER_DTO_DEFAULT, USER_DTO_NEW } from "./examples/Users";
 import NewUserEntity from "../../../domain/users/NewUserEntity";
 import { FutureUser } from "../../../domain/users/@types/FutureUser";
+import userStatsService from "../../../modules/user/services/stats/user.stats.service";
 
 @Route("admin")
 @Hidden()
@@ -109,5 +112,19 @@ export class AdminHttp extends Controller {
             console.log(e);
         }
         return result;
+    }
+
+    /**
+     * @summary Nombre d'utilisateurs + liste des emails si période
+     */
+    @Get("/stats/users")
+    @Response<HttpErrorInterface>(400, "Bad Request")
+    public async getUserSignupStats(@Query() from?: Date, @Query() to?: Date): Promise<UserSignupStatsDtoResponse> {
+        if (from === undefined && to === undefined) return userStatsService.getSignupStats();
+        if (from === undefined || to === undefined)
+            throw new BadRequestError("'from' and 'to' must be provided together");
+        if (from > to) throw new BadRequestError("'from' must be before or equal 'to'");
+
+        return userStatsService.getSignupStats(from, to);
     }
 }
