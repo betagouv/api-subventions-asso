@@ -22,17 +22,19 @@
     let input: HTMLInputElement;
     let checkRequestId = 0;
 
-    const segments = $derived(controller.splitTextForHighlighting(value ?? "", misspelledWords));
+    const segments = $derived(controller.splitTextForHighlighting(value, misspelledWords));
 
     onMount(() => controller.initialize());
 
     $effect(() => {
-        const text = value ?? "";
+        const text = value;
         const currentRequestId = ++checkRequestId;
 
+        // Reset spellcheck state associated with the previous value
         misspelledWords = [];
         closePopover();
-        if (!text.trim()) return;
+
+        if (!text?.trim()) return;
 
         const timeout = window.setTimeout(async () => {
             try {
@@ -42,7 +44,6 @@
                 misspelledWords = words;
             } catch (error) {
                 console.error("Impossible de vérifier l'orthographe", error);
-                if (currentRequestId === checkRequestId) misspelledWords = [];
             }
         }, debounceMs);
 
@@ -85,7 +86,7 @@
         if (!selectedWord) return;
 
         const caretPosition = selectedWord.start + suggestion.length;
-        value = controller.replaceMisspelledWord(value ?? "", selectedWord, suggestion);
+        value = controller.replaceMisspelledWord(value, selectedWord, suggestion);
         closePopover();
 
         await tick();
