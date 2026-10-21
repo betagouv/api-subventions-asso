@@ -1,4 +1,3 @@
-import { HttpError } from "core";
 import {
     OMOGEN_API_KEY,
     OMOGEN_AUTH_URL,
@@ -33,7 +32,6 @@ export class OmogenAdapter extends HttpAdapter implements OmogenPort {
     private get authHeader() {
         return {
             Authorization: `Bearer ${this.token}`,
-            // "X-omogen-codeUAI": OMOGEN_CODE_UAI,
         };
     }
 
@@ -64,7 +62,8 @@ export class OmogenAdapter extends HttpAdapter implements OmogenPort {
         try {
             return (await fn()).data;
         } catch (e) {
-            if ((e as HttpError).status !== 401) throw e;
+            // @ts-expect-error: ok
+            if ((e as unknown).response !== 401) throw e;
             await this.auth();
             return (await fn()).data;
         }
@@ -76,9 +75,7 @@ export class OmogenAdapter extends HttpAdapter implements OmogenPort {
             this.http.get<OmogenFile[]>(`${this.url}/flux`, {
                 headers: {
                     ...this.authHeader,
-                    producteur: "DATA-SUBVENTION-SND",
-                    depot: "DEPOT-DATA-SUBVENTION-SND",
-                    tagDepot: "TD-DATA-SUBVENTION-SND",
+                    consommateur: "DATA-SUBVENTION",
                 },
             }),
         );
@@ -87,7 +84,8 @@ export class OmogenAdapter extends HttpAdapter implements OmogenPort {
     // download specific file
     async get(id: string) {
         return this.ensureAuth(() =>
-            this.http.get<unknown[]>(`${this.url}/flux/${id}`, {
+            this.http.get<ArrayBuffer>(`${this.url}/flux/${id}`, {
+                responseType: "arraybuffer",
                 headers: { ...this.authHeader, consommateur: "DATA-SUBVENTION" },
             }),
         );
