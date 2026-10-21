@@ -1,9 +1,9 @@
 import { nanoid } from "nanoid";
-import trackerService from "$lib/services/tracker.service.js";
+import trackerService from "$lib/services/tracker.service";
 import { DocumentCardController } from "$lib/components/Documents/components/DocumentCard.controller";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 vi.mock("$lib/resources/documents/documents.service");
-vi.mock("$lib/services/tracker.service.js");
+vi.mock("$lib/services/tracker.service");
 vi.mock("nanoid");
 
 describe("Documents.controller", () => {
