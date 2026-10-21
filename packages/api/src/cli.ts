@@ -33,6 +33,7 @@ import DepositLogCli from "./adapters/inputs/cli/scdl-deposit.cli";
 import chorusImport from "./adapters/inputs/pipeline/import/chorus/chorus.import";
 import updateFlatByExercise from "./modules/providers/chorus/use-cases/update-flat-by-exercise";
 import rnaCli, { RnaCli } from "./adapters/inputs/cli/rna.cli";
+import OmogenCli, { createOmogenCli } from "./adapters/inputs/cli/omogen.cli";
 
 async function main() {
     await connectDB();
@@ -64,6 +65,7 @@ async function main() {
         HeliosCli,
         DepositLogCli,
         RnaCli,
+        OmogenCli,
     ];
 
     const factoryMap = new Map([
@@ -72,6 +74,7 @@ async function main() {
         [EstablishmentCli.cmdName, { factory: createEstablishmentCli }],
         [RnaCli.cmdName, { factory: () => rnaCli }],
         [SireneStockUniteLegaleCli.cmdName, { factory: createSireneStockUniteLegaleCli }],
+        [OmogenCli.cmdName, { factory: createOmogenCli }],
     ]);
 
     const args = process.argv.slice(2);
