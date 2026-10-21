@@ -1,8 +1,14 @@
 import FileTags from "../../../modules/s3-file/@types/FileTags";
-import FileStreamPort from "../file-stream.port";
 
-export interface S3Port extends FileStreamPort {
-    uploadFile(file: Express.Multer.File, key: string): Promise<string>;
+export interface S3Port {
+    uploadFile(
+        file: Buffer,
+        key: string,
+        options?: {
+            contentType?: string;
+            tag?: { name: string; value: string };
+        },
+    ): Promise<string>;
     getDownloadUrl(key: string, expiresIn): Promise<string>;
     deleteFile(key: string): Promise<void>;
     listFiles(prefix: string): Promise<{ path: string; importDate: Date }[]>;

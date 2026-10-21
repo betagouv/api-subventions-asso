@@ -2,7 +2,6 @@ export interface OmogenFile {
     correlationID: string;
     nomFichier: string;
     dateDepot: string;
-    format: Date;
     metadonnees?: OmogenMetadata[];
 }
 

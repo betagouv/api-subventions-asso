@@ -3,6 +3,7 @@ import { formatDateToYYYYMMDDWithSeparator } from "../../../../shared/helpers/Da
 import DownloadFile from "../../../../usecases/download-file";
 import { RemoveFile } from "../../../../usecases/remove-file";
 
+// use to download and import static named file
 export class DownloadAndImport {
     constructor(
         private cli: CliController,
@@ -10,8 +11,8 @@ export class DownloadAndImport {
         private remove: RemoveFile,
     ) {}
 
-    async run() {
-        const infos = await this.download.execute();
+    async run(fileId?: string) {
+        const infos = await this.download.execute(fileId);
 
         const editionDate = (() => {
             const now = new Date();

@@ -6,6 +6,11 @@ import CliController from "../../../shared/CliController";
 import paymentFlatChorusService from "../../../modules/payment-flat/payment-flat.chorus.service";
 import { ChorusImport } from "../pipeline/import/chorus/chorus.import";
 import { UpdateFlatByExercise } from "../../../modules/providers/chorus/use-cases/update-flat-by-exercise";
+import { DownloadAndImport } from "../pipeline/import/download-and-import.pipeline";
+import DownloadFile from "../../../usecases/download-file";
+import { RemoveFile } from "../../../usecases/remove-file";
+import { ChorusUpload } from "../pipeline/upload/chorus/chorus.upload";
+import type { S3Port } from "../../outputs/s3/s3.port";
 
 @StaticImplements<CliStaticInterface>()
 export default class ChorusCli extends CliController {
@@ -16,6 +21,9 @@ export default class ChorusCli extends CliController {
     protected batchSize = 1000;
 
     constructor(
+        private uploader: ChorusUpload,
+        private downloader: DownloadFile,
+        private s3: S3Port,
         private chorusImport: ChorusImport,
         private updateFlatByExercise: UpdateFlatByExercise,
     ) {
@@ -57,5 +65,17 @@ export default class ChorusCli extends CliController {
         await paymentFlatChorusService.init();
         await chorusService.initFlat();
         clearInterval(ticTacInterval);
+    }
+
+    // download and import latest chorus file from the s3 bucket
+    async import() {
+        const list = await this.s3.listFiles("chorus");
+        const latest = list.sort((a, b) => new Date(b.importDate).getTime() - new Date(a.importDate).getTime())[0];
+        await new DownloadAndImport(this, this.downloader, new RemoveFile()).run(latest.path);
+    }
+
+    // download and upload to s3 bucket the latest file from chorus omogen
+    async upload() {
+        await this.uploader.run();
     }
 }

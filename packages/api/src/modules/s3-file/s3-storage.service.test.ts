@@ -79,7 +79,9 @@ describe("S3Fileservice", () => {
 
             await service.uploadAndReplaceUserFile(mockFile, USER_ID);
 
-            expect(mockS3Adapter.uploadFile).toHaveBeenCalledWith(mockFile, "user123/test.csv");
+            expect(mockS3Adapter.uploadFile).toHaveBeenCalledWith(mockFile.buffer, "user123/test.csv", {
+                contentType: mockFile.mimetype,
+            });
         });
 
         it("should return uploaded file key", async () => {
@@ -99,7 +101,9 @@ describe("S3Fileservice", () => {
 
             const result = await service.uploadUserFile(mockFile, USER_ID);
 
-            expect(mockS3Adapter.uploadFile).toHaveBeenCalledWith(mockFile, UPLOAD_KEY);
+            expect(mockS3Adapter.uploadFile).toHaveBeenCalledWith(mockFile.buffer, UPLOAD_KEY, {
+                contentType: mockFile.mimetype,
+            });
             expect(result).toBe(UPLOAD_KEY);
         });
     });

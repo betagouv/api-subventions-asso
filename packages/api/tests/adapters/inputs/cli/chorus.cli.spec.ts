@@ -21,6 +21,9 @@ import updateFlatByExercise from "../../../../src/modules/providers/chorus/use-c
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 import db from "../../../../src/shared/MongoConnection";
 import { ASSOCIATION_SEARCH_DBOS } from "../../../../src/adapters/outputs/db/association-search/__fixtures__/association-search.fixture";
+import chorusUpload from "../../../../src/adapters/inputs/pipeline/upload/chorus/chorus.upload";
+import DownloadFile from "../../../../src/usecases/download-file";
+import { providersS3Adapter } from "../../../../src/adapters/outputs/s3/s3.adapter";
 
 describe("ChorusCli", () => {
     // it contains :
@@ -34,7 +37,13 @@ describe("ChorusCli", () => {
     let controller: ChorusCli;
 
     beforeEach(async () => {
-        controller = new ChorusCli(chorusImport, updateFlatByExercise);
+        controller = new ChorusCli(
+            chorusUpload,
+            new DownloadFile(providersS3Adapter),
+            providersS3Adapter,
+            chorusImport,
+            updateFlatByExercise,
+        );
 
         await Promise.all([
             stateBudgetProgramAdapter.replace(PROGRAMS),

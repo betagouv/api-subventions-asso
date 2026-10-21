@@ -34,6 +34,9 @@ import chorusImport from "./adapters/inputs/pipeline/import/chorus/chorus.import
 import updateFlatByExercise from "./modules/providers/chorus/use-cases/update-flat-by-exercise";
 import rnaCli, { RnaCli } from "./adapters/inputs/cli/rna.cli";
 import OmogenCli, { createOmogenCli } from "./adapters/inputs/cli/omogen.cli";
+import { providersS3Adapter } from "./adapters/outputs/s3/s3.adapter";
+import DownloadFile from "./usecases/download-file";
+import chorusUpload from "./adapters/inputs/pipeline/upload/chorus/chorus.upload";
 
 async function main() {
     await connectDB();
@@ -70,7 +73,19 @@ async function main() {
 
     const factoryMap = new Map([
         [HeliosCli.cmdName, { factory: createHeliosCli }],
-        [ChorusCli.cmdName, { factory: () => new ChorusCli(chorusImport, updateFlatByExercise) }],
+        [
+            ChorusCli.cmdName,
+            {
+                factory: () =>
+                    new ChorusCli(
+                        chorusUpload,
+                        new DownloadFile(providersS3Adapter),
+                        providersS3Adapter,
+                        chorusImport,
+                        updateFlatByExercise,
+                    ),
+            },
+        ],
         [EstablishmentCli.cmdName, { factory: createEstablishmentCli }],
         [RnaCli.cmdName, { factory: () => rnaCli }],
         [SireneStockUniteLegaleCli.cmdName, { factory: createSireneStockUniteLegaleCli }],

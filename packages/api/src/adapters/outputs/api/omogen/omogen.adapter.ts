@@ -1,4 +1,3 @@
-import { HttpError } from "core";
 import {
     OMOGEN_API_KEY,
     OMOGEN_AUTH_URL,
@@ -10,6 +9,7 @@ import { HttpAdapter } from "../../../http.adapter";
 import { OmogenFile, OmogenToken } from "./omogen.dto";
 import { OmogenPort } from "./omogen.port";
 import { RequestResponse } from "../../../../modules/provider-request/@types/RequestResponse";
+import { RequestError } from "../../../../modules/provider-request/provider-request.service";
 
 export class OmogenAdapter extends HttpAdapter implements OmogenPort {
     private readonly url: string;
@@ -33,13 +33,11 @@ export class OmogenAdapter extends HttpAdapter implements OmogenPort {
     private get authHeader() {
         return {
             Authorization: `Bearer ${this.token}`,
-            // "X-omogen-codeUAI": OMOGEN_CODE_UAI,
         };
     }
 
     // set OAuth2 token
-    // @TODO: make it private after local test succeed
-    async auth() {
+    private async auth() {
         const body = new URLSearchParams({
             grant_type: "client_credentials",
             client_id: this.client,
@@ -51,12 +49,9 @@ export class OmogenAdapter extends HttpAdapter implements OmogenPort {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "X-omogen-api-key": this.apiKey,
-                    // "X-omogen-codeUAI": OMOGEN_CODE_UAI,
                 },
             })
         ).data.access_token;
-
-        console.log("setting token: ", this.token);
     }
 
     private async ensureAuth<T>(fn: () => Promise<RequestResponse<T>>): Promise<T> {
@@ -64,7 +59,7 @@ export class OmogenAdapter extends HttpAdapter implements OmogenPort {
         try {
             return (await fn()).data;
         } catch (e) {
-            if ((e as HttpError).status !== 401) throw e;
+            if ((e as RequestError).response?.status !== 401) throw e;
             await this.auth();
             return (await fn()).data;
         }
@@ -76,9 +71,7 @@ export class OmogenAdapter extends HttpAdapter implements OmogenPort {
             this.http.get<OmogenFile[]>(`${this.url}/flux`, {
                 headers: {
                     ...this.authHeader,
-                    producteur: "DATA-SUBVENTION-SND",
-                    depot: "DEPOT-DATA-SUBVENTION-SND",
-                    tagDepot: "TD-DATA-SUBVENTION-SND",
+                    consommateur: "DATA-SUBVENTION",
                 },
             }),
         );
@@ -87,13 +80,16 @@ export class OmogenAdapter extends HttpAdapter implements OmogenPort {
     // download specific file
     async get(id: string) {
         return this.ensureAuth(() =>
-            this.http.get<unknown[]>(`${this.url}/flux/${id}`, {
+            this.http.get<Buffer>(`${this.url}/flux/${id}`, {
+                responseType: "arraybuffer",
                 headers: { ...this.authHeader, consommateur: "DATA-SUBVENTION" },
             }),
         );
     }
 
-    async upload(stream) {
+    // only use for implementation test
+    // removes this onces the test server will be revoked
+    private async upload(stream) {
         return this.ensureAuth(() =>
             this.http.post(
                 `${this.url}/flux`,
