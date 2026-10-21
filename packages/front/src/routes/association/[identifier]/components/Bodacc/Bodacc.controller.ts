@@ -1,5 +1,5 @@
 import crispService from "$lib/services/crisp.service";
-import { waitElementIsVisible } from "$lib/helpers/visibilityHelper.js";
+import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";
 import type { BodaccRecord } from "dto";
 
 export default class BodaccController {

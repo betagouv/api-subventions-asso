@@ -3,7 +3,7 @@
     import TableRow from "$lib/dsfr/TableRow.svelte";
 
     import { data } from "$lib/store/modal.store";
-    import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper.js";
+    import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper";
     import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
     interface Props {
         children?: import("svelte").Snippet;

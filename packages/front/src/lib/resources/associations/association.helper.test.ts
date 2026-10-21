@@ -2,7 +2,7 @@ import DEFAULT_ASSOCIATION from "./__fixtures__/Association";
 import Association from "./__fixtures__/Association";
 import * as AssociationHelper from "./association.helper";
 import * as EntrepriseHelper from "$lib/helpers/entrepriseHelper";
-vi.mock("$lib/helpers/entrepriseHelper.js");
+vi.mock("$lib/helpers/entrepriseHelper");
 const mockedEntrepriseHelper = vi.mocked(EntrepriseHelper);
 
 describe("Association Helper", () => {
