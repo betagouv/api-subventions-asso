@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import AutocompleteSelect from "$lib/components/AutocompleteSelect/AutocompleteSelect.svelte";
-    import RegionFieldController from "$lib/components/StructureFormStep/RegionField/RegionFieldController.js";
+    import RegionFieldController from "$lib/components/StructureFormStep/RegionField/RegionFieldController";
 
     interface Props {
         value: string;

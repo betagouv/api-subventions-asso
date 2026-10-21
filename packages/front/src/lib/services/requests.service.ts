@@ -1,9 +1,9 @@
-import axios from "axios";
+import axios, { type AxiosRequestConfig, type RawAxiosRequestHeaders } from "axios";
 import errorsService from "../errors/errors.service";
 import { PUBLIC_DATASUB_URL } from "$env/static/public";
 
 class RequestsService {
-    _errorHooks = [];
+    _errorHooks: { ErrorClass: Error; callback: () => unknown }[] = [];
 
     constructor() {
         axios.defaults.baseURL = PUBLIC_DATASUB_URL;
@@ -37,16 +37,15 @@ class RequestsService {
         });
     }
 
-    _sendRequest(type, path, params, data, requestOption = {}) {
-        const axiosOption = { ...requestOption };
+    _sendRequest(type, path, params, data, requestOption: AxiosRequestConfig = {}) {
+        const axiosOption: Record<string, unknown> = { ...requestOption };
 
         const isFormData = data instanceof FormData;
 
-        let headers = {};
-
-        if (isFormData) {
-            headers["Content-Type"] = "multipart/form-data";
-        }
+        let headers: RawAxiosRequestHeaders = {
+            ...(isFormData ? { "Content-Type": "multipart/form-data" } : {}),
+            ...(requestOption.headers as RawAxiosRequestHeaders | undefined),
+        };
 
         if (axiosOption.headers) {
             headers = { ...headers, ...axiosOption.headers };
@@ -64,10 +63,13 @@ class RequestsService {
     }
 
     _errorCatcher(error) {
-        const ErrorClass = errorsService.axiosErrorToError(error);
+        // @ts-expect-error: better type this
+        const ErrorClass = errorsService.axiosErrorToError(error) as Error;
 
-        const hooks = this._errorHooks.filter(hook => hook.ErrorClass === ErrorClass);
-        const typedError = new ErrorClass(
+        const hooks = this._errorHooks.filter(hook => (hook.ErrorClass as Error) === ErrorClass);
+
+        // @ts-expect-error: better type this
+        const typedError: Error = new ErrorClass(
             {
                 message: error?.response?.data.message || error.message,
             },
@@ -76,7 +78,8 @@ class RequestsService {
 
         if (hooks.length) {
             hooks.forEach(hook => {
-                hook.callback(typedError);
+                // @ts-expect-error: better type this
+                hook.callback(typedError as Error);
             });
         }
         throw typedError;

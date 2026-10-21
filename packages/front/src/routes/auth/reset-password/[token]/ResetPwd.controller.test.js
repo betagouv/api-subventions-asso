@@ -1,6 +1,6 @@
 import { ResetPwdController } from "./ResetPwd.controller";
 import authService from "$lib/resources/auth/auth.service";
-import { goToUrl } from "$lib/services/router.service.js";
+import { goToUrl } from "$lib/services/router.service";
 
 vi.mock("$lib/services/router.service");
 

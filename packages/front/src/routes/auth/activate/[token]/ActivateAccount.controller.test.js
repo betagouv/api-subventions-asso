@@ -2,7 +2,7 @@ import { nanoid } from "nanoid/non-secure";
 import { AgentTypeEnum } from "dto";
 import ActivateAccountController from "./ActivateAccount.controller";
 import authService from "$lib/resources/auth/auth.service";
-import { goToUrl } from "$lib/services/router.service.js";
+import { goToUrl } from "$lib/services/router.service";
 import trackerService from "$lib/services/tracker.service";
 
 vi.mock("$lib/resources/auth/auth.service", () => ({
