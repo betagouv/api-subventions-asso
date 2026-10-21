@@ -2,7 +2,9 @@ import posthog from "posthog-js";
 import authService from "$lib/resources/auth/auth.service";
 
 export class TrackerService {
+    _paq: string[][];
     constructor() {
+        // @ts-expect-error: matomo event array
         this._paq = window._paq = window._paq || [];
     }
 
@@ -24,7 +26,7 @@ export class TrackerService {
 
         // tracker methods like "setCustomDimension" should be called before "trackPageView"
         const user = authService.getCurrentUser();
-        if (user && user._id) this._paq.push(["setUserId", user._id]);
+        if (user && user.id) this._paq.push(["setUserId", user.id]);
         this._paq.push(["enableLinkTracking"]);
         this._paq.push(["trackPageView"]);
 
@@ -33,7 +35,7 @@ export class TrackerService {
         g.src = `${MATOMO_ENV.url}matomo.js`;
 
         const s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(g, s);
+        s.parentNode!.insertBefore(g, s);
     }
 
     initPosthog(ENV, POSTHOG_ENV) {
@@ -62,6 +64,7 @@ export class TrackerService {
      * @param {string[]} args params for identify event
      */
     trackEvent(...args) {
+        // @ts-expect-error: matomo event array
         window._paq.push(["trackEvent", ...args]);
     }
 
