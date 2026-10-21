@@ -2,7 +2,7 @@ vi.mock("$lib/helpers/providerValueHelper");
 import establishmentService from "./establishment.service";
 import establishmentPort from "./establishment.port";
 vi.mock("./establishment.port");
-import * as establishmentMapper from "./establishment.mapper.js";
+import * as establishmentMapper from "./establishment.mapper";
 vi.mock("./establishment.mapper");
 import * as providerValuesHelper from "$lib/helpers/providerValueHelper";
 

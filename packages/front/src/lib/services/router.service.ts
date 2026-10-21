@@ -14,7 +14,7 @@ if (![].at) {
 
 // TODO: rendre dynamique (via une librairie de routing ?)
 export const buildBreadcrumbs = path => {
-    const crumbs = [];
+    const crumbs: { label: string; url?: string }[] = [];
     if (path.includes("mentions-legales")) crumbs.push({ label: "Mentions Légales" });
     if (path.includes("contact")) crumbs.push({ label: "Contactez-nous" });
     if (path.includes("association")) crumbs.push({ label: `Association (${path.split("/").at(-1)})` });

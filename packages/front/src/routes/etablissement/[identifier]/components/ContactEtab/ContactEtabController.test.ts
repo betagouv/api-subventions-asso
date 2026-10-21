@@ -1,8 +1,9 @@
 import ContactEtabController from "./ContactEtabController";
 import { formatPhoneNumber, valueOrHyphen } from "$lib/helpers/dataHelper";
+import type { Mock } from "vitest";
 
-vi.mock("$lib/helpers/dataHelper.js", async () => {
-    const actual = vi.importActual("$lib/helpers/dataHelper.js");
+vi.mock("$lib/helpers/dataHelper", async () => {
+    const actual = vi.importActual("$lib/helpers/dataHelper");
     return {
         ...actual,
         valueOrHyphen: vi.fn(v => v),
@@ -129,13 +130,13 @@ describe("ContactEtabController", () => {
         it("should return format telephone", () => {
             const expected = 1;
             controller._format(CONTACTS[0]);
-            const actual = formatPhoneNumber.mock.calls.length;
+            const actual = (formatPhoneNumber as Mock).mock.calls.length;
             expect(actual).toEqual(expected);
         });
         it("should replace empty value with hyphen", () => {
             const expected = 6;
             controller._format(CONTACTS[0]);
-            const actual = valueOrHyphen.mock.calls.length;
+            const actual = (valueOrHyphen as Mock).mock.calls.length;
             expect(actual).toEqual(expected);
         });
     });
