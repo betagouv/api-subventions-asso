@@ -44,9 +44,9 @@
     if (value === undefined) value = "";
 
     const listId = $derived(`list-${id}`);
-    let inputElement: HTMLElement = $state(),
-        buttonElement: HTMLElement = $state(),
-        listElement: HTMLElement = $state();
+    let inputElement: HTMLInputElement | undefined = $state(),
+        buttonElement: HTMLButtonElement | undefined = $state(),
+        listElement: HTMLUListElement | undefined = $state();
 
     const storeValue = new Store(value);
     storeValue.subscribe(newV => {
@@ -54,9 +54,12 @@
         onchange();
     });
 
-    let ctrl: ComboboxAutocomplete = $state();
+    let ctrl: ComboboxAutocomplete | undefined = $state();
 
-    onMount(() => (ctrl = new ComboboxAutocomplete(inputElement, buttonElement, listElement, storeValue)));
+    onMount(() => {
+        if (!inputElement || !buttonElement || !listElement) return;
+        ctrl = new ComboboxAutocomplete(inputElement, buttonElement, listElement, storeValue);
+    });
 
     $effect(() => {
         if (!ctrl) return;

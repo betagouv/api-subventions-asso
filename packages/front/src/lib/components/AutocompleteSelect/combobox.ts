@@ -11,9 +11,39 @@
 
 "use strict";
 
+import type Store from "$lib/core/Store";
+
 export class ComboboxAutocomplete {
-    constructor(comboboxNode, buttonNode, listboxNode, svelteStore) {
+    comboboxNode: HTMLInputElement;
+    parentElement: HTMLElement;
+    buttonNode: HTMLElement;
+    listboxNode: HTMLElement;
+    svelteStore: Store<string>;
+    comboboxHasVisualFocus = false;
+    listboxHasVisualFocus = false;
+    hasHover = false;
+    isNone = false;
+    isList = false;
+    isBoth = false;
+    allOptions: HTMLElement[] = [];
+    filteredOptions: HTMLElement[] = [];
+    filter: string;
+    option: HTMLElement | null = null;
+    firstOption: HTMLElement | null = null;
+    lastOption: HTMLElement | null = null;
+
+    constructor(
+        comboboxNode: HTMLInputElement,
+        buttonNode: HTMLElement,
+        listboxNode: HTMLElement,
+        svelteStore: Store<string>,
+    ) {
         this.comboboxNode = comboboxNode;
+        if (!this.comboboxNode.parentElement) {
+            throw new Error("ComboboxAutocomplete: the input must have a parent element");
+        }
+        this.parentElement = this.comboboxNode.parentElement;
+
         this.comboboxNode.value = svelteStore.value;
         this.buttonNode = buttonNode;
         this.listboxNode = listboxNode;
@@ -36,7 +66,7 @@ export class ComboboxAutocomplete {
         this.filteredOptions = [];
         this.filter = "";
 
-        var autocomplete = this.comboboxNode.getAttribute("aria-autocomplete");
+        let autocomplete = this.comboboxNode.getAttribute("aria-autocomplete");
 
         if (typeof autocomplete === "string") {
             autocomplete = autocomplete.toLowerCase();
@@ -67,7 +97,7 @@ export class ComboboxAutocomplete {
 
         // Open Button
 
-        var button = this.comboboxNode.nextElementSibling;
+        const button = this.comboboxNode.nextElementSibling;
 
         if (button && button.tagName === "BUTTON") {
             button.addEventListener("click", this.onButtonClick.bind(this));
@@ -76,17 +106,17 @@ export class ComboboxAutocomplete {
         this.svelteStore = svelteStore;
     }
 
-    updateComboboxValueAndStore(element) {
+    updateComboboxValueAndStore(element: HTMLElement | null) {
         this.comboboxNode.value = element?.textContent || "";
         if (this.svelteStore) this.svelteStore.set(element?.getAttribute("data-option-value") || "");
     }
 
-    getLowercaseContent(node) {
+    getLowercaseContent(node: HTMLElement) {
         return node.textContent.toLowerCase();
     }
 
-    isOptionInView(option) {
-        var bounding = option.getBoundingClientRect();
+    isOptionInView(option: HTMLElement) {
+        const bounding = option.getBoundingClientRect();
         return (
             bounding.top >= 0 &&
             bounding.left >= 0 &&
@@ -95,7 +125,7 @@ export class ComboboxAutocomplete {
         );
     }
 
-    setActiveDescendant(option) {
+    setActiveDescendant(option: HTMLElement | null | false) {
         if (option && this.listboxHasVisualFocus) {
             this.comboboxNode.setAttribute("aria-activedescendant", option.id);
             if (!this.isOptionInView(option)) {
@@ -106,14 +136,14 @@ export class ComboboxAutocomplete {
         }
     }
 
-    setValueFromElement(element) {
+    setValueFromElement(element: HTMLElement | null) {
         this.filter = element?.textContent || "";
         this.updateComboboxValueAndStore(element);
         this.comboboxNode.setSelectionRange(this.filter.length, this.filter.length);
         this.filterOptions();
     }
 
-    setOption(option, flag) {
+    setOption(option: HTMLElement | null, flag?: unknown) {
         if (typeof flag !== "boolean") {
             flag = false;
         }
@@ -136,14 +166,14 @@ export class ComboboxAutocomplete {
 
     setVisualFocusCombobox() {
         this.listboxNode.classList.remove("focus");
-        this.comboboxNode.parentNode.classList.add("focus"); // set the focus class to the parent for easier styling
+        this.parentElement?.classList.add("focus"); // set the focus class to the parent for easier styling
         this.comboboxHasVisualFocus = true;
         this.listboxHasVisualFocus = false;
         this.setActiveDescendant(false);
     }
 
     setVisualFocusListbox() {
-        this.comboboxNode.parentNode.classList.remove("focus");
+        this.parentElement?.classList.remove("focus");
         this.comboboxHasVisualFocus = false;
         this.listboxHasVisualFocus = true;
         this.listboxNode.classList.add("focus");
@@ -151,7 +181,7 @@ export class ComboboxAutocomplete {
     }
 
     removeVisualFocusAll() {
-        this.comboboxNode.parentNode.classList.remove("focus");
+        this.parentElement?.classList.remove("focus");
         this.comboboxHasVisualFocus = false;
         this.listboxHasVisualFocus = false;
         this.listboxNode.classList.remove("focus");
@@ -167,14 +197,14 @@ export class ComboboxAutocomplete {
             this.filter = "";
         }
 
-        var option = null;
-        var currentOption = this.option;
-        var filter = this.filter.toLowerCase();
+        let option: HTMLElement | null = null;
+        const currentOption = this.option;
+        const filter = this.filter.toLowerCase();
 
         this.filteredOptions = [];
 
         for (const option of this.allOptions) {
-            var matches = filter.length === 0 || this.getLowercaseContent(option).indexOf(filter) !== -1;
+            const matches = filter.length === 0 || this.getLowercaseContent(option).indexOf(filter) !== -1;
             // fix #3996 introduced by bumping from svelte 4 to 5
             // toggle visibility instead of moving nodes
             option.style.display = matches ? "" : "none";
@@ -184,7 +214,7 @@ export class ComboboxAutocomplete {
         }
 
         // Use populated options array to initialize firstOption and lastOption.
-        var numItems = this.filteredOptions.length;
+        const numItems = this.filteredOptions.length;
         if (numItems > 0) {
             this.firstOption = this.filteredOptions[0];
             this.lastOption = this.filteredOptions[numItems - 1];
@@ -203,9 +233,9 @@ export class ComboboxAutocomplete {
         return option;
     }
 
-    setCurrentOptionStyle(option) {
-        for (var i = 0; i < this.filteredOptions.length; i++) {
-            var opt = this.filteredOptions[i];
+    setCurrentOptionStyle(option: HTMLElement | null | false) {
+        for (let i = 0; i < this.filteredOptions.length; i++) {
+            const opt = this.filteredOptions[i];
             if (opt === option) {
                 opt.setAttribute("aria-selected", "true");
                 if (this.listboxNode.scrollTop + this.listboxNode.offsetHeight < opt.offsetTop + opt.offsetHeight) {
@@ -219,18 +249,18 @@ export class ComboboxAutocomplete {
         }
     }
 
-    getPreviousOption(currentOption) {
+    getPreviousOption(currentOption: HTMLElement | null) {
         if (currentOption !== this.firstOption) {
-            var index = this.filteredOptions.indexOf(currentOption);
-            return this.filteredOptions[index - 1];
+            const index = currentOption ? this.filteredOptions.indexOf(currentOption) : -1; // The -1 that indexOf returns for “not found” on a regular use
+            return this.filteredOptions[index - 1] ?? null;
         }
         return this.lastOption;
     }
 
-    getNextOption(currentOption) {
+    getNextOption(currentOption: HTMLElement | null) {
         if (currentOption !== this.lastOption) {
-            var index = this.filteredOptions.indexOf(currentOption);
-            return this.filteredOptions[index + 1];
+            const index = currentOption ? this.filteredOptions.indexOf(currentOption) : -1; // The -1 that indexOf returns for “not found” on a regular use
+            return this.filteredOptions[index + 1] ?? null;
         }
         return this.firstOption;
     }
@@ -259,7 +289,7 @@ export class ComboboxAutocomplete {
         this.buttonNode.setAttribute("aria-expanded", "true");
     }
 
-    close(force) {
+    close(force?: unknown) {
         if (typeof force !== "boolean") {
             force = false;
         }
@@ -270,15 +300,15 @@ export class ComboboxAutocomplete {
             this.comboboxNode.setAttribute("aria-expanded", "false");
             this.buttonNode.setAttribute("aria-expanded", "false");
             this.setActiveDescendant(false);
-            this.comboboxNode.parentNode.classList.add("focus");
+            this.parentElement.classList.add("focus");
         }
     }
 
     /* combobox Events */
 
-    onComboboxKeyDown(event) {
-        var flag = false,
-            altKey = event.altKey;
+    onComboboxKeyDown(event: KeyboardEvent) {
+        let flag = false;
+        const altKey = event.altKey;
 
         if (event.ctrlKey || event.shiftKey) {
             return;
@@ -286,7 +316,7 @@ export class ComboboxAutocomplete {
 
         switch (event.key) {
             case "Enter":
-                if (this.listboxHasVisualFocus) {
+                if (this.listboxHasVisualFocus && this.option) {
                     this.setValueFromElement(this.option);
                 }
                 this.close(true);
@@ -358,8 +388,7 @@ export class ComboboxAutocomplete {
                 break;
 
             case "End":
-                var length = this.comboboxNode.value.length;
-                this.comboboxNode.setSelectionRange(length, length);
+                this.comboboxNode.setSelectionRange(this.comboboxNode.value.length, this.comboboxNode.value.length);
                 flag = true;
                 break;
 
@@ -373,14 +402,15 @@ export class ComboboxAutocomplete {
         }
     }
 
-    isPrintableCharacter(str) {
+    isPrintableCharacter(str: string) {
         return str.length === 1 && str.match(/\S| /);
     }
 
-    onComboboxKeyUp(event) {
-        var flag = false,
-            option = null,
-            char = event.key;
+    onComboboxKeyUp(event: KeyboardEvent) {
+        let flag = false,
+            option: HTMLElement | null = null;
+
+        const char = event.key;
 
         if (this.isPrintableCharacter(char)) {
             this.filter += char;
@@ -487,11 +517,12 @@ export class ComboboxAutocomplete {
         this.removeVisualFocusAll();
     }
 
-    onBackgroundPointerUp(event) {
+    onBackgroundPointerUp(event: PointerEvent) {
+        const target = event.target as Node | null;
         if (
-            !this.comboboxNode.contains(event.target) &&
-            !this.listboxNode.contains(event.target) &&
-            !this.buttonNode.contains(event.target)
+            !this.comboboxNode.contains(target) &&
+            !this.listboxNode.contains(target) &&
+            !this.buttonNode.contains(target)
         ) {
             this.comboboxHasVisualFocus = false;
             this.setCurrentOptionStyle(null);
@@ -523,8 +554,8 @@ export class ComboboxAutocomplete {
 
     // Listbox Option Events
 
-    onOptionClick(event) {
-        this.updateComboboxValueAndStore(event.target);
+    onOptionClick(event: MouseEvent) {
+        this.updateComboboxValueAndStore(event.target as HTMLElement);
         this.close(true);
     }
 
@@ -542,10 +573,10 @@ export class ComboboxAutocomplete {
         this.allOptions = [];
         // Traverse the element children of domNode: configure each with
         // option role behavior and store reference in.options array.
-        var nodes = this.listboxNode.getElementsByTagName("LI");
+        const nodes = this.listboxNode.getElementsByTagName("li");
 
-        for (var i = 0; i < nodes.length; i++) {
-            var node = nodes[i];
+        for (let i = 0; i < nodes.length; i++) {
+            const node = nodes[i];
             this.allOptions.push(node);
 
             node.addEventListener("click", this.onOptionClick.bind(this));
