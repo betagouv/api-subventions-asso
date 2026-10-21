@@ -1,4 +1,4 @@
-import * as dateHelper from "./dateHelper.js";
+import * as dateHelper from "./dateHelper";
 
 describe("DateHelper", () => {
     describe("dateToDDMMYYYY()", () => {
