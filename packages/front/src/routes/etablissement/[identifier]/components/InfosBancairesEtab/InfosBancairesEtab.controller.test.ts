@@ -58,11 +58,6 @@ describe("InfosBancairesEtabController", () => {
         vi.clearAllMocks();
     });
 
-    const testFlatten = (raw, expected) => {
-        const actual = controller._formatBankElement(raw);
-        expect(actual).toStrictEqual(expected);
-    };
-
     describe("hasInfo", () => {
         it("should return true", () => {
             expect(controller.hasInfo).toBe(true);
@@ -76,7 +71,8 @@ describe("InfosBancairesEtabController", () => {
 
     describe("_formatBankElement()", () => {
         it("should format bank element", () => {
-            testFlatten(infosBanquairesRaw, flatSourcedInfosBancaires);
+            const actual = controller._formatBankElement(infosBanquairesRaw);
+            expect(actual).toStrictEqual(flatSourcedInfosBancaires);
         });
 
         it.each`
@@ -84,6 +80,9 @@ describe("InfosBancairesEtabController", () => {
             ${[]}
             ${null}
             ${undefined}
-        `("should return empty array", ({ raw }) => testFlatten(raw, []));
+        `("should return empty array", ({ raw }) => {
+            const actual = controller._formatBankElement(raw);
+            expect(actual).toStrictEqual([]);
+        });
     });
 });
