@@ -14,13 +14,13 @@ describe("ForgetPwdController", () => {
     });
     it("initializes correctly 'promise' store", async () => {
         const ctrl = new ForgetPwdController();
-        await expect(ctrl.promise.value).resolves.toBeUndefined();
+        await expect(ctrl.promise.value).resolves.toEqual(false);
     });
 
     describe("onSubmit", () => {
         const ctrl = new ForgetPwdController();
         const serviceMock = vi.spyOn(authService, "forgetPassword");
-        const PROMISE = Promise.resolve();
+        const PROMISE = Promise.resolve(false);
         const EMAIL = "alice@test.fr";
         let setPromiseMock;
         let setFirstSubmittedMock;
@@ -35,17 +35,17 @@ describe("ForgetPwdController", () => {
 
         it("calls service with value from controller", () => {
             ctrl.onSubmit();
-            expect(serviceMock).toBeCalledWith(EMAIL);
+            expect(serviceMock).toHaveBeenCalledWith(EMAIL);
         });
 
         it("sets promise with value from service", () => {
             ctrl.onSubmit();
-            expect(setPromiseMock).toBeCalledWith(PROMISE);
+            expect(setPromiseMock).toHaveBeenCalledWith(PROMISE);
         });
 
         it("registers first submitted state", () => {
             ctrl.onSubmit();
-            expect(setFirstSubmittedMock).toBeCalledWith(true);
+            expect(setFirstSubmittedMock).toHaveBeenCalledWith(true);
         });
     });
 });
