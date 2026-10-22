@@ -26,7 +26,7 @@ class RequestsService {
         return this._sendRequest("patch", path, undefined, data, requestOption);
     }
 
-    delete(path, params, requestOption?: Record<string, unknown>) {
+    delete(path, params?: Record<string, unknown>, requestOption?: Record<string, unknown>) {
         return this._sendRequest("delete", path, params, undefined, requestOption);
     }
 
