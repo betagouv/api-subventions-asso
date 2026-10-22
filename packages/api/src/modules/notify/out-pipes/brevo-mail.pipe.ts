@@ -104,6 +104,8 @@ export class BrevoMailPipe implements NotifyOutPipe {
         sendSmtpEmail.to = [{ email: email }];
         sendSmtpEmail.bcc = [{ name: "Data.Subvention Log", email: LOG_MAIL }];
 
+        console.log("send mail to : ", email);
+
         try {
             await this.apiInstance.sendTransacEmail(sendSmtpEmail, {
                 headers: {

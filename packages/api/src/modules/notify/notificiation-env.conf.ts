@@ -16,7 +16,7 @@ export const NOTIFICATION_ENV_CONFIG = {
     [NotificationType.FAILED_CRON]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.WARN_NEW_USER_TO_BE_DELETED]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.STATS_NB_REQUESTS]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
-    [NotificationType.BATCH_DEPOSIT_RESUME]: [EnvironmentEnum.PROD],
+    [NotificationType.BATCH_DEPOSIT_RESUME]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD, EnvironmentEnum.DEV],
     [NotificationType.DEPOSIT_UNFINISHED]: [EnvironmentEnum.PROD],
     [NotificationType.DATA_IMPORT_SUCCESS]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.DATA_IMPORT_FAILURE]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
