@@ -5,12 +5,11 @@ export default class ForgetPwdController {
     errorMsgByStatus = {
         403: 'Votre compte est joint à Pro Connect. Utilisez le bouton "S\'identifier avec ProConnect" pour vous connecter.',
     };
+    email = new Store("");
+    promise = new Store(Promise.resolve(false));
+    firstSubmitted = new Store(false);
 
-    constructor() {
-        this.email = new Store("");
-        this.promise = new Store(Promise.resolve());
-        this.firstSubmitted = new Store(false);
-    }
+    constructor() {}
 
     onSubmit() {
         this.promise.set(authService.forgetPassword(this.email.value));
