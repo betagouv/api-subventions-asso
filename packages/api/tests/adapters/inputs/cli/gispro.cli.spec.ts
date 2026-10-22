@@ -1,10 +1,10 @@
-import GisproCli from "../../../src/adapters/inputs/cli/gispro.cli";
-import gisproAdapter from "../../../src/adapters/outputs/db/providers/gispro.adapter";
+import GisproCli from "../../../../src/adapters/inputs/cli/gispro.cli";
+import gisproAdapter from "../../../../src/adapters/outputs/db/providers/gispro.adapter";
 import path from "path";
 
 describe("Gispro Cli", () => {
     const cli = new GisproCli();
-    const FILE_PATH = path.resolve(__dirname, "./__fixtures__/2023 subventions GISPO et TDB_test.xlsx");
+    const FILE_PATH = path.resolve(__dirname, "../__fixtures__/2023 subventions GISPO et TDB_test.xlsx");
 
     const EXPORT_DATE_STR = "2023-06-06";
 
