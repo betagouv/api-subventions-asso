@@ -1,5 +1,4 @@
 /* global $crisp:readonly */
-
 vi.stubGlobal("$crisp", {
     push: vi.fn(),
 });
@@ -11,14 +10,16 @@ describe("crisp service", () => {
         const EMAIL = "a@b.c";
         it("calls crisp push with proper args", () => {
             crispService.setUserEmail(EMAIL);
-            expect($crisp.push).toBeCalledWith(["set", "user:email", [EMAIL]]);
+            // @ts-expect-error: mocked global
+            expect($crisp.push).toHaveBeenCalledWith(["set", "user:email", [EMAIL]]);
         });
     });
 
     describe("resetSession", () => {
         it("calls crisp push with proper args", () => {
             crispService.resetSession();
-            expect($crisp.push).toBeCalledWith(["do", "session:reset"]);
+            // @ts-expect-error: mocked global
+            expect($crisp.push).toHaveBeenCalledWith(["do", "session:reset"]);
         });
     });
 });
