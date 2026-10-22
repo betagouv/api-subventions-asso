@@ -1,0 +1,131 @@
+import authPort from "$lib/resources/auth/auth.port";
+import { goToUrl } from "$lib/services/router.service";
+import crispService from "$lib/services/crisp.service";
+import AuthLevels from "$lib/resources/auth/authLevels";
+import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
+import localStorageService from "$lib/services/localStorage.service";
+import { connectedUser } from "$lib/store/user.store";
+import userService from "../users/user.service";
+import type { UserDto } from "dto";
+import type Store from "$lib/core/Store";
+
+export class AuthService {
+    connectedUser: Store<UserDto | null>;
+
+    constructor() {
+        this.connectedUser = connectedUser;
+    }
+
+    resetPassword(token, password) {
+        if (!token) return Promise.reject({ httpCode: 500 });
+        return authPort.resetPassword(token, password).then(user => this.loginByUser(user));
+    }
+
+    forgetPassword(email) {
+        if (!email) throw new Error("email must be defined");
+        return authPort.forgetPassword(email).then(data => data);
+    }
+
+    async login(email, password) {
+        const user = await authPort.login(email, password);
+        return this.loginByUser(user);
+    }
+
+    async loginAgentConnect(rawSearchQueries) {
+        const user = await authPort.loginAgentConnect(rawSearchQueries);
+        return this.loginByUser(user);
+    }
+
+    loginByUser(user) {
+        checkOrDropSearchHistory(user._id);
+        localStorageService.removeItem("hide-main-info-banner");
+        this.setUserInApp(user);
+        crispService.setUserEmail(user.email);
+
+        return user;
+    }
+
+    setUserInApp(user) {
+        if (!user) return;
+        this.connectedUser.set(user);
+        if (user) crispService.setUserEmail(user.email);
+    }
+
+    async logout() {
+        const { url } = await authPort.logout();
+        this.connectedUser.set(null);
+        crispService.resetSession();
+        if (url) return goToUrl(url);
+        return goToUrl("/auth/login", false);
+    }
+
+    getCurrentUser() {
+        return this.connectedUser.value;
+    }
+
+    getCurrentUserStore() {
+        return this.connectedUser;
+    }
+
+    async controlAuth(requiredLevel = AuthLevels.USER) {
+        if (requiredLevel === AuthLevels.NONE) return true;
+        const user = this.getCurrentUser();
+        if (!user) {
+            await userService
+                .getSelfUser()
+                .then(self => {
+                    this.setUserInApp(self);
+                })
+                .catch(() => this.redirectToLogin());
+        } else if (requiredLevel === AuthLevels.ADMIN && !this._isAdmin(user)) {
+            goToUrl("/");
+        }
+        return true;
+    }
+
+    _isAdmin(user) {
+        return user?.roles?.includes("admin");
+    }
+
+    redirectToLogin() {
+        localStorageService.setItem("redirectUrl", { url: location.pathname, setDate: new Date() });
+        return goToUrl("/auth/login");
+    }
+
+    redirectAfterProConnectLogin(updatedUser) {
+        this.setUserInApp(updatedUser);
+        return this.redirectAfterLogin();
+    }
+
+    redirectAfterLogin() {
+        const redirection = localStorageService.getItem("redirectUrl", null).value;
+        // if connect with proconnect and incomplete profil - redirection to form
+        const currentUser = this.getCurrentUser();
+        if (currentUser && currentUser.proConnectId && currentUser.profileToComplete) {
+            return goToUrl("/auth/signup-pc");
+        }
+        if (!redirection) return goToUrl("/");
+        localStorageService.removeItem("redirectUrl");
+        const { url, setDate } = redirection;
+
+        // we only redirect if redirection has been required soon before the actual reloading
+        // if it is old we guess the user no longer wants it
+        const soonBefore = new Date();
+        soonBefore.setHours(soonBefore.getHours() - 1);
+
+        if (new Date(setDate) < soonBefore) return goToUrl("/", true, true);
+        return goToUrl(url);
+    }
+
+    validateToken(token) {
+        return authPort.validateToken(token);
+    }
+
+    activate(token, data) {
+        return authPort.activate(token, data).then(user => this.loginByUser(user));
+    }
+}
+
+const authService = new AuthService();
+
+export default authService;

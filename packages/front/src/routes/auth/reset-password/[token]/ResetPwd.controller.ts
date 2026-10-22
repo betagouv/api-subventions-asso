@@ -1,0 +1,68 @@
+import { TokenValidationType } from "dto";
+import { goToUrl } from "$lib/services/router.service";
+import Store from "$lib/core/Store";
+import authService from "$lib/resources/auth/auth.service";
+
+export class ResetPwdController {
+    PWD_REGEX = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!#@$%^&(){}[\]:;<>,.?/~_+=|-]).{8,32}$/;
+    ERROR_MESSAGES = {
+        400: "Le format du mot de passe ne correspond pas aux exigences de sécurité",
+        404: "Ce lien n'est pas valide, vérifiez que l'URL est bien celle envoyée par mail.",
+        410: `Le lien a expiré, allez sur <a href="/auth/forget-password" target="_blank" rel="noopener noreferrer" title="mot de passe oublié - nouvelle fenêtre">la page mot de passe oublié</a> pour recevoir un nouveau lien d'activation.`,
+    };
+    DEFAULT_ERROR_MESSAGE = "Une erreur est survenue lors de la création de votre compte.";
+
+    token?: string;
+    activation: string | null;
+    title = "Modifier votre mot de passe";
+    validationTokenStore = new Store("waiting");
+    error: { httpCode: number } | null = null;
+    promise: Store<Promise<void>>;
+    values = new Store({ password: "", confirm: "" });
+    isSubmitActive = new Store(true);
+
+    constructor(token?: string) {
+        this.token = token;
+        const urlParams = new URLSearchParams(window.location.search);
+        this.activation = urlParams.get("active");
+
+        this.promise = new Store(token ? Promise.resolve() : Promise.reject({ httpCode: 404 }));
+    }
+
+    async init() {
+        await this._checkTokenValidity();
+    }
+
+    async _checkTokenValidity() {
+        const tokenValidation = await authService.validateToken(this.token);
+        if (!tokenValidation.valid) {
+            this.error = { httpCode: 404 };
+            this.validationTokenStore.set("invalid");
+        } else {
+            if (tokenValidation.type === TokenValidationType.SIGNUP) {
+                goToUrl(`/auth/activate/${this.token}`);
+            } else {
+                this.validationTokenStore.set("valid");
+            }
+        }
+    }
+
+    getErrorMessage(error) {
+        return this.ERROR_MESSAGES[error.httpCode] || this.DEFAULT_ERROR_MESSAGE;
+    }
+
+    onSubmit() {
+        this.promise.set(authService.resetPassword(this.token, this.values.value.password));
+        return this.promise.value.then(() => {
+            goToUrl("/?success=PWD_RESET");
+        });
+    }
+
+    disableSubmit() {
+        this.isSubmitActive.set(false);
+    }
+
+    enableSubmit() {
+        this.isSubmitActive.set(true);
+    }
+}

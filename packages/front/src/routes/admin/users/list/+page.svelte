@@ -1,5 +1,5 @@
 <script>
-    import { PAGE_ADMIN_USERS_ACCOUNT_NAME } from "../../admin.constant.js";
+    import { PAGE_ADMIN_USERS_ACCOUNT_NAME } from "../../admin.constant";
     import TableUsers from "../composents/TableUsers.svelte";
     import SearchUsers from "../composents/SearchUsers.svelte";
 

@@ -23,7 +23,7 @@ export class LocalStorageService {
         );
     }
 
-    setItem(key: string, value: string) {
+    setItem(key: string, value: unknown) {
         if (value === undefined) return this.removeItem(key);
         localStorage.setItem(key, JSON.stringify(value));
         this._updateLocalStorage();

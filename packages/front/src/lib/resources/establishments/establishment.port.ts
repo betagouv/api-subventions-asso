@@ -1,4 +1,10 @@
-import type { AssociationIdentifierDto, DocumentDto, GrantFlatDto, SiretDto } from "dto";
+import type {
+    AssociationIdentifierDto,
+    DocumentWithProviderValueDto,
+    EstablishmentWithProviderValues,
+    GrantFlatDto,
+    SiretDto,
+} from "dto";
 import requestsService from "$lib/services/requests.service";
 
 class EstablishmentPort {
@@ -10,11 +16,11 @@ class EstablishmentPort {
         this.getResource(siret, "extract-data").catch(() => null);
     }
 
-    async getBySiret(siret: SiretDto) {
+    async getBySiret(siret: SiretDto): Promise<EstablishmentWithProviderValues> {
         return (await this.getResource(siret))?.data?.etablissement;
     }
 
-    async getDocuments(siret: SiretDto): Promise<DocumentDto[]> {
+    async getDocuments(siret: SiretDto): Promise<DocumentWithProviderValueDto[]> {
         const anwser = await this.getResource(siret, "documents");
         return anwser?.data?.documents;
     }
