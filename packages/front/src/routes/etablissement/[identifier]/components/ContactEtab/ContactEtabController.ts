@@ -2,14 +2,20 @@ import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
 import { formatPhoneNumber, valueOrHyphen } from "$lib/helpers/dataHelper";
 import Store from "$lib/core/Store";
 
+type Contact = { civilite: string; nom: string; prenom: string; telephone: string; email: string; role: string };
+
 export default class ContactEtabController {
-    constructor(contacts, siret) {
+    private _contacts: Contact[];
+    private _filteredContacts: Store<Contact[]>;
+    private _selectedRoleIndex = 0;
+    private _inputName = "";
+    public siret: string;
+    public roles: string[];
+    constructor(contacts: Partial<Contact>[], siret: string) {
+        this.siret = siret;
         this._contacts = contacts.map(this._format);
-        this._siret = siret;
-        this._filteredContacts = new Store(this._contacts);
         this.roles = this._getRoles();
-        this._selectedRoleIndex = 0;
-        this._inputName = "";
+        this._filteredContacts = new Store(this._contacts);
     }
 
     get headers() {
@@ -70,7 +76,7 @@ export default class ContactEtabController {
     _filter() {
         if (this._selectedRoleIndex === 0 && this._inputName === "") this.reset();
         else {
-            let filteredByNameContacts = this._contacts.filter(contact => this._containsName(contact));
+            const filteredByNameContacts = this._contacts.filter(contact => this._containsName(contact));
             if (this._selectedRoleIndex === 0) this._filteredContacts.set(filteredByNameContacts);
             else {
                 const filteredByNameAndRoleContacts = filteredByNameContacts.filter(contact =>
@@ -98,6 +104,6 @@ export default class ContactEtabController {
     }
 
     _buildCsvName() {
-        return "Liste des contacts - SIRET " + this._siret;
+        return "Liste des contacts - SIRET " + this.siret;
     }
 }

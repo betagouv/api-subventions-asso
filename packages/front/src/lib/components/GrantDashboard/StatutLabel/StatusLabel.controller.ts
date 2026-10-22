@@ -8,10 +8,13 @@ export class StatusLabelController {
         [ApplicationStatus.INELIGIBLE]: "fr-badge--warning fr-badge--beige-gris-galet",
     };
 
+    public label: string;
+    public classes: string[];
+
     /**
      * @param label: ApplicationStatus
      */
-    constructor(label) {
+    constructor(label: string) {
         this.label = label;
         this.classes = StatusLabelController.cssClassByLabel[label] || "";
     }
