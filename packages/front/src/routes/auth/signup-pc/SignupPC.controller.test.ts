@@ -1,5 +1,5 @@
 import { AgentTypeEnum } from "dto";
-import SignupACController from "./SignupAC.controller";
+import SignupACController from "./SignupPC.controller";
 import userService from "$lib/resources/users/user.service";
 vi.mock("$lib/resources/users/user.service");
 

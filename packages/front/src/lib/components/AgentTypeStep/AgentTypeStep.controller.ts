@@ -16,7 +16,7 @@ export default class AgentTypeStepController {
     constructor(context?: any, dispatch: (_: "error" | "valid") => void = () => {}) {
         this.dispatch = dispatch;
         this.errorMessage = new Store("");
-        if (!context?.fromAC) {
+        if (!context?.fromPC) {
             this.options = [
                 ...this.options,
                 {
