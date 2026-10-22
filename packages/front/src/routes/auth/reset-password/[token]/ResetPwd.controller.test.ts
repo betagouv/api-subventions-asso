@@ -45,12 +45,12 @@ describe("ResetPwdController", () => {
 
         it("calls service with value from controller", () => {
             ctrl.onSubmit();
-            expect(serviceMock).toBeCalledWith(TOKEN, PASSWORD);
+            expect(serviceMock).toHaveBeenCalledWith(TOKEN, PASSWORD);
         });
 
         it("sets promise with value from service", () => {
             ctrl.onSubmit();
-            expect(setPromiseMock).toBeCalledWith(PROMISE);
+            expect(setPromiseMock).toHaveBeenCalledWith(PROMISE);
         });
 
         it.each`
@@ -60,7 +60,7 @@ describe("ResetPwdController", () => {
             ctrl.activation = active;
             const expected = `/?success=${queryParam}`;
             await ctrl.onSubmit();
-            expect(goToUrl).toBeCalledWith(expected);
+            expect(goToUrl).toHaveBeenCalledWith(expected);
         });
 
         it("catches promise rejection", async () => {
@@ -72,7 +72,7 @@ describe("ResetPwdController", () => {
     describe("getErrorMessage", () => {
         const ctrl = new ResetPwdController(TOKEN);
         const FOUND_MESSAGE = "Le code erreur est trouvé";
-        ctrl.ERROR_MESSAGES = { 404: FOUND_MESSAGE };
+        ctrl.ERROR_MESSAGES["404"] = FOUND_MESSAGE;
 
         it("returns value from dict if found", () => {
             const expected = FOUND_MESSAGE;

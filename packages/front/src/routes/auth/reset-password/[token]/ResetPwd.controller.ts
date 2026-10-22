@@ -12,17 +12,21 @@ export class ResetPwdController {
     };
     DEFAULT_ERROR_MESSAGE = "Une erreur est survenue lors de la création de votre compte.";
 
-    constructor(token) {
+    token?: string;
+    activation: string | null;
+    title = "Modifier votre mot de passe";
+    validationTokenStore = new Store("waiting");
+    error: { httpCode: number } | null = null;
+    promise: Store<Promise<void>>;
+    values = new Store({ password: "", confirm: "" });
+    isSubmitActive = new Store(true);
+
+    constructor(token?: string) {
         this.token = token;
         const urlParams = new URLSearchParams(window.location.search);
         this.activation = urlParams.get("active");
-        this.title = "Modifier votre mot de passe";
-        this.validationTokenStore = new Store("waiting");
-        this.error = null;
 
         this.promise = new Store(token ? Promise.resolve() : Promise.reject({ httpCode: 404 }));
-        this.values = new Store({ password: "", confirm: "" });
-        this.isSubmitActive = new Store(true);
     }
 
     async init() {
