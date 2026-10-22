@@ -1,33 +1,41 @@
 import QuitNoSaveModal from "./components/QuitNoSaveModal.svelte";
-import Store, { derived } from "$lib/core/Store";
+import Store, { derived, ReadStore } from "$lib/core/Store";
 import userService from "$lib/resources/users/user.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionForm.service";
 import { beforeNavigate, goto } from "$app/navigation";
 import { action, modal } from "$lib/store/modal.store";
+import type { UserDto } from "dto";
 // import localStorageService from "$lib/services/localStorage.service";
 
 export class ProfileController {
     agentTypeOptions = subscriptionFormService.agentTypeOptions;
 
+    isLeaveConfirmed = false;
+    deleteError = new Store(false);
+    user: Store<UserDto | null> = new Store(null);
+    saveStatus = new Store(""); // "changed", "saved" or "error"
+    saveValidation = new Store(true);
+    isSubmitBlocked: ReadStore<boolean>;
+    modalCtrlButton: HTMLButtonElement | null = null;
+    saveAlertElement: HTMLElement | null = null;
+    isAgentConnectUser: boolean = false;
+
     constructor() {
-        this.isLeaveConfirmed = false;
-        this.deleteError = new Store(false);
-        this.user = new Store({});
-        this.saveStatus = new Store(""); // "changed", "saved" or "error"
-        this.saveValidation = new Store(true);
         this.isSubmitBlocked = derived(
             [this.saveStatus, this.saveValidation],
             ([status, validation]) => (status !== "changed" && status !== "error") || !validation,
         );
 
         beforeNavigate(({ cancel, willUnload, to }) => {
+            if (!this.modalCtrlButton) throw new Error("modalCtrlButton is not defined");
             if (this.saveStatus.value === "changed" && !this.isLeaveConfirmed && !willUnload) {
                 cancel();
                 this.modalCtrlButton.click();
                 modal.set(QuitNoSaveModal);
                 action.set(() => {
                     this.isLeaveConfirmed = true;
-                    return goto(to.url);
+                    if (to) return goto(to.url);
+                    else goto("/");
                 });
             }
         });
@@ -44,7 +52,7 @@ export class ProfileController {
 
     async init() {
         this.user.set(await userService.getSelfUser());
-        this.isAgentConnectUser = !!this.user.value.proConnectId;
+        this.isAgentConnectUser = !!this.user.value!.proConnectId;
     }
 
     showAlert() {

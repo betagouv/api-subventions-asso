@@ -8,7 +8,7 @@
     };
 
     interface Props {
-        user: SignupUser;
+        user: Partial<SignupUser>;
         readOnly?: boolean;
         onchange?: () => void;
     }

@@ -1,17 +1,23 @@
 import { goToUrl } from "$lib/services/router.service";
 import authService from "$lib/resources/auth/auth.service";
 import Store from "$lib/core/Store";
+import type HttpError from "$lib/errors/HttpError";
 
 export default class LoginController {
+    email: string | null = null;
+    password: string | null = null;
+    _query: Record<string, unknown>;
+    error: Store<string | null> = new Store(null);
+    showSuccessMessage: boolean;
+    successMessage: string;
+    pageTitle: string = `Accéder à Data.Subvention`;
+    forgetPasswordUrl: string = "/auth/forget-password";
+    alertElement: HTMLElement | null = null;
+
     constructor(query) {
-        this.email = null;
-        this.password = null;
         this._query = query;
-        this.error = new Store(null);
         this.showSuccessMessage = !!query.success;
         this.successMessage = this._getSuccessMessage();
-        this.pageTitle = `Accéder à Data.Subvention`;
-        this.forgetPasswordUrl = "/auth/forget-password";
         if (query.code) this._proceedWithAgentConnect(window.location.search);
     }
 
@@ -23,8 +29,8 @@ export default class LoginController {
         try {
             await authService.login(this.email, this.password);
             return authService.redirectAfterLogin();
-        } catch (e) {
-            const message = this._getErrorMessage(e.httpCode);
+        } catch (error) {
+            const message = this._getErrorMessage((error as HttpError).httpCode);
             this.error.set(message);
         }
         this._showAlert();
@@ -34,8 +40,8 @@ export default class LoginController {
         try {
             await authService.loginAgentConnect(rawStringQuery);
             return authService.redirectAfterLogin();
-        } catch (e) {
-            const message = this._getErrorMessage(e.httpCode);
+        } catch (error) {
+            const message = this._getErrorMessage((error as HttpError).httpCode);
             this.error.set(message);
         }
     }
