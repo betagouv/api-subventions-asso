@@ -1,7 +1,11 @@
 <script lang="ts">
     import { StatusLabelController } from "./StatusLabel.controller";
 
-    let { status } = $props();
+    interface Props {
+        status: string;
+    }
+
+    let { status }: Props = $props();
 
     const { label, classes } = new StatusLabelController(status);
 </script>

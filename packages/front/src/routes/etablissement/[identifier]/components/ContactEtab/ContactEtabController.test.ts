@@ -48,7 +48,7 @@ describe("ContactEtabController", () => {
     let controller;
 
     beforeEach(() => {
-        controller = new ContactEtabController(CONTACTS);
+        controller = new ContactEtabController(CONTACTS, "SIRET");
         vi.clearAllMocks();
     });
 
@@ -58,7 +58,7 @@ describe("ContactEtabController", () => {
         });
 
         it("should return false", () => {
-            controller = new ContactEtabController([]);
+            controller = new ContactEtabController([], "SIRET");
             expect(controller.hasContact).toBe(false);
         });
     });
