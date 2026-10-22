@@ -1,6 +1,6 @@
 import axios, { type RawAxiosRequestHeaders } from "axios";
-import errorsService from "../errors/errors.service";
 import { PUBLIC_DATASUB_URL } from "$env/static/public";
+import errorsService from "$lib/errors/errors.service";
 
 class RequestsService {
     _errorHooks: { ErrorClass: Error; callback: () => unknown }[] = [];
@@ -10,7 +10,7 @@ class RequestsService {
 
         axios.interceptors.response.use(
             response => response,
-            error => this._errorCatcher(error),
+            error => errorsService.axiosErrorToError(error),
         );
     }
 
@@ -28,13 +28,6 @@ class RequestsService {
 
     delete(path, params, requestOption?: Record<string, unknown>) {
         return this._sendRequest("delete", path, params, undefined, requestOption);
-    }
-
-    addErrorHook(ErrorClass, callback) {
-        this._errorHooks.push({
-            ErrorClass,
-            callback,
-        });
     }
 
     _sendRequest(type, path, params, data, requestOption: Record<string, unknown> = {}) {
@@ -60,29 +53,6 @@ class RequestsService {
             headers,
             ...axiosOption,
         });
-    }
-
-    _errorCatcher(error) {
-        // @ts-expect-error: better type this
-        const ErrorClass = errorsService.axiosErrorToError(error) as Error;
-
-        const hooks = this._errorHooks.filter(hook => (hook.ErrorClass as Error) === ErrorClass);
-
-        // @ts-expect-error: better type this
-        const typedError: Error = new ErrorClass(
-            {
-                message: error?.response?.data.message || error.message,
-            },
-            error,
-        );
-
-        if (hooks.length) {
-            hooks.forEach(hook => {
-                // @ts-expect-error: better type this
-                hook.callback(typedError as Error);
-            });
-        }
-        throw typedError;
     }
 }
 

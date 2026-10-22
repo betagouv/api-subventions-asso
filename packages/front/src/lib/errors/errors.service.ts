@@ -1,29 +1,28 @@
-import StaticError from "./StaticError";
+import HttpError from "./HttpError";
 import { ConflictError, NotFoundError, UnauthorizedError, BadRequestError } from "./index";
+import axios from "axios";
 
 export class ErrorsService {
-    axiosErrorToError(e) {
-        if (!e.isAxiosError) throw e;
-        switch (e.response?.status) {
-            case UnauthorizedError.httpCode:
-                return UnauthorizedError;
-            case BadRequestError.httpCode:
-                return BadRequestError;
-            case NotFoundError.httpCode:
-                return NotFoundError;
-            case ConflictError.httpCode:
-                return ConflictError;
-        }
+    axiosErrorToError(error: Error) {
+        const errorMap = new Map<number, typeof HttpError>([
+            [400, BadRequestError],
+            [401, UnauthorizedError],
+            [404, NotFoundError],
+            [409, ConflictError],
+        ]);
 
-        return this._buildUnknownError(e.response?.status);
+        if (!axios.isAxiosError(error) || !error.response) throw error;
+
+        const classError = errorMap.get(error.response.status) ?? this.buildUnknownError(error.response.status);
+        return new classError(error.response.data, error);
     }
 
-    _buildUnknownError(status) {
-        return class extends StaticError {
-            static httpCode = status;
+    private buildUnknownError(status) {
+        return class extends HttpError {
+            httpCode = status;
 
-            constructor(...args) {
-                super(...args);
+            constructor(data, error) {
+                super(data, error);
                 console.error(`HTTP ERROR ${status} is not implemented`);
             }
         };
