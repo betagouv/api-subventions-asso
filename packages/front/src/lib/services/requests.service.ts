@@ -1,4 +1,4 @@
-import axios, { type AxiosRequestConfig, type RawAxiosRequestHeaders } from "axios";
+import axios, { type RawAxiosRequestHeaders } from "axios";
 import errorsService from "../errors/errors.service";
 import { PUBLIC_DATASUB_URL } from "$env/static/public";
 
@@ -14,19 +14,19 @@ class RequestsService {
         );
     }
 
-    get(path, params, requestOption) {
+    get(path, params?: Record<string, unknown>, requestOption?: Record<string, unknown>) {
         return this._sendRequest("get", path, params, undefined, requestOption);
     }
 
-    post(path, data, requestOption) {
+    post(path, data, requestOption?: Record<string, unknown>) {
         return this._sendRequest("post", path, undefined, data, requestOption);
     }
 
-    patch(path, data, requestOption) {
+    patch(path, data, requestOption?: Record<string, unknown>) {
         return this._sendRequest("patch", path, undefined, data, requestOption);
     }
 
-    delete(path, params, requestOption) {
+    delete(path, params, requestOption?: Record<string, unknown>) {
         return this._sendRequest("delete", path, params, undefined, requestOption);
     }
 
@@ -37,7 +37,7 @@ class RequestsService {
         });
     }
 
-    _sendRequest(type, path, params, data, requestOption: AxiosRequestConfig = {}) {
+    _sendRequest(type, path, params, data, requestOption: Record<string, unknown> = {}) {
         const axiosOption: Record<string, unknown> = { ...requestOption };
 
         const isFormData = data instanceof FormData;

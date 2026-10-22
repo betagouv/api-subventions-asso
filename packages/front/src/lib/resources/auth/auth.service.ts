@@ -6,8 +6,12 @@ import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 import localStorageService from "$lib/services/localStorage.service";
 import { connectedUser } from "$lib/store/user.store";
 import userService from "../users/user.service";
+import type { UserDto } from "dto";
+import type Store from "$lib/core/Store";
 
 export class AuthService {
+    connectedUser: Store<UserDto | null>;
+
     constructor() {
         this.connectedUser = connectedUser;
     }
@@ -18,7 +22,7 @@ export class AuthService {
     }
 
     forgetPassword(email) {
-        if (!email) return Promise.reject();
+        if (!email) throw new Error("email must be defined");
         return authPort.forgetPassword(email).then(data => data);
     }
 
@@ -48,7 +52,7 @@ export class AuthService {
     }
 
     async logout() {
-        const { url, _success } = await authPort.logout();
+        const { url } = await authPort.logout();
         this.connectedUser.set(null);
         crispService.resetSession();
         if (url) return goToUrl(url);
