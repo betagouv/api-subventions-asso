@@ -12,5 +12,6 @@ export const load = (({ url, params, data }) => {
         crumbs: buildBreadcrumbs(url.pathname),
         authLevel: AuthLevels.USER,
         matomo: data.matomo ?? undefined,
+        posthog: data.posthog ?? undefined,
     };
 }) satisfies LayoutLoad;

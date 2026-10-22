@@ -22,7 +22,7 @@
 
     let { data, children } = $props();
 
-    const ctrl = new AppController({ matomo: data.matomo });
+    const ctrl = new AppController({ matomo: data.matomo, posthog: data.posthog });
     const { displayBanner } = ctrl;
     // Options disponibles à l'initialisation du DSFR
     // @ts-expect-error: DSFR

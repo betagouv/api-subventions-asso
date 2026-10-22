@@ -1,3 +1,4 @@
+import posthog from "posthog-js";
 import authService from "$lib/resources/auth/auth.service";
 
 export class TrackerService {
@@ -5,7 +6,12 @@ export class TrackerService {
         this._paq = window._paq = window._paq || [];
     }
 
-    init(ENV, MATOMO_ENV) {
+    init(ENV, config) {
+        this.initMatomo(ENV, config.matomo);
+        this.initPosthog(ENV, config.posthog);
+    }
+
+    initMatomo(ENV, MATOMO_ENV) {
         console.log(`initializing matomo on ${ENV} environment`);
 
         if (ENV.toLowerCase() != "prod") return;
@@ -28,6 +34,26 @@ export class TrackerService {
 
         const s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(g, s);
+    }
+
+    initPosthog(ENV, POSTHOG_ENV) {
+        // Setup POSTHOG_* env only on preprod & prod
+        if (!POSTHOG_ENV.apiKey || !POSTHOG_ENV.host || !POSTHOG_ENV.defaults) {
+            console.warn("PostHog is not configured.");
+            return;
+        }
+
+        posthog.init(POSTHOG_ENV.apiKey, {
+            api_host: POSTHOG_ENV.host,
+            defaults: POSTHOG_ENV.defaults,
+        });
+    }
+
+    registerPosthogUserProperties(user) {
+        posthog.register({
+            user_roles: user.roles,
+            agent_type: user.agentType,
+        });
     }
 
     /**
