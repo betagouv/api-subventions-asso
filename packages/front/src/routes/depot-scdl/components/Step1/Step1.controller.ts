@@ -1,7 +1,7 @@
 import type { CreateDepositScdlLogDto } from "dto";
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import { depositLogStore } from "$lib/store/depositLog.store";
-import StaticError from "$lib/errors/StaticError";
+import StaticError from "$lib/errors/HttpError";
 import Store, { derived, ReadStore } from "$lib/core/Store";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import errorService from "$lib/services/error.service";

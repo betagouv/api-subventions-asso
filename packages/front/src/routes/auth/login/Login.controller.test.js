@@ -1,6 +1,6 @@
 import LoginController from "./Login.controller";
 import UnauthorizedError from "$lib/errors/UnauthorizedError";
-import StaticError from "$lib/errors/StaticError";
+import StaticError from "$lib/errors/HttpError";
 import authService from "$lib/resources/auth/auth.service";
 
 vi.mock("$lib/resources/auth/auth.service");

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { type AxiosResponse } from "axios";
 import { NotFoundError } from "../errors";
 import errorsService from "../errors/errors.service";
 import { PUBLIC_DATASUB_URL } from "$env/static/public";
@@ -17,7 +17,7 @@ describe("RequestService", () => {
         let _sendRequestMock;
 
         beforeAll(() => {
-            _sendRequestMock = vi.spyOn(requestsService, "_sendRequest").mockResolvedValue();
+            _sendRequestMock = vi.spyOn(requestsService, "_sendRequest").mockResolvedValue({} as AxiosResponse);
         });
         afterAll(() => {
             _sendRequestMock.mockRestore();
@@ -80,28 +80,16 @@ describe("RequestService", () => {
         });
     });
 
-    describe("addErrorHooks", () => {
-        it("should add hooks in errorHooks array", () => {
-            const expected = vi.fn();
-            requestsService.addErrorHook(NotFoundError, expected);
-
-            expect(requestsService._errorHooks).toEqual([
-                expect.objectContaining({
-                    ErrorClass: NotFoundError,
-                    callback: expected,
-                }),
-            ]);
-        });
-    });
-
     describe("_sendRequest", () => {
         const SomeError = NotFoundError;
         let axiosRequestMock;
         let errorServiceMock;
 
         beforeAll(() => {
-            axiosRequestMock = vi.spyOn(axios, "request").mockResolvedValue();
-            errorServiceMock = vi.spyOn(errorsService, "axiosErrorToError").mockReturnValue(SomeError);
+            axiosRequestMock = vi.spyOn(axios, "request").mockResolvedValue({ response: { status: 200 } });
+            errorServiceMock = vi
+                .spyOn(errorsService, "axiosErrorToError")
+                .mockReturnValue(new SomeError({ message: "", status: 404 }, {}));
         });
 
         afterAll(() => {
@@ -152,81 +140,6 @@ describe("RequestService", () => {
                     headers: {},
                 }),
             );
-        });
-    });
-
-    describe("_errorCatcher", () => {
-        const SomeError = NotFoundError;
-        let errorServiceMock;
-
-        beforeAll(() => {
-            errorServiceMock = vi.spyOn(errorsService, "axiosErrorToError").mockReturnValue(SomeError);
-        });
-
-        afterAll(() => {
-            errorServiceMock.mockRestore();
-        });
-
-        it("should add __nativeError__ to typedError", () => {
-            const fakeError = {
-                response: {
-                    data: {
-                        message: "",
-                        code: "",
-                    },
-                },
-            };
-
-            const callback = vi.fn();
-            const expected = "__nativeError__";
-
-            requestsService._errorHooks.push({
-                ErrorClass: SomeError,
-                callback,
-            });
-
-            try {
-                requestsService._errorCatcher(fakeError);
-            } catch (e) {
-                expect(e).toEqual(expect.objectContaining({ [expected]: expect.any(Object) }));
-            }
-        });
-
-        it("should throw SomeError", () => {
-            const fakeError = {
-                response: {
-                    data: {
-                        message: "",
-                        code: "",
-                    },
-                },
-            };
-
-            expect(() => requestsService._errorCatcher(fakeError)).toThrowError(SomeError);
-        });
-
-        it("should call hooks", async () => {
-            const fakeError = {
-                response: {
-                    data: {
-                        message: "",
-                        code: "",
-                    },
-                },
-            };
-
-            const callback = vi.fn();
-
-            requestsService._errorHooks.push({
-                ErrorClass: SomeError,
-                callback,
-            });
-
-            try {
-                requestsService._errorCatcher(fakeError);
-            } catch {
-                expect(callback).toBeCalledTimes(1);
-            }
         });
     });
 });
