@@ -6,6 +6,8 @@ import * as establishmentMapper from "./establishment.mapper";
 vi.mock("./establishment.mapper");
 import * as providerValuesHelper from "$lib/helpers/providerValueHelper";
 
+const port = vi.mocked(establishmentPort);
+
 describe("establishmentService", () => {
     const SIRET = "00000000912345";
 
@@ -15,20 +17,20 @@ describe("establishmentService", () => {
     ];
 
     describe("incExtractData", () => {
-        it("should call establishmentPort.extractData()", () => {
+        it("should call port.extractData()", () => {
             establishmentService.incExtractData(SIRET);
-            expect(establishmentPort.incExtractData).toHaveBeenCalledWith(SIRET);
+            expect(port.incExtractData).toHaveBeenCalledWith(SIRET);
         });
     });
 
     describe("getBySiret", () => {
         const establishment = { contacts: CONTACTS };
-        establishmentPort.getBySiret.mockImplementation(() => establishment);
+        port.getBySiret.mockImplementation(() => establishment);
         establishmentMapper.toEstablishmentComponent.mockImplementationOnce(establishment => establishment);
 
         it("should call EstablishmentPort", async () => {
             await establishmentService.getBySiret(SIRET);
-            expect(establishmentPort.getBySiret).toHaveBeenCalledWith(SIRET);
+            expect(port.getBySiret).toHaveBeenCalledWith(SIRET);
         });
 
         it("should get contacts value for each establishment", async () => {
@@ -56,7 +58,7 @@ describe("establishmentService", () => {
 
     describe("getDocuments()", () => {
         it("should call EstablishmentPort", async () => {
-            const spyGetDocuments = vi.spyOn(establishmentPort, "getDocuments");
+            const spyGetDocuments = vi.spyOn(port, "getDocuments");
             await establishmentService.getDocuments(SIRET);
             expect(spyGetDocuments).toHaveBeenCalledWith(SIRET);
         });
