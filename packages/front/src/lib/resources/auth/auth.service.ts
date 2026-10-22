@@ -102,7 +102,7 @@ export class AuthService {
         // if connect with proconnect and incomplete profil - redirection to form
         const currentUser = this.getCurrentUser();
         if (currentUser && currentUser.proConnectId && currentUser.profileToComplete) {
-            return goToUrl("/auth/signup-ac");
+            return goToUrl("/auth/signup-pc");
         }
         if (!redirection) return goToUrl("/");
         localStorageService.removeItem("redirectUrl");

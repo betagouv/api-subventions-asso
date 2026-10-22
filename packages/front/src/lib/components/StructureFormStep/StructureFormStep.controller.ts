@@ -10,7 +10,7 @@ import type { Option } from "$lib/types/FieldOption";
 
 interface Context {
     agentType: AgentTypeEnum;
-    fromAC?: boolean;
+    fromPC?: boolean;
 }
 
 interface SubStep {

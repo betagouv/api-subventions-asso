@@ -1,9 +1,9 @@
 <script>
-    import SignupACController from "./SignupAC.controller";
+    import SignupPCController from "./SignupPC.controller";
     import ErrorAlert from "$lib/components/ErrorAlert.svelte";
     import MultiStepForm from "$lib/components/MultiStepForm/MultiStepForm.svelte";
 
-    const controller = new SignupACController();
+    const controller = new SignupPCController();
     const { errorMessage } = controller;
 </script>
 
@@ -19,4 +19,4 @@
     onSubmit={values => controller.onSubmit(values)}
     submitLabel="Valider les informations"
     customSubmitTracking={false}
-    trackerFormName="signup-ac" />
+    trackerFormName="signup-pc" />
