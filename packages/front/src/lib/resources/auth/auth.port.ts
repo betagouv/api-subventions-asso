@@ -20,14 +20,15 @@ export class AuthPort {
         });
     }
 
-    logout() {
+    logout(): Promise<{ success: boolean; url?: string }> {
         return requestsService
             .get("/auth/logout")
             .then(res => ({ url: res.data || undefined, success: true }))
             .catch(() => ({ success: false }));
     }
 
-    forgetPassword(email) {
+    forgetPassword(email: string) {
+        if (!email) throw new Error("email must be defined");
         const path = `${this.BASE_PATH}/forget-password`;
         return requestsService.post(path, { email }).then(() => true);
     }

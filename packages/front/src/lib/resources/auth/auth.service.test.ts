@@ -25,6 +25,8 @@ vi.mock("$lib/services/searchHistory.service");
 vi.mock("$lib/resources/users/user.service");
 
 describe("authService", () => {
+    const port = vi.mocked(authPort);
+
     let connectedUserStoreSpy;
     beforeAll(() => {
         connectedUserStoreSpy = {
@@ -39,18 +41,19 @@ describe("authService", () => {
         const TOKEN = "123";
 
         beforeAll(() => {
-            authPort.resetPassword.mockResolvedValue(true);
+            port.resetPassword.mockResolvedValue(true);
         });
-        afterAll(() => authPort.resetPassword.mockRestore());
+        afterAll(() => port.resetPassword.mockRestore());
 
         it("rejects with internal server error status if no token", async () => {
+            // @ts-expect-error: edge case
             const test = () => authService.resetPassword();
             await expect(test).rejects.toEqual({ httpCode: 500 });
         });
 
         it("calls port", async () => {
             await authService.resetPassword(TOKEN, PASSWORD);
-            expect(authPort.resetPassword).toHaveBeenCalledWith(TOKEN, PASSWORD);
+            expect(port.resetPassword).toHaveBeenCalledWith(TOKEN, PASSWORD);
         });
 
         it("return result from port if success", async () => {
@@ -64,29 +67,23 @@ describe("authService", () => {
         const RES = true;
         const EMAIL = "test@test.fr";
 
-        beforeAll(() => authPort.forgetPassword.mockResolvedValue(true));
-        afterAll(() => authPort.forgetPassword.mockRestore());
+        beforeAll(() => port.forgetPassword.mockResolvedValue(true));
+        afterAll(() => port.forgetPassword.mockRestore());
 
         it("rejects if no email", async () => {
-            const test = () => authService.forgetPassword();
-            await expect(test).rejects.toBeUndefined();
+            // @ts-expect-error: test guard
+            await expect(async () => authService.forgetPassword()).rejects.toThrow(new Error("email must be defined"));
         });
 
         it("calls port", async () => {
             await authService.forgetPassword(EMAIL);
-            expect(authPort.forgetPassword).toHaveBeenCalledWith(EMAIL);
+            expect(port.forgetPassword).toHaveBeenCalledWith(EMAIL);
         });
 
         it("return result from port if success", async () => {
             const expected = RES;
             const actual = await authService.forgetPassword(EMAIL);
             expect(actual).toBe(expected);
-        });
-
-        it("rejects if user is linked to proConnect", async () => {
-            authPort.forgetPassword.mockResolvedValueOnce({ proConnectId: "something" });
-            const test = () => authService.forgetPassword();
-            await expect(test).rejects.toMatchInlineSnapshot(`undefined`);
         });
     });
 
@@ -98,19 +95,20 @@ describe("authService", () => {
         });
         afterAll(() => mockServiceLogin.mockRestore());
 
+        const EMAIL = "test@datasubvention.beta.gouv.fr",
+            PASSWORD = "fake-password";
+
         it("should call port", async () => {
-            const expected = ["test@datasubvention.beta.gouv.fr", "fake-password"];
-            authPort.login.mockResolvedValueOnce({});
-            await authService.login(...expected);
-            expect(authPort.login).toHaveBeenCalledWith(...expected);
+            port.login.mockResolvedValueOnce({});
+            await authService.login(EMAIL, PASSWORD);
+            expect(port.login).toHaveBeenCalledWith(EMAIL, PASSWORD);
         });
 
         it("should call front login with given user", async () => {
             const USER = { some: "thing" };
             const expected = USER;
-            const args = ["test@datasubvention.beta.gouv.fr", "fake-password"];
-            authPort.login.mockResolvedValueOnce(USER);
-            await authService.login(...args);
+            port.login.mockResolvedValueOnce(USER);
+            await authService.login(EMAIL, PASSWORD);
             expect(mockServiceLogin).toHaveBeenCalledWith(expected);
         });
     });
@@ -126,15 +124,15 @@ describe("authService", () => {
 
         it("should call port", async () => {
             const expected = SEARCH_QUERY;
-            authPort.loginAgentConnect.mockResolvedValueOnce({});
+            port.loginAgentConnect.mockResolvedValueOnce({});
             await authService.loginAgentConnect(SEARCH_QUERY);
-            expect(authPort.loginAgentConnect).toHaveBeenCalledWith(expected);
+            expect(port.loginAgentConnect).toHaveBeenCalledWith(expected);
         });
 
         it("should call front login with given user", async () => {
             const USER = { some: "thing" };
             const expected = USER;
-            authPort.loginAgentConnect.mockResolvedValueOnce(USER);
+            port.loginAgentConnect.mockResolvedValueOnce(USER);
             await authService.loginAgentConnect(SEARCH_QUERY);
             expect(mockServiceLogin).toHaveBeenCalledWith(expected);
         });
@@ -156,7 +154,7 @@ describe("authService", () => {
 
         it("sets crisp email value", async () => {
             await authService.loginByUser(user);
-            expect(crispService.setUserEmail).toBeCalledWith(EMAIL);
+            expect(crispService.setUserEmail).toHaveBeenCalledWith(EMAIL);
         });
 
         it("drops hide-main-info-banner from local storage", async () => {
@@ -175,7 +173,7 @@ describe("authService", () => {
         it("sets crisp email value", () => {
             const EMAIL = "a@b.c";
             authService.setUserInApp({ email: EMAIL }); // plus dans cette méthode
-            expect(crispService.setUserEmail).toBeCalledWith(EMAIL);
+            expect(crispService.setUserEmail).toHaveBeenCalledWith(EMAIL);
         });
     });
 
@@ -200,14 +198,9 @@ describe("authService", () => {
             [mockIsAdmin, getUserSpy, mockSetUserInApp, mockEnsureAccess].forEach(mock => mock.mockRestore()),
         );
 
-        async function correctReturn(requiredLevel, user, expected) {
-            if (user) getUserSpy.mockReturnValueOnce(user);
-            const actual = await authService.controlAuth(requiredLevel);
-            expect(actual).toBe(expected);
-        }
-
         it("returns true if no auth needed", async () => {
-            return await correctReturn(AuthLevels.NONE, undefined, true);
+            const actual = await authService.controlAuth(AuthLevels.NONE);
+            expect(actual).toBe(true);
         });
 
         it("try to get user if already connected", async () => {
@@ -225,7 +218,7 @@ describe("authService", () => {
         it("calls redirectToLogin if not recently connected", async () => {
             getUserSpy.mockReturnValueOnce(undefined);
             vi.spyOn(userService, "getSelfUser").mockRejectedValue(new Error("401 Error"));
-            const redirectSpy = vi.spyOn(authService, "redirectToLogin").mockResolvedValueOnce(true);
+            const redirectSpy = vi.spyOn(authService, "redirectToLogin").mockResolvedValueOnce();
             await authService.controlAuth(AuthLevels.USER);
             expect(redirectSpy).toHaveBeenCalled();
         });
@@ -237,12 +230,16 @@ describe("authService", () => {
             expect(mockEnsureAccess).toHaveBeenCalledWith(USER, LEVEL);
         });
 
-        it("returns true if user is admin and admin required", () => {
-            correctReturn(AuthLevels.ADMIN, { roles: ["admin"] }, true);
+        it("returns true if user is admin and admin required", async () => {
+            getUserSpy.mockReturnValueOnce({ roles: ["admin"] });
+            const actual = await authService.controlAuth(AuthLevels.ADMIN);
+            expect(actual).toBe(true);
         });
 
-        it("returns true if user is not admin and simple user required", () => {
-            correctReturn(AuthLevels.USER, { roles: [] }, true);
+        it("returns true if user is not admin and simple user required", async () => {
+            getUserSpy.mockReturnValueOnce({ roles: [] });
+            const actual = await authService.controlAuth(AuthLevels.USER);
+            expect(actual).toBe(true);
         });
     });
 
@@ -278,16 +275,16 @@ describe("authService", () => {
 
     describe("logout", () => {
         beforeAll(() => {
-            authPort.logout.mockResolvedValue({ success: true });
+            port.logout.mockResolvedValue({ success: true });
         });
 
         afterAll(() => {
-            authPort.logout.mockRestore();
+            port.logout.mockRestore();
         });
 
         it("should call authPort.logout", async () => {
             await authService.logout();
-            expect(authPort.logout).toHaveBeenCalled();
+            expect(port.logout).toHaveBeenCalled();
         });
 
         it("should call remove user from store", async () => {
@@ -307,7 +304,7 @@ describe("authService", () => {
 
         it("redirects to received URL", async () => {
             const URL = "go.somewhere";
-            authPort.logout.mockResolvedValue({ success: true, url: URL });
+            port.logout.mockResolvedValue({ success: true, url: URL });
             await authService.logout();
             expect(goToUrl).toHaveBeenCalledWith(URL);
         });
@@ -336,6 +333,7 @@ describe("authService", () => {
 
     describe("redirectAfterLogin", () => {
         beforeAll(() => {
+            // @ts-expect-error: mock store
             vi.mocked(localStorageService.getItem).mockReturnValue({ value: null });
         });
         afterAll(() => {
@@ -352,12 +350,14 @@ describe("authService", () => {
         });
 
         it("removes saved redirect url", () => {
+            // @ts-expect-error: mock store
             vi.mocked(localStorageService.getItem).mockReturnValueOnce({ value: "something" });
             authService.redirectAfterLogin();
             expect(vi.mocked(localStorageService.removeItem)).toHaveBeenCalledWith("redirectUrl");
         });
 
         it("if too old url return to /", () => {
+            // @ts-expect-error: mock store
             vi.mocked(localStorageService.getItem).mockReturnValueOnce({ value: { setDate: "2022-02-02" } });
             authService.redirectAfterLogin();
             expect(vi.mocked(goToUrl)).toHaveBeenCalledWith("/", true, true);
@@ -365,6 +365,7 @@ describe("authService", () => {
 
         it("if recent enough url return to url", () => {
             const URL = "/somewhere";
+            // @ts-expect-error: mock store
             vi.mocked(localStorageService.getItem).mockReturnValueOnce({
                 value: { setDate: new Date(), url: URL },
             });
