@@ -10,26 +10,28 @@ import Store from "$lib/core/Store";
 import trackerService from "$lib/services/tracker.service";
 
 export default class ActivateAccountController {
-    constructor(token) {
+    token: string;
+    validationTokenStore = new Store("waiting");
+    error: { httpCode: number } | null = null;
+    steps = [
+        {
+            name: "Définir un mot de passe",
+            component: DefinePassword,
+            alert: PasswordFormatAlert,
+            needsValidation: true,
+        },
+        {
+            name: "Informations sur votre profil",
+            component: AgentTypeStep,
+            alert: CollectedDataAlert,
+            needsValidation: true,
+        },
+        { name: "Informations sur votre structure", component: StructureFormStep },
+    ];
+    buildContext = values => ({ agentType: values[1].agentType });
+
+    constructor(token: string) {
         this.token = token;
-        this.validationTokenStore = new Store("waiting");
-        this.error = null;
-        this.steps = [
-            {
-                name: "Définir un mot de passe",
-                component: DefinePassword,
-                alert: PasswordFormatAlert,
-                needsValidation: true,
-            },
-            {
-                name: "Informations sur votre profil",
-                component: AgentTypeStep,
-                alert: CollectedDataAlert,
-                needsValidation: true,
-            },
-            { name: "Informations sur votre structure", component: StructureFormStep },
-        ];
-        this.buildContext = values => ({ agentType: values[1].agentType });
     }
 
     onSubmit(values) {

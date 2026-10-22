@@ -1,0 +1,22 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ActivateAccountController > constructor > should define form steps 1`] = `
+[
+  {
+    "alert": [Function],
+    "component": [Function],
+    "name": "Définir un mot de passe",
+    "needsValidation": true,
+  },
+  {
+    "alert": [Function],
+    "component": [Function],
+    "name": "Informations sur votre profil",
+    "needsValidation": true,
+  },
+  {
+    "component": [Function],
+    "name": "Informations sur votre structure",
+  },
+]
+`;
