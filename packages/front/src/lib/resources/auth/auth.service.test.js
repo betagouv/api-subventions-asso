@@ -184,15 +184,21 @@ describe("authService", () => {
         let mockIsAdmin;
         let mockGetSelfUser;
         let mockSetUserInApp;
+        let mockEnsureAccess;
+
+        const USER = { email: "foo.bar@beta.gouv.fr" };
 
         beforeAll(() => {
             mockSetUserInApp = vi.spyOn(authService, "setUserInApp").mockImplementation(vi.fn());
             mockIsAdmin = vi.spyOn(authService, "_isAdmin").mockReturnValue(true);
             getUserSpy = vi.spyOn(authService, "getCurrentUser");
-            mockGetSelfUser = vi.spyOn(userService, "getSelfUser").mockResolvedValue({ email: "foo.bar@beta.gouv.fr" });
+            mockEnsureAccess = vi.spyOn(authService, "ensureAccess").mockReturnValue();
+            mockGetSelfUser = vi.spyOn(userService, "getSelfUser").mockResolvedValue(USER);
         });
 
-        afterAll(() => [mockIsAdmin, getUserSpy, mockSetUserInApp].forEach(mock => mock.mockRestore()));
+        afterAll(() =>
+            [mockIsAdmin, getUserSpy, mockSetUserInApp, mockEnsureAccess].forEach(mock => mock.mockRestore()),
+        );
 
         async function correctReturn(requiredLevel, user, expected) {
             if (user) getUserSpy.mockReturnValueOnce(user);
@@ -210,6 +216,12 @@ describe("authService", () => {
             expect(mockGetSelfUser).toHaveBeenCalled();
         });
 
+        it("ensure self user has rights to access page", async () => {
+            getUserSpy.mockReturnValueOnce(undefined);
+            await authService.controlAuth(AuthLevels.ADMIN);
+            expect(mockEnsureAccess).toHaveBeenCalled(USER, AuthLevels.ADMIN);
+        });
+
         it("calls redirectToLogin if not recently connected", async () => {
             getUserSpy.mockReturnValueOnce(undefined);
             vi.spyOn(userService, "getSelfUser").mockRejectedValue(new Error("401 Error"));
@@ -218,11 +230,11 @@ describe("authService", () => {
             expect(redirectSpy).toHaveBeenCalled();
         });
 
-        it("redirect to home if user not admin and admin required", () => {
-            mockIsAdmin.mockReturnValueOnce(false);
-            getUserSpy.mockReturnValueOnce({ roles: [] });
-            authService.controlAuth(AuthLevels.ADMIN);
-            expect(goToUrl).toHaveBeenCalledWith("/");
+        it("ensure that connected user has access", async () => {
+            const LEVEL = AuthLevels.ADMIN;
+            getUserSpy.mockReturnValueOnce(USER);
+            await authService.controlAuth(LEVEL);
+            expect(mockEnsureAccess).toHaveBeenCalledWith(USER, LEVEL);
         });
 
         it("returns true if user is admin and admin required", () => {
@@ -231,6 +243,22 @@ describe("authService", () => {
 
         it("returns true if user is not admin and simple user required", () => {
             correctReturn(AuthLevels.USER, { roles: [] }, true);
+        });
+    });
+
+    describe("ensureAccess", () => {
+        let mockIsAdmin;
+
+        beforeEach(() => {
+            mockIsAdmin = vi.spyOn(authService, "_isAdmin").mockReturnValue(true);
+        });
+
+        afterAll(() => mockIsAdmin.mockRestore());
+
+        it("redirect to home if user not admin and admin required", () => {
+            mockIsAdmin.mockReturnValueOnce(false);
+            authService.ensureAccess({ roles: ["user"] }, AuthLevels.ADMIN);
+            expect(goToUrl).toHaveBeenCalledWith("/");
         });
     });
 

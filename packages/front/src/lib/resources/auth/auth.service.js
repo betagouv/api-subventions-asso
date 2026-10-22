@@ -65,18 +65,24 @@ export class AuthService {
 
     async controlAuth(requiredLevel = AuthLevels.USER) {
         if (requiredLevel === AuthLevels.NONE) return true;
+
         const user = this.getCurrentUser();
         if (!user) {
             await userService
                 .getSelfUser()
                 .then(self => {
                     this.setUserInApp(self);
+                    this.ensureAccess(self, requiredLevel);
                 })
                 .catch(() => this.redirectToLogin());
-        } else if (requiredLevel === AuthLevels.ADMIN && !this._isAdmin(user)) {
-            goToUrl("/");
+        } else {
+            this.ensureAccess(user, requiredLevel);
         }
         return true;
+    }
+
+    ensureAccess(user, requiredLevel) {
+        if (requiredLevel === AuthLevels.ADMIN && !this._isAdmin(user)) goToUrl("/");
     }
 
     _isAdmin(user) {
