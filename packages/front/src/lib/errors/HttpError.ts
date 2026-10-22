@@ -1,4 +1,6 @@
-export default class HttpError extends Error {
+export default abstract class HttpError extends Error {
+    abstract httpCode: number;
+
     data: Record<string, unknown>;
     __nativeError__: Error;
 
