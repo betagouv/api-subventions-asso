@@ -2,6 +2,10 @@
 packages/api/tests/adapters/inputs/__fixtures__/StockUniteLegale_utf8.csv
 packages/api/tests/adapters/inputs/__fixtures__/sirene-stock-unite-legale.zip
 
+# Block npm and yarn lock files
+package-lock.json
+yarn.lock
+
 # Claude
 CLAUDE.md
 claude
