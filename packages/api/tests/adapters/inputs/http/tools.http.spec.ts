@@ -1,5 +1,5 @@
 import request from "supertest";
-import { createAndGetAdminToken } from "../../__helpers__/tokenHelper";
+import { createAndGetAdminToken } from "../../../__helpers__/tokenHelper";
 import { App } from "supertest/types";
 
 const g = global as unknown as { app: App };
@@ -12,7 +12,7 @@ describe("Tools http interface", () => {
                 .set("x-access-token", await createAndGetAdminToken())
                 .field("type", "csv")
                 .field("delimiter", ",")
-                .attach("file", "tests/interfaces/http/fixtures/fixture.csv");
+                .attach("file", "tests/adapters/inputs/http/__fixtures__/fixture.csv");
             expect(response.statusCode).toBe(200);
             // @ts-expect-error -- weird supertest typing
             expect(response.res.text);
@@ -24,7 +24,7 @@ describe("Tools http interface", () => {
                 .set("x-access-token", await createAndGetAdminToken())
                 .field("type", "csv")
                 .field("delimiter", ",")
-                .attach("file", "tests/interfaces/http/fixtures/fixture-errors.csv");
+                .attach("file", "tests/adapters/inputs/http/__fixtures__/fixture-errors.csv");
             expect(response.statusCode).toBe(200);
             // @ts-expect-error -- weird supertest typing
             expect(response.res.text).toMatchSnapshot();
@@ -37,7 +37,7 @@ describe("Tools http interface", () => {
                 .field("type", "excel")
                 .field("pageName", "fixture")
                 .field("rowOffset", "2")
-                .attach("file", "tests/interfaces/http/fixtures/fixture.xlsx");
+                .attach("file", "tests/adapters/inputs/http/__fixtures__/fixture.xlsx");
             expect(response.statusCode).toBe(200);
             // @ts-expect-error -- weird supertest typing
             expect(response.res.text);
@@ -50,7 +50,7 @@ describe("Tools http interface", () => {
                 .field("type", "excel")
                 .field("pageName", "fixture")
                 .field("rowOffset", "2")
-                .attach("file", "tests/interfaces/http/fixtures/fixture-errors.xlsx");
+                .attach("file", "tests/adapters/inputs/http/__fixtures__/fixture-errors.xlsx");
             expect(response.statusCode).toBe(200);
             // @ts-expect-error -- weird supertest typing
             expect(response.res.text).toMatchSnapshot();

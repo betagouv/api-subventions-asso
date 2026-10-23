@@ -1,10 +1,10 @@
-import { DS_DTO, DS_ENTITY, DS_FLAT, SCHEMA } from "./__fixtures__/demarches-simplifiees.fixture";
-import demarchesSimplifieesService from "../../../src/modules/providers/demarches-simplifiees/demarches-simplifiees.service";
-import demarchesSimplifieesSchemaAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-schema.adapter";
-import DemarchesSimplifieesCli from "../../../src/adapters/inputs/cli/demarches-simplifiees.cli";
-import demarchesSimplifieesDataAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter";
-import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
-import { ApplicationFlatEntity } from "../../../src/entities/flats/ApplicationFlatEntity";
+import { DS_DTO, DS_ENTITY, DS_FLAT, SCHEMA } from "../__fixtures__/demarches-simplifiees.fixture";
+import demarchesSimplifieesService from "../../../../src/modules/providers/demarches-simplifiees/demarches-simplifiees.service";
+import demarchesSimplifieesSchemaAdapter from "../../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-schema.adapter";
+import DemarchesSimplifieesCli from "../../../../src/adapters/inputs/cli/demarches-simplifiees.cli";
+import demarchesSimplifieesDataAdapter from "../../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter";
+import applicationFlatAdapter from "../../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
+import { ApplicationFlatEntity } from "../../../../src/entities/flats/ApplicationFlatEntity";
 
 import * as inquirerPrompt from "@inquirer/prompts";
 
@@ -17,7 +17,7 @@ describe("DemarchesSimplifieesCli", () => {
             inputMock.mockResolvedValueOnce("");
             inputMock.mockResolvedValueOnce("2025");
         }
-        const PATH = "tests/interfaces/cli/__fixtures__/demarche-simplifiees-seed.fixture.json";
+        const PATH = "tests/adapters/inputs/__fixtures__/demarche-simplifiees-seed.fixture.json";
         await cli.generateSchema(PATH, 42);
     }
 
@@ -131,7 +131,7 @@ describe("DemarchesSimplifieesCli", () => {
                     inputMock.mockResolvedValueOnce("");
                     inputMock.mockResolvedValueOnce("2025");
                 }
-                const PATH = "tests/interfaces/cli/__fixtures__/demarche-simplifiees-seed.fixture.json";
+                const PATH = "tests/adapters/inputs/__fixtures__/demarche-simplifiees-seed.fixture.json";
                 await cli.generateSchema(PATH, 42);
 
                 // I only test flat schema because it is what is meant to remain

@@ -1,29 +1,29 @@
 import request from "supertest";
-import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
+import { createAndGetAdminToken, createAndGetUserToken } from "../../../__helpers__/tokenHelper";
 import DEFAULT_ASSOCIATION, {
     API_ASSO_ESTABLISHMENTS_FROM_SIREN,
     LONELY_RNA,
     SIREN_STR,
     SIRET_STR,
-} from "../../__fixtures__/association.fixture";
-import rnaSirenAdapter from "../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
-import Rna from "../../../src/identifier-objects/Rna";
-import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
-import Siren from "../../../src/identifier-objects/Siren";
-import statsAssociationsVisitAdapter from "../../../src/adapters/outputs/db/stats/association-visit.adapter";
+} from "../../../__fixtures__/association.fixture";
+import rnaSirenAdapter from "../../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
+import Rna from "../../../../src/identifier-objects/Rna";
+import RnaSirenEntity from "../../../../src/entities/RnaSirenEntity";
+import Siren from "../../../../src/identifier-objects/Siren";
+import statsAssociationsVisitAdapter from "../../../../src/adapters/outputs/db/stats/association-visit.adapter";
 import { App } from "supertest/types";
-import apiAssoService from "../../../src/modules/providers/api-asso/api-asso.service";
-import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
-import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
+import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
+import applicationFlatAdapter from "../../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
+import paymentFlatAdapter from "../../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,
-} from "../../../src/modules/application-flat/__fixtures__/application-flat.fixture";
+} from "../../../../src/modules/application-flat/__fixtures__/application-flat.fixture";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY_2,
-} from "../../../src/modules/payment-flat/__fixtures__/payment-flat.fixture";
+} from "../../../../src/modules/payment-flat/__fixtures__/payment-flat.fixture";
 
 const g = global as unknown as { app: App };
 

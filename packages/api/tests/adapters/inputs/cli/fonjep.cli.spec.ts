@@ -1,19 +1,19 @@
 import path from "path";
-import db from "../../../src/shared/MongoConnection";
-import FonjepCli from "../../../src/adapters/inputs/cli/fonjep.cli";
-import fonjepVersementAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
+import db from "../../../../src/shared/MongoConnection";
+import FonjepCli from "../../../../src/adapters/inputs/cli/fonjep.cli";
+import fonjepVersementAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
 import { ObjectId } from "mongodb";
-import fonjepTiersAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.tiers.adapter";
-import fonjepPostesAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.postes.adapter";
-import fonjepTypePosteAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.typePoste.adapter";
-import fonjepDispositifAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.dispositif.adapter";
-import dataBretagneAdapter from "../../../src/adapters/outputs/api/data-bretagne/data-bretagne.adapter";
-import { DATA_BRETAGNE_DTOS, PROGRAMS } from "../../__fixtures__/paymentsFlat.fixture";
-import stateBudgetProgramAdapter from "../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
-import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
-import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
+import fonjepTiersAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.tiers.adapter";
+import fonjepPostesAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.postes.adapter";
+import fonjepTypePosteAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.typePoste.adapter";
+import fonjepDispositifAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.dispositif.adapter";
+import dataBretagneAdapter from "../../../../src/adapters/outputs/api/data-bretagne/data-bretagne.adapter";
+import { DATA_BRETAGNE_DTOS, PROGRAMS } from "../../../__fixtures__/paymentsFlat.fixture";
+import stateBudgetProgramAdapter from "../../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
+import paymentFlatAdapter from "../../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
+import applicationFlatAdapter from "../../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 
-const FILEPATH = path.resolve(__dirname, "./__fixtures__/fonjep-new.xlsx");
+const FILEPATH = path.resolve(__dirname, "../__fixtures__/fonjep-new.xlsx");
 const EXPORT_DATE = new Date("2022-03-03").toISOString();
 
 describe("FonjepCli", () => {
@@ -35,12 +35,12 @@ describe("FonjepCli", () => {
 
         describe("test with all information arround one code poste", () => {
             it("adds applications flat", async () => {
-                await cli.parse(path.resolve(__dirname, "./__fixtures__/fonjep-one-code-full.xlsx"), "2025-09-30");
+                await cli.parse(path.resolve(__dirname, "../__fixtures__/fonjep-one-code-full.xlsx"), "2025-09-30");
                 const actual = await applicationFlatAdapter.findAll();
                 expect(actual).toMatchSnapshot();
             });
             it("adds payments flat", async () => {
-                await cli.parse(path.resolve(__dirname, "./__fixtures__/fonjep-one-code-full.xlsx"), "2025-09-30");
+                await cli.parse(path.resolve(__dirname, "../__fixtures__/fonjep-one-code-full.xlsx"), "2025-09-30");
                 const actual = await paymentFlatAdapter.findAll();
                 expect(actual).toMatchSnapshot();
             });

@@ -1,32 +1,32 @@
-import ChorusCli from "../../../src/adapters/inputs/cli/chorus.cli";
+import ChorusCli from "../../../../src/adapters/inputs/cli/chorus.cli";
 import path from "path";
-import chorusAdapter from "../../../src/adapters/outputs/db/providers/chorus/chorus.adapter";
-import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
-import uniteLegaleEntrepriseAdapter from "../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
-import apiAssoService from "../../../src/modules/providers/api-asso/api-asso.service";
+import chorusAdapter from "../../../../src/adapters/outputs/db/providers/chorus/chorus.adapter";
+import paymentFlatAdapter from "../../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
+import uniteLegaleEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
+import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
 import { AssociationWithProviderValues } from "dto";
-import { LEGAL_CATEGORIES_ACCEPTED } from "../../../src/shared/LegalCategoriesAccepted";
-import Siren from "../../../src/identifier-objects/Siren";
+import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../src/shared/LegalCategoriesAccepted";
+import Siren from "../../../../src/identifier-objects/Siren";
 import {
     CHORUS_FSE_ENTITIES,
     CHORUS_ENTITIES,
-} from "../../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
-import stateBudgetProgramAdapter from "../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
-import chorusFseAdapter from "../../../src/adapters/outputs/db/providers/chorus/chorus-fse.adapter";
-import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
-import { toArray } from "../../__helpers__/ayncIterableHelper";
-import { PROGRAMS } from "../../adapters/outputs/db/__fixtures__/state-budget-program.fixtures";
-import chorusImport from "../../../src/adapters/inputs/pipeline/import/chorus/chorus.import";
-import updateFlatByExercise from "../../../src/modules/providers/chorus/use-cases/update-flat-by-exercise";
-import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
-import db from "../../../src/shared/MongoConnection";
+} from "../../../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
+import stateBudgetProgramAdapter from "../../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
+import chorusFseAdapter from "../../../../src/adapters/outputs/db/providers/chorus/chorus-fse.adapter";
+import dataLogAdapter from "../../../../src/adapters/outputs/db/data-log/data-log.adapter";
+import { toArray } from "../../../__helpers__/ayncIterableHelper";
+import { PROGRAMS } from "../../outputs/db/__fixtures__/state-budget-program.fixtures";
+import chorusImport from "../../../../src/adapters/inputs/pipeline/import/chorus/chorus.import";
+import updateFlatByExercise from "../../../../src/modules/providers/chorus/use-cases/update-flat-by-exercise";
+import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
+import db from "../../../../src/shared/MongoConnection";
 
 describe("ChorusCli", () => {
     // it contains :
     // - 5 associations document with specificities : 2 with wrong siret, 2 linked (resulting in a merge in paymentFlat)
     // - 1 fondation document => filtered out
     // - 1 company document => filtered out
-    const FILE_PATH = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
+    const FILE_PATH = path.resolve(__dirname, "../__fixtures__/new-chorus-export.xlsx");
 
     const EXPORT_DATE = "2023-12-06";
 

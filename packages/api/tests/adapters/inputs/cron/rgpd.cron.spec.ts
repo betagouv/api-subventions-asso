@@ -1,13 +1,15 @@
-import { RgpdCron } from "../../../src/adapters/inputs/cron/rgpd.cron";
-import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
-import brevoContactNotifyPipe from "../../../src/modules/notify/out-pipes/brevo-contact.pipe";
-import brevoMailNotifyPipe from "../../../src/modules/notify/out-pipes/brevo-mail.pipe";
-import userResetAdapter from "../../../src/adapters/outputs/db/user/user-reset.adapter";
-import configurationsService, { CONFIGURATION_NAMES } from "../../../src/modules/configurations/configurations.service";
-import { ENV as _ENV, EnvironmentEnum } from "../../../src/configurations/env.conf";
-import { USER_NOT_PERSISTED } from "../../../src/modules/user/__fixtures__/user.fixture";
-import NewUserEntity from "../../../src/domain/users/NewUserEntity";
-import { TchapPipe } from "../../../src/modules/notify/out-pipes/tchap.pipe";
+import { RgpdCron } from "../../../../src/adapters/inputs/cron/rgpd.cron";
+import userAdapter from "../../../../src/adapters/outputs/db/user/user.adapter";
+import brevoContactNotifyPipe from "../../../../src/modules/notify/out-pipes/brevo-contact.pipe";
+import brevoMailNotifyPipe from "../../../../src/modules/notify/out-pipes/brevo-mail.pipe";
+import userResetAdapter from "../../../../src/adapters/outputs/db/user/user-reset.adapter";
+import configurationsService, {
+    CONFIGURATION_NAMES,
+} from "../../../../src/modules/configurations/configurations.service";
+import { ENV as _ENV, EnvironmentEnum } from "../../../../src/configurations/env.conf";
+import { USER_NOT_PERSISTED } from "../../../../src/modules/user/__fixtures__/user.fixture";
+import NewUserEntity from "../../../../src/domain/users/NewUserEntity";
+import { TchapPipe } from "../../../../src/modules/notify/out-pipes/tchap.pipe";
 
 describe("Rgpd Cron", () => {
     const NOW = new Date();

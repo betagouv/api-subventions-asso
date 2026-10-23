@@ -1,10 +1,10 @@
 import request from "supertest";
-import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
+import dataLogAdapter from "../../../../src/adapters/outputs/db/data-log/data-log.adapter";
 import { App } from "supertest/types";
-import { API_PROVIDER, RAW_PROVIDER } from "../../../src/modules/providers/__fixtures__/providers.fixture";
-import { DataLogSource } from "../../../src/modules/data-log/entities/dataLogEntity";
+import { API_PROVIDER, RAW_PROVIDER } from "../../../../src/modules/providers/__fixtures__/providers.fixture";
+import { DataLogSource } from "../../../../src/modules/data-log/entities/dataLogEntity";
 
-jest.mock("../../../src/modules/provider-request/provider-request.service");
+jest.mock("../../../../src/modules/provider-request/provider-request.service");
 
 const g = global as unknown as { app: App };
 
@@ -16,6 +16,7 @@ const insertData = async () => {
             providerId: RAW_PROVIDER.meta.id,
             providerName: RAW_PROVIDER.meta.name,
             source: DataLogSource.FILE,
+            fileName: "file1",
         },
         {
             editionDate: new Date("2023-01-01"),
@@ -23,6 +24,7 @@ const insertData = async () => {
             providerId: RAW_PROVIDER.meta.id,
             providerName: RAW_PROVIDER.meta.name,
             source: DataLogSource.FILE,
+            fileName: "file2",
         },
         {
             editionDate: new Date("2022-05-01"),

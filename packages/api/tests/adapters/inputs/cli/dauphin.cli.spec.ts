@@ -1,9 +1,9 @@
-import dauphinAdapter from "../../../src/adapters/outputs/db/providers/dauphin/dauphin.adapter";
-import gisproAdapter from "../../../src/adapters/outputs/db/providers/gispro.adapter";
-import DauphinSubventionDto from "../../../src/modules/providers/dauphin-gispro/dto/DauphinSubventionDto";
-import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
-import DauphinCli from "../../../src/adapters/inputs/cli/dauphin.cli";
-import { DAUPHIN_ENTITIES, GISPRO_ENTITIES } from "./__fixtures__/dauphin-gispro.fixture";
+import dauphinAdapter from "../../../../src/adapters/outputs/db/providers/dauphin/dauphin.adapter";
+import gisproAdapter from "../../../../src/adapters/outputs/db/providers/gispro.adapter";
+import DauphinSubventionDto from "../../../../src/modules/providers/dauphin-gispro/dto/DauphinSubventionDto";
+import applicationFlatAdapter from "../../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
+import DauphinCli from "../../../../src/adapters/inputs/cli/dauphin.cli";
+import { DAUPHIN_ENTITIES, GISPRO_ENTITIES } from "../__fixtures__/dauphin-gispro.fixture";
 
 describe("Dauphin cli", () => {
     // there are other methods but that are not meant to be used a lot anymore since
