@@ -6,11 +6,10 @@
 
     let searchValue = $state("");
 
-    function onSubmit(value: string | undefined, postalCode?: string) {
-        if (!value) return;
-
+    function onSubmit(value: string, postalCode?: string, nameOnly = false) {
         const params = new SvelteURLSearchParams();
         if (postalCode) params.set("postalCode", postalCode);
+        if (nameOnly) params.set("nameOnly", "true");
         const query = params.toString();
 
         goto(`/search/${encodeQuerySearch(value)}${query ? `?${query}` : ""}`);

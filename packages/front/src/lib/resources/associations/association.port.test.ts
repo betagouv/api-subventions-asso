@@ -81,9 +81,9 @@ describe("AssociationPort", () => {
             expect(mockedRequestService.get).toHaveBeenCalledWith(expected);
         });
 
-        it("calls requestsService get with postal code", async () => {
-            const expected = `/search/associations/${SIREN}?page=2&postalCode=93`;
-            await associationPort.search(SIREN, 2, "93");
+        it("calls requestsService get with search options", async () => {
+            const expected = `/search/associations/${SIREN}?page=2&postalCode=93&sort=alphabetical&nameOnly=true`;
+            await associationPort.search(SIREN, 2, "93", "alphabetical", true);
             expect(mockedRequestService.get).toHaveBeenCalledWith(expected);
         });
 
