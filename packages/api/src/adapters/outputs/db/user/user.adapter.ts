@@ -139,6 +139,27 @@ export class UserAdapter extends MongoAdapter<UserDbo> implements UserPort {
         return this.collection.find(query).count();
     }
 
+    countUsers(): Promise<number> {
+        return this.collection.countDocuments({
+            disable: { $ne: true },
+        });
+    }
+
+    async findUserEmailsByPeriod(begin: Date, end: Date): Promise<string[]> {
+        const users = await this.collection
+            .find(
+                {
+                    disable: { $ne: true },
+                    signupAt: { $gte: begin, $lt: end },
+                },
+                { projection: { email: 1 } },
+            )
+            .sort({ signupAt: 1 })
+            .toArray();
+
+        return users.map(user => user.email);
+    }
+
     async createIndexes(): Promise<void> {
         await this.collection.createIndex({ email: 1 }, { unique: true });
     }
