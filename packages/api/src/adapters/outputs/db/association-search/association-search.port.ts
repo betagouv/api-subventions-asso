@@ -10,7 +10,7 @@ import { Rna } from "../../../../identifier-objects";
 export interface AssociationSearchPort {
     createIndexes(): Promise<void>;
 
-    findByText(text: string, postalCode?: string): Promise<AssociationSearchEntity[]>;
+    findByText(text: string, postalCode?: string, nameOnly?: boolean): Promise<AssociationSearchEntity[]>;
     findByIdentifier(identifier: Siren | Rna, postalCode?: string): Promise<AssociationSearchEntity | null>;
     upsertFromEstablishment(entities: EstablishmentAssociationSearch[]): Promise<void>;
     upsertFromSirene(entities: UniteLegaleAssociationSearch[]): Promise<void>;
