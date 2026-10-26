@@ -33,7 +33,7 @@ import statsService from "../../../modules/stats/stats.service";
 import { USER_DTO_ADMIN, USER_DTO_DEFAULT, USER_DTO_NEW } from "./examples/Users";
 import NewUserEntity from "../../../domain/users/NewUserEntity";
 import { FutureUser } from "../../../domain/users/@types/FutureUser";
-import userStatsService from "../../../modules/user/services/stats/user.stats.service";
+import getSignupStats from "../../../usecases/stats/get-signup-stats";
 
 @Route("admin")
 @Hidden()
@@ -120,11 +120,11 @@ export class AdminHttp extends Controller {
     @Get("/stats/users")
     @Response<HttpErrorInterface>(400, "Bad Request")
     public async getUserSignupStats(@Query() from?: Date, @Query() to?: Date): Promise<UserSignupStatsDtoResponse> {
-        if (from === undefined && to === undefined) return userStatsService.getSignupStats();
+        if (from === undefined && to === undefined) return getSignupStats.execute();
         if (from === undefined || to === undefined)
             throw new BadRequestError("'from' and 'to' must be provided together");
         if (from > to) throw new BadRequestError("'from' must be before or equal 'to'");
 
-        return userStatsService.getSignupStats(from, to);
+        return getSignupStats.execute({ from, to });
     }
 }

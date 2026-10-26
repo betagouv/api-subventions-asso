@@ -4,8 +4,6 @@ import notifyService from "../../../notify/notify.service";
 import userCrudService from "../crud/user.crud.service";
 import configurationsService from "../../../configurations/configurations.service";
 import statsAssociationsVisitAdapter from "../../../../adapters/outputs/db/stats/association-visit.adapter";
-import { UserSignupStatsDtoResponse } from "dto";
-import { addDaysToDate } from "../../../../shared/helpers/DateHelper";
 
 export class UserStatsService {
     public countTotalUsersOnDate(date, withAdmin = false) {
@@ -14,13 +12,6 @@ export class UserStatsService {
 
     public findByPeriod(begin: Date, end: Date, withAdmin = false) {
         return userAdapter.findByPeriod(begin, end, withAdmin);
-    }
-
-    public async getSignupStats(begin?: Date, end?: Date): Promise<UserSignupStatsDtoResponse> {
-        if (!begin || !end) return { total: await userAdapter.countUsers() };
-
-        const emails = await userAdapter.findUserEmailsByPeriod(begin, addDaysToDate(end, 1));
-        return { total: emails.length, emails };
     }
 
     public getUsersWithStats() {
