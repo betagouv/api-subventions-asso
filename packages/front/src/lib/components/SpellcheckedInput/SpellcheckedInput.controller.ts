@@ -14,48 +14,50 @@ export type SpellcheckWorkerResponse =
     { id: number; result: MisspelledWord[] | string[] } | { id: number; error: string };
 export type SpellcheckWorkerRequest = SpellcheckWorkerRequestPayload & { id: number };
 
-const pendingRequests = new Map<number, { resolve: (result: unknown) => void; reject: (error: Error) => void }>();
-
-let worker: Worker | undefined;
-let workerRequestId = 0;
-
-function getWorker() {
-    if (worker) return worker;
-
-    worker = new Worker(new URL("./spellchecked-input.worker.ts", import.meta.url), { type: "module" });
-
-    worker.onmessage = ({ data }: MessageEvent<SpellcheckWorkerResponse>) => {
-        const request = pendingRequests.get(data.id);
-        if (!request) return;
-
-        pendingRequests.delete(data.id);
-
-        if ("error" in data) request.reject(new Error(data.error));
-        else request.resolve(data.result);
-    };
-
-    return worker;
-}
-
-function sendRequest<T>(request: SpellcheckWorkerRequestPayload) {
-    return new Promise<T>((resolve, reject) => {
-        const id = ++workerRequestId;
-        pendingRequests.set(id, { resolve: result => resolve(result as T), reject });
-        getWorker().postMessage({ ...request, id });
-    });
-}
-
 export default class SpellcheckedInputController {
+    private static pendingRequests = new Map<
+        number,
+        { resolve: (result: unknown) => void; reject: (error: Error) => void }
+    >();
+    private static worker: Worker | undefined;
+    private static workerRequestId = 0;
+
+    private static getWorker() {
+        if (this.worker) return this.worker;
+
+        this.worker = new Worker(new URL("./spellchecked-input.worker.ts", import.meta.url), { type: "module" });
+
+        this.worker.onmessage = ({ data }: MessageEvent<SpellcheckWorkerResponse>) => {
+            const request = this.pendingRequests.get(data.id);
+            if (!request) return;
+
+            this.pendingRequests.delete(data.id);
+
+            if ("error" in data) request.reject(new Error(data.error));
+            else request.resolve(data.result);
+        };
+
+        return this.worker;
+    }
+
+    private static sendRequest<T>(request: SpellcheckWorkerRequestPayload) {
+        return new Promise<T>((resolve, reject) => {
+            const id = ++this.workerRequestId;
+            this.pendingRequests.set(id, { resolve: result => resolve(result as T), reject });
+            this.getWorker().postMessage({ ...request, id });
+        });
+    }
+
     initialize() {
-        getWorker();
+        SpellcheckedInputController.getWorker();
     }
 
     checkSpelling(text: string) {
-        return sendRequest<MisspelledWord[]>({ type: "check", text });
+        return SpellcheckedInputController.sendRequest<MisspelledWord[]>({ type: "check", text });
     }
 
     suggest(word: string) {
-        return sendRequest<string[]>({ type: "suggest", word });
+        return SpellcheckedInputController.sendRequest<string[]>({ type: "suggest", word });
     }
 
     splitTextForHighlighting(text = "", misspelledWords: MisspelledWord[]): HighlightSegment[] {
