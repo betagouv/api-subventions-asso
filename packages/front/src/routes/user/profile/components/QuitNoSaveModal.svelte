@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { action } from "$lib/store/modal.store";
 
     import ModalContent from "$lib/dsfr/ModalContent.svelte";

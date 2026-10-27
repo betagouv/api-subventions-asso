@@ -1,5 +1,5 @@
 import { errorMessageStore, errorStore } from "$lib/store/genericError.store";
-import StaticError from "$lib/errors/StaticError";
+import StaticError from "$lib/errors/HttpError";
 import { ErrorAlertContent } from "$lib/entities/ErrorAlertContent";
 
 export class ErrorService {

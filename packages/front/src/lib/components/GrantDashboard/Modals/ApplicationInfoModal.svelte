@@ -1,6 +1,6 @@
 <script lang="ts">
     import { data } from "$lib/store/modal.store";
-    import { numberToEuro } from "$lib/helpers/dataHelper.js";
+    import { numberToEuro } from "$lib/helpers/dataHelper";
     import type Store from "$lib/core/Store";
     import type { ApplicationFlatDto, OsirisActions } from "dto";
     import Spinner from "$lib/components/Spinner.svelte";
