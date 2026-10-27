@@ -4,7 +4,6 @@ import paymentFlatAdapter from "../../../../src/adapters/outputs/db/payment-flat
 import { expectAnyUpdateDate } from "../../../__helpers__/expect-any.helper";
 import uniteLegaleEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 import { Siren } from "../../../../src/identifier-objects";
-import sireneUniteLegaleAdapter from "../../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../src/shared/LegalCategoriesAccepted";
@@ -15,10 +14,10 @@ import getIdentifierFromString from "../../../../src/modules/associations/use-ca
 import saveHeliosToFlat from "../../../../src/modules/providers/helios/use-cases/save-helios-entities-to-flat.use-case";
 import { CheckIdentifierIsFromAssoUseCase } from "../../../../src/modules/associations/use-cases/check-identifier-is-from-asso.use-case";
 import { CheckSirenIsFromAssoUseCase } from "../../../../src/modules/associations/use-cases/check-siren-is-from-asso.use-case";
-import rnaSirenAdapter from "../../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
-import { SIRENE_UNITE_LEGAL_ENTITIES } from "../../../../src/domain/__fixtures__/unite-legale.fixture";
 import { ProviderValue } from "dto";
 import db from "../../../../src/shared/MongoConnection";
+import associationSearchAdapter from "../../../../src/adapters/outputs/db/association-search/association-search.adapter";
+import { ASSOCIATION_SEARCH_DBOS } from "../../../../src/adapters/outputs/db/association-search/__fixtures__/association-search.fixture";
 
 jest.mock("../../../../src/modules/providers/api-asso/api-asso.service");
 
@@ -34,10 +33,10 @@ describe("Helios CLI", () => {
      */
     describe("parse", () => {
         beforeEach(async () => {
-            await db.collection("sirene").insertOne({
-                ...SIRENE_UNITE_LEGAL_ENTITIES[0],
+            await db.collection("association-search").insertOne({
+                ...ASSOCIATION_SEARCH_DBOS[0],
                 siren: DEFAULT_ASSOCIATION.siren,
-                identifiantAssociationUniteLegale: DEFAULT_ASSOCIATION.rna,
+                rna: DEFAULT_ASSOCIATION.rna,
             });
             await uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("900000000") }]);
             jest.spyOn(apiAssoService, "findAssociationBySiren").mockResolvedValue({
@@ -52,8 +51,7 @@ describe("Helios CLI", () => {
                     getIdentifierFromString,
                     new CheckIdentifierIsFromAssoUseCase(
                         new CheckSirenIsFromAssoUseCase(
-                            sireneUniteLegaleAdapter,
-                            rnaSirenAdapter,
+                            associationSearchAdapter,
                             uniteLegaleEntrepriseAdapter,
                             apiAssoService,
                         ),

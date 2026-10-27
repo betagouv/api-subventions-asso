@@ -1,7 +1,6 @@
 import { NotFoundError } from "core/build/errors/httpErrors/NotFoundErrors";
 import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
 import { BodaccPort } from "../../../adapters/outputs/api/bodacc/bodacc.port";
-import { RnaSirenPort } from "../../../adapters/outputs/db/rna-siren/rna-siren.port";
 import { RnaPort } from "../../../adapters/outputs/db/rna/rna.port";
 import { SireneEstablishmentPort } from "../../../adapters/outputs/db/sirene/sirene-establishment.port";
 import { SireneUniteLegalePort } from "../../../adapters/outputs/db/sirene/sirene-unite-legale.port";
@@ -33,6 +32,7 @@ import { GetIdentifierFromStringUseCase } from "./get-identifier-from-string.use
 import { GetRnaStructureData } from "./get-rna-structure-data";
 import { GetSirenStructureData } from "./get-siren-structure-data";
 import { SIRENE_UNITE_LEGAL_ENTITIES } from "../../../domain/__fixtures__/unite-legale.fixture";
+import { AssociationSearchPort } from "../../../adapters/outputs/db/association-search/association-search.port";
 import { ProviderValue } from "dto";
 
 describe("Association Use Cases", () => {
@@ -113,53 +113,35 @@ describe("Association Use Cases", () => {
     });
 
     describe("CheckSirenIsFromAsso", () => {
-        const mockSirenePort = {
-            findOneBySiren: jest.fn().mockResolvedValue({}),
-        } as unknown as SireneUniteLegalePort;
+        const mockAssociationPort = {
+            findByIdentifier: jest.fn().mockResolvedValue({}),
+        } as unknown as AssociationSearchPort;
         const mockEntreprisePort = {
             findOneBySiren: jest.fn().mockResolvedValue({}),
         } as unknown as UniteLegaleEntreprisePort;
-        const mockRnaSirenPort = { find: jest.fn().mockResolvedValue([]) } as unknown as RnaSirenPort;
+
         const mockApiAssoService = {
             findAssociationBySiren: jest
                 .fn()
                 .mockResolvedValue({ categorie_juridique: [{ value: LEGAL_CATEGORIES_ACCEPTED[0] }] }),
         } as unknown as ApiAssoService;
 
-        const useCase = new CheckSirenIsFromAssoUseCase(
-            mockSirenePort,
-            mockRnaSirenPort,
-            mockEntreprisePort,
-            mockApiAssoService,
-        );
+        const useCase = new CheckSirenIsFromAssoUseCase(mockAssociationPort, mockEntreprisePort, mockApiAssoService);
 
         beforeAll(() => {
-            jest.mocked(mockSirenePort.findOneBySiren).mockResolvedValue(null);
-            jest.mocked(mockRnaSirenPort.find).mockResolvedValue([]);
+            jest.mocked(mockAssociationPort.findByIdentifier).mockResolvedValue(null);
             jest.mocked(mockEntreprisePort.findOneBySiren).mockResolvedValue(null);
             jest.mocked(mockApiAssoService.findAssociationBySiren).mockResolvedValue({ categorie_juridique: [] });
         });
 
-        it("checks in sirene collection", async () => {
+        it("checks in association-search", async () => {
             await useCase.execute(SIREN);
-            expect(mockSirenePort.findOneBySiren).toHaveBeenCalledWith(SIREN);
-        });
-
-        it("returns true when match from sirene ", async () => {
-            // @ts-expect-error: mock resolved value
-            jest.mocked(mockSirenePort.findOneBySiren).mockResolvedValueOnce({});
-            const expected = true;
-            const actual = await useCase.execute(SIREN);
-            expect(actual).toEqual(expected);
-        });
-
-        it("checks in rna-siren", async () => {
-            await useCase.execute(SIREN);
-            expect(mockRnaSirenPort.find).toHaveBeenCalledWith(SIREN);
+            expect(mockAssociationPort.findByIdentifier).toHaveBeenCalledWith(SIREN);
         });
 
         it("returns true when siren is found from rna-siren", async () => {
-            jest.mocked(mockRnaSirenPort.find).mockResolvedValueOnce([{ siren: SIREN, rna: RNA }]);
+            // @ts-expect-error: mock partial document
+            jest.mocked(mockAssociationPort.findByIdentifier).mockResolvedValueOnce({ siren: SIREN });
             const actual = await useCase.execute(SIREN);
             expect(actual).toEqual(true);
         });

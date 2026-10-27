@@ -20,6 +20,7 @@ import chorusImport from "../../../../src/adapters/inputs/pipeline/import/chorus
 import updateFlatByExercise from "../../../../src/modules/providers/chorus/use-cases/update-flat-by-exercise";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 import db from "../../../../src/shared/MongoConnection";
+import { ASSOCIATION_SEARCH_DBOS } from "../../../../src/adapters/outputs/db/association-search/__fixtures__/association-search.fixture";
 
 describe("ChorusCli", () => {
     // it contains :
@@ -38,9 +39,10 @@ describe("ChorusCli", () => {
         await Promise.all([
             stateBudgetProgramAdapter.replace(PROGRAMS),
             // make siren 100000000 belong to asso
-            db.collection("sirene").insertOne({
-                siren: "100000000",
-                identifiantAssociationUniteLegale: DEFAULT_ASSOCIATION.rna,
+            db.collection("association-search").insertOne({
+                ...ASSOCIATION_SEARCH_DBOS[0],
+                siren: DEFAULT_ASSOCIATION.siren,
+                rna: DEFAULT_ASSOCIATION.rna,
             }),
             // make siren 30000000 belong to an entreprise
             uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
