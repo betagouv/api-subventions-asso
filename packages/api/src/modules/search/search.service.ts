@@ -4,9 +4,9 @@ import PaginatedResult from "../../@types/PaginatedResult";
 import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
 import search, { Search } from "../../usecases/search/search";
 import getAssociationName from "../../usecases/search/get-association-name";
+import { SearchSort, type AssociationSearchOptions } from "dto";
 
 const POSTAL_CODE_REGEX = /^\d{2,5}$/;
-export type SearchSort = "relevance" | "alphabetical";
 
 export class SearchService {
     PAGE_SIZE = 20;
@@ -16,8 +16,7 @@ export class SearchService {
 
     public async getAssociationsKeys(
         value: string,
-        postalCode?: string,
-        nameOnly = false,
+        { postalCode, nameOnly = false }: Pick<AssociationSearchOptions, "postalCode" | "nameOnly"> = {},
     ): Promise<AssociationSearchEntity[]> {
         const validPostalCode = this.validatePostalCode(postalCode);
         const searchToken = this.buildSearchToken(value, validPostalCode, nameOnly);
@@ -38,20 +37,10 @@ export class SearchService {
 
     public async getPaginatedResult(
         value: string,
-        page: number,
-        postalCode?: string,
-        sort: SearchSort = "relevance",
-        nameOnly = false,
+        { page = 1, postalCode, sort = SearchSort.RELEVANCE, nameOnly = false }: AssociationSearchOptions = {},
     ) {
-        const results = await this.getAssociationsKeys(value, postalCode, nameOnly);
-        const sortedResults =
-            sort === "alphabetical"
-                ? [...results].sort((left, right) =>
-                      getAssociationName.execute(left).localeCompare(getAssociationName.execute(right), "fr", {
-                          sensitivity: "base",
-                      }),
-                  )
-                : results;
+        const results = await this.getAssociationsKeys(value, { postalCode, nameOnly });
+        const sortedResults = sort === SearchSort.ALPHABETICAL ? this.sortAlphabetically(results) : results;
         const paginatedResult = sortedResults.slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE);
         return {
             results: paginatedResult,
@@ -63,6 +52,14 @@ export class SearchService {
 
     public cleanCache() {
         return searchAdapter.deleteAll();
+    }
+
+    private sortAlphabetically(results: AssociationSearchEntity[]) {
+        return [...results].sort((left, right) =>
+            getAssociationName.execute(left).localeCompare(getAssociationName.execute(right), "fr", {
+                sensitivity: "base",
+            }),
+        );
     }
 
     private buildSearchToken(value: string, postalCode?: string, nameOnly = false) {

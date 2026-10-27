@@ -7,10 +7,15 @@ import {
 } from "./@types/AssociationSearchDbo";
 import { Rna } from "../../../../identifier-objects";
 
+export interface FindByTextOptions {
+    postalCode?: string;
+    nameOnly?: boolean;
+}
+
 export interface AssociationSearchPort {
     createIndexes(): Promise<void>;
 
-    findByText(text: string, postalCode?: string, nameOnly?: boolean): Promise<AssociationSearchEntity[]>;
+    findByText(text: string, options?: FindByTextOptions): Promise<AssociationSearchEntity[]>;
     findByIdentifier(identifier: Siren | Rna, postalCode?: string): Promise<AssociationSearchEntity | null>;
     upsertFromEstablishment(entities: EstablishmentAssociationSearch[]): Promise<void>;
     upsertFromSirene(entities: UniteLegaleAssociationSearch[]): Promise<void>;

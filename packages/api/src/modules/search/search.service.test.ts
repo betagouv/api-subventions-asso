@@ -2,10 +2,13 @@ import { SearchService } from "./search.service";
 import searchCacheAdapter from "../../adapters/outputs/db/search/search.adapter";
 import { BadRequestError } from "core";
 import { Search } from "../../usecases/search/search";
+import { SearchSort } from "dto";
+import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
 
 jest.mock("../../adapters/outputs/db/search/search.adapter");
 
 describe("SearchService", () => {
+    const SEARCH_TOKEN = "recherche";
     const RES = ["something"];
     const mockSearch = { execute: jest.fn().mockResolvedValue(RES) } as unknown as Search;
     let service: SearchService;
@@ -17,8 +20,6 @@ describe("SearchService", () => {
     });
 
     describe("getAssociationsKeys", () => {
-        const SEARCH_TOKEN = "recherche";
-
         it("get results from cache port", async () => {
             const DATE_NOW = new Date(2024, 0, 2);
             jest.useFakeTimers();
@@ -50,7 +51,7 @@ describe("SearchService", () => {
             const DATE_NOW = new Date(2024, 0, 2);
             jest.useFakeTimers();
             jest.setSystemTime(DATE_NOW);
-            await service.getAssociationsKeys(SEARCH_TOKEN, "75", true);
+            await service.getAssociationsKeys(SEARCH_TOKEN, { postalCode: "75", nameOnly: true });
             jest.useRealTimers();
             expect(searchCacheAdapter.getResults).toHaveBeenCalledWith(
                 `${SEARCH_TOKEN}__postalCode:75__nameOnly:true`,
@@ -59,7 +60,9 @@ describe("SearchService", () => {
         });
 
         it("throws BadRequestError for invalid postal code", async () => {
-            await expect(service.getAssociationsKeys(SEARCH_TOKEN, "7A")).rejects.toThrow(BadRequestError);
+            await expect(service.getAssociationsKeys(SEARCH_TOKEN, { postalCode: "7A" })).rejects.toThrow(
+                BadRequestError,
+            );
         });
 
         it("save found results", async () => {
@@ -75,6 +78,16 @@ describe("SearchService", () => {
             jest.mocked(searchCacheAdapter.getResults).mockResolvedValue(null);
             const actual = await service.getAssociationsKeys(SEARCH_TOKEN);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getPaginatedResult", () => {
+        it("sorts results alphabetically", async () => {
+            const A = { name: { rna: "Aa" } } as AssociationSearchEntity;
+            const B = { name: { sirene: "Bb" } } as AssociationSearchEntity;
+            jest.mocked(searchCacheAdapter.getResults).mockResolvedValueOnce([B, A]);
+            const actual = await service.getPaginatedResult(SEARCH_TOKEN, { sort: SearchSort.ALPHABETICAL });
+            expect(actual.results).toEqual([A, B]);
         });
     });
 

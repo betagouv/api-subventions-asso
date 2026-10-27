@@ -2,7 +2,7 @@ import { AnyBulkWriteOperation, Filter } from "mongodb";
 import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 import MongoAdapter from "../MongoAdapter";
 import Siren from "../../../../identifier-objects/Siren";
-import { AssociationSearchPort } from "./association-search.port";
+import { AssociationSearchPort, FindByTextOptions } from "./association-search.port";
 import AssociationSearchMapper from "./association-search.mapper";
 import AssociationSearchDbo, {
     EstablishmentAssociationSearch,
@@ -31,7 +31,10 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         await this.collection.createIndex({ objectTokens: 1 });
     }
 
-    findByText(text: string, postalCode?: string, nameOnly = false): Promise<AssociationSearchEntity[]> {
+    findByText(
+        text: string,
+        { postalCode, nameOnly = false }: FindByTextOptions = {},
+    ): Promise<AssociationSearchEntity[]> {
         const needle = this.sanitize.execute(text); // search a needle in a haystack
         const words = this.split.execute(needle);
 

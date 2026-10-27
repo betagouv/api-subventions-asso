@@ -1,7 +1,7 @@
 import { Controller, Get, Response, Route, Security, Tags, Query, Path, Example } from "tsoa";
 import { HttpErrorInterface } from "core";
-import searchService, { type SearchSort } from "../../../../modules/search/search.service";
-import { RechercheAssociationDto, PaginatedResultDto } from "dto";
+import searchService from "../../../../modules/search/search.service";
+import { RechercheAssociationDto, PaginatedResultDto, SearchSort } from "dto";
 import { toDto } from "./search.mapper";
 
 @Route("search")
@@ -46,17 +46,16 @@ export class SearchHttp extends Controller {
         @Path() input: string,
         @Query() page = "1",
         @Query() postalCode?: string,
-        @Query() sort: SearchSort = "relevance",
+        @Query() sort: SearchSort = SearchSort.RELEVANCE,
         @Query() nameOnly = false,
     ): Promise<PaginatedResultDto<RechercheAssociationDto>> {
         // @TODO: transform in use case
-        const { results, ...search } = await searchService.getPaginatedResult(
-            decodeURIComponent(input),
-            Number.parseInt(page),
+        const { results, ...search } = await searchService.getPaginatedResult(decodeURIComponent(input), {
+            page: Number.parseInt(page),
             postalCode,
             sort,
             nameOnly,
-        );
+        });
         return {
             ...search,
             resultats: results.map(toDto),
