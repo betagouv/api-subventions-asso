@@ -8,11 +8,14 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import { page } from "$lib/store/kit.store";
     import type { PageProps } from "./$types";
+    import { SearchSort } from "dto";
 
     let { params }: PageProps = $props();
     const name = $derived(params.name);
     const initialPostalCode = $derived($page.url.searchParams.get("postalCode") ?? undefined);
-    const initialSort = $derived($page.url.searchParams.get("sort") === "alphabetical" ? "alphabetical" : "relevance");
+    const initialSort = $derived(
+        $page.url.searchParams.get("sort") === SearchSort.ALPHABETICAL ? SearchSort.ALPHABETICAL : SearchSort.RELEVANCE,
+    );
     const initialNameOnly = $derived($page.url.searchParams.get("nameOnly") === "true");
 
     const ctrl = $derived(new SearchController(name, initialPostalCode, initialSort, initialNameOnly));
@@ -66,17 +69,17 @@
                     <span>Trier par :</span>
                     <div class="buttons">
                         <button
-                            class:active={$selectedSort === "relevance"}
+                            class:active={$selectedSort === SearchSort.RELEVANCE}
                             type="button"
-                            aria-pressed={$selectedSort === "relevance"}
-                            onclick={() => ctrl.selectSort("relevance")}>
+                            aria-pressed={$selectedSort === SearchSort.RELEVANCE}
+                            onclick={() => ctrl.selectSort(SearchSort.RELEVANCE)}>
                             Pertinence
                         </button>
                         <button
-                            class:active={$selectedSort === "alphabetical"}
+                            class:active={$selectedSort === SearchSort.ALPHABETICAL}
                             type="button"
-                            aria-pressed={$selectedSort === "alphabetical"}
-                            onclick={() => ctrl.selectSort("alphabetical")}>
+                            aria-pressed={$selectedSort === SearchSort.ALPHABETICAL}
+                            onclick={() => ctrl.selectSort(SearchSort.ALPHABETICAL)}>
                             Ordre alphabétique
                         </button>
                     </div>

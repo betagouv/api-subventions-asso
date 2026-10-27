@@ -11,6 +11,7 @@ const mockedIdentifierHelper = vi.mocked(IdentifierHelper);
 import associationService from "$lib/resources/associations/association.service";
 import { decodeQuerySearch, encodeQuerySearch } from "$lib/helpers/urlHelper";
 import { goto } from "$app/navigation";
+import { SearchSort } from "dto";
 
 vi.mock("$lib/resources/associations/association.service");
 const mockedAssociationService = vi.mocked(associationService);
@@ -63,7 +64,12 @@ describe("SearchController", () => {
         it("searches with trimmed input", async () => {
             controller.inputSearch.value = `  ${RNA}  `;
             await controller.fetchAssociations();
-            expect(mockedAssociationService.search).toHaveBeenCalledWith(RNA, 1, undefined, "relevance", false);
+            expect(mockedAssociationService.search).toHaveBeenCalledWith(RNA, {
+                page: 1,
+                postalCode: undefined,
+                sort: SearchSort.RELEVANCE,
+                nameOnly: false,
+            });
         });
 
         it("should set duplicate store", async () => {
@@ -95,20 +101,30 @@ describe("SearchController", () => {
         it("should call with required page", async () => {
             controller.inputSearch.value = "name";
             await controller.fetchAssociations(42);
-            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", 42, undefined, "relevance", false);
+            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", {
+                page: 42,
+                postalCode: undefined,
+                sort: SearchSort.RELEVANCE,
+                nameOnly: false,
+            });
         });
 
         it("should call with postal code", async () => {
             controller.inputSearch.value = "name";
             controller.postalCode.value = "93400";
             await controller.fetchAssociations();
-            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", 1, "93400", "relevance", false);
+            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", {
+                page: 1,
+                postalCode: "93400",
+                sort: SearchSort.RELEVANCE,
+                nameOnly: false,
+            });
         });
 
         it("should keep search options in url", () => {
             controller.inputSearch.value = "name";
             controller.postalCode.value = "43000";
-            controller.selectedSort.value = "alphabetical";
+            controller.selectedSort.value = SearchSort.ALPHABETICAL;
             controller.nameOnly.value = true;
             vi.mocked(encodeQuerySearch).mockReturnValueOnce("encoded");
 
@@ -159,8 +175,8 @@ describe("SearchController", () => {
         it("fetches first page with selected sort", () => {
             const controller = new SearchController(RNA);
             const fetchSpy = vi.spyOn(controller, "fetchAssociations").mockResolvedValue();
-            controller.selectSort("alphabetical");
-            expect(controller.selectedSort.value).toBe("alphabetical");
+            controller.selectSort(SearchSort.ALPHABETICAL);
+            expect(controller.selectedSort.value).toBe(SearchSort.ALPHABETICAL);
             expect(fetchSpy).toHaveBeenCalledWith();
         });
     });

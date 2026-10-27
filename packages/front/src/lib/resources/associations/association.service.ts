@@ -1,4 +1,9 @@
-import type { AssociationIdentifierDto, PaginatedRechercheAssociationDto, RechercheAssociationDto } from "dto";
+import type {
+    AssociationIdentifierDto,
+    AssociationSearchOptions,
+    PaginatedRechercheAssociationDto,
+    RechercheAssociationDto,
+} from "dto";
 import type AssociationEntity from "./entities/AssociationEntity";
 import associationPort from "./association.port";
 import { toSearchHistory } from "./association.mapper";
@@ -8,7 +13,6 @@ import { updateSearchHistory } from "$lib/services/searchHistory.service";
 import { toEstablishmentComponent } from "$lib/resources/establishments/establishment.mapper";
 import documentHelper from "$lib/helpers/document.helper";
 import { isAssociation } from "$lib/resources/associations/association.helper";
-import type { SearchSort } from "./association.port";
 
 export type PaginatedAssociationSearchResult = Omit<PaginatedRechercheAssociationDto, "resultats"> & {
     results: RechercheAssociationDto[];
@@ -53,14 +57,8 @@ class AssociationService {
         return associationPort.getGrantExtract(identifier);
     }
 
-    async search(
-        lookup,
-        page = 1,
-        postalCode?: string,
-        sort: SearchSort = "relevance",
-        nameOnly = false,
-    ): Promise<PaginatedAssociationSearchResult> {
-        const results = await this._searchByText(lookup, page, postalCode, sort, nameOnly);
+    async search(lookup, options: AssociationSearchOptions = {}): Promise<PaginatedAssociationSearchResult> {
+        const results = await this._searchByText(lookup, options);
         if (results?.total) return results;
 
         // @TODO: remove this when /association/search/{input} will search both in RNA and Sirene collections
@@ -100,12 +98,9 @@ class AssociationService {
 
     async _searchByText(
         lookup: string,
-        page = 1,
-        postalCode?: string,
-        sort: SearchSort = "relevance",
-        nameOnly = false,
+        options: AssociationSearchOptions = {},
     ): Promise<PaginatedAssociationSearchResult> {
-        return toAssociationSearchResult(await associationPort.search(lookup, page, postalCode, sort, nameOnly));
+        return toAssociationSearchResult(await associationPort.search(lookup, options));
     }
 }
 

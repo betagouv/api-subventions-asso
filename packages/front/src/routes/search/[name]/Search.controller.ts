@@ -7,7 +7,7 @@ import associationService, {
     type PaginatedAssociationSearchResult,
 } from "$lib/resources/associations/association.service";
 import { removeWhiteSpace } from "$lib/helpers/stringHelper";
-import type { SearchSort } from "$lib/resources/associations/association.port";
+import { SearchSort } from "dto";
 
 export default class SearchController {
     inputSearch: Store<string>;
@@ -25,7 +25,7 @@ export default class SearchController {
     selectedSort: Store<SearchSort>;
     nameOnly: Store<boolean>;
 
-    constructor(name = "", postalCode?: string, sort: SearchSort = "relevance", nameOnly = false) {
+    constructor(name = "", postalCode?: string, sort: SearchSort = SearchSort.RELEVANCE, nameOnly = false) {
         this.inputSearch = new Store(decodeQuerySearch(name).trim());
         this.postalCode = new Store(postalCode ?? "");
         this.selectedSort = new Store(sort);
@@ -41,13 +41,12 @@ export default class SearchController {
         const isAssociationIdSearch = isSiren(inputId) || isRna(inputId);
         this.isLastSearchCompany.set(false);
         try {
-            const search = await associationService.search(
-                input,
+            const search = await associationService.search(input, {
                 page,
-                this.postalCode.value || undefined,
-                this.selectedSort.value,
-                this.nameOnly.value,
-            );
+                postalCode: this.postalCode.value || undefined,
+                sort: this.selectedSort.value,
+                nameOnly: this.nameOnly.value,
+            });
 
             // display alert if there are duplicates in rna-siren links
             if (isAssociationIdSearch) {
@@ -70,7 +69,7 @@ export default class SearchController {
     getSearchUrl() {
         const params = new URLSearchParams();
         if (this.postalCode.value) params.set("postalCode", this.postalCode.value);
-        if (this.selectedSort.value !== "relevance") params.set("sort", this.selectedSort.value);
+        if (this.selectedSort.value !== SearchSort.RELEVANCE) params.set("sort", this.selectedSort.value);
         if (this.nameOnly.value) params.set("nameOnly", "true");
         const query = params.toString();
 

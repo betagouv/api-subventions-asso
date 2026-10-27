@@ -4,10 +4,10 @@ import type {
     PaginatedRechercheAssociationDto,
     AssociationIdentifierDto,
     GrantFlatDto,
+    AssociationSearchOptions,
 } from "dto";
+import { SearchSort } from "dto";
 import requestsService from "$lib/services/requests.service";
-
-export type SearchSort = "relevance" | "alphabetical";
 
 class AssociationPort {
     getResource(identifier: AssociationIdentifierDto, resource?: string) {
@@ -41,10 +41,13 @@ class AssociationPort {
         return (await this.getResource(identifier, "documents"))?.data?.documents;
     }
 
-    async search(lookup: string, page = 1, postalCode?: string, sort: SearchSort = "relevance", nameOnly = false) {
+    async search(
+        lookup: string,
+        { page = 1, postalCode, sort = SearchSort.RELEVANCE, nameOnly = false }: AssociationSearchOptions = {},
+    ) {
         const params = new URLSearchParams({ page: String(page) });
         if (postalCode) params.set("postalCode", postalCode);
-        if (sort !== "relevance") params.set("sort", sort);
+        if (sort !== SearchSort.RELEVANCE) params.set("sort", sort);
         if (nameOnly) params.set("nameOnly", "true");
         const path = `/search/associations/${lookup}?${params.toString()}`;
         return (await requestsService.get(path))?.data as PaginatedRechercheAssociationDto;
