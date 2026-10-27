@@ -1,13 +1,13 @@
-import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import osirisRequestAdapter from "../../../src/adapters/outputs/db/providers/osiris/osiris.request.adapter";
+import { createAndGetAdminToken, createAndGetUserToken } from "../../../__helpers__/tokenHelper";
+import osirisRequestAdapter from "../../../../src/adapters/outputs/db/providers/osiris/osiris.request.adapter";
 import request from "supertest";
-import { OSIRIS_REQUEST_ENTITY, OSIRIS_ACTION_ENTITY } from "../cli/__fixtures__/OsirisEntities";
-import rnaSirenAdapter from "../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
-import demarchesSimplifieesDataAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter";
+import { OSIRIS_REQUEST_ENTITY, OSIRIS_ACTION_ENTITY } from "../__fixtures__/OsirisEntities";
+import rnaSirenAdapter from "../../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
+import demarchesSimplifieesDataAdapter from "../../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter";
 
-import demarchesSimplifieesSchemaAdapter from "../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-schema.adapter";
+import demarchesSimplifieesSchemaAdapter from "../../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-schema.adapter";
 
-import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
+import miscScdlGrantAdapter from "../../../../src/adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
 import DEFAULT_ASSOCIATION, {
     API_ASSO_ASSOCIATION_FROM_SIREN,
     API_ASSO_ESTABLISHMENTS_FROM_SIREN,
@@ -15,50 +15,50 @@ import DEFAULT_ASSOCIATION, {
     RNA_STR,
     SIREN_STR,
     SIRET_STR,
-} from "../../__fixtures__/association.fixture";
-import dauphinAdapter from "../../../src/adapters/outputs/db/providers/dauphin/dauphin.adapter";
-import Rna from "../../../src/identifier-objects/Rna";
-import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter";
-import Siren from "../../../src/identifier-objects/Siren";
-import statsAssociationsVisitAdapter from "../../../src/adapters/outputs/db/stats/association-visit.adapter";
+} from "../../../__fixtures__/association.fixture";
+import dauphinAdapter from "../../../../src/adapters/outputs/db/providers/dauphin/dauphin.adapter";
+import Rna from "../../../../src/identifier-objects/Rna";
+import miscScdlProducersAdapter from "../../../../src/adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter";
+import Siren from "../../../../src/identifier-objects/Siren";
+import statsAssociationsVisitAdapter from "../../../../src/adapters/outputs/db/stats/association-visit.adapter";
 import { App } from "supertest/types";
-import paymentFlatAdapter from "../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
-import apiAssoService from "../../../src/modules/providers/api-asso/api-asso.service";
-import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
+import paymentFlatAdapter from "../../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
+import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
+import applicationFlatAdapter from "../../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,
-} from "../../../src/modules/application-flat/__fixtures__/application-flat.fixture";
+} from "../../../../src/modules/application-flat/__fixtures__/application-flat.fixture";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
-} from "../../../src/modules/payment-flat/__fixtures__/payment-flat.fixture";
-import { osirisActionAdapter } from "../../../src/adapters/outputs/db/providers/osiris";
-import fonjepPostesAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.postes.adapter";
+} from "../../../../src/modules/payment-flat/__fixtures__/payment-flat.fixture";
+import { osirisActionAdapter } from "../../../../src/adapters/outputs/db/providers/osiris";
+import fonjepPostesAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.postes.adapter";
 import {
     DISPOSITIF_ENTITIES,
     POSTE_ENTITIES,
     TIERS_ENTITIES,
     TYPE_POSTE_ENTITIES,
     VERSEMENT_ENTITIES,
-} from "../../../src/modules/providers/fonjep/__fixtures__/fonjepEntities";
-import fonjepDispositifAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.dispositif.adapter";
-import fonjepTiersAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.tiers.adapter";
-import fonjepVersementsAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
-import fonjepTypePosteAdapter from "../../../src/adapters/outputs/db/providers/fonjep/fonjep.typePoste.adapter";
-import AssociationIdentifier from "../../../src/identifier-objects/AssociationIdentifier";
-import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../adapters/outputs/db/__fixtures__/scdl.fixtures";
-import { DAUPHIN_GISPRO_DBOS } from "../../adapters/outputs/db/__fixtures__/dauphin-gispro.fixtures";
+} from "../../../../src/modules/providers/fonjep/__fixtures__/fonjepEntities";
+import fonjepDispositifAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.dispositif.adapter";
+import fonjepTiersAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.tiers.adapter";
+import fonjepVersementsAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.versements.adapter";
+import fonjepTypePosteAdapter from "../../../../src/adapters/outputs/db/providers/fonjep/fonjep.typePoste.adapter";
+import AssociationIdentifier from "../../../../src/identifier-objects/AssociationIdentifier";
+import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../outputs/db/__fixtures__/scdl.fixtures";
+import { DAUPHIN_GISPRO_DBOS } from "../../outputs/db/__fixtures__/dauphin-gispro.fixtures";
 import {
     DATA_ENTITIES as DS_DATA_ENTITIES,
     SCHEMAS as DS_SCHEMAS,
-} from "../../adapters/outputs/db/__fixtures__/demarches-simplifiees.fixtures";
-import getAssociation from "../../../src/modules/associations/use-cases/get-association";
-import bodaccAdapter from "../../../src/adapters/outputs/api/bodacc/bodacc.adapter";
-import { BODACC_ENTITY } from "../../../src/domain/__fixtures__/bodacc.fixture";
+} from "../../outputs/db/__fixtures__/demarches-simplifiees.fixtures";
+import getAssociation from "../../../../src/modules/associations/use-cases/get-association";
+import bodaccAdapter from "../../../../src/adapters/outputs/api/bodacc/bodacc.adapter";
+import { BODACC_ENTITY } from "../../../../src/domain/__fixtures__/bodacc.fixture";
 import { NotAssociationError } from "core";
 
-jest.mock("../../../src/modules/provider-request/provider-request.service");
+jest.mock("../../../../src/modules/provider-request/provider-request.service");
 
 const g = global as unknown as { app: App };
 

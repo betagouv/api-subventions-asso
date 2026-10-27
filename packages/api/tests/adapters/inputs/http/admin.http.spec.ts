@@ -1,18 +1,18 @@
 import request from "supertest";
-import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import { RoleEnum } from "../../../src/domain/users/@types/UserRoles";
-import { createAndActiveUser, createConsumerUser } from "../../__helpers__/userHelper";
-import userAdapter from "../../../src/adapters/outputs/db/user/user.adapter";
-import statsAssociationsVisitAdapter from "../../../src/adapters/outputs/db/stats/association-visit.adapter";
-import notifyService from "../../../src/modules/notify/notify.service";
-import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
-import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
+import { createAndGetAdminToken, createAndGetUserToken } from "../../../__helpers__/tokenHelper";
+import { RoleEnum } from "../../../../src/domain/users/@types/UserRoles";
+import { createAndActiveUser, createConsumerUser } from "../../../__helpers__/userHelper";
+import userAdapter from "../../../../src/adapters/outputs/db/user/user.adapter";
+import statsAssociationsVisitAdapter from "../../../../src/adapters/outputs/db/stats/association-visit.adapter";
+import notifyService from "../../../../src/modules/notify/notify.service";
+import userCrudService from "../../../../src/modules/user/services/crud/user.crud.service";
+import userStatsService from "../../../../src/modules/user/services/stats/user.stats.service";
 
 import { App } from "supertest/types";
-import logsAdapter from "../../../src/adapters/outputs/db/stats/logs.adapter";
-import { LoggedMeta, WinstonLog } from "../../../src/@types/WinstonLog";
-import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
-import NewUserEntity from "../../../src/domain/users/NewUserEntity";
+import logsAdapter from "../../../../src/adapters/outputs/db/stats/logs.adapter";
+import { LoggedMeta, WinstonLog } from "../../../../src/@types/WinstonLog";
+import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
+import NewUserEntity from "../../../../src/domain/users/NewUserEntity";
 
 const g = global as unknown as { app: App };
 

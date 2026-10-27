@@ -1,10 +1,10 @@
-import amountsVsProgramRegionAdapter from "../../../src/adapters/outputs/db/dataviz/amount-vs-program-region/amounts-vs-program-region.adapter";
+import amountsVsProgramRegionAdapter from "../../../../src/adapters/outputs/db/dataviz/amount-vs-program-region/amounts-vs-program-region.adapter";
 import request from "supertest";
-import { createAndGetUserToken } from "../../__helpers__/tokenHelper";
+import { createAndGetUserToken } from "../../../__helpers__/tokenHelper";
 import { App } from "supertest/types";
-import { AMOUNTS_VS_PROGRAM_REGION_ENTITIES } from "../../../src/modules/dataviz/amounts-vs-program-region/__fixtures__/amounts-vs-program-region.fixture";
+import { AMOUNTS_VS_PROGRAM_REGION_ENTITIES } from "../../../../src/modules/dataviz/amounts-vs-program-region/__fixtures__/amounts-vs-program-region.fixture";
 
-jest.mock("../../../src/modules/provider-request/provider-request.service");
+jest.mock("../../../../src/modules/provider-request/provider-request.service");
 
 const g = global as unknown as { app: App };
 

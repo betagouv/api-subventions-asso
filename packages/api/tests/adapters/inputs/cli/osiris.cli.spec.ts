@@ -1,11 +1,11 @@
 import path from "path";
-import OsirisCli from "../../../src/adapters/inputs/cli/osiris/osiris.cli";
-import OsirisParser from "../../../src/adapters/inputs/cli/osiris/osiris.parser";
-import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
-import { osirisActionAdapter, osirisRequestAdapter } from "../../../src/adapters/outputs/db/providers/osiris";
-import { REQUEST_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.request.fixtures";
-import { ACTION_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.action.fixtures";
-import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
+import OsirisCli from "../../../../src/adapters/inputs/cli/osiris/osiris.cli";
+import OsirisParser from "../../../../src/adapters/inputs/cli/osiris/osiris.parser";
+import dataLogAdapter from "../../../../src/adapters/outputs/db/data-log/data-log.adapter";
+import { osirisActionAdapter, osirisRequestAdapter } from "../../../../src/adapters/outputs/db/providers/osiris";
+import { REQUEST_DBO } from "../../../../src/modules/providers/osiris/__fixtures__/osiris.request.fixtures";
+import { ACTION_DBO } from "../../../../src/modules/providers/osiris/__fixtures__/osiris.action.fixtures";
+import applicationFlatAdapter from "../../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
 
 describe("OsirisCli", () => {
     const spys: jest.SpyInstance<unknown>[] = [];
@@ -25,7 +25,7 @@ describe("OsirisCli", () => {
         });
 
         it("should call osiris parser", async () => {
-            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviDossiers_test.xls");
+            const filePath = path.resolve(__dirname, "../__fixtures__/SuiviDossiers_test.xls");
             await controller.parse("requests", filePath, "2022");
             expect(OsirisParser.parseRequests).toHaveBeenCalled();
         });
@@ -39,7 +39,7 @@ describe("OsirisCli", () => {
         });
 
         it("should register new import", async () => {
-            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviDossiers_test.xls");
+            const filePath = path.resolve(__dirname, "../__fixtures__/SuiviDossiers_test.xls");
             await controller.parse("requests", filePath, "2022");
 
             const actual = await dataLogAdapter.findAll();
@@ -52,7 +52,7 @@ describe("OsirisCli", () => {
         });
 
         it("persists requests", async () => {
-            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviDossiers_test.xls");
+            const filePath = path.resolve(__dirname, "../__fixtures__/SuiviDossiers_test.xls");
             await controller.parse("requests", filePath, "2022");
             const requests = await osirisRequestAdapter.findAll();
             expect(
@@ -80,7 +80,7 @@ describe("OsirisCli", () => {
         });
 
         it("should call osiris parser", async () => {
-            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviActions_test.xls");
+            const filePath = path.resolve(__dirname, "../__fixtures__/SuiviActions_test.xls");
             await controller.parse("actions", filePath, "2022");
             expect(consoleWarn).not.toBeCalled();
             expect(OsirisParser.parseActions).toHaveBeenCalled();
@@ -95,7 +95,7 @@ describe("OsirisCli", () => {
         });
 
         it("should register new import", async () => {
-            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviActions_test.xls");
+            const filePath = path.resolve(__dirname, "../__fixtures__/SuiviActions_test.xls");
             await controller.parse("actions", filePath, "2022");
 
             const actual = await dataLogAdapter.findAll();
@@ -108,7 +108,7 @@ describe("OsirisCli", () => {
         });
 
         it("persists actions", async () => {
-            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviActions_test.xls");
+            const filePath = path.resolve(__dirname, "../__fixtures__/SuiviActions_test.xls");
             await controller.parse("actions", filePath, "2022");
 
             const actions = await osirisActionAdapter.getAll();
@@ -126,7 +126,7 @@ describe("OsirisCli", () => {
         });
 
         it("should throw an error because unknown is not valid type", () => {
-            const filePath = path.resolve(__dirname, "./__fixtures__/SuiviDossiers_test.xls");
+            const filePath = path.resolve(__dirname, "../__fixtures__/SuiviDossiers_test.xls");
 
             expect(() => controller.parse("unknown" as "actions", filePath, "2022")).rejects.toThrow(
                 "The type unknown is not taken into account",

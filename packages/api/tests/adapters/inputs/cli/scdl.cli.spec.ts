@@ -1,13 +1,13 @@
 import path from "path";
-import ScdlCli from "../../../src/adapters/inputs/cli/scdl.cli";
-import miscScdlProducersAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter";
-import miscScdlGrantAdapter from "../../../src/adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
-import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
-import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
-import notifyService from "../../../src/modules/notify/notify.service";
-import { NotificationType } from "../../../src/modules/notify/@types/NotificationType";
-import apiAssoService from "../../../src/modules/providers/api-asso/api-asso.service";
-import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../adapters/outputs/db/__fixtures__/scdl.fixtures";
+import ScdlCli from "../../../../src/adapters/inputs/cli/scdl.cli";
+import miscScdlProducersAdapter from "../../../../src/adapters/outputs/db/providers/scdl/misc-scdl-producers.adapter";
+import miscScdlGrantAdapter from "../../../../src/adapters/outputs/db/providers/scdl/misc-scdl-grant.adapter";
+import dataLogAdapter from "../../../../src/adapters/outputs/db/data-log/data-log.adapter";
+import applicationFlatAdapter from "../../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
+import notifyService from "../../../../src/modules/notify/notify.service";
+import { NotificationType } from "../../../../src/modules/notify/@types/NotificationType";
+import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
+import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../outputs/db/__fixtures__/scdl.fixtures";
 
 describe("SCDL CLI", () => {
     let mockApiAsso: jest.SpyInstance;
@@ -46,7 +46,7 @@ describe("SCDL CLI", () => {
 
     function testParseCsv(fileNameNoExtension, producerSiret, exportDate) {
         return cli.parse(
-            path.resolve(__dirname, `../../../src/modules/providers/scdl/__fixtures__/${fileNameNoExtension}.csv`),
+            path.resolve(__dirname, `../../../../src/modules/providers/scdl/__fixtures__/${fileNameNoExtension}.csv`),
             producerSiret,
             exportDate,
         );
@@ -54,7 +54,7 @@ describe("SCDL CLI", () => {
 
     function testParseXls(fileNameNoExtension, producerSiret, exportDate) {
         return cli.parseXls(
-            path.resolve(__dirname, `../../../src/modules/providers/scdl/__fixtures__/${fileNameNoExtension}.xlsx`),
+            path.resolve(__dirname, `../../../../src/modules/providers/scdl/__fixtures__/${fileNameNoExtension}.xlsx`),
             producerSiret,
             exportDate,
             "Du 01-01-2023 au 30-06-2023",
@@ -178,7 +178,7 @@ describe("SCDL CLI", () => {
                 await cli.parseXls(
                     path.resolve(
                         __dirname,
-                        `../../../src/modules/providers/scdl/__fixtures__/SCDL_WITH_EXERCICE_ALT.xlsx`,
+                        `../../../../src/modules/providers/scdl/__fixtures__/SCDL_WITH_EXERCICE_ALT.xlsx`,
                     ),
                     PRODUCER.siret,
                     FIRST_IMPORT_DATE,

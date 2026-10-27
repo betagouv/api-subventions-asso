@@ -1,11 +1,11 @@
 import path from "node:path";
-import SubventiaCli from "../../../src/adapters/inputs/cli/subventia.cli";
-import subventiaAdapter from "../../../src/adapters/outputs/db/providers/subventia/subventia.adapter";
+import SubventiaCli from "../../../../src/adapters/inputs/cli/subventia.cli";
+import subventiaAdapter from "../../../../src/adapters/outputs/db/providers/subventia/subventia.adapter";
 import { ObjectId } from "mongodb";
-import dataLogAdapter from "../../../src/adapters/outputs/db/data-log/data-log.adapter";
-import applicationFlatAdapter from "../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
-import { SUBVENTIA_DBO } from "../../../src/modules/providers/subventia/__fixtures__/subventia.fixture";
-import { ApplicationFlatEntity } from "../../../src/entities/flats/ApplicationFlatEntity";
+import dataLogAdapter from "../../../../src/adapters/outputs/db/data-log/data-log.adapter";
+import applicationFlatAdapter from "../../../../src/adapters/outputs/db/application-flat/application-flat.adapter";
+import { SUBVENTIA_DBO } from "../../../../src/modules/providers/subventia/__fixtures__/subventia.fixture";
+import { ApplicationFlatEntity } from "../../../../src/entities/flats/ApplicationFlatEntity";
 
 describe("Subventia Cli", () => {
     let cli: SubventiaCli;
@@ -18,7 +18,7 @@ describe("Subventia Cli", () => {
         it("should add entities", async () => {
             // @ts-expect-error protected method
             await cli._parse(
-                path.resolve(__dirname, "../../../src/modules/providers/subventia/__fixtures__/SUBVENTIA.xlsx"),
+                path.resolve(__dirname, "../../../../src/modules/providers/subventia/__fixtures__/SUBVENTIA.xlsx"),
                 "",
                 new Date("2024-03-12"),
             );
@@ -33,7 +33,7 @@ describe("Subventia Cli", () => {
         it("should register new import", async () => {
             const filePath = path.resolve(
                 __dirname,
-                "../../../src/modules/providers/subventia/__fixtures__/SUBVENTIA.xlsx",
+                "../../../../src/modules/providers/subventia/__fixtures__/SUBVENTIA.xlsx",
             );
             const EXPORT_DATE = "2024-03-12";
             await cli.parse(path.resolve(__dirname, filePath), "2024-03-12");
