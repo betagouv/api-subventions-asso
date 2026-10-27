@@ -38,18 +38,22 @@ describe("SearchService", () => {
         it("gets fresh result if nothing from cache", async () => {
             jest.mocked(searchCacheAdapter.getResults).mockResolvedValue(null);
             await service.getAssociationsKeys(SEARCH_TOKEN);
-            expect(mockSearch.execute).toHaveBeenCalledWith({ value: SEARCH_TOKEN, postalCode: undefined });
+            expect(mockSearch.execute).toHaveBeenCalledWith({
+                value: SEARCH_TOKEN,
+                postalCode: undefined,
+                nameOnly: false,
+            });
         });
 
-        it("uses postal code in cache key", async () => {
+        it("uses postal code and name-only in cache key", async () => {
             jest.clearAllMocks();
             const DATE_NOW = new Date(2024, 0, 2);
             jest.useFakeTimers();
             jest.setSystemTime(DATE_NOW);
-            await service.getAssociationsKeys(SEARCH_TOKEN, "75");
+            await service.getAssociationsKeys(SEARCH_TOKEN, "75", true);
             jest.useRealTimers();
             expect(searchCacheAdapter.getResults).toHaveBeenCalledWith(
-                `${SEARCH_TOKEN}__postalCode:75`,
+                `${SEARCH_TOKEN}__postalCode:75__nameOnly:true`,
                 new Date(2024, 0, 1),
             );
         });

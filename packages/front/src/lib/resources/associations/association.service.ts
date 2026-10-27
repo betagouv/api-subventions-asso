@@ -8,6 +8,7 @@ import { updateSearchHistory } from "$lib/services/searchHistory.service";
 import { toEstablishmentComponent } from "$lib/resources/establishments/establishment.mapper";
 import documentHelper from "$lib/helpers/document.helper";
 import { isAssociation } from "$lib/resources/associations/association.helper";
+import type { SearchSort } from "./association.port";
 
 export type PaginatedAssociationSearchResult = Omit<PaginatedRechercheAssociationDto, "resultats"> & {
     results: RechercheAssociationDto[];
@@ -52,8 +53,14 @@ class AssociationService {
         return associationPort.getGrantExtract(identifier);
     }
 
-    async search(lookup, page = 1, postalCode?: string): Promise<PaginatedAssociationSearchResult> {
-        const results = await this._searchByText(lookup, page, postalCode);
+    async search(
+        lookup,
+        page = 1,
+        postalCode?: string,
+        sort: SearchSort = "relevance",
+        nameOnly = false,
+    ): Promise<PaginatedAssociationSearchResult> {
+        const results = await this._searchByText(lookup, page, postalCode, sort, nameOnly);
         if (results?.total) return results;
 
         // @TODO: remove this when /association/search/{input} will search both in RNA and Sirene collections
@@ -91,8 +98,14 @@ class AssociationService {
         ];
     }
 
-    async _searchByText(lookup: string, page = 1, postalCode?: string): Promise<PaginatedAssociationSearchResult> {
-        return toAssociationSearchResult(await associationPort.search(lookup, page, postalCode));
+    async _searchByText(
+        lookup: string,
+        page = 1,
+        postalCode?: string,
+        sort: SearchSort = "relevance",
+        nameOnly = false,
+    ): Promise<PaginatedAssociationSearchResult> {
+        return toAssociationSearchResult(await associationPort.search(lookup, page, postalCode, sort, nameOnly));
     }
 }
 

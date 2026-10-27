@@ -4,13 +4,18 @@
     type Props = {
         value?: string;
         postalCode?: string;
-        onSubmit?: (value: string | undefined, postalCode?: string) => void;
+        nameOnly?: boolean;
+        onSubmit?: (value: string, postalCode: string | undefined, nameOnly: boolean) => void;
     };
 
-    let { value = $bindable(""), postalCode = $bindable(""), onSubmit = () => undefined }: Props = $props();
+    let {
+        value = $bindable(""),
+        postalCode = $bindable(""),
+        nameOnly = $bindable(false),
+        onSubmit = () => undefined,
+    }: Props = $props();
 
     let locationError = $state<string | undefined>();
-    let searchInNameOnly = $state(false);
 
     const LOCATION_REGEX = /^\d{2,5}$/;
 
@@ -29,7 +34,7 @@
         }
 
         locationError = undefined;
-        onSubmit(value, location || undefined);
+        onSubmit(value, location || undefined, nameOnly);
     }
 </script>
 
@@ -73,7 +78,7 @@
             id="advanced-search-name-only"
             name="advanced-search-name-only"
             type="checkbox"
-            bind:checked={searchInNameOnly} />
+            bind:checked={nameOnly} />
         <label class="fr-label" for="advanced-search-name-only">Rechercher uniquement dans le nom d’association</label>
     </div>
 </form>

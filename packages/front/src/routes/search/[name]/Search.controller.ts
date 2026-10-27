@@ -1,16 +1,16 @@
-import type { SiretDto } from "dto";
 import { goto } from "$app/navigation";
 import Store from "$lib/core/Store";
 import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
 import { decodeQuerySearch, encodeQuerySearch } from "$lib/helpers/urlHelper";
-import { isRna, isSiren, isSiret } from "$lib/helpers/identifierHelper";
+import { isRna, isSiren } from "$lib/helpers/identifierHelper";
 import associationService, {
     type PaginatedAssociationSearchResult,
 } from "$lib/resources/associations/association.service";
 import { removeWhiteSpace } from "$lib/helpers/stringHelper";
+import type { SearchSort } from "$lib/resources/associations/association.port";
 
 export default class SearchController {
-    inputSearch: Store<string | undefined>;
+    inputSearch: Store<string>;
     searchResults = new Store<PaginatedAssociationSearchResult>({
         nbPages: 1,
         page: 1,
@@ -22,76 +22,79 @@ export default class SearchController {
     currentPage = new Store(1);
     isLastSearchCompany = new Store(false);
     postalCode: Store<string>;
+    selectedSort: Store<SearchSort>;
+    nameOnly: Store<boolean>;
 
-    constructor(name = "", postalCode?: string) {
+    constructor(name = "", postalCode?: string, sort: SearchSort = "relevance", nameOnly = false) {
         this.inputSearch = new Store(decodeQuerySearch(name).trim());
         this.postalCode = new Store(postalCode ?? "");
+        this.selectedSort = new Store(sort);
+        this.nameOnly = new Store(nameOnly);
         this.duplicatesFromIdentifier = new Store(null);
         this.searchPromise = new Store(returnInfinitePromise());
-        this.searchPromise.set(this.fetchAssociationFromName(name, 1, postalCode));
+        this.searchPromise.set(this.fetchAssociations());
     }
 
-    async fetchAssociationFromName(rawInput = "", page = 1, postalCode?: string) {
-        const input = rawInput.trim();
-        const inputId = removeWhiteSpace(rawInput);
-        const isSiretSearch = isSiret(inputId);
+    async fetchAssociations(page = 1) {
+        const input = this.inputSearch.value.trim();
+        const inputId = removeWhiteSpace(input);
         const isAssociationIdSearch = isSiren(inputId) || isRna(inputId);
         this.isLastSearchCompany.set(false);
         try {
-            const search = await associationService.search(input, page, postalCode);
+            const search = await associationService.search(
+                input,
+                page,
+                this.postalCode.value || undefined,
+                this.selectedSort.value,
+                this.nameOnly.value,
+            );
 
-            // search by id with single result: we can redirect
-            if (isSiretSearch && search.total === 1) return this.gotoEstablishment(inputId);
-            if (isAssociationIdSearch && search.total === 1) {
-                return goto(`/association/${inputId}`, { replaceState: true });
+            // display alert if there are duplicates in rna-siren links
+            if (isAssociationIdSearch) {
+                const duplicates = search.results.flatMap(association => {
+                    const identifier = [association.rna, association.siren].find(id => id && id !== inputId);
+                    return identifier ? [identifier] : [];
+                });
+                this.duplicatesFromIdentifier.set(duplicates.length ? duplicates : null);
+            } else this.duplicatesFromIdentifier.set(null);
 
-                // multiple results
-            } else {
-                // display alert if there are duplicates in rna-siren links
-                if (isAssociationIdSearch) {
-                    const duplicates = search.results
-                        .map(association => [association.rna, association.siren].find(id => id && id !== inputId))
-                        .filter(identifier => identifier) as string[];
-                    this.duplicatesFromIdentifier.set(duplicates.length ? duplicates : null);
-                } else this.duplicatesFromIdentifier.set(null);
-
-                // search by name
-                this.searchResults.set(search);
-                this.currentPage.set(search.page);
-                // reload same page to save search in history
-                goto(this.getSearchUrl(input, postalCode), { replaceState: true });
-            }
+            this.searchResults.set(search);
+            this.currentPage.set(search.page);
+            // reload same page to save search in history
+            goto(this.getSearchUrl(), { replaceState: true });
         } catch (e) {
             if ((e as { httpCode?: number }).httpCode === 422) this.isLastSearchCompany.set(true);
         }
     }
 
-    getSearchUrl(input: string, postalCode?: string) {
+    getSearchUrl() {
         const params = new URLSearchParams();
-        if (postalCode) params.set("postalCode", postalCode);
+        if (this.postalCode.value) params.set("postalCode", this.postalCode.value);
+        if (this.selectedSort.value !== "relevance") params.set("sort", this.selectedSort.value);
+        if (this.nameOnly.value) params.set("nameOnly", "true");
         const query = params.toString();
 
-        return `/search/${encodeQuerySearch(input)}${query ? `?${query}` : ""}`;
-    }
-
-    gotoEstablishment(siret: SiretDto) {
-        goto(`/etablissement/${removeWhiteSpace(siret)}`, { replaceState: true });
+        return `/search/${encodeQuerySearch(this.inputSearch.value)}${query ? `?${query}` : ""}`;
     }
 
     updateNbEtabsLabel() {
         const nbAssos = this.searchResults.value.total;
-        return nbAssos > 1 ? `${nbAssos} résultats trouvés.` : `${nbAssos} résultat trouvé.`;
+        return nbAssos > 1 ? `${nbAssos} résultats trouvés` : `${nbAssos} résultat trouvé`;
     }
 
-    onSubmit(input?: string, postalCode?: string) {
-        if (!input) return;
-        const trimmedInput = input.trim();
+    onSubmit(input: string, postalCode?: string, nameOnly = false) {
         this.postalCode.set(postalCode ?? "");
-        this.inputSearch.set(trimmedInput);
-        this.searchPromise.set(this.fetchAssociationFromName(trimmedInput, 1, postalCode));
+        this.inputSearch.set(input.trim());
+        this.nameOnly.set(nameOnly);
+        this.searchPromise.set(this.fetchAssociations());
     }
 
-    onChangePage(page: number) {
-        this.searchPromise.set(this.fetchAssociationFromName(this.inputSearch.value, page, this.postalCode.value));
+    selectPage(page: number) {
+        this.searchPromise.set(this.fetchAssociations(page));
+    }
+
+    selectSort(sort: SearchSort) {
+        this.selectedSort.set(sort);
+        this.searchPromise.set(this.fetchAssociations());
     }
 }

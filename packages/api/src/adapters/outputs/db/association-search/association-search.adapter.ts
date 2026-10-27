@@ -31,9 +31,25 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         await this.collection.createIndex({ objectTokens: 1 });
     }
 
-    findByText(text: string, postalCode?: string): Promise<AssociationSearchEntity[]> {
+    findByText(text: string, postalCode?: string, nameOnly = false): Promise<AssociationSearchEntity[]> {
         const needle = this.sanitize.execute(text); // search a needle in a haystack
         const words = this.split.execute(needle);
+
+        const objectContainsPhrase = { $gte: [{ $indexOfCP: ["$searchObject", needle] }, 0] };
+        const allWordsInName = { $setIsSubset: [words, { $ifNull: ["$nameTokens", []] }] };
+        const allWordsInObject = { $setIsSubset: [words, { $ifNull: ["$objectTokens", []] }] };
+        const nameContainsPhrase = {
+            $or: [
+                { $gte: [{ $indexOfCP: ["$searchName.rna", needle] }, 0] },
+                { $gte: [{ $indexOfCP: ["$searchName.sirene", needle] }, 0] },
+            ],
+        };
+
+        const phraseMatchesSearchScope = nameOnly
+            ? nameContainsPhrase
+            : { $and: [nameContainsPhrase, objectContainsPhrase] };
+
+        const wordsMatchSearchScope = nameOnly ? allWordsInName : { $and: [allWordsInName, allWordsInObject] };
 
         if (words.length === 0) return Promise.resolve([]);
 
@@ -42,7 +58,11 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
                 ...(postalCode ? [{ $match: { postalCodes: { $regex: `^${postalCode}` } } }] : []), // filter on post code when provided
 
                 // 1. filter all documents having all given words in their name or object
-                { $match: { $or: [{ nameTokens: { $all: words } }, { objectTokens: { $all: words } }] } },
+                {
+                    $match: nameOnly
+                        ? { nameTokens: { $all: words } }
+                        : { $or: [{ nameTokens: { $all: words } }, { objectTokens: { $all: words } }] },
+                },
 
                 // 2. build a score for each document, based on :
                 //      4 => the phrase is present in both name and object (words in order)
@@ -55,37 +75,13 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
                             $switch: {
                                 branches: [
                                     // 4: whole phrase, in order, in name and object
-                                    {
-                                        case: {
-                                            $and: [
-                                                {
-                                                    $or: [
-                                                        { $gte: [{ $indexOfCP: ["$searchName.rna", needle] }, 0] },
-                                                        { $gte: [{ $indexOfCP: ["$searchName.sirene", needle] }, 0] },
-                                                    ],
-                                                },
-                                                { $gte: [{ $indexOfCP: ["$searchObject", needle] }, 0] },
-                                            ],
-                                        },
-                                        then: 4,
-                                    },
+                                    { case: phraseMatchesSearchScope, then: 4 },
                                     // 3: all words in name and object, any order
-                                    {
-                                        case: {
-                                            $and: [
-                                                { $setIsSubset: [words, { $ifNull: ["$nameTokens", []] }] },
-                                                { $setIsSubset: [words, { $ifNull: ["$objectTokens", []] }] },
-                                            ],
-                                        },
-                                        then: 3,
-                                    },
+                                    { case: wordsMatchSearchScope, then: 3 },
                                     // 2: all words in name
-                                    { case: { $setIsSubset: [words, { $ifNull: ["$nameTokens", []] }] }, then: 2 },
+                                    { case: allWordsInName, then: 2 },
                                     // 1: all words in object only
-                                    {
-                                        case: { $setIsSubset: [words, { $ifNull: ["$objectTokens", []] }] },
-                                        then: 1,
-                                    },
+                                    { case: allWordsInObject, then: 1 },
                                 ],
                                 default: 0,
                             },

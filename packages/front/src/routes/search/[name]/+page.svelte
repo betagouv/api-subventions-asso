@@ -12,8 +12,10 @@
     let { params }: PageProps = $props();
     const name = $derived(params.name);
     const initialPostalCode = $derived($page.url.searchParams.get("postalCode") ?? undefined);
+    const initialSort = $derived($page.url.searchParams.get("sort") === "alphabetical" ? "alphabetical" : "relevance");
+    const initialNameOnly = $derived($page.url.searchParams.get("nameOnly") === "true");
 
-    const ctrl = $derived(new SearchController(name, initialPostalCode));
+    const ctrl = $derived(new SearchController(name, initialPostalCode, initialSort, initialNameOnly));
     const searchPromise = $derived(ctrl.searchPromise);
     const searchResults = $derived(ctrl.searchResults);
     const inputSearch = $derived(ctrl.inputSearch);
@@ -21,19 +23,20 @@
     const currentPage = $derived(ctrl.currentPage);
     const isLastSearchCompany = $derived(ctrl.isLastSearchCompany);
     const postalCode = $derived(ctrl.postalCode);
+    const selectedSort = $derived(ctrl.selectedSort);
+    const nameOnly = $derived(ctrl.nameOnly);
     const nbResultLabel = $derived.by(() => {
         void $searchResults;
         return ctrl.updateNbEtabsLabel();
     });
-
-    let selectedSort = $state<"relevance" | "alphabetical">("relevance");
 </script>
 
 <div class="fr-my-6v">
     <AdvancedSearchBar
         bind:value={$inputSearch}
         bind:postalCode={$postalCode}
-        onSubmit={(value, postalCode) => ctrl.onSubmit(value, postalCode)} />
+        bind:nameOnly={$nameOnly}
+        onSubmit={(value, postalCode, nameOnly) => ctrl.onSubmit(value, postalCode, nameOnly)} />
 </div>
 
 {#await $searchPromise}
@@ -63,17 +66,17 @@
                     <span>Trier par :</span>
                     <div class="buttons">
                         <button
-                            class:active={selectedSort === "relevance"}
+                            class:active={$selectedSort === "relevance"}
                             type="button"
-                            aria-pressed={selectedSort === "relevance"}
-                            onclick={() => (selectedSort = "relevance")}>
+                            aria-pressed={$selectedSort === "relevance"}
+                            onclick={() => ctrl.selectSort("relevance")}>
                             Pertinence
                         </button>
                         <button
-                            class:active={selectedSort === "alphabetical"}
+                            class:active={$selectedSort === "alphabetical"}
                             type="button"
-                            aria-pressed={selectedSort === "alphabetical"}
-                            onclick={() => (selectedSort = "alphabetical")}>
+                            aria-pressed={$selectedSort === "alphabetical"}
+                            onclick={() => ctrl.selectSort("alphabetical")}>
                             Ordre alphabétique
                         </button>
                     </div>
@@ -101,10 +104,7 @@
         {#if $searchResults.nbPages > 1}
             <div class="fr-grid-row fr-mt-5w">
                 <div class="fr-mx-auto">
-                    <Pagination
-                        totalPages={$searchResults.nbPages}
-                        {currentPage}
-                        onchange={e => ctrl.onChangePage(e)} />
+                    <Pagination totalPages={$searchResults.nbPages} {currentPage} onchange={e => ctrl.selectPage(e)} />
                 </div>
             </div>
         {/if}
@@ -122,7 +122,11 @@
     .header > .sort {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.5rem;
+    }
+
+    .header > .sort > span {
+        white-space: nowrap;
     }
 
     .buttons > button {
@@ -138,6 +142,11 @@
 
     @media (max-width: 48em) {
         .header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .header > .sort {
             align-items: flex-start;
             flex-direction: column;
         }

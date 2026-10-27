@@ -9,7 +9,6 @@ vi.mock("$lib/helpers/identifierHelper");
 const mockedIdentifierHelper = vi.mocked(IdentifierHelper);
 
 import associationService from "$lib/resources/associations/association.service";
-import { isSiret } from "$lib/helpers/identifierHelper";
 import { decodeQuerySearch, encodeQuerySearch } from "$lib/helpers/urlHelper";
 import { goto } from "$app/navigation";
 
@@ -53,107 +52,72 @@ describe("SearchController", () => {
         vi.mocked(decodeQuerySearch).mockRestore();
     });
 
-    describe("fetchAssociationFromName()", () => {
+    describe("fetchAssociations()", () => {
         let controller;
+
         beforeEach(async () => {
             controller = new SearchController(RNA);
             await new Promise(process.nextTick);
         });
 
         it("searches with trimmed input", async () => {
-            const PAGE = 1;
-            await controller.fetchAssociationFromName("  " + RNA + "  ");
-            expect(mockedAssociationService.search).toHaveBeenCalledWith(RNA, PAGE, undefined);
+            controller.inputSearch.value = `  ${RNA}  `;
+            await controller.fetchAssociations();
+            expect(mockedAssociationService.search).toHaveBeenCalledWith(RNA, 1, undefined, "relevance", false);
         });
 
         it("should set duplicate store", async () => {
-            const expected = [RNA_SIREN_1.siren, RNA_SIREN_2.siren];
             mockedIdentifierHelper.isRna.mockReturnValue(true);
-            await controller.fetchAssociationFromName(RNA);
-            const actual = controller.duplicatesFromIdentifier.value;
+            await controller.fetchAssociations();
             mockedIdentifierHelper.isRna.mockRestore();
-            expect(actual).toEqual(expected);
+            expect(controller.duplicatesFromIdentifier.value).toEqual([RNA_SIREN_1.siren, RNA_SIREN_2.siren]);
         });
 
-        it("if one result and siret searched, call goToEstablishment", async () => {
-            // @ts-expect-error -- only mock res length
-            vi.mocked(mockedAssociationService.search).mockResolvedValueOnce({ total: 1 });
-            vi.mocked(isSiret).mockReturnValueOnce(true);
-            const SIRET = "12345678901234";
-            mockedIdentifierHelper.isSiret.mockReturnValueOnce(true);
-            const goToEstabSpy = vi.spyOn(controller, "gotoEstablishment");
-            await controller.fetchAssociationFromName(SIRET);
-            expect(goToEstabSpy).toHaveBeenCalledWith(SIRET);
-        });
+        it("displays a single identifier result instead of redirecting", async () => {
+            const singleResult = { ...DUPLICATED_RESULTS, results: [RNA_SIREN_1], total: 1 };
+            mockedAssociationService.search.mockResolvedValueOnce(singleResult);
+            mockedIdentifierHelper.isRna.mockReturnValueOnce(true);
+            vi.mocked(encodeQuerySearch).mockReturnValueOnce(RNA);
 
-        it.each`
-            idType     | helperToMock                      | id
-            ${"rna"}   | ${mockedIdentifierHelper.isRna}   | ${RNA}
-            ${"siren"} | ${mockedIdentifierHelper.isSiren} | ${"SIREN"}
-        `("if one result and siren searched, go to asso by $idType", async ({ helperToMock, id }) => {
-            // @ts-expect-error -- only mock res length
-            vi.mocked(mockedAssociationService.search).mockResolvedValueOnce({ total: 1 });
-            helperToMock.mockReturnValueOnce(true);
-            await controller.fetchAssociationFromName(id);
-            const actual = vi.mocked(goto).mock.calls[1][0]; // first call is in constructor
-            expect(actual).toBe(`/association/${id}`);
+            await controller.fetchAssociations();
+
+            expect(controller.searchResults.value).toEqual(singleResult);
+            expect(vi.mocked(goto)).toHaveBeenLastCalledWith(`/search/${RNA}`, { replaceState: true });
         });
 
         it("should unset duplicate store on second search, with name", async () => {
-            const expected = null;
             mockedIdentifierHelper.isRna.mockReturnValueOnce(false);
-            await controller.fetchAssociationFromName("name");
-            const actual = controller.duplicatesFromIdentifier.value;
-            expect(actual).toEqual(expected);
+            controller.inputSearch.value = "name";
+            await controller.fetchAssociations();
+            expect(controller.duplicatesFromIdentifier.value).toBeNull();
         });
 
         it("should call with required page", async () => {
-            const PAGE = 42;
-            await controller.fetchAssociationFromName("name", PAGE);
-            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", PAGE, undefined);
-        });
-
-        it("should call with default page", async () => {
-            const PAGE = 1;
-            await controller.fetchAssociationFromName("name");
-            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", PAGE, undefined);
+            controller.inputSearch.value = "name";
+            await controller.fetchAssociations(42);
+            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", 42, undefined, "relevance", false);
         });
 
         it("should call with postal code", async () => {
-            const PAGE = 1;
-            const POSTAL_CODE = "93400";
-            await controller.fetchAssociationFromName("name", PAGE, POSTAL_CODE);
-            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", PAGE, POSTAL_CODE);
+            controller.inputSearch.value = "name";
+            controller.postalCode.value = "93400";
+            await controller.fetchAssociations();
+            expect(mockedAssociationService.search).toHaveBeenCalledWith("name", 1, "93400", "relevance", false);
         });
 
-        it("should call goto with encoded input", async () => {
-            mockedIdentifierHelper.isRna.mockReturnValue(false);
-            mockedIdentifierHelper.isSiren.mockReturnValue(false);
+        it("should keep search options in url", () => {
+            controller.inputSearch.value = "name";
+            controller.postalCode.value = "43000";
+            controller.selectedSort.value = "alphabetical";
+            controller.nameOnly.value = true;
             vi.mocked(encodeQuerySearch).mockReturnValueOnce("encoded");
-            await controller.fetchAssociationFromName("name");
-            const actual = vi.mocked(goto).mock.calls[1]; // first call is in constructor
-            expect(actual).toMatchInlineSnapshot(`
-              [
-                "/search/encoded",
-                {
-                  "replaceState": true,
-                },
-              ]
-            `);
-        });
 
-        it("should keep postal code in url after search", async () => {
-            mockedIdentifierHelper.isRna.mockReturnValue(false);
-            mockedIdentifierHelper.isSiren.mockReturnValue(false);
-            vi.mocked(encodeQuerySearch).mockReturnValueOnce("encoded");
-            await controller.fetchAssociationFromName("name", 1, "43000");
-            const actual = vi.mocked(goto).mock.calls[1]; // first call is in constructor
-            expect(actual).toEqual(["/search/encoded?postalCode=43000", { replaceState: true }]);
+            expect(controller.getSearchUrl()).toBe("/search/encoded?postalCode=43000&sort=alphabetical&nameOnly=true");
         });
 
         it("sets isLastSearchCompany to true if raised exception", async () => {
             vi.mocked(mockedAssociationService.search).mockRejectedValueOnce({ httpCode: 422 });
-            await controller.fetchAssociationFromName("name");
+            await controller.fetchAssociations();
             expect(controller.isLastSearchCompany.value).toBe(true);
         });
     });
@@ -164,40 +128,40 @@ describe("SearchController", () => {
 
         beforeAll(() => {
             controller = new SearchController(RNA);
-            // @ts-expect-error -- mock
-            fetchSpy = vi.spyOn(controller, "fetchAssociationFromName").mockResolvedValue(null);
+            fetchSpy = vi.spyOn(controller, "fetchAssociations").mockResolvedValue();
         });
 
-        afterAll(() => {
-            fetchSpy.mockRestore();
-        });
+        afterAll(() => fetchSpy.mockRestore());
 
         it("fetch new result on page one", () => {
-            vi.mocked(isSiret).mockReturnValueOnce(false);
             controller.onSubmit(RNA);
-            expect(fetchSpy).toHaveBeenCalledWith(RNA, 1, undefined);
+            expect(fetchSpy).toHaveBeenCalledWith();
         });
 
-        it("fetch new result with postal code on page one", () => {
-            const POSTAL_CODE = "93";
-            vi.mocked(isSiret).mockReturnValueOnce(false);
-            controller.onSubmit(RNA, POSTAL_CODE);
-            expect(fetchSpy).toHaveBeenCalledWith(RNA, 1, POSTAL_CODE);
+        it("fetch new result with filters on page one", () => {
+            controller.onSubmit(RNA, "93", true);
+            expect(controller.postalCode.value).toBe("93");
+            expect(controller.nameOnly.value).toBe(true);
+            expect(fetchSpy).toHaveBeenCalledWith();
         });
     });
 
-    describe("onChangePage", () => {
-        let fetchSpy;
-
-        it("fetches search results with page from event", () => {
-            const PAGE = 5;
-            const SEARCH = "search";
+    describe("selectPage", () => {
+        it("fetches search results with selected page", () => {
             const controller = new SearchController(RNA);
-            fetchSpy = vi.spyOn(controller, "fetchAssociationFromName").mockReturnValue(Promise.resolve());
-            controller.inputSearch.value = SEARCH;
-            controller.postalCode.value = "93";
-            controller.onChangePage(PAGE);
-            expect(fetchSpy).toHaveBeenCalledWith(SEARCH, PAGE, "93");
+            const fetchSpy = vi.spyOn(controller, "fetchAssociations").mockResolvedValue();
+            controller.selectPage(5);
+            expect(fetchSpy).toHaveBeenCalledWith(5);
+        });
+    });
+
+    describe("selectSort", () => {
+        it("fetches first page with selected sort", () => {
+            const controller = new SearchController(RNA);
+            const fetchSpy = vi.spyOn(controller, "fetchAssociations").mockResolvedValue();
+            controller.selectSort("alphabetical");
+            expect(controller.selectedSort.value).toBe("alphabetical");
+            expect(fetchSpy).toHaveBeenCalledWith();
         });
     });
 });
