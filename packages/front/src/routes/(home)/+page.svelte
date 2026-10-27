@@ -30,7 +30,7 @@
             <SearchBar disableIfEmpty={false} onSubmit={value => ctrl.onSubmit(value)} />
             <p class="fr-mt-3w fr-mb-0 text-center">
                 <a class="fr-link fr-icon-arrow-right-line fr-link--icon-right" href="/advanced-search">
-                    Recherche avancée
+                    Filtrer par localisation
                 </a>
             </p>
             <p class="help fr-text--sm fr-mt-3w text-center">
