@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.86.2](https://github.com/betagouv/api-subventions-asso/compare/v0.86.1...v0.86.2) (2026-10-28)
+
+
+### Features
+
+* **api,dto:** [#4071](https://github.com/betagouv/api-subventions-asso/issues/4071) add admin user signup stats endpoint ([#4077](https://github.com/betagouv/api-subventions-asso/issues/4077)) ([4fd60ad](https://github.com/betagouv/api-subventions-asso/commit/4fd60ad547672fd4a6dc6135df64c1dc71ec782a))
+* **api:** [#4029](https://github.com/betagouv/api-subventions-asso/issues/4029) upsert rna documents after first import ([#4034](https://github.com/betagouv/api-subventions-asso/issues/4034)) ([e64bab1](https://github.com/betagouv/api-subventions-asso/commit/e64bab191a7a2295019bddbee87fc793d8c33f44))
+* **api:** [#4047](https://github.com/betagouv/api-subventions-asso/issues/4047) enhance test-cron file ([#4063](https://github.com/betagouv/api-subventions-asso/issues/4063)) ([3b8e13f](https://github.com/betagouv/api-subventions-asso/commit/3b8e13f0af68bca2416b2c991aaaa52fd6d9b33a))
+* **api:** [#4061](https://github.com/betagouv/api-subventions-asso/issues/4061) add sirene name in search ([#4065](https://github.com/betagouv/api-subventions-asso/issues/4065)) ([4ca91ae](https://github.com/betagouv/api-subventions-asso/commit/4ca91ae69a2e551d11adb20084ecb14314ad6b22)), closes [#4062](https://github.com/betagouv/api-subventions-asso/issues/4062) [#4066](https://github.com/betagouv/api-subventions-asso/issues/4066)
+* **api:** [#4064](https://github.com/betagouv/api-subventions-asso/issues/4064) use association-search to determine id belongs to asso ([#4091](https://github.com/betagouv/api-subventions-asso/issues/4091)) ([95f8a97](https://github.com/betagouv/api-subventions-asso/commit/95f8a97cd7bb59ff644e6775a27f935694ad6f34))
+* **front:** [#4043](https://github.com/betagouv/api-subventions-asso/issues/4043) add custom spellchecking to search inputs ([#4074](https://github.com/betagouv/api-subventions-asso/issues/4074)) ([9d82f25](https://github.com/betagouv/api-subventions-asso/commit/9d82f251fbb47be28c3c10ecbfe76f64833e6798)), closes [#4068](https://github.com/betagouv/api-subventions-asso/issues/4068)
+* **front:** [#4044](https://github.com/betagouv/api-subventions-asso/issues/4044) search results layout ([#4059](https://github.com/betagouv/api-subventions-asso/issues/4059)) ([4822d57](https://github.com/betagouv/api-subventions-asso/commit/4822d574441ba2ddf539ee5e4da5f9c3432d69c5))
+* **front:** [#4050](https://github.com/betagouv/api-subventions-asso/issues/4050) search history layout ([#4058](https://github.com/betagouv/api-subventions-asso/issues/4058)) ([9a9fef2](https://github.com/betagouv/api-subventions-asso/commit/9a9fef2e0ab2669da8c2261745c6c83d3ee6acdf))
+* **front:** [#4051](https://github.com/betagouv/api-subventions-asso/issues/4051) advanced search ([#4057](https://github.com/betagouv/api-subventions-asso/issues/4057)) ([aa0cbee](https://github.com/betagouv/api-subventions-asso/commit/aa0cbee2836870d1b2b746ec86cecfdb613e50c8))
+* **front:** [#4070](https://github.com/betagouv/api-subventions-asso/issues/4070) add posthog connection ([#4075](https://github.com/betagouv/api-subventions-asso/issues/4075)) ([93646ef](https://github.com/betagouv/api-subventions-asso/commit/93646ef6b5c9a5161047214074b6bfb507a6597b))
+
+
+### Bug Fixes
+
+* **api,front:** [#4078](https://github.com/betagouv/api-subventions-asso/issues/4078) finalize association search with sorting pagination and name-only option ([#4087](https://github.com/betagouv/api-subventions-asso/issues/4087)) ([0ab9909](https://github.com/betagouv/api-subventions-asso/commit/0ab9909f3894ae2982e7dc16ea295c3f33b7b429))
+* **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) debug scdl deposit cron ([#4073](https://github.com/betagouv/api-subventions-asso/issues/4073)) ([18ea5cd](https://github.com/betagouv/api-subventions-asso/commit/18ea5cd77ff5f46c27f7e7dfb696e8a03b92b41b))
+* **api:** handle wrong rna in sirene unite legale entity ([a00515d](https://github.com/betagouv/api-subventions-asso/commit/a00515da55abbe0a950b2dcd6a66d99b0dea19b8))
+* **api:** lower case of input split words ([71b0f36](https://github.com/betagouv/api-subventions-asso/commit/71b0f366f3dd6676ffb74df7973bb9d514b6fab1))
+* force node 22.23.4 after CERTFR-2026-CTI-008 ([90c0d29](https://github.com/betagouv/api-subventions-asso/commit/90c0d29b74897716931c22836132b7bcb14f2754))
+* force node 22.23.4 after CERTFR-2026-CTI-008 ([932ffec](https://github.com/betagouv/api-subventions-asso/commit/932ffec24b7ffe5eb38d703a09aa3acde8db75f6))
+* **front:** [#4050](https://github.com/betagouv/api-subventions-asso/issues/4050) fix row-gap of association-tags and nbResultLabel derived syntax ([5d7b843](https://github.com/betagouv/api-subventions-asso/commit/5d7b84334d7c9b435ec1fb881820bc6ba0daa6a0))
+* **front:** [#4051](https://github.com/betagouv/api-subventions-asso/issues/4051) add spellcheck ([19d71e5](https://github.com/betagouv/api-subventions-asso/commit/19d71e5079b7d6d9d75f9d67dafe11b83caa7739))
+* **front:** [#4067](https://github.com/betagouv/api-subventions-asso/issues/4067) ensure page access on direct url access ([#4079](https://github.com/betagouv/api-subventions-asso/issues/4079)) ([783ab3a](https://github.com/betagouv/api-subventions-asso/commit/783ab3af1a806252662f53d36419ae0324c0712b))
+* only define package manager using packageManager option ([a1b5c83](https://github.com/betagouv/api-subventions-asso/commit/a1b5c83d4206e5dbbdf4a3df8b2267f439275c5b))
+
 ## [0.86.1](https://github.com/betagouv/api-subventions-asso/compare/v0.86.0...v0.86.1) (2026-09-03)
 
 
