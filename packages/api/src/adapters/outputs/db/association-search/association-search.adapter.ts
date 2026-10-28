@@ -111,7 +111,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         const query = identifier instanceof Siren ? { siren: identifier.value } : { rna: identifier.value };
         const cursor = this.collection.find(this.buildQueryWithPostalCodeFilter(query, postalCode));
 
-        if (!cursor.hasNext()) return null;
+        if (!(await cursor.hasNext())) return null;
         const dbo = await cursor.next();
         await cursor.close();
         if (!dbo) return null;

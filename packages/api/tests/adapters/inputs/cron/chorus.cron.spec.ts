@@ -9,7 +9,6 @@ import { GetNewS3File } from "../../../../src/modules/s3-file/use-cases/get-new-
 import { ChorusImport } from "../../../../src/adapters/inputs/pipeline/import/chorus/chorus.import";
 import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
 import stateBudgetProgramAdapter from "../../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
-import sireneUniteLegaleAdapter from "../../../../src/adapters/outputs/db/sirene/sirene-unite-legale.adapter";
 import uniteLegaleEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 import { Siren } from "../../../../src/identifier-objects";
 import { PROGRAMS } from "../../../__fixtures__/paymentsFlat.fixture";
@@ -22,7 +21,6 @@ import { FilterChorusEntities } from "../../../../src/modules/providers/chorus/u
 import { FilterChorusFseEntities } from "../../../../src/modules/providers/chorus/use-cases/filter-fse-entities";
 import { CheckIdentifierIsFromAssoUseCase } from "../../../../src/modules/associations/use-cases/check-identifier-is-from-asso.use-case";
 import { CheckSirenIsFromAssoUseCase } from "../../../../src/modules/associations/use-cases/check-siren-is-from-asso.use-case";
-import rnaSirenAdapter from "../../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
 import chorusService from "../../../../src/modules/providers/chorus/chorus.service";
 import saveChorusEntities from "../../../../src/modules/providers/chorus/use-cases/save-entities";
 import saveChorusFseEntities from "../../../../src/modules/providers/chorus/use-cases/save-fse-entities";
@@ -31,6 +29,8 @@ import { TagImportedFile } from "../../../../src/modules/s3-file/use-cases/tag-i
 import DownloadFile from "../../../../src/usecases/download-file";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 import db from "../../../../src/shared/MongoConnection";
+import associationSearchAdapter from "../../../../src/adapters/outputs/db/association-search/association-search.adapter";
+import { ASSOCIATION_SEARCH_DBOS } from "../../../../src/adapters/outputs/db/association-search/__fixtures__/association-search.fixture";
 
 jest.mock("../../../../src/modules/providers/api-asso/api-asso.service");
 
@@ -66,12 +66,7 @@ describe("Chorus CRON", () => {
     });
 
     const mockCheckIdentifierIsFromAsso = new CheckIdentifierIsFromAssoUseCase(
-        new CheckSirenIsFromAssoUseCase(
-            sireneUniteLegaleAdapter,
-            rnaSirenAdapter,
-            uniteLegaleEntrepriseAdapter,
-            apiAssoService,
-        ),
+        new CheckSirenIsFromAssoUseCase(associationSearchAdapter, uniteLegaleEntrepriseAdapter, apiAssoService),
     );
 
     // mock file access but not import process
@@ -126,9 +121,10 @@ describe("Chorus CRON", () => {
         await Promise.all([
             stateBudgetProgramAdapter.replace(PROGRAMS),
             // make siren 100000000 belong to asso
-            db.collection("sirene").insertOne({
-                siren: "100000000",
-                identifiantAssociationUniteLegale: DEFAULT_ASSOCIATION.rna, // mandatory
+            db.collection("association-search").insertOne({
+                ...ASSOCIATION_SEARCH_DBOS[0],
+                siren: DEFAULT_ASSOCIATION.siren,
+                rna: DEFAULT_ASSOCIATION.rna, // mandatory
             }),
             // make siren 30000000 belong to an entreprise
             uniteLegaleEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
