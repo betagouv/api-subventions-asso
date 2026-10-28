@@ -22,7 +22,8 @@
         "start": "node ./packages/api/build/src/index.js",
         "test": "pnpm --filter api --filter front test",
         "migration:apply": "pnpm --filter api migration:apply",
-        "release": "commit-and-tag-version",
+        "release": "commit-and-tag-version --release-as minor",
+        "patch": "commit-and-tag-version --release-as patch",
         "lint-format": "pnpm -r --workspace-concurrency=1 run lint-format",
         "lint": "pnpm -r lint"
     },
