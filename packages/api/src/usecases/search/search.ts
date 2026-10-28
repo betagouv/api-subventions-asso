@@ -7,6 +7,7 @@ import { AssociationIdentifier, EstablishmentIdentifier, Rna, Siren, Siret } fro
 export interface SearchInput {
     value: string;
     postalCode?: string;
+    nameOnly?: boolean;
 }
 
 export class Search implements AsyncUseCase<SearchInput, AssociationSearchEntity[]> {
@@ -27,7 +28,10 @@ export class Search implements AsyncUseCase<SearchInput, AssociationSearchEntity
             if (entity) results = [entity];
         } else if (!identifier) {
             // search by name/object
-            results = await this.searchPort.findByText(args.value, args.postalCode);
+            results = await this.searchPort.findByText(args.value, {
+                postalCode: args.postalCode,
+                nameOnly: args.nameOnly,
+            });
         } else {
             // other identifiers are not handled yet
             // silently fails

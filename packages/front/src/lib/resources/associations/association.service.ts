@@ -1,4 +1,9 @@
-import type { AssociationIdentifierDto, PaginatedRechercheAssociationDto, RechercheAssociationDto } from "dto";
+import type {
+    AssociationIdentifierDto,
+    AssociationSearchOptions,
+    PaginatedRechercheAssociationDto,
+    RechercheAssociationDto,
+} from "dto";
 import type AssociationEntity from "./entities/AssociationEntity";
 import associationPort from "./association.port";
 import { toSearchHistory } from "./association.mapper";
@@ -52,8 +57,8 @@ class AssociationService {
         return associationPort.getGrantExtract(identifier);
     }
 
-    async search(lookup, page = 1, postalCode?: string): Promise<PaginatedAssociationSearchResult> {
-        const results = await this._searchByText(lookup, page, postalCode);
+    async search(lookup, options: AssociationSearchOptions = {}): Promise<PaginatedAssociationSearchResult> {
+        const results = await this._searchByText(lookup, options);
         if (results?.total) return results;
 
         // @TODO: remove this when /association/search/{input} will search both in RNA and Sirene collections
@@ -91,8 +96,11 @@ class AssociationService {
         ];
     }
 
-    async _searchByText(lookup: string, page = 1, postalCode?: string): Promise<PaginatedAssociationSearchResult> {
-        return toAssociationSearchResult(await associationPort.search(lookup, page, postalCode));
+    async _searchByText(
+        lookup: string,
+        options: AssociationSearchOptions = {},
+    ): Promise<PaginatedAssociationSearchResult> {
+        return toAssociationSearchResult(await associationPort.search(lookup, options));
     }
 }
 

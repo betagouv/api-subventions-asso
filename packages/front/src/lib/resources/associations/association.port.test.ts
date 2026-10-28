@@ -1,5 +1,6 @@
 import type { AxiosResponse } from "axios";
 import associationPort from "./association.port";
+import { SearchSort } from "dto";
 import requestsService from "$lib/services/requests.service";
 import associationService from "$lib/resources/associations/association.service";
 
@@ -71,7 +72,7 @@ describe("AssociationPort", () => {
     describe("search", () => {
         it("calls requestsService get", async () => {
             const expected = `/search/associations/${SIREN}?page=2`;
-            await associationPort.search(SIREN, 2);
+            await associationPort.search(SIREN, { page: 2 });
             expect(mockedRequestService.get).toHaveBeenCalledWith(expected);
         });
 
@@ -81,9 +82,14 @@ describe("AssociationPort", () => {
             expect(mockedRequestService.get).toHaveBeenCalledWith(expected);
         });
 
-        it("calls requestsService get with postal code", async () => {
-            const expected = `/search/associations/${SIREN}?page=2&postalCode=93`;
-            await associationPort.search(SIREN, 2, "93");
+        it("calls requestsService get with search options", async () => {
+            const expected = `/search/associations/${SIREN}?page=2&postalCode=93&sort=alphabetical&nameOnly=true`;
+            await associationPort.search(SIREN, {
+                page: 2,
+                postalCode: "93",
+                sort: SearchSort.ALPHABETICAL,
+                nameOnly: true,
+            });
             expect(mockedRequestService.get).toHaveBeenCalledWith(expected);
         });
 

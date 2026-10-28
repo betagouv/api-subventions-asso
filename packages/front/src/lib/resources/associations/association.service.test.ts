@@ -1,7 +1,7 @@
 import associationService from "./association.service";
 
 import associationPort from "./association.port";
-import type { PaginatedRechercheAssociationDto } from "dto";
+import { SearchSort, type PaginatedRechercheAssociationDto } from "dto";
 import type { PaginatedAssociationSearchResult } from "./association.service";
 vi.mock("./association.port", () => ({
     default: {
@@ -158,20 +158,33 @@ describe("AssociationService", () => {
     describe("_searchByText", () => {
         it("calls port", async () => {
             const PAGE = 2;
-            await associationService._searchByText(SIREN, PAGE);
-            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, PAGE, undefined);
+            await associationService._searchByText(SIREN, { page: PAGE });
+            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, { page: PAGE });
         });
 
         it("calls port with postal code", async () => {
             const PAGE = 2;
             const POSTAL_CODE = "93";
-            await associationService._searchByText(SIREN, PAGE, POSTAL_CODE);
-            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, PAGE, POSTAL_CODE);
+            await associationService._searchByText(SIREN, { page: PAGE, postalCode: POSTAL_CODE });
+            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, { page: PAGE, postalCode: POSTAL_CODE });
         });
 
         it("calls port with default PAGE", async () => {
             await associationService._searchByText(SIREN);
-            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, 1, undefined);
+            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, {});
+        });
+
+        it("calls port with search options", async () => {
+            const PAGE = 2;
+            const POSTAL_CODE = "93";
+            const options = {
+                page: PAGE,
+                postalCode: POSTAL_CODE,
+                sort: SearchSort.ALPHABETICAL,
+                nameOnly: true,
+            };
+            await associationService._searchByText(SIREN, options);
+            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, options);
         });
 
         it("returns result from port", async () => {
@@ -202,20 +215,33 @@ describe("AssociationService", () => {
 
         it("calls _searchByText", async () => {
             const PAGE = 2;
-            await associationService.search(SIREN, PAGE);
-            expect(mockByText).toHaveBeenCalledWith(SIREN, PAGE, undefined);
+            await associationService.search(SIREN, { page: PAGE });
+            expect(mockByText).toHaveBeenCalledWith(SIREN, { page: PAGE });
         });
 
         it("calls _searchByText with postal code", async () => {
             const PAGE = 2;
             const POSTAL_CODE = "93";
-            await associationService.search(SIREN, PAGE, POSTAL_CODE);
-            expect(mockByText).toHaveBeenCalledWith(SIREN, PAGE, POSTAL_CODE);
+            await associationService.search(SIREN, { page: PAGE, postalCode: POSTAL_CODE });
+            expect(mockByText).toHaveBeenCalledWith(SIREN, { page: PAGE, postalCode: POSTAL_CODE });
         });
 
         it("calls _searchByText with default PAGE", async () => {
             await associationService.search(SIREN);
-            expect(mockByText).toHaveBeenCalledWith(SIREN, 1, undefined);
+            expect(mockByText).toHaveBeenCalledWith(SIREN, {});
+        });
+
+        it("calls _searchByText with search options", async () => {
+            const PAGE = 2;
+            const POSTAL_CODE = "93";
+            const options = {
+                page: PAGE,
+                postalCode: POSTAL_CODE,
+                sort: SearchSort.ALPHABETICAL,
+                nameOnly: true,
+            };
+            await associationService.search(SIREN, options);
+            expect(mockByText).toHaveBeenCalledWith(SIREN, options);
         });
 
         it("returns result from search text if not empty", async () => {

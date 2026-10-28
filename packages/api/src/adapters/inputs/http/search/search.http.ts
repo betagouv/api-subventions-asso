@@ -1,7 +1,7 @@
 import { Controller, Get, Response, Route, Security, Tags, Query, Path, Example } from "tsoa";
 import { HttpErrorInterface } from "core";
 import searchService from "../../../../modules/search/search.service";
-import { RechercheAssociationDto, PaginatedResultDto } from "dto";
+import { RechercheAssociationDto, PaginatedResultDto, SearchSort } from "dto";
 import { toDto } from "./search.mapper";
 
 @Route("search")
@@ -13,6 +13,8 @@ export class SearchHttp extends Controller {
      * @summary Recherche une association via son rna, siren et nom partiel ou complet
      * @param input Identifiant RNA ou Identifiant Siren ou Nom d'une association (peut-être encodé via encodeURIComponent())
      * @param page default to 1
+     * @param sort Tri par pertinence (par défaut) ou par ordre alphabétique
+     * @param nameOnly Restreint la recherche au nom de l'association
      */
     @Example<PaginatedResultDto<RechercheAssociationDto>>({
         resultats: [
@@ -44,13 +46,16 @@ export class SearchHttp extends Controller {
         @Path() input: string,
         @Query() page = "1",
         @Query() postalCode?: string,
+        @Query() sort: SearchSort = SearchSort.RELEVANCE,
+        @Query() nameOnly = false,
     ): Promise<PaginatedResultDto<RechercheAssociationDto>> {
         // @TODO: transform in use case
-        const { results, ...search } = await searchService.getPaginatedResult(
-            decodeURIComponent(input),
-            Number.parseInt(page),
+        const { results, ...search } = await searchService.getPaginatedResult(decodeURIComponent(input), {
+            page: Number.parseInt(page),
             postalCode,
-        );
+            sort,
+            nameOnly,
+        });
         return {
             ...search,
             resultats: results.map(toDto),

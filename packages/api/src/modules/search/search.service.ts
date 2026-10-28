@@ -3,18 +3,23 @@ import searchAdapter from "../../adapters/outputs/db/search/search.adapter";
 import PaginatedResult from "../../@types/PaginatedResult";
 import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
 import search, { Search } from "../../usecases/search/search";
+import getAssociationName from "../../usecases/search/get-association-name";
+import { SearchSort, type AssociationSearchOptions } from "dto";
 
 const POSTAL_CODE_REGEX = /^\d{2,5}$/;
 
 export class SearchService {
-    PAGE_SIZE = 12;
+    PAGE_SIZE = 20;
     CACHE_LIFESPAN_MS = 24 * 60 * 60 * 1000;
 
     constructor(private search: Search) {}
 
-    public async getAssociationsKeys(value: string, postalCode?: string): Promise<AssociationSearchEntity[]> {
+    public async getAssociationsKeys(
+        value: string,
+        { postalCode, nameOnly = false }: Pick<AssociationSearchOptions, "postalCode" | "nameOnly"> = {},
+    ): Promise<AssociationSearchEntity[]> {
         const validPostalCode = this.validatePostalCode(postalCode);
-        const searchToken = this.buildSearchToken(value, validPostalCode);
+        const searchToken = this.buildSearchToken(value, validPostalCode, nameOnly);
         const resultsFromCache = await searchAdapter.getResults(
             searchToken,
             new Date(Date.now() - this.CACHE_LIFESPAN_MS),
@@ -24,15 +29,19 @@ export class SearchService {
 
         // nothing in cache
         // @TODO: pagination has been removed because not used properly but we should limit the result of the find
-        const entities = await this.search.execute({ value, postalCode });
+        const entities = await this.search.execute({ value, postalCode, nameOnly });
         searchAdapter.saveResults(searchToken, entities);
 
         return entities;
     }
 
-    public async getPaginatedResult(value: string, page: number, postalCode?: string) {
-        const results = await this.getAssociationsKeys(value, postalCode);
-        const paginatedResult = results.slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE);
+    public async getPaginatedResult(
+        value: string,
+        { page = 1, postalCode, sort = SearchSort.RELEVANCE, nameOnly = false }: AssociationSearchOptions = {},
+    ) {
+        const results = await this.getAssociationsKeys(value, { postalCode, nameOnly });
+        const sortedResults = sort === SearchSort.ALPHABETICAL ? this.sortAlphabetically(results) : results;
+        const paginatedResult = sortedResults.slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE);
         return {
             results: paginatedResult,
             page,
@@ -45,9 +54,16 @@ export class SearchService {
         return searchAdapter.deleteAll();
     }
 
-    private buildSearchToken(value: string, postalCode?: string) {
-        if (!postalCode) return value;
-        return `${value}__postalCode:${postalCode}`;
+    private sortAlphabetically(results: AssociationSearchEntity[]) {
+        return [...results].sort((left, right) =>
+            getAssociationName.execute(left).localeCompare(getAssociationName.execute(right), "fr", {
+                sensitivity: "base",
+            }),
+        );
+    }
+
+    private buildSearchToken(value: string, postalCode?: string, nameOnly = false) {
+        return `${value}${postalCode ? `__postalCode:${postalCode}` : ""}${nameOnly ? "__nameOnly:true" : ""}`;
     }
 
     private validatePostalCode(postalCode?: string) {
