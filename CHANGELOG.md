@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.87.0](https://github.com/betagouv/api-subventions-asso/compare/v0.86.2...v0.87.0) (2026-10-28)
+
 ## [0.86.2](https://github.com/betagouv/api-subventions-asso/compare/v0.86.1...v0.86.2) (2026-10-28)
 
 
