@@ -63,7 +63,7 @@ export default class SubventiaCli extends CliController implements ApplicationFl
         await subventiaService.initApplicationFlat();
     }
 
-    syncApplicationFlat(_exercise: number) {
+    syncApplicationFlat(_exercise: string) {
         return console.error("Not implemented for Subventia. Exercise is not accurate in Subventia data.");
     }
 }

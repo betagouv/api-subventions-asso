@@ -19,7 +19,7 @@ export default class DemarchesSimplifieesCli implements ApplicationFlatCli {
         return demarchesSimplifieesService.initApplicationFlat();
     }
 
-    syncApplicationFlat(_exercise: number) {
+    syncApplicationFlat(_exercise: string) {
         throw new Error("DemarchesSimplifiees data hardly work by exercise.");
     }
 
