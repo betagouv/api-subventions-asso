@@ -295,7 +295,7 @@ export default class OsirisCli implements ApplicationFlatCli {
         return await osirisService.initApplicationFlat();
     }
 
-    async syncApplicationFlat(exercise: number) {
-        return await osirisService.syncApplicationFlat(exercise);
+    async syncApplicationFlat(exercise: string) {
+        return await osirisService.syncApplicationFlat(Number(exercise));
     }
 }
