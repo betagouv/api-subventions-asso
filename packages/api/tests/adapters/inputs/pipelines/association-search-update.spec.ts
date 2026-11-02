@@ -100,6 +100,7 @@ async function importManyUniteLegale() {
 }
 
 async function importEstablishment() {
+    await db.collection("geo").insertOne({ departmentCode: "75" });
     await createEstablishmentCli().parse(
         path.resolve(__dirname, "../__fixtures__/sirene-establishment.parquet"),
         "2026-07-21",

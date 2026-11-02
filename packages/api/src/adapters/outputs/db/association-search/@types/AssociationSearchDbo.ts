@@ -23,10 +23,11 @@ export default interface AssociationSearchDbo {
     address?: Address;
     nbEstabs?: number;
     postalCodes?: string[];
+    departmentCodes?: string[];
 }
 
 export type EstablishmentAssociationSearch = Required<
-    Pick<AssociationSearchDbo, "siren" | "nbEstabs" | "postalCodes">
+    Pick<AssociationSearchDbo, "siren" | "nbEstabs" | "postalCodes" | "departmentCodes">
 > &
     Pick<AssociationSearchDbo, "address">;
 

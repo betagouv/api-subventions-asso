@@ -17,6 +17,8 @@ import { Readable, Transform, Writable } from "stream";
 import { pipeline } from "stream/promises";
 import { SireneUniteLegalePort } from "../../../../outputs/db/sirene/sirene-unite-legale.port";
 import sireneUniteLegaleAdapter from "../../../../outputs/db/sirene/sirene-unite-legale.adapter";
+import { GeoApiPort } from "../../../../outputs/db/providers/geo-api/geo.port";
+import geoAdapter from "../../../../outputs/db/providers/geo-api/geo.adapter";
 
 const SIRENE_ESTABLISHMENT_PROVIDER_ID = "sirene-establishment";
 
@@ -27,11 +29,16 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
         private uniteLegalePort: SireneUniteLegalePort,
         private searchPort: AssociationSearchPort,
         private logAdapter: DataLogPort,
+        private geoPort: GeoApiPort,
     ) {
         super();
     }
 
     public async run(filePath: string): Promise<ImportReport> {
+        const departmentCodes = (await this.geoPort.getAllDepartmentCodes())
+            .map(code => code.toUpperCase())
+            .sort((left, right) => right.length - left.length);
+
         // import should occur each month, we secure by taking one more month to be sure to take all new data
         const lastEditionDate = addMonths(
             await this.logAdapter.getLastEditionDateByProvider(SIRENE_ESTABLISHMENT_PROVIDER_ID),
@@ -59,7 +66,8 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
             );
         } else console.log("Starting first Sirene Stock Etablissement importation");
 
-        const mostRecentUpdates: AssociationSearchFields[] = [];
+        const affectedSirens = new Set<string>();
+        const mainEstablishmentUpdates = new Map<string, Required<Pick<AssociationSearchDbo, "siren" | "address">>>();
 
         stages.push(
             new Writable({
@@ -69,12 +77,12 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
                         this.report.parsedCount += batch.length;
 
                         const associationDtos = await this.filterAssociationEstablishments(batch);
+                        if (associationDtos.length === 0) return callback();
 
-                        if (associationDtos.length === 0) {
-                            return callback();
-                        }
-
-                        mostRecentUpdates.push(...this.filterMainEstab(associationDtos));
+                        associationDtos.forEach(dto => affectedSirens.add(dto.siren));
+                        this.filterMainEstab(associationDtos)
+                            .map(dto => SireneEstablishmentMapper.toAssociationSearch(dto))
+                            .forEach(dbo => mainEstablishmentUpdates.set(dbo.siren, dbo));
 
                         this.report.importedCount += await this.establishmentPort.upsertMany(associationDtos);
                         callback();
@@ -87,43 +95,54 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
 
         await pipeline(stages);
 
-        await this.updateAssociationSearch(
-            mostRecentUpdates.map(dto => SireneEstablishmentMapper.toAssociationSearch(dto)),
-        );
+        await this.updateAssociationSearch(affectedSirens, mainEstablishmentUpdates, departmentCodes);
 
         return this.report;
     }
 
     private async updateAssociationSearch(
-        mostRecentUpdates: Required<Pick<AssociationSearchDbo, "siren" | "address">>[],
+        affectedSirens: ReadonlySet<string>,
+        mainEstablishmentUpdates: Map<string, Required<Pick<AssociationSearchDbo, "siren" | "address">>>,
+        validDepartmentCodes: string[],
     ) {
         const CHUNK_SIZE = 10000;
+        const sirens: string[] = Array.from(affectedSirens);
 
-        console.log(`starting upserting ${mostRecentUpdates.length} association-search...`);
+        console.log(`starting upserting ${sirens.length} association-search...`);
 
-        for (let i = 0; i < mostRecentUpdates.length; i += CHUNK_SIZE) {
+        for (let i = 0; i < sirens.length; i += CHUNK_SIZE) {
             console.time("chunk");
             // const tmpAssociationSearch = await this.searchPort.getTmpCollection();
 
-            const chunk = mostRecentUpdates.slice(i, i + CHUNK_SIZE);
-
-            // Should not have duplicate siren as it is already handled by filterMostRecent
-            const mainEstabUpdateMap = new Map(chunk.map(dbo => [dbo.siren, dbo]));
-
-            const iterable = this.establishmentPort.getComputedFields(chunk.map(dbo => dbo.siren));
+            const chunk = sirens.slice(i, i + CHUNK_SIZE);
+            const iterable = this.establishmentPort.getComputedFields(chunk);
 
             const associationSearch: EstablishmentAssociationSearch[] = [];
 
             // affecte main estab address updates in each AssociationSearch received from getComputedField
             for await (const item of iterable) {
-                const match = mainEstabUpdateMap.get(item.siren);
-                if (match) Object.assign(item, match);
-                associationSearch.push(item);
+                const { communeCodes, ...computedFields } = item;
+                const departmentCodes = [
+                    ...new Set(
+                        communeCodes
+                            .map(communeCode => this.getDepartmentCode(communeCode, validDepartmentCodes))
+                            .filter((code): code is string => Boolean(code)),
+                    ),
+                ];
+                const association = { ...computedFields, departmentCodes };
+                const mainEstablishmentUpdate = mainEstablishmentUpdates.get(item.siren);
+                if (mainEstablishmentUpdate) Object.assign(association, mainEstablishmentUpdate);
+                associationSearch.push(association);
             }
 
             await this.searchPort.upsertFromEstablishment(associationSearch);
             console.timeEnd("chunk");
         }
+    }
+
+    private getDepartmentCode(communeCode: string, departmentCodes: string[]): string | undefined {
+        const normalizedCommuneCode = communeCode.trim().toUpperCase();
+        return departmentCodes.find(departmentCode => normalizedCommuneCode.startsWith(departmentCode));
     }
 
     // Returns partial main establishment dtos use to create association-search
@@ -162,5 +181,6 @@ const sireneEstablishmentPipeline = new SireneEstablishmentPipeline(
     sireneUniteLegaleAdapter,
     associationSearchAdapter,
     dataLogAdapter,
+    geoAdapter,
 );
 export default sireneEstablishmentPipeline;

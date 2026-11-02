@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`/search /association/{identifier} filter by post code 1`] = `
+exports[`/search /association/{identifier} filters by postal code 1`] = `
 {
   "nbPages": 0,
   "page": 1,
@@ -81,7 +81,7 @@ exports[`/search /association/{identifier} returns result from siret 1`] = `
 }
 `;
 
-exports[`/search /association/{text} filter by post code 1`] = `
+exports[`/search /association/{text} filters by postal code 1`] = `
 {
   "nbPages": 1,
   "page": 1,

@@ -1,12 +1,10 @@
-import { BadRequestError } from "core";
 import searchAdapter from "../../adapters/outputs/db/search/search.adapter";
 import PaginatedResult from "../../@types/PaginatedResult";
 import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
 import search, { Search } from "../../usecases/search/search";
 import getAssociationName from "../../usecases/search/get-association-name";
 import { SearchSort, type AssociationSearchOptions } from "dto";
-
-const POSTAL_CODE_REGEX = /^\d{2,5}$/;
+import { parseSearchLocation, type SearchLocation } from "../../usecases/search/parse-search-location";
 
 export class SearchService {
     PAGE_SIZE = 20;
@@ -16,10 +14,10 @@ export class SearchService {
 
     public async getAssociationsKeys(
         value: string,
-        { postalCode, nameOnly = false }: Pick<AssociationSearchOptions, "postalCode" | "nameOnly"> = {},
+        { location, nameOnly = false }: Pick<AssociationSearchOptions, "location" | "nameOnly"> = {},
     ): Promise<AssociationSearchEntity[]> {
-        const validPostalCode = this.validatePostalCode(postalCode);
-        const searchToken = this.buildSearchToken(value, validPostalCode, nameOnly);
+        const parsedLocation = parseSearchLocation(location);
+        const searchToken = this.buildSearchToken(value, parsedLocation, nameOnly);
         const resultsFromCache = await searchAdapter.getResults(
             searchToken,
             new Date(Date.now() - this.CACHE_LIFESPAN_MS),
@@ -29,7 +27,7 @@ export class SearchService {
 
         // nothing in cache
         // @TODO: pagination has been removed because not used properly but we should limit the result of the find
-        const entities = await this.search.execute({ value, postalCode, nameOnly });
+        const entities = await this.search.execute({ value, location: parsedLocation, nameOnly });
         searchAdapter.saveResults(searchToken, entities);
 
         return entities;
@@ -37,9 +35,9 @@ export class SearchService {
 
     public async getPaginatedResult(
         value: string,
-        { page = 1, postalCode, sort = SearchSort.RELEVANCE, nameOnly = false }: AssociationSearchOptions = {},
+        { page = 1, location, sort = SearchSort.RELEVANCE, nameOnly = false }: AssociationSearchOptions = {},
     ) {
-        const results = await this.getAssociationsKeys(value, { postalCode, nameOnly });
+        const results = await this.getAssociationsKeys(value, { location, nameOnly });
         const sortedResults = sort === SearchSort.ALPHABETICAL ? this.sortAlphabetically(results) : results;
         const paginatedResult = sortedResults.slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE);
         return {
@@ -62,16 +60,9 @@ export class SearchService {
         );
     }
 
-    private buildSearchToken(value: string, postalCode?: string, nameOnly = false) {
-        return `${value}${postalCode ? `__postalCode:${postalCode}` : ""}${nameOnly ? "__nameOnly:true" : ""}`;
-    }
-
-    private validatePostalCode(postalCode?: string) {
-        if (postalCode === undefined) return undefined;
-        if (!POSTAL_CODE_REGEX.test(postalCode)) {
-            throw new BadRequestError("postalCode must contain between 2 and 5 digits");
-        }
-        return postalCode;
+    private buildSearchToken(value: string, location?: SearchLocation, nameOnly = false) {
+        const locationValue = location && Object.values(location)[0];
+        return `${value}${locationValue ? `__location:${locationValue}` : ""}${nameOnly ? "__nameOnly:true" : ""}`;
     }
 }
 

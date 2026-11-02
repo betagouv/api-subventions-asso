@@ -6,6 +6,7 @@ import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { SireneEstablishmentDbo } from "../../../../outputs/db/sirene/sirene-establishment.dbo";
 import { SireneEstablishmentPort } from "../../../../outputs/db/sirene/sirene-establishment.port";
 import { SireneUniteLegalePort } from "../../../../outputs/db/sirene/sirene-unite-legale.port";
+import { GeoApiPort } from "../../../../outputs/db/providers/geo-api/geo.port";
 import { ParquetParser } from "../../../parquet.parser";
 import SireneEstablishmentDto from "./sirene-establishment.dto";
 import { SIRENE_ESTABLISHMENT_DTO } from "./sirene-establishment.fixture";
@@ -34,6 +35,9 @@ describe("SireneEstablishmentPipeline", () => {
         upsertFromEstablishment: jest.fn(),
     } as unknown as jest.Mocked<AssociationSearchPort>;
     const dataLog = { getLastEditionDateByProvider: jest.fn() } as unknown as jest.Mocked<DataLogPort>;
+    const geoPort = {
+        getAllDepartmentCodes: jest.fn().mockResolvedValue(["07", "2A"]),
+    } as unknown as jest.Mocked<GeoApiPort>;
 
     const ASSOCIATION_SEARCH: Required<Pick<AssociationSearchDbo, "siren" | "address">> = {
         siren: ASSOCIATION_SEARCH_ENTITIES[0].siren!.value,
@@ -56,6 +60,7 @@ describe("SireneEstablishmentPipeline", () => {
         sireneUniteLegale,
         searchPort,
         dataLog,
+        geoPort,
     ) as unknown as PipelineWithPrivates;
 
     describe("run", () => {
@@ -101,16 +106,16 @@ describe("SireneEstablishmentPipeline", () => {
 
         it("transforms most recent dtos into association-search", async () => {
             await pipeline.run("file.parquet");
-            // mockFilterMainEstab only return one PARTIAL_DBO so we replace each batch with only one PARTIAL_DBO
-            BATCHES.map(_batch => SIRENE_ESTABLISHMENT_DTO).forEach((partial, index) => {
-                expect(spyToAssociationSearch).toHaveBeenNthCalledWith(index + 1, partial); // this is from mockFilterMainEstab
-            });
+            expect(spyToAssociationSearch).toHaveBeenCalledTimes(BATCHES.length);
         });
 
         it("updates association-search", async () => {
             await pipeline.run("file.parquet");
-            // from two filterMostRecent() mock calls
-            expect(mockUpdateAssociationSearch).toHaveBeenCalledWith([ASSOCIATION_SEARCH, ASSOCIATION_SEARCH]);
+            expect(mockUpdateAssociationSearch).toHaveBeenCalledWith(
+                [SIRENE_ESTABLISHMENT_DTO.siren],
+                new Map([[ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH]]),
+                ["07", "2A"],
+            );
         });
 
         it("returns import report", async () => {
@@ -150,19 +155,23 @@ describe("SireneEstablishmentPipeline", () => {
                 siren: SIRENE_ESTABLISHMENT_DTO.siren,
                 nbEstabs: NB_ESTABS,
                 postalCodes: ["75000", "35000", "73000", "29000"],
+                communeCodes: ["07136", "2A004"],
             },
         ]);
 
         it("updates association search ", async () => {
-            await pipeline.updateAssociationSearch([
-                { siren: ASSOCIATION_SEARCH.siren, address: ASSOCIATION_SEARCH.address },
-            ]);
+            await pipeline.updateAssociationSearch(
+                [ASSOCIATION_SEARCH.siren],
+                new Map([[ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH]]),
+                ["2A", "07"],
+            );
             expect(searchPort.upsertFromEstablishment).toHaveBeenCalledWith([
                 {
                     siren: ASSOCIATION_SEARCH.siren,
                     address: ASSOCIATION_SEARCH.address,
                     nbEstabs: NB_ESTABS,
                     postalCodes: POST_CODES,
+                    departmentCodes: ["07", "2A"],
                 },
             ]);
         });
