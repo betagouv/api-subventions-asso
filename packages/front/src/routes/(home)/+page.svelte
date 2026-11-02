@@ -29,13 +29,13 @@
         <div class="search-bar">
             <SearchBar disableIfEmpty={false} onSubmit={value => ctrl.onSubmit(value)} />
             <p class="fr-mt-3w fr-mb-0 text-center">
-                <a class="fr-link fr-icon-arrow-right-line fr-link--icon-right" href="/advanced-search">
+                <a class="fr-link fr-icon-arrow-right-line fr-link--icon-right" href="/search-form">
                     Filtrer par localisation
                 </a>
             </p>
             <p class="help fr-text--sm fr-mt-3w text-center">
                 Pour un identifiant RNA : lettre W + 1 chiffre + 1 lettre ou chiffre + 7 chiffres; SIREN : 9 chiffres;
-                SIRET : 14 chiffres.
+                SIRET : 14 chiffres
             </p>
         </div>
     </div>

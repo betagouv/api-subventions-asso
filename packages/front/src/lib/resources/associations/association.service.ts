@@ -63,7 +63,7 @@ class AssociationService {
 
         // @TODO: remove this when /association/search/{input} will search both in RNA and Sirene collections
         // If no data found in association name collection we search by rna or siren, because association name is not exhaustive.
-        if (isRna(lookup) || isStartOfSiret(lookup)) {
+        if (!options.location && (isRna(lookup) || isStartOfSiret(lookup))) {
             const potentielDuplicates = await this._searchByIdentifier(lookup.toString());
             // we make up pagination because it is unlikely to have multiple pages of duplicates
             return { nbPages: 1, page: 1, results: potentielDuplicates, total: potentielDuplicates.length };

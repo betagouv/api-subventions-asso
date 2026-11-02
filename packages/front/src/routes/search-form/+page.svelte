@@ -1,14 +1,14 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import AdvancedSearchBar from "$lib/components/AdvancedSearchBar/AdvancedSearchBar.svelte";
+    import AssociationSearchForm from "$lib/components/AssociationSearchForm/AssociationSearchForm.svelte";
     import { encodeQuerySearch } from "$lib/helpers/urlHelper";
     import { SvelteURLSearchParams } from "svelte/reactivity";
 
     let searchValue = $state("");
 
-    function onSubmit(value: string, postalCode?: string, nameOnly = false) {
+    function onSubmit(value: string, location?: string, nameOnly = false) {
         const params = new SvelteURLSearchParams();
-        if (postalCode) params.set("postalCode", postalCode);
+        if (location) params.set("location", location);
         if (nameOnly) params.set("nameOnly", "true");
         const query = params.toString();
 
@@ -17,7 +17,7 @@
 </script>
 
 <div class="fr-my-6v">
-    <AdvancedSearchBar bind:value={searchValue} {onSubmit} />
+    <AssociationSearchForm bind:value={searchValue} {onSubmit} />
 
     <div class="fr-mt-6w">
         <p class="fr-text--bold">Pour faciliter l’affichage des résultats :</p>

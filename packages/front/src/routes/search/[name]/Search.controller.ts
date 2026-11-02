@@ -21,13 +21,13 @@ export default class SearchController {
     duplicatesFromIdentifier: Store<string[] | null>;
     currentPage = new Store(1);
     isLastSearchCompany = new Store(false);
-    postalCode: Store<string>;
+    location: Store<string>;
     selectedSort: Store<SearchSort>;
     nameOnly: Store<boolean>;
 
-    constructor(name = "", postalCode?: string, sort: SearchSort = SearchSort.RELEVANCE, nameOnly = false) {
+    constructor(name = "", location?: string, sort: SearchSort = SearchSort.RELEVANCE, nameOnly = false) {
         this.inputSearch = new Store(decodeQuerySearch(name).trim());
-        this.postalCode = new Store(postalCode ?? "");
+        this.location = new Store(location ?? "");
         this.selectedSort = new Store(sort);
         this.nameOnly = new Store(nameOnly);
         this.duplicatesFromIdentifier = new Store(null);
@@ -43,7 +43,7 @@ export default class SearchController {
         try {
             const search = await associationService.search(input, {
                 page,
-                postalCode: this.postalCode.value || undefined,
+                location: this.location.value || undefined,
                 sort: this.selectedSort.value,
                 nameOnly: this.nameOnly.value,
             });
@@ -68,7 +68,7 @@ export default class SearchController {
 
     getSearchUrl() {
         const params = new URLSearchParams();
-        if (this.postalCode.value) params.set("postalCode", this.postalCode.value);
+        if (this.location.value) params.set("location", this.location.value);
         if (this.selectedSort.value !== SearchSort.RELEVANCE) params.set("sort", this.selectedSort.value);
         if (this.nameOnly.value) params.set("nameOnly", "true");
         const query = params.toString();
@@ -81,8 +81,8 @@ export default class SearchController {
         return nbAssos > 1 ? `${nbAssos} résultats trouvés` : `${nbAssos} résultat trouvé`;
     }
 
-    onSubmit(input: string, postalCode?: string, nameOnly = false) {
-        this.postalCode.set(postalCode ?? "");
+    onSubmit(input: string, location?: string, nameOnly = false) {
+        this.location.set(location ?? "");
         this.inputSearch.set(input.trim());
         this.nameOnly.set(nameOnly);
         this.searchPromise.set(this.fetchAssociations());

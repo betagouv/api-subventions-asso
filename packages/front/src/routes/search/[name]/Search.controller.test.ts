@@ -66,7 +66,7 @@ describe("SearchController", () => {
             await controller.fetchAssociations();
             expect(mockedAssociationService.search).toHaveBeenCalledWith(RNA, {
                 page: 1,
-                postalCode: undefined,
+                location: undefined,
                 sort: SearchSort.RELEVANCE,
                 nameOnly: false,
             });
@@ -103,19 +103,19 @@ describe("SearchController", () => {
             await controller.fetchAssociations(42);
             expect(mockedAssociationService.search).toHaveBeenCalledWith("name", {
                 page: 42,
-                postalCode: undefined,
+                location: undefined,
                 sort: SearchSort.RELEVANCE,
                 nameOnly: false,
             });
         });
 
-        it("should call with postal code", async () => {
+        it("should call with location", async () => {
             controller.inputSearch.value = "name";
-            controller.postalCode.value = "93400";
+            controller.location.value = "93400";
             await controller.fetchAssociations();
             expect(mockedAssociationService.search).toHaveBeenCalledWith("name", {
                 page: 1,
-                postalCode: "93400",
+                location: "93400",
                 sort: SearchSort.RELEVANCE,
                 nameOnly: false,
             });
@@ -123,12 +123,12 @@ describe("SearchController", () => {
 
         it("should keep search options in url", () => {
             controller.inputSearch.value = "name";
-            controller.postalCode.value = "43000";
+            controller.location.value = "43000";
             controller.selectedSort.value = SearchSort.ALPHABETICAL;
             controller.nameOnly.value = true;
             vi.mocked(encodeQuerySearch).mockReturnValueOnce("encoded");
 
-            expect(controller.getSearchUrl()).toBe("/search/encoded?postalCode=43000&sort=alphabetical&nameOnly=true");
+            expect(controller.getSearchUrl()).toBe("/search/encoded?location=43000&sort=alphabetical&nameOnly=true");
         });
 
         it("sets isLastSearchCompany to true if raised exception", async () => {
@@ -156,7 +156,7 @@ describe("SearchController", () => {
 
         it("fetch new result with filters on page one", () => {
             controller.onSubmit(RNA, "93", true);
-            expect(controller.postalCode.value).toBe("93");
+            expect(controller.location.value).toBe("93");
             expect(controller.nameOnly.value).toBe(true);
             expect(fetchSpy).toHaveBeenCalledWith();
         });
