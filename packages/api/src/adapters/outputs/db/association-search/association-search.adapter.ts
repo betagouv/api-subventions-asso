@@ -136,10 +136,10 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     public async upsertFromRna(dbos: RnaAssociationSearch[]) {
         const operations: AnyBulkWriteOperation<AssociationSearchDbo>[] = [];
         dbos.forEach(dbo => {
-            const { rna, siren, name, searchName, nameTokens, object, searchObject, objectTokens } = dbo;
+            const { rna, siren, names, searchName, nameTokens, object, searchObject, objectTokens } = dbo;
 
             const updateModel = {
-                $set: { "searchName.rna": searchName.rna, object, searchObject, objectTokens, "name.rna": name.rna },
+                $set: { "searchName.rna": searchName.rna, object, searchObject, objectTokens, "name.rna": names.rna },
                 $addToSet: { nameTokens: { $each: nameTokens } },
             };
 
@@ -166,12 +166,12 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
     public async upsertFromSirene(dbos: UniteLegaleAssociationSearch[]) {
         const operations: AnyBulkWriteOperation<AssociationSearchDbo>[] = [];
         dbos.forEach(dbo => {
-            const { siren, rna, name, searchName, nameTokens, mainEstablishmentSiret } = dbo;
+            const { siren, rna, names, searchName, nameTokens, mainEstablishmentSiret } = dbo;
 
             const updateModel = {
                 $set: {
                     mainEstablishmentSiret,
-                    "name.sirene": name.sirene,
+                    "name.sirene": names.sirene,
                     "searchName.sirene": searchName.sirene,
                 },
                 $addToSet: { nameTokens: { $each: nameTokens } },
