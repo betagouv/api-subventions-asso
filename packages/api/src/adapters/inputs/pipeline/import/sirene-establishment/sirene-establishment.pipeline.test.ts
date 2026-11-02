@@ -112,7 +112,7 @@ describe("SireneEstablishmentPipeline", () => {
         it("updates association-search", async () => {
             await pipeline.run("file.parquet");
             expect(mockUpdateAssociationSearch).toHaveBeenCalledWith(
-                [SIRENE_ESTABLISHMENT_DTO.siren],
+                new Set([SIRENE_ESTABLISHMENT_DTO.siren]),
                 new Map([[ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH]]),
                 ["07", "2A"],
             );
@@ -161,7 +161,7 @@ describe("SireneEstablishmentPipeline", () => {
 
         it("updates association search ", async () => {
             await pipeline.updateAssociationSearch(
-                [ASSOCIATION_SEARCH.siren],
+                new Set([ASSOCIATION_SEARCH.siren]),
                 new Map([[ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH]]),
                 ["2A", "07"],
             );
