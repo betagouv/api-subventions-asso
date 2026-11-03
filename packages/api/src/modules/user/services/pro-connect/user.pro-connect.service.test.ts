@@ -111,9 +111,14 @@ describe("userProConnectService", () => {
             expect(userAdapter.getUserWithSecretsByEmail).toHaveBeenCalledWith(PRO_CONNECT_USER.email);
         });
 
-        it("updates user's jwt", async () => {
-            await userProConnectService.login(PRO_CONNECT_USER, TOKENSET);
-            expect(userAuthService.updateJwt).toHaveBeenCalled();
+        it("returns user with updated jwt", async () => {
+            const updatedUser = new UserEntity({
+                ...USER_WITHOUT_SECRET,
+                jwt: { token: "updated-jwt", expirateDate: new Date() },
+            });
+            jest.mocked(userAuthService.updateJwt).mockResolvedValueOnce(updatedUser);
+            const actual = await userProConnectService.login(PRO_CONNECT_USER, TOKENSET);
+            expect(actual).toBe(updatedUser);
         });
 
         it("saves proConnect token", async () => {

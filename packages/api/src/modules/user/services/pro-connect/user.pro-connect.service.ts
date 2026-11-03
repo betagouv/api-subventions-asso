@@ -68,7 +68,7 @@ export class UserProConnectService {
                 proConnectId: proConnectUser.uid,
                 active: true,
             });
-            await Promise.all([userAuthService.updateJwt(user), this.saveTokenSet(user.id, tokenSet)])[0];
+            user = (await Promise.all([userAuthService.updateJwt(user), this.saveTokenSet(user.id, tokenSet)]))[0];
             notifyService.notify(NotificationType.USER_LOGGED, { email: user.email, date: new Date() });
             notifyService.notify(NotificationType.USER_UPDATED, user);
         }
