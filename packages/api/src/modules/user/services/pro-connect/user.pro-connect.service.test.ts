@@ -153,14 +153,15 @@ describe("userProConnectService", () => {
             });
 
             it("notifies user update", async () => {
-                const expectedUser = {
+                const updatedUser = new UserEntity({
                     ...USER_ENTITY,
                     firstName: PRO_CONNECT_USER.given_name.split(" ")[0],
                     lastName: PRO_CONNECT_USER.usual_name,
                     proConnectId: PRO_CONNECT_USER.uid,
-                };
+                });
+                jest.mocked(userAuthService.updateJwt).mockResolvedValueOnce(updatedUser);
                 await userProConnectService.login(PRO_CONNECT_USER, TOKENSET);
-                expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, expectedUser);
+                expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, updatedUser);
             });
         });
     });
