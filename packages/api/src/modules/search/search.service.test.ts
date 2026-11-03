@@ -1,3 +1,4 @@
+import { parseSearchLocation } from "../../usecases/search/parse-search-location";
 import { SearchService } from "./search.service";
 import searchCacheAdapter from "../../adapters/outputs/db/search/search.adapter";
 import { BadRequestError } from "core";
@@ -14,7 +15,7 @@ describe("SearchService", () => {
     let service: SearchService;
 
     beforeEach(() => {
-        service = new SearchService(mockSearch);
+        service = new SearchService(mockSearch, parseSearchLocation);
         // @ts-expect-error: mock return value
         jest.mocked(searchCacheAdapter.getResults).mockResolvedValue(RES);
     });

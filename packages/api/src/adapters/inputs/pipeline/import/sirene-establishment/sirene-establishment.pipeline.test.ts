@@ -36,7 +36,7 @@ describe("SireneEstablishmentPipeline", () => {
     } as unknown as jest.Mocked<AssociationSearchPort>;
     const dataLog = { getLastEditionDateByProvider: jest.fn() } as unknown as jest.Mocked<DataLogPort>;
     const geoPort = {
-        getAllDepartmentCodes: jest.fn().mockResolvedValue(["07", "2A"]),
+        getAllDepartmentCodes: jest.fn().mockResolvedValue(["75", "2A"]),
     } as unknown as jest.Mocked<GeoApiPort>;
 
     const ASSOCIATION_SEARCH: Required<Pick<AssociationSearchDbo, "siren" | "address">> = {
@@ -112,9 +112,9 @@ describe("SireneEstablishmentPipeline", () => {
         it("updates association-search", async () => {
             await pipeline.run("file.parquet");
             expect(mockUpdateAssociationSearch).toHaveBeenCalledWith(
-                new Set([SIRENE_ESTABLISHMENT_DTO.siren]),
+                [SIRENE_ESTABLISHMENT_DTO.siren],
                 new Map([[ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH]]),
-                ["07", "2A"],
+                ["75", "2A"],
             );
         });
 
@@ -147,23 +147,35 @@ describe("SireneEstablishmentPipeline", () => {
     });
 
     describe("updateAssociationSearch", () => {
-        const NB_ESTABS = 4;
-        const POST_CODES = ["75000", "35000", "73000", "29000"];
+        const NB_ESTABS = 3;
+        const POST_CODES = ["75013", "20000", "97400"];
         // @ts-expect-error: mock iterable
         establishmentPort.getComputedFields.mockReturnValue([
             {
                 siren: SIRENE_ESTABLISHMENT_DTO.siren,
                 nbEstabs: NB_ESTABS,
-                postalCodes: ["75000", "35000", "73000", "29000"],
-                communeCodes: ["07136", "2A004"],
+                postalCodes: ["75013", "20000", "97400"],
+                communeCodes: ["75113", "2A004", "97411"],
             },
         ]);
 
+        it("preserves the main address when only computed fields change", async () => {
+            await pipeline.updateAssociationSearch([ASSOCIATION_SEARCH.siren], new Map(), ["75", "2A", "974"]);
+            expect(searchPort.upsertFromEstablishment).toHaveBeenCalledWith([
+                {
+                    siren: SIRENE_ESTABLISHMENT_DTO.siren,
+                    nbEstabs: NB_ESTABS,
+                    postalCodes: POST_CODES,
+                    departmentCodes: ["75", "2A", "974"],
+                },
+            ]);
+        });
+
         it("updates association search ", async () => {
             await pipeline.updateAssociationSearch(
-                new Set([ASSOCIATION_SEARCH.siren]),
+                [ASSOCIATION_SEARCH.siren],
                 new Map([[ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH]]),
-                ["2A", "07"],
+                ["2A", "75", "974"],
             );
             expect(searchPort.upsertFromEstablishment).toHaveBeenCalledWith([
                 {
@@ -171,7 +183,7 @@ describe("SireneEstablishmentPipeline", () => {
                     address: ASSOCIATION_SEARCH.address,
                     nbEstabs: NB_ESTABS,
                     postalCodes: POST_CODES,
-                    departmentCodes: ["07", "2A"],
+                    departmentCodes: ["75", "2A", "974"],
                 },
             ]);
         });

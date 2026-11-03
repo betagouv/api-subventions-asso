@@ -10,13 +10,16 @@ export class SearchService {
     PAGE_SIZE = 20;
     CACHE_LIFESPAN_MS = 24 * 60 * 60 * 1000;
 
-    constructor(private search: Search) {}
+    constructor(
+        private search: Search,
+        private parseLocation: typeof parseSearchLocation,
+    ) {}
 
     public async getAssociationsKeys(
         value: string,
         { location, nameOnly = false }: Pick<AssociationSearchOptions, "location" | "nameOnly"> = {},
     ): Promise<AssociationSearchEntity[]> {
-        const parsedLocation = parseSearchLocation(location);
+        const parsedLocation = this.parseLocation(location);
         const searchToken = this.buildSearchToken(value, parsedLocation, nameOnly);
         const resultsFromCache = await searchAdapter.getResults(
             searchToken,
@@ -66,6 +69,6 @@ export class SearchService {
     }
 }
 
-const searchService = new SearchService(search);
+const searchService = new SearchService(search, parseSearchLocation);
 
 export default searchService;

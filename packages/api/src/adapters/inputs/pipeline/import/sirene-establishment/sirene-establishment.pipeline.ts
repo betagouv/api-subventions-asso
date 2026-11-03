@@ -35,9 +35,7 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
     }
 
     public async run(filePath: string): Promise<ImportReport> {
-        const departmentCodes = (await this.geoPort.getAllDepartmentCodes())
-            .map(code => code.toUpperCase())
-            .sort((left, right) => right.length - left.length);
+        const departmentCodes = (await this.geoPort.getAllDepartmentCodes()).map(code => code.toUpperCase());
 
         // import should occur each month, we secure by taking one more month to be sure to take all new data
         const lastEditionDate = addMonths(
@@ -95,42 +93,34 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
 
         await pipeline(stages);
 
-        await this.updateAssociationSearch(affectedSirens, mainEstablishmentUpdates, departmentCodes);
+        await this.updateAssociationSearch(Array.from(affectedSirens), mainEstablishmentUpdates, departmentCodes);
 
         return this.report;
     }
 
     private async updateAssociationSearch(
-        affectedSirens: ReadonlySet<string>,
+        sirens: string[],
         mainEstablishmentUpdates: Map<string, Required<Pick<AssociationSearchDbo, "siren" | "address">>>,
         validDepartmentCodes: string[],
     ) {
         const CHUNK_SIZE = 10000;
-        const sirens: string[] = Array.from(affectedSirens);
 
         console.log(`starting upserting ${sirens.length} association-search...`);
 
         for (let i = 0; i < sirens.length; i += CHUNK_SIZE) {
             console.time("chunk");
-            // const tmpAssociationSearch = await this.searchPort.getTmpCollection();
 
             const chunk = sirens.slice(i, i + CHUNK_SIZE);
             const iterable = this.establishmentPort.getComputedFields(chunk);
 
             const associationSearch: EstablishmentAssociationSearch[] = [];
 
-            // affecte main estab address updates in each AssociationSearch received from getComputedField
-            for await (const item of iterable) {
-                const { communeCodes, ...computedFields } = item;
-                const departmentCodes = [
-                    ...new Set(
-                        communeCodes
-                            .map(communeCode => this.getDepartmentCode(communeCode, validDepartmentCodes))
-                            .filter((code): code is string => Boolean(code)),
-                    ),
-                ];
-                const association = { ...computedFields, departmentCodes };
-                const mainEstablishmentUpdate = mainEstablishmentUpdates.get(item.siren);
+            for await (const { communeCodes, ...computedFields } of iterable) {
+                const association: EstablishmentAssociationSearch = {
+                    ...computedFields,
+                    departmentCodes: this.getDepartmentCodes(communeCodes, validDepartmentCodes),
+                };
+                const mainEstablishmentUpdate = mainEstablishmentUpdates.get(association.siren);
                 if (mainEstablishmentUpdate) Object.assign(association, mainEstablishmentUpdate);
                 associationSearch.push(association);
             }
@@ -140,9 +130,13 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
         }
     }
 
-    private getDepartmentCode(communeCode: string, departmentCodes: string[]): string | undefined {
-        const normalizedCommuneCode = communeCode.trim().toUpperCase();
-        return departmentCodes.find(departmentCode => normalizedCommuneCode.startsWith(departmentCode));
+    // use commune codes to find department and keep postal codes for exact searches
+    private getDepartmentCodes(communeCodes: string[], validDepartmentCodes: string[]): string[] {
+        const departmentCodes = communeCodes.map(communeCode => {
+            const normalizedCommuneCode = communeCode.trim().toUpperCase();
+            return validDepartmentCodes.find(code => normalizedCommuneCode.startsWith(code));
+        });
+        return [...new Set(departmentCodes.filter((code): code is string => Boolean(code)))];
     }
 
     // Returns partial main establishment dtos use to create association-search
