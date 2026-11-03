@@ -80,7 +80,6 @@
                             disabled={ctrl.isUserDisabled(user)}
                             type="tertiary"
                             icon="delete-fill"
-                            trackingDisable="true"
                             ariaControls="fr-modal"
                             onclick={() => ctrl.displayModal(user)} />
                     </td>

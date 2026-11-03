@@ -38,15 +38,9 @@
         <div class="baseline">
             {#if $grants && $grants.length}
                 {#if $isExtractLoading}
-                    <Button icon="refresh-line" trackingDisable={true} iconPosition="right" disabled={true}>
-                        Chargement
-                    </Button>
+                    <Button icon="refresh-line" iconPosition="right" disabled={true}>Chargement</Button>
                 {:else}
-                    <Button
-                        onclick={() => ctrl.download()}
-                        icon="download-line"
-                        trackingDisable={true}
-                        iconPosition="right">
+                    <Button onclick={() => ctrl.download()} icon="download-line" iconPosition="right">
                         Télécharger les données
                     </Button>
                 {/if}
@@ -60,7 +54,7 @@
             {/if}
         </div>
         <div class="align-bottom">
-            <TargetBlankLink href={ctrl.providerBlogUrl} onclick={ctrl.clickProviderLink}>
+            <TargetBlankLink href={ctrl.providerBlogUrl}>
                 Quelles données retrouver dans Data.Subvention ?
             </TargetBlankLink>
         </div>

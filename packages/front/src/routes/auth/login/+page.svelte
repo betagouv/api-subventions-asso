@@ -93,9 +93,7 @@
             <div class="fr-fieldset__element fr-mt-2v">
                 <ul class="fr-btns-group">
                     <li>
-                        <Button title="Se connecter" htmlType="submit" trackerName="login.form.submit">
-                            Se connecter
-                        </Button>
+                        <Button title="Se connecter" htmlType="submit">Se connecter</Button>
                     </li>
                 </ul>
             </div>

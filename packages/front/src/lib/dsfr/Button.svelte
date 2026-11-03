@@ -1,6 +1,5 @@
 <script lang="ts">
     import { getIconClass } from "./helper";
-    import trackerService from "$lib/services/tracker.service";
     import { HTML_BUTTON_TYPES, isValidButtonType } from "$lib/helpers/htmlHelper";
     import { uuid } from "$lib/helpers/stringHelper";
 
@@ -10,8 +9,6 @@
 
     interface Props {
         id?: string;
-        trackerName?: string;
-        trackingDisable?: boolean;
         type?: ButtonStyle;
         size?: ButtonSize;
         outline?: boolean;
@@ -29,8 +26,6 @@
 
     let {
         id = "btn-" + uuid(),
-        trackerName = "",
-        trackingDisable = false,
         type = "primary",
         size = "medium",
         outline = true,
@@ -50,10 +45,6 @@
         console.warn(`${htmlType} is not a valid button type. Use default button type instead`);
         htmlType = "button";
     }
-
-    $effect(() => {
-        if (!trackerName && !trackingDisable) console.error("Please add tracker name on button");
-    });
 
     const classBySize = {
         small: "fr-btn--sm",
@@ -92,18 +83,12 @@
      ${getSpecificIconClass()} ${styleClass}`,
     );
 
-    function track() {
-        if (!trackingDisable) trackerService.buttonClickEvent(trackerName, title);
-    }
-
     function onClick() {
         onclick();
-        track();
     }
 
     function onSubmit() {
         onsubmit();
-        track();
     }
 </script>
 

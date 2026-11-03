@@ -20,12 +20,7 @@
 <ul
     class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-sm fr-btns-group--icon-right fr-btns-group--right">
     <li>
-        <Button
-            iconPosition="right"
-            icon="download-line"
-            trackerName="download-zip"
-            title={$downloadBtnLabel}
-            onclick={ondownload}>
+        <Button iconPosition="right" icon="download-line" title={$downloadBtnLabel} onclick={ondownload}>
             {$downloadBtnLabel}
         </Button>
     </li>
@@ -34,7 +29,6 @@
             type="tertiary"
             outline={false}
             disabled={$resetBtnDisabled}
-            trackerName="reset-docs-selection"
             title="Réinitialiser la sélection de documents"
             onclick={onreset}>
             Tout désélectionner

@@ -57,13 +57,7 @@
                         onvalid={() => ctrl.enableSubmit()}
                         bind:values={$values} />
                     <div class="fr-input-group fr-my-4w">
-                        <Button
-                            title="Valider"
-                            htmlType="submit"
-                            disabled={!$isSubmitActive}
-                            trackerName="reset-password.form.submit">
-                            Valider
-                        </Button>
+                        <Button title="Valider" htmlType="submit" disabled={!$isSubmitActive}>Valider</Button>
                     </div>
                 </form>
             {/if}

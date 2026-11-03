@@ -97,20 +97,12 @@
                             {/if}
                             {#if $user}
                                 <li>
-                                    <Button
-                                        onclick={controller.logout}
-                                        type="tertiary"
-                                        outline={false}
-                                        trackerName="header.logout">
+                                    <Button onclick={controller.logout} type="tertiary" outline={false}>
                                         Se déconnecter
                                     </Button>
                                 </li>
                                 <li>
-                                    <Button
-                                        onclick={controller.goToProfile}
-                                        type="tertiary"
-                                        icon="user-fill"
-                                        trackerName="header.profil">
+                                    <Button onclick={controller.goToProfile} type="tertiary" icon="user-fill">
                                         Profil
                                     </Button>
                                 </li>

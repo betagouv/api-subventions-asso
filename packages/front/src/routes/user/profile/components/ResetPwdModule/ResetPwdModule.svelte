@@ -22,12 +22,7 @@
             .
         </Alert>
     {/if}
-    <Button
-        trackerName="profile.forget-password"
-        type="tertiary"
-        disabled={$status === "success"}
-        htmlType="button"
-        onclick={() => ctrl.onClick()}>
+    <Button type="tertiary" disabled={$status === "success"} htmlType="button" onclick={() => ctrl.onClick()}>
         Réinitialiser votre mot de passe
     </Button>
 </div>

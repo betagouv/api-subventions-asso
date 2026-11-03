@@ -14,7 +14,6 @@ export class AppController {
     displayBanner = new Store(false);
     constructor(config) {
         trackerService.init(PUBLIC_ENV, {
-            matomo: config.matomo,
             posthog: config.posthog,
         });
 

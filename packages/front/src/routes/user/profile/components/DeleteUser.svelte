@@ -17,13 +17,7 @@
         Vous souhaitez supprimer votre compte ?
     </p>
     <p>La suppression de votre compte entraine une suppression de toutes vos données et historique de recherche.</p>
-    <Button
-        onclick={openConfirmationModal}
-        type="tertiary"
-        ariaControls="fr-modal"
-        trackerName="profile.delete-user.remove-account">
-        Supprimer mon compte
-    </Button>
+    <Button onclick={openConfirmationModal} type="tertiary" ariaControls="fr-modal">Supprimer mon compte</Button>
 </div>
 
 <style>
