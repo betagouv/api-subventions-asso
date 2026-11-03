@@ -140,11 +140,11 @@ describe("authService", () => {
 
     describe("loginByUser()", () => {
         const EMAIL = "a@b.c";
-        const user = { _id: "USER_ID", email: EMAIL };
+        const user = { id: "USER_ID", email: EMAIL };
 
         it("calls checkOrDropSearchHistory", async () => {
             await authService.loginByUser(user);
-            expect(checkOrDropSearchHistory).toHaveBeenCalledWith(user._id);
+            expect(checkOrDropSearchHistory).toHaveBeenCalledWith(user.id);
         });
 
         it("should save user in store", async () => {

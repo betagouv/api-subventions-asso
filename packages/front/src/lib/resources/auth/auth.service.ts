@@ -37,7 +37,7 @@ export class AuthService {
     }
 
     loginByUser(user) {
-        checkOrDropSearchHistory(user._id);
+        checkOrDropSearchHistory(user.id);
         localStorageService.removeItem("hide-main-info-banner");
         this.setUserInApp(user);
         crispService.setUserEmail(user.email);
