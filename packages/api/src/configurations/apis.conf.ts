@@ -11,3 +11,9 @@ export const DEMARCHES_SIMPLIFIEES_TOKEN = process.env.DEMARCHES_SIMPLIFIEES_TOK
 
 export const DATA_BRETAGNE_USERNAME = process.env.DATA_BRETAGNE_USERNAME;
 export const DATA_BRETAGNE_PASSWORD = process.env.DATA_BRETAGNE_PASSWORD;
+
+export const OMOGEN_URL = process.env.OMOGEN_URL;
+export const OMOGEN_AUTH_URL = process.env.OMOGEN_AUTH_URL;
+export const OMOGEN_CLIENT = process.env.OMOGEN_CLIENT;
+export const OMOGEN_SECRET = process.env.OMOGEN_SECRET;
+export const OMOGEN_API_KEY = process.env.OMOGEN_API_KEY;
