@@ -5,7 +5,6 @@ import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscr
 import { beforeNavigate, goto } from "$app/navigation";
 import { action, modal } from "$lib/store/modal.store";
 import type { UserDto } from "dto";
-// import localStorageService from "$lib/services/localStorage.service";
 
 export class ProfileController {
     agentTypeOptions = subscriptionFormService.agentTypeOptions;
@@ -51,8 +50,9 @@ export class ProfileController {
     }
 
     async init() {
-        this.user.set(await userService.getSelfUser());
-        this.isAgentConnectUser = !!this.user.value!.proConnectId;
+        const user: UserDto = await userService.getSelfUser();
+        this.user.set(user);
+        this.isAgentConnectUser = !!user.proConnectId;
     }
 
     showAlert() {

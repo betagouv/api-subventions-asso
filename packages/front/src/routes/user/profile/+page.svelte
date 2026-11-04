@@ -14,8 +14,10 @@
     const controller = new ProfileController();
     const { deleteError, user, saveStatus, isSubmitBlocked } = controller;
 
-    onMount(() => controller.onMount(saveAlertElement, modalCtrlButton));
-    controller.init();
+    onMount(() => {
+        controller.onMount(saveAlertElement, modalCtrlButton);
+        controller.init();
+    });
 </script>
 
 <div class="fr-grid-row">
@@ -51,41 +53,37 @@
                         </Alert>
                     {/if}
                 </div>
-                <fieldset class="fr-fieldset fr-mt-6w">
-                    <SignupModule
-                        bind:user={$user!}
+                {#if $user}
+                    <fieldset class="fr-fieldset fr-mt-6w">
+                        <SignupModule
+                            bind:user={$user!}
+                            onchange={() => controller.onChange()}
+                            readOnly={!!$user!.proConnectId} />
+                    </fieldset>
+
+                    <div class="separator fr-mb-6w fr-mt-4w"></div>
+
+                    <fieldset class="fr-fieldset">
+                        <div
+                            class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
+                            <Select
+                                options={controller.agentTypeOptions}
+                                label="Vous êtes : "
+                                bind:selected={$user!.agentType}
+                                required={true}
+                                onchange={() => controller.onChange()} />
+                        </div>
+                    </fieldset>
+                    <StructureFormStep
+                        bind:values={$user!}
+                        context={{ agentType: $user?.agentType }}
                         onchange={() => controller.onChange()}
-                        readOnly={!!$user?.proConnectId} />
-                    <!--<div class="fr-fieldset__element fr-mt-4v">
-              <ResetPwdModule email={$user.email} />
-              TODO le user est pas réactif dans le composant. Il faudrait passer un store mais ça va être
-                  pénible de faire ça depuis un prop : stocker l'utilisateur dans un store global ?
-                  Peut-être pas nécessaire
-                  De plus il faudrait aussi déconnecter l'utilisateur parce que son token va être invalidé
-          </div>-->
-                </fieldset>
-
-                <div class="separator fr-mb-6w fr-mt-4w"></div>
-
-                <fieldset class="fr-fieldset">
-                    <div class="fr-fieldset__element fr-fieldset__element--inline fr-fieldset__element--inline-grow">
-                        <Select
-                            options={controller.agentTypeOptions}
-                            label="Vous êtes : "
-                            bind:selected={$user!.agentType}
-                            required={true}
-                            onchange={() => controller.onChange()} />
-                    </div>
-                </fieldset>
-                <StructureFormStep
-                    bind:values={$user!}
-                    context={{ agentType: $user!.agentType }}
-                    onchange={() => controller.onChange()}
-                    onvalid={() => controller.updateValidation(true)}
-                    onerror={() => controller.updateValidation(false)} />
-                <Button trackerName="profile.save" disabled={$isSubmitBlocked} htmlType="submit">
-                    Enregistrer les modifications
-                </Button>
+                        onvalid={() => controller.updateValidation(true)}
+                        onerror={() => controller.updateValidation(false)} />
+                    <Button trackerName="profile.save" disabled={$isSubmitBlocked} htmlType="submit">
+                        Enregistrer les modifications
+                    </Button>
+                {/if}
             </form>
         </div>
 
