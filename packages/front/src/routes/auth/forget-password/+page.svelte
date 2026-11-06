@@ -60,10 +60,7 @@
                         type="email" />
                 </div>
                 <div class="fr-fieldset__element flex center">
-                    <Button
-                        title="Demander un nouveau mot de passe"
-                        htmlType="submit"
-                        trackerName="forget-password.form.submit">
+                    <Button title="Demander un nouveau mot de passe" htmlType="submit">
                         Demander un nouveau mot de passe
                     </Button>
                 </div>

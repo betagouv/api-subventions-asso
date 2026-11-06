@@ -83,9 +83,7 @@
                     onchange={() => controller.onChange()}
                     onvalid={() => controller.updateValidation(true)}
                     onerror={() => controller.updateValidation(false)} />
-                <Button trackerName="profile.save" disabled={$isSubmitBlocked} htmlType="submit">
-                    Enregistrer les modifications
-                </Button>
+                <Button disabled={$isSubmitBlocked} htmlType="submit">Enregistrer les modifications</Button>
             </form>
         </div>
 

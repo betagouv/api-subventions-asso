@@ -8,7 +8,6 @@ import associationPort from "$lib/resources/associations/association.port";
 import establishmentPort from "$lib/resources/establishments/establishment.port";
 import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
 import Store from "$lib/core/Store";
-import trackerService from "$lib/services/tracker.service";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import associationService from "$lib/resources/associations/association.service";
 import documentHelper from "$lib/helpers/document.helper";
@@ -144,10 +143,6 @@ export class GrantDashboardController {
         this.rows.update(rows => rows.sort((a, b) => grantCompareFn[index](a, b, this.columnsSortOrder[index])));
     }
 
-    public clickProviderLink() {
-        trackerService.trackEvent("association-etablissement.dashboard.display-provider-modal");
-    }
-
     // Grants are expected to be ordered from API
     private splitGrantsByExercise(grants: GrantFlatDto[]) {
         const byExercise: Record<string | number, GrantFlatDto[]> = {};
@@ -162,7 +157,6 @@ export class GrantDashboardController {
 
     public async download() {
         if (this.isExtractLoading.value) return;
-        trackerService.buttonClickEvent("association-etablissement.dashbord.download-csv", this.identifier); // tracking
         this.isExtractLoading.set(true);
         const resourceService = isSiret(this.identifier) ? establishmentService : associationService;
         await resourceService.getGrantExtract(this.identifier).then(({ blob, filename }) => {
@@ -174,7 +168,6 @@ export class GrantDashboardController {
     // Display payment modal for the clicked row
     public onPaymentClick(index) {
         if (!this.rows.value[index].paymentsCells) return;
-        trackerService.buttonClickEvent("association-etablissement.dashbord.payment.more_information");
         data.set({ payments: (this.rows.value as SortableRow[])[index].grant.payments });
         modal.set(PaymentsInfoModal);
     }
@@ -182,7 +175,6 @@ export class GrantDashboardController {
     // Display application modal for the clicked row
     public onApplicationClick(index) {
         if (!this.rows.value[index].applicationCells) return;
-        trackerService.buttonClickEvent("association-etablissement.dashbord.subvention.more_information");
         const application = (this.rows.value as SortableRow[])[index].grant.application as ApplicationFlatDto;
         data.set({
             application: application,

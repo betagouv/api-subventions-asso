@@ -16,6 +16,4 @@
 <ModalFooter
     disableConfirm={temporyDisabled}
     confirmLabel="Je confirme la suppression de mon compte"
-    confirmAction={$action}
-    cancelTrackerName="profile.delete-user.cancel"
-    confirmTrackerName="profile.delete-user.confirm" />
+    confirmAction={$action} />

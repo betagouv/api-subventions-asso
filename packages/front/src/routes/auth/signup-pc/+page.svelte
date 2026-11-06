@@ -17,6 +17,4 @@
     steps={controller.steps}
     buildContext={controller.buildContext}
     onSubmit={values => controller.onSubmit(values)}
-    submitLabel="Valider les informations"
-    customSubmitTracking={false}
-    trackerFormName="signup-pc" />
+    submitLabel="Valider les informations" />

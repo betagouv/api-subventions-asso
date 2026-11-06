@@ -29,7 +29,5 @@
         steps={controller.steps}
         buildContext={controller.buildContext}
         onSubmit={values => controller.onSubmit(values)}
-        submitLabel="Valider l'inscription"
-        customSubmitTracking={true}
-        trackerFormName="activate" />
+        submitLabel="Valider l'inscription" />
 {/if}

@@ -49,7 +49,6 @@
                 icon="information-line"
                 iconPosition="left"
                 ariaControls="fr-modal"
-                trackerName="association-etablissement.more-legal-info-modal"
                 onclick={() => controller.displayModal()}>
                 Voir les informations du RNA / Siren
             </Button>

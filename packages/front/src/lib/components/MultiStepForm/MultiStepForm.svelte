@@ -9,8 +9,6 @@
         submitLabel?: string;
         nextLabel?: string;
         previousLabel?: string;
-        customSubmitTracking?: boolean;
-        trackerFormName: string;
         buildContext?: () => Record<string, unknown>;
     }
 
@@ -20,8 +18,6 @@
         submitLabel = "Confirmer",
         nextLabel = "Suivant",
         previousLabel = "Précédent",
-        customSubmitTracking = false,
-        trackerFormName,
         buildContext = () => ({}),
     }: Props = $props();
 
@@ -77,19 +73,12 @@
                     htmlType="button"
                     type="secondary"
                     onclick={() => controller.previous()}
-                    disabled={$currentStep.isFirstStep}
-                    trackerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.previous`}>
+                    disabled={$currentStep.isFirstStep}>
                     {previousLabel}
                 </Button>
             {/if}
             {#if $currentStep.isLastStep}
-                <Button
-                    htmlType="submit"
-                    disabled={$isStepBlocked}
-                    trackingDisable={customSubmitTracking}
-                    trackerName={customSubmitTracking
-                        ? undefined
-                        : `${trackerFormName}.form.step${$currentStep.positionLabel}.submit`}>
+                <Button htmlType="submit" disabled={$isStepBlocked}>
                     {submitLabel}
                 </Button>
             {:else}
@@ -98,8 +87,7 @@
                     disabled={$isStepBlocked}
                     type="secondary"
                     onclick={() => controller.next()}
-                    onsubmit={() => controller.next()}
-                    trackerName={`${trackerFormName}.form.step${$currentStep.positionLabel}.next`}>
+                    onsubmit={() => controller.next()}>
                     {nextLabel}
                 </Button>
             {/if}

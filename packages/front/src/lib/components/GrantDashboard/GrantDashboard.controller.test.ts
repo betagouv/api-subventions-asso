@@ -6,7 +6,6 @@ import establishmentService from "$lib/resources/establishments/establishment.se
 import establishmentPort from "$lib/resources/establishments/establishment.port";
 import associationService from "$lib/resources/associations/association.service";
 import associationPort from "$lib/resources/associations/association.port";
-import trackerService from "$lib/services/tracker.service";
 import documentHelper from "$lib/helpers/document.helper";
 import PaymentsInfoModal from "$lib/components/GrantDashboard/Modals/PaymentsInfoModal.svelte";
 import ApplicationInfoModal from "$lib/components/GrantDashboard/Modals/ApplicationInfoModal.svelte";
@@ -28,7 +27,6 @@ vi.mock("$lib/resources/establishments/establishment.port");
 vi.mock("$lib/resources/associations/association.service");
 vi.mock("$lib/resources/associations/association.port");
 vi.mock("$lib/helpers/providerValueHelper");
-vi.mock("$lib/services/tracker.service");
 vi.mock("$lib/helpers/document.helper");
 vi.mock("$lib/store/modal.store");
 vi.mock("./application.helper");
@@ -161,15 +159,6 @@ describe("GrantDashboard Controller", () => {
             });
         });
 
-        describe("clickProviderLink", () => {
-            it("call trackerService", () => {
-                CTRL.clickProviderLink();
-                expect(vi.mocked(trackerService.trackEvent)).toHaveBeenCalledWith(
-                    "association-etablissement.dashboard.display-provider-modal",
-                );
-            });
-        });
-
         describe("getDefaultExercise", () => {
             it("returns current exercice if found in available options", () => {
                 CTRL.exerciseOptions.set([{ value: "2025", label: "Exercice 2025" }]);
@@ -241,16 +230,8 @@ describe("GrantDashboard Controller", () => {
             it("stops if extract already loading", async () => {
                 CTRL.isExtractLoading.set(true);
                 await CTRL.download();
-                expect(trackerService.trackEvent).not.toHaveBeenCalled();
-            });
-
-            it("calls trackerService if not already loading", async () => {
-                CTRL.isExtractLoading.value = false;
-                await CTRL.download();
-                expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(
-                    "association-etablissement.dashbord.download-csv",
-                    CTRL.identifier,
-                );
+                expect(associationService.getGrantExtract).not.toHaveBeenCalled();
+                expect(establishmentService.getGrantExtract).not.toHaveBeenCalled();
             });
 
             it("set isExtractLoading to true", async () => {
@@ -399,15 +380,8 @@ describe("GrantDashboard Controller", () => {
                 it("if no cells, nothing happens", () => {
                     CTRL.rows.value = [ROWS[0], {} as SortableRow];
                     CTRL.onPaymentClick(INDEX);
-                    expect(trackerService.buttonClickEvent).not.toHaveBeenCalled();
                     expect(data.set).not.toHaveBeenCalled();
                     expect(modal.set).not.toHaveBeenCalled();
-                });
-
-                it("tracks button click", () => {
-                    CTRL.onPaymentClick(INDEX);
-                    const eventTag = `association-etablissement.dashbord.payment.more_information`;
-                    expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(eventTag);
                 });
 
                 it("sets data", () => {
@@ -425,15 +399,8 @@ describe("GrantDashboard Controller", () => {
                 it("if no cells, nothing happens", () => {
                     CTRL.rows.value = [ROWS[0], {} as SortableRow];
                     CTRL.onApplicationClick(INDEX);
-                    expect(trackerService.buttonClickEvent).not.toHaveBeenCalled();
                     expect(data.set).not.toHaveBeenCalled();
                     expect(modal.set).not.toHaveBeenCalled();
-                });
-
-                it("tracks button click", () => {
-                    CTRL.onApplicationClick(INDEX);
-                    const eventTag = `association-etablissement.dashbord.subvention.more_information`;
-                    expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(eventTag);
                 });
 
                 it("sets data", () => {

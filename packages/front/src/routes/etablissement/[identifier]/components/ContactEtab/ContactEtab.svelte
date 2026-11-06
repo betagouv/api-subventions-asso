@@ -25,12 +25,7 @@
     {/snippet}
     {#snippet action()}
         {#if controller.hasContact}
-            <Button
-                onclick={() => controller.download()}
-                type="secondary"
-                trackerName="etablissements.contacts.download-csv">
-                Télécharger au format CSV
-            </Button>
+            <Button onclick={() => controller.download()} type="secondary">Télécharger au format CSV</Button>
         {/if}
     {/snippet}
 </ActionGroup>
