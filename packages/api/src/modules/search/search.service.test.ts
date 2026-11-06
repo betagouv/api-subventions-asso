@@ -83,8 +83,8 @@ describe("SearchService", () => {
 
     describe("getPaginatedResult", () => {
         it("sorts results alphabetically", async () => {
-            const A = { name: { rna: "Aa" } } as AssociationSearchEntity;
-            const B = { name: { sirene: "Bb" } } as AssociationSearchEntity;
+            const A = new AssociationSearchEntity({ names: { rna: "Aa" } });
+            const B = new AssociationSearchEntity({ names: { sirene: "Bb" } });
             jest.mocked(searchCacheAdapter.getResults).mockResolvedValueOnce([B, A]);
             const actual = await service.getPaginatedResult(SEARCH_TOKEN, { sort: SearchSort.ALPHABETICAL });
             expect(actual.results).toEqual([A, B]);

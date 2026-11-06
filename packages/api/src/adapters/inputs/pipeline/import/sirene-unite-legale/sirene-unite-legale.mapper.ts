@@ -33,7 +33,7 @@ export class SireneUniteLegaleMapper {
 
         const associationSearch: UniteLegaleAssociationSearch = {
             siren: dbo.siren,
-            name: {
+            names: {
                 sirene: dbo.denominationUniteLegale,
             },
             searchName: { sirene: this.sanitize.execute(dbo.denominationUniteLegale) },

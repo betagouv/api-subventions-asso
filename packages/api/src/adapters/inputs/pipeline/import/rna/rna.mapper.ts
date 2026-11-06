@@ -75,7 +75,7 @@ export class RnaMapper {
 
         const associationSearch: RnaAssociationSearch = {
             rna: dbo.id,
-            name: {
+            names: {
                 rna: dbo.titre,
             },
             searchName: { rna: sanitizedName },

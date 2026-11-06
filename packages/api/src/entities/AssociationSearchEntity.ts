@@ -6,7 +6,7 @@ export interface AssociationSearchProps {
     siren?: string;
     rna?: string;
     mainEstablishmentSiret?: string;
-    name: { rna?: string; sirene: string } | { rna: string; sirene?: string };
+    names: { rna?: string; sirene: string } | { rna: string; sirene?: string };
     object?: string;
     address?: Address;
     nbEstabs?: number;
@@ -14,7 +14,7 @@ export interface AssociationSearchProps {
 
 // Only used for the search itself, to return data from API call in a well formatted way
 export default class AssociationSearchEntity {
-    public name: AssociationSearchProps["name"];
+    public names: AssociationSearchProps["names"];
     public siren?: Siren;
     public rna?: Rna;
     public mainEstablishmentSiret?: Siret;
@@ -28,9 +28,14 @@ export default class AssociationSearchEntity {
             ? new Siret(props.mainEstablishmentSiret as string)
             : undefined;
         this.rna = Rna.isRna(props.rna) ? new Rna(props.rna as string) : undefined;
-        this.name = props.name;
+        this.names = props.names;
         this.object = props.object;
         this.address = props.address;
         this.nbEstabs = props.nbEstabs;
+    }
+
+    get name() {
+        if (this.names.rna) return this.names.rna;
+        return this.names.sirene!;
     }
 }

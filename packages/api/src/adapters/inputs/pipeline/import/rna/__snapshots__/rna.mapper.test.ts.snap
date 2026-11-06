@@ -2,13 +2,13 @@
 
 exports[`RnaMapper toAssociationSearch returns AssociationSearchDbo 1`] = `
 {
-  "name": {
-    "rna": "ASSOCIATION 1",
-  },
   "nameTokens": [
     "association",
     "1",
   ],
+  "names": {
+    "rna": "ASSOCIATION 1",
+  },
   "object": "objet association 1",
   "objectTokens": [
     "objet",

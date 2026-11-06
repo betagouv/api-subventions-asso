@@ -6,7 +6,7 @@ export function toDto(entity: AssociationSearchEntity): RechercheAssociationDto 
         siren: entity.siren?.value ?? null,
         rna: entity.rna?.value ?? null,
         siretSiege: entity.mainEstablishmentSiret?.value ?? null,
-        name: entity.name.rna ? entity.name.rna : (entity.name.sirene ?? null),
+        name: entity.name,
         adresse: {
             numero: entity.address?.number ?? null,
             type_voie: entity.address?.type ?? null,
