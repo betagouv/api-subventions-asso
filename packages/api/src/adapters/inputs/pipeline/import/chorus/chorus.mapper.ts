@@ -68,4 +68,24 @@ export class ChorusMapper {
             updateDate: new Date(),
         };
     }
+
+    public static toAssociationSearches(_entities: ChorusEntity[] | ChorusFseEntity[]) {
+        // entities
+        //                 .filter((entity): entity is OnlySiretChorusFseEntity => entity.identifier instanceof Siret) // does not handle Ridet or Tahitiet
+        //                 // .map(entity => ({
+        //                 //     siren: this.getSiren(entity),
+        //                 //     amount: entity.amount,
+        //                 // }))
+        //                 .reduce((acc, entity) => {
+        //                     const siren = this.getSiren(entity);
+        //                     if (acc)
+        //                     return acc;
+        //                 }, new Map<string, AssociationSearchPaymentsDbo>()),
+        return [];
+    }
+
+    private static isFse(entity: ChorusEntity | ChorusFseEntity): entity is ChorusEntity {
+        if ((entity as ChorusFseEntity)?.identifier) return true;
+        return false;
+    }
 }

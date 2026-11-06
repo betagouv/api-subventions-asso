@@ -1,6 +1,7 @@
 import AssociationSearchEntity from "../../../../entities/AssociationSearchEntity";
 import Siren from "../../../../identifier-objects/Siren";
 import {
+    ChorusAssociationSearch,
     EstablishmentAssociationSearch,
     RnaAssociationSearch,
     UniteLegaleAssociationSearch,
@@ -17,7 +18,8 @@ export interface AssociationSearchPort {
 
     findByText(text: string, options?: FindByTextOptions): Promise<AssociationSearchEntity[]>;
     findByIdentifier(identifier: Siren | Rna, postalCode?: string): Promise<AssociationSearchEntity | null>;
-    upsertFromEstablishment(entities: EstablishmentAssociationSearch[]): Promise<void>;
-    upsertFromSirene(entities: UniteLegaleAssociationSearch[]): Promise<void>;
-    upsertFromRna(entities: RnaAssociationSearch[]): Promise<void>;
+    upsertFromEstablishment(dbos: EstablishmentAssociationSearch[]): Promise<void>;
+    upsertFromSirene(dbos: UniteLegaleAssociationSearch[]): Promise<void>;
+    upsertFromRna(dbos: RnaAssociationSearch[]): Promise<void>;
+    upsertFromChorus(dbos: ChorusAssociationSearch[]): Promise<void>;
 }

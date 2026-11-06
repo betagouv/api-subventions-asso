@@ -19,6 +19,11 @@ import { ChorusDto, ChorusFseDto } from "./chorus.dto";
 import { ChorusMapper } from "./chorus.mapper";
 import { ChorusParser } from "./chorus.parser";
 import { ChorusValidator } from "./chorus.validator";
+import ChorusFseEntity from "../../../../../modules/providers/chorus/entities/ChorusFseEntity";
+import ChorusEntity from "../../../../../modules/providers/chorus/entities/ChorusEntity";
+import { Siret } from "../../../../../identifier-objects";
+import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
+import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
 
 export interface ChorusImportOptions {
     withoutEuropeanData?: boolean;
@@ -31,6 +36,7 @@ export class ChorusImport {
         private filterAsso: FilterChorusEntities,
         private filterFseAsso: FilterChorusFseEntities,
         private chorusService: ChorusService, // @TODO: make this a use case
+        private associationPort: AssociationSearchPort,
         private updateFlatByExercise: UpdateFlatByExercise, // @TODO: make this a use case
     ) {}
 
@@ -84,10 +90,33 @@ export class ChorusImport {
             ?.map(dto => ChorusMapper.toFseEntity(dto));
         if (fseEntities) {
             const assoFseEntities = await this.filterFseAsso.execute(fseEntities);
+            // await this.associationPort.upsertFromChorus(
+            //     ChorusMapper.toAssociationSearches(assoFseEntities);
+            // );
             await this.saveFseEntities.execute(assoFseEntities);
             // @TODO: make this a use case
             return this.chorusService.syncFlat(assoFseEntities);
         }
+    }
+
+    // mergeAsso(map: Map<string, ChorusAssociationSearch>, assoToMerge: ChorusAssociationSearch) {
+    //     const asso = map.get(assoToMerge.siren);
+    //     if (asso)
+    //         if (asso.payments)
+    //             map.set(asso.siren, {
+    //                 total: asso[asso].total + entity.amount,
+    //                 min: payment.min > entity.amount ? entity.amount : payment.min,
+    //                 max: payment.max < entity.amount ? entity.amount : payment.max,
+    //                 nb: payment.nb + 1,
+    //             });
+    //         else assosList.set(asso.siren, asso);
+    //     return assosList;
+    // }
+
+    private getSiren(entity: ChorusEntity | (ChorusFseEntity & { identifier: Siret })) {
+        if ((entity as ChorusFseEntity)?.identifier)
+            return (entity as ChorusFseEntity & { identifier: Siret }).identifier.toSiren();
+        else return new Siret((entity as ChorusEntity).siret).toSiren();
     }
 
     async run(buffer: Buffer, options: ChorusImportOptions = {}): Promise<ImportReport> {
@@ -107,6 +136,7 @@ const chorusImport = new ChorusImport(
     filtreAssoChorusEntities,
     filtreAssoChorusFseEntities,
     chorusService,
+    associationSearchAdapter,
     updateFlatByExercise,
 );
 export default chorusImport;

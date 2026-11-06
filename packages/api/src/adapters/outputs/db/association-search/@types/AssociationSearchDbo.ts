@@ -10,6 +10,13 @@ type RnaOrSirene =
           sirene?: string;
       };
 
+export interface AssociationSearchPaymentsDbo {
+    total: number;
+    min: number;
+    max: number;
+    nb: number;
+}
+
 export default interface AssociationSearchDbo {
     siren?: string;
     mainEstablishmentSiret?: string;
@@ -23,6 +30,7 @@ export default interface AssociationSearchDbo {
     address?: Address;
     nbEstabs?: number;
     postalCodes?: string[];
+    payments: Record<string, AssociationSearchPaymentsDbo>; // { 2026: AssociationSearchPaymentsDbo }
 }
 
 export type EstablishmentAssociationSearch = Required<
@@ -39,3 +47,5 @@ export type UniteLegaleAssociationSearch = Required<
 export type RnaAssociationSearch = Required<Pick<AssociationSearchDbo, "rna" | "searchName" | "nameTokens">> & {
     name: { rna: string };
 } & Pick<AssociationSearchDbo, "siren" | "object" | "searchObject" | "objectTokens">;
+
+export type ChorusAssociationSearch = Required<Pick<AssociationSearchDbo, "siren" | "payments">>;

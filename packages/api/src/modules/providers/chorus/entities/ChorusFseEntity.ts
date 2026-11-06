@@ -24,3 +24,5 @@ export default interface ChorusFseEntity extends ProviderDataEntity {
     amount: number;
     operationDate: Date;
 }
+
+export type OnlySiretChorusFseEntity = Omit<ChorusFseEntity, "identifier"> & { identifier: Siret };

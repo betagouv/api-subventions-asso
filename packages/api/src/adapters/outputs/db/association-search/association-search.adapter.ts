@@ -5,6 +5,7 @@ import Siren from "../../../../identifier-objects/Siren";
 import { AssociationSearchPort, FindByTextOptions } from "./association-search.port";
 import AssociationSearchMapper from "./association-search.mapper";
 import AssociationSearchDbo, {
+    ChorusAssociationSearch,
     EstablishmentAssociationSearch,
     RnaAssociationSearch,
     UniteLegaleAssociationSearch,
@@ -202,6 +203,17 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
                     },
                 });
             }
+        });
+        await this.collection.bulkWrite(operations);
+        return;
+    }
+
+    public async upsertFromChorus(dbos: ChorusAssociationSearch[]) {
+        const operations: AnyBulkWriteOperation<AssociationSearchDbo>[] = [];
+        dbos.forEach(dbo => {
+            const { siren, payments } = dbo;
+            // TODO: update only for the year
+            operations.push({ updateMany: { filter: { siren }, update: { $set: { payments } } } });
         });
         await this.collection.bulkWrite(operations);
         return;
