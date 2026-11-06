@@ -5,9 +5,7 @@ import SireneEstablishmentDto, { AssociationSearchFields } from "./sirene-establ
 import dataLogAdapter from "../../../../outputs/db/data-log/data-log.adapter";
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
-import AssociationSearchDbo, {
-    EstablishmentAssociationSearch,
-} from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
+import { EstablishmentAssociationSearch } from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import { SireneEstablishmentMapper } from "./sirene-establishment.mapper";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { ImportPipeline } from "../import-pipeline";
@@ -17,6 +15,8 @@ import { Readable, Transform, Writable } from "stream";
 import { pipeline } from "stream/promises";
 import { SireneUniteLegalePort } from "../../../../outputs/db/sirene/sirene-unite-legale.port";
 import sireneUniteLegaleAdapter from "../../../../outputs/db/sirene/sirene-unite-legale.adapter";
+import { GeoApiPort } from "../../../../outputs/db/providers/geo-api/geo.port";
+import geoAdapter from "../../../../outputs/db/providers/geo-api/geo.adapter";
 
 const SIRENE_ESTABLISHMENT_PROVIDER_ID = "sirene-establishment";
 
@@ -27,6 +27,7 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
         private uniteLegalePort: SireneUniteLegalePort,
         private searchPort: AssociationSearchPort,
         private logAdapter: DataLogPort,
+        private geoPort: GeoApiPort,
     ) {
         super();
     }
@@ -59,7 +60,7 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
             );
         } else console.log("Starting first Sirene Stock Etablissement importation");
 
-        const mostRecentUpdates: AssociationSearchFields[] = [];
+        const addressesByAffectedSiren = new Map<string, EstablishmentAssociationSearch["address"]>();
 
         stages.push(
             new Writable({
@@ -69,12 +70,14 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
                         this.report.parsedCount += batch.length;
 
                         const associationDtos = await this.filterAssociationEstablishments(batch);
+                        if (associationDtos.length === 0) return callback();
 
-                        if (associationDtos.length === 0) {
-                            return callback();
+                        for (const { siren } of associationDtos) {
+                            if (!addressesByAffectedSiren.has(siren)) addressesByAffectedSiren.set(siren, undefined);
                         }
-
-                        mostRecentUpdates.push(...this.filterMainEstab(associationDtos));
+                        this.filterMainEstab(associationDtos)
+                            .map(dto => SireneEstablishmentMapper.toAssociationSearch(dto))
+                            .forEach(({ siren, address }) => addressesByAffectedSiren.set(siren, address));
 
                         this.report.importedCount += await this.establishmentPort.upsertMany(associationDtos);
                         callback();
@@ -87,43 +90,52 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
 
         await pipeline(stages);
 
-        await this.updateAssociationSearch(
-            mostRecentUpdates.map(dto => SireneEstablishmentMapper.toAssociationSearch(dto)),
-        );
+        await this.updateAssociationSearch(addressesByAffectedSiren);
 
         return this.report;
     }
 
     private async updateAssociationSearch(
-        mostRecentUpdates: Required<Pick<AssociationSearchDbo, "siren" | "address">>[],
+        addressesByAffectedSiren: ReadonlyMap<string, EstablishmentAssociationSearch["address"]>,
     ) {
+        if (addressesByAffectedSiren.size === 0) return;
+
+        const validDepartmentCodes = (await this.geoPort.getAllDepartmentCodes()).map(code => code.toUpperCase());
+        const sirens = Array.from(addressesByAffectedSiren.keys());
         const CHUNK_SIZE = 10000;
 
-        console.log(`starting upserting ${mostRecentUpdates.length} association-search...`);
+        console.log(`starting upserting ${sirens.length} association-search...`);
 
-        for (let i = 0; i < mostRecentUpdates.length; i += CHUNK_SIZE) {
+        for (let i = 0; i < sirens.length; i += CHUNK_SIZE) {
             console.time("chunk");
-            // const tmpAssociationSearch = await this.searchPort.getTmpCollection();
 
-            const chunk = mostRecentUpdates.slice(i, i + CHUNK_SIZE);
-
-            // Should not have duplicate siren as it is already handled by filterMostRecent
-            const mainEstabUpdateMap = new Map(chunk.map(dbo => [dbo.siren, dbo]));
-
-            const iterable = this.establishmentPort.getComputedFields(chunk.map(dbo => dbo.siren));
+            const chunk = sirens.slice(i, i + CHUNK_SIZE);
+            const iterable = this.establishmentPort.getComputedFields(chunk);
 
             const associationSearch: EstablishmentAssociationSearch[] = [];
 
-            // affecte main estab address updates in each AssociationSearch received from getComputedField
-            for await (const item of iterable) {
-                const match = mainEstabUpdateMap.get(item.siren);
-                if (match) Object.assign(item, match);
-                associationSearch.push(item);
+            for await (const { communeCodes, ...computedFields } of iterable) {
+                const association: EstablishmentAssociationSearch = {
+                    ...computedFields,
+                    departmentCodes: this.getDepartmentCodes(communeCodes, validDepartmentCodes),
+                };
+                const address = addressesByAffectedSiren.get(association.siren);
+                if (address) association.address = address;
+                associationSearch.push(association);
             }
 
             await this.searchPort.upsertFromEstablishment(associationSearch);
             console.timeEnd("chunk");
         }
+    }
+
+    // use commune codes to find department and keep postal codes for exact searches
+    private getDepartmentCodes(communeCodes: string[], validDepartmentCodes: string[]): string[] {
+        const departmentCodes = communeCodes.map(communeCode => {
+            const normalizedCommuneCode = communeCode.trim().toUpperCase();
+            return validDepartmentCodes.find(code => normalizedCommuneCode.startsWith(code));
+        });
+        return [...new Set(departmentCodes.filter((code): code is string => Boolean(code)))];
     }
 
     // Returns partial main establishment dtos use to create association-search
@@ -162,5 +174,6 @@ const sireneEstablishmentPipeline = new SireneEstablishmentPipeline(
     sireneUniteLegaleAdapter,
     associationSearchAdapter,
     dataLogAdapter,
+    geoAdapter,
 );
 export default sireneEstablishmentPipeline;

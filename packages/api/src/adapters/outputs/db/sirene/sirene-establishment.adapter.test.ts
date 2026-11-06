@@ -19,6 +19,7 @@ describe("SireneEstablishmentAdapter", () => {
         siren: DEFAULT_ASSOCIATION.siren,
         nbEstabs: 2,
         postalCodes: ["75002", "75001"],
+        communeCodes: ["75101", "75102"],
     };
 
     beforeAll(() => {
@@ -85,7 +86,7 @@ describe("SireneEstablishmentAdapter", () => {
             expect(actual).toEqual([AGGREGATE_DBO]);
         });
 
-        it("projects postal codes without null values", async () => {
+        it("projects location codes without null values", async () => {
             await sireneEstablishmentAdapter.getComputedFields([DEFAULT_ASSOCIATION.siren]);
             expect(mockAggregate).toHaveBeenCalledWith([
                 { $match: { siren: { $in: [DEFAULT_ASSOCIATION.siren] } } },
@@ -96,6 +97,7 @@ describe("SireneEstablishmentAdapter", () => {
                             $sum: 1,
                         },
                         postalCodes: { $addToSet: "$codePostalEtablissement" },
+                        communeCodes: { $addToSet: "$codeCommuneEtablissement" },
                     },
                 },
                 {
@@ -108,6 +110,13 @@ describe("SireneEstablishmentAdapter", () => {
                                 input: "$postalCodes",
                                 as: "postalCode",
                                 cond: { $ne: ["$$postalCode", null] },
+                            },
+                        },
+                        communeCodes: {
+                            $filter: {
+                                input: "$communeCodes",
+                                as: "communeCode",
+                                cond: { $ne: ["$$communeCode", null] },
                             },
                         },
                     },

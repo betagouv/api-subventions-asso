@@ -13,6 +13,7 @@ export class SearchHttp extends Controller {
      * @summary Recherche une association via son rna, siren et nom partiel ou complet
      * @param input Identifiant RNA ou Identifiant Siren ou Nom d'une association (peut-être encodé via encodeURIComponent())
      * @param page default to 1
+     * @param location Code département ou code postal
      * @param sort Tri par pertinence (par défaut) ou par ordre alphabétique
      * @param nameOnly Restreint la recherche au nom de l'association
      */
@@ -41,18 +42,18 @@ export class SearchHttp extends Controller {
     @Response<HttpErrorInterface>("404", "Aucune association trouvée", {
         message: "Could not match any association with given input : ${input}",
     })
-    @Response<HttpErrorInterface>("400", "Code postal invalide")
+    @Response<HttpErrorInterface>("400", "Localisation invalide")
     public async search(
         @Path() input: string,
         @Query() page = "1",
-        @Query() postalCode?: string,
+        @Query() location?: string,
         @Query() sort: SearchSort = SearchSort.RELEVANCE,
         @Query() nameOnly = false,
     ): Promise<PaginatedResultDto<RechercheAssociationDto>> {
         // @TODO: transform in use case
         const { results, ...search } = await searchService.getPaginatedResult(decodeURIComponent(input), {
             page: Number.parseInt(page),
-            postalCode,
+            location,
             sort,
             nameOnly,
         });

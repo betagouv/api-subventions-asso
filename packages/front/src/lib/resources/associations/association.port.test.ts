@@ -83,10 +83,10 @@ describe("AssociationPort", () => {
         });
 
         it("calls requestsService get with search options", async () => {
-            const expected = `/search/associations/${SIREN}?page=2&postalCode=93&sort=alphabetical&nameOnly=true`;
+            const expected = `/search/associations/${SIREN}?page=2&location=93&sort=alphabetical&nameOnly=true`;
             await associationPort.search(SIREN, {
                 page: 2,
-                postalCode: "93",
+                location: "93",
                 sort: SearchSort.ALPHABETICAL,
                 nameOnly: true,
             });

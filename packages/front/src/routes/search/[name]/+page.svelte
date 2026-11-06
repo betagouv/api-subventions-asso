@@ -3,7 +3,7 @@
     import SearchController from "./Search.controller";
     import Spinner from "$lib/components/Spinner.svelte";
     import AssociationItem from "$lib/components/AssociationItem/AssociationItem.svelte";
-    import AdvancedSearchBar from "$lib/components/AdvancedSearchBar/AdvancedSearchBar.svelte";
+    import AssociationSearchForm from "$lib/components/AssociationSearchForm/AssociationSearchForm.svelte";
     import Pagination from "$lib/dsfr/Pagination.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import { page } from "$lib/store/kit.store";
@@ -12,20 +12,20 @@
 
     let { params }: PageProps = $props();
     const name = $derived(params.name);
-    const initialPostalCode = $derived($page.url.searchParams.get("postalCode") ?? undefined);
+    const initialLocation = $derived($page.url.searchParams.get("location") ?? undefined);
     const initialSort = $derived(
         $page.url.searchParams.get("sort") === SearchSort.ALPHABETICAL ? SearchSort.ALPHABETICAL : SearchSort.RELEVANCE,
     );
     const initialNameOnly = $derived($page.url.searchParams.get("nameOnly") === "true");
 
-    const ctrl = $derived(new SearchController(name, initialPostalCode, initialSort, initialNameOnly));
+    const ctrl = $derived(new SearchController(name, initialLocation, initialSort, initialNameOnly));
     const searchPromise = $derived(ctrl.searchPromise);
     const searchResults = $derived(ctrl.searchResults);
     const inputSearch = $derived(ctrl.inputSearch);
     const duplicatesFromIdentifier = $derived(ctrl.duplicatesFromIdentifier);
     const currentPage = $derived(ctrl.currentPage);
     const isLastSearchCompany = $derived(ctrl.isLastSearchCompany);
-    const postalCode = $derived(ctrl.postalCode);
+    const location = $derived(ctrl.location);
     const selectedSort = $derived(ctrl.selectedSort);
     const nameOnly = $derived(ctrl.nameOnly);
     const nbResultLabel = $derived.by(() => {
@@ -35,11 +35,11 @@
 </script>
 
 <div class="fr-my-6v">
-    <AdvancedSearchBar
+    <AssociationSearchForm
         bind:value={$inputSearch}
-        bind:postalCode={$postalCode}
+        bind:location={$location}
         bind:nameOnly={$nameOnly}
-        onSubmit={(value, postalCode, nameOnly) => ctrl.onSubmit(value, postalCode, nameOnly)} />
+        onSubmit={(value, location, nameOnly) => ctrl.onSubmit(value, location, nameOnly)} />
 </div>
 
 {#await $searchPromise}

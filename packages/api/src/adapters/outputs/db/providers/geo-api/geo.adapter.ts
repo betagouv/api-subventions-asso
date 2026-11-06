@@ -20,6 +20,10 @@ export class GeoAdapter extends MongoAdapter<GeoDbo> implements GeoApiPort {
     findByDepartmentName(departmentName: string): Promise<GeoDbo | null> {
         return this.collection.findOne({ departmentName });
     }
+
+    getAllDepartmentCodes(): Promise<string[]> {
+        return this.collection.distinct("departmentCode");
+    }
 }
 
 const geoAdapter = new GeoAdapter();

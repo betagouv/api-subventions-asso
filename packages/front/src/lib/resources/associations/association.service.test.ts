@@ -162,11 +162,11 @@ describe("AssociationService", () => {
             expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, { page: PAGE });
         });
 
-        it("calls port with postal code", async () => {
+        it("calls port with location", async () => {
             const PAGE = 2;
-            const POSTAL_CODE = "93";
-            await associationService._searchByText(SIREN, { page: PAGE, postalCode: POSTAL_CODE });
-            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, { page: PAGE, postalCode: POSTAL_CODE });
+            const LOCATION = "93";
+            await associationService._searchByText(SIREN, { page: PAGE, location: LOCATION });
+            expect(mockedAssociationPort.search).toHaveBeenCalledWith(SIREN, { page: PAGE, location: LOCATION });
         });
 
         it("calls port with default PAGE", async () => {
@@ -176,10 +176,10 @@ describe("AssociationService", () => {
 
         it("calls port with search options", async () => {
             const PAGE = 2;
-            const POSTAL_CODE = "93";
+            const LOCATION = "93";
             const options = {
                 page: PAGE,
-                postalCode: POSTAL_CODE,
+                location: LOCATION,
                 sort: SearchSort.ALPHABETICAL,
                 nameOnly: true,
             };
@@ -219,11 +219,11 @@ describe("AssociationService", () => {
             expect(mockByText).toHaveBeenCalledWith(SIREN, { page: PAGE });
         });
 
-        it("calls _searchByText with postal code", async () => {
+        it("calls _searchByText with location", async () => {
             const PAGE = 2;
-            const POSTAL_CODE = "93";
-            await associationService.search(SIREN, { page: PAGE, postalCode: POSTAL_CODE });
-            expect(mockByText).toHaveBeenCalledWith(SIREN, { page: PAGE, postalCode: POSTAL_CODE });
+            const LOCATION = "93";
+            await associationService.search(SIREN, { page: PAGE, location: LOCATION });
+            expect(mockByText).toHaveBeenCalledWith(SIREN, { page: PAGE, location: LOCATION });
         });
 
         it("calls _searchByText with default PAGE", async () => {
@@ -233,10 +233,10 @@ describe("AssociationService", () => {
 
         it("calls _searchByText with search options", async () => {
             const PAGE = 2;
-            const POSTAL_CODE = "93";
+            const LOCATION = "93";
             const options = {
                 page: PAGE,
-                postalCode: POSTAL_CODE,
+                location: LOCATION,
                 sort: SearchSort.ALPHABETICAL,
                 nameOnly: true,
             };
@@ -267,6 +267,11 @@ describe("AssociationService", () => {
             mockedIdentifierHelper.isRna.mockReturnValueOnce(false);
             mockedIdentifierHelper.isStartOfSiret.mockReturnValueOnce(false);
             await associationService.search(SIREN);
+            expect(mockByIdentifier).not.toHaveBeenCalled();
+        });
+
+        it("does not bypass the location filter with the identifier fallback", async () => {
+            await associationService.search(SIREN, { location: "07" });
             expect(mockByIdentifier).not.toHaveBeenCalled();
         });
 

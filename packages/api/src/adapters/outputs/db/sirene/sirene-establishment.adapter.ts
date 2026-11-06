@@ -40,7 +40,12 @@ export class SireneEstablishmentAdapter
     }
 
     public getComputedFields(sirens: string[]) {
-        return this.collection.aggregate<{ siren: string; nbEstabs: number; postalCodes: string[] }>([
+        return this.collection.aggregate<{
+            siren: string;
+            nbEstabs: number;
+            postalCodes: string[];
+            communeCodes: string[];
+        }>([
             { $match: { siren: { $in: sirens } } },
             {
                 $group: {
@@ -49,6 +54,7 @@ export class SireneEstablishmentAdapter
                         $sum: 1,
                     },
                     postalCodes: { $addToSet: "$codePostalEtablissement" },
+                    communeCodes: { $addToSet: "$codeCommuneEtablissement" },
                 },
             },
             {
@@ -61,6 +67,13 @@ export class SireneEstablishmentAdapter
                             input: "$postalCodes",
                             as: "postalCode",
                             cond: { $ne: ["$$postalCode", null] },
+                        },
+                    },
+                    communeCodes: {
+                        $filter: {
+                            input: "$communeCodes",
+                            as: "communeCode",
+                            cond: { $ne: ["$$communeCode", null] },
                         },
                     },
                 },
