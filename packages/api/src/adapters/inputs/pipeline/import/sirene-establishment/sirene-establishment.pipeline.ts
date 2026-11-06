@@ -5,9 +5,7 @@ import SireneEstablishmentDto, { AssociationSearchFields } from "./sirene-establ
 import dataLogAdapter from "../../../../outputs/db/data-log/data-log.adapter";
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
-import AssociationSearchDbo, {
-    EstablishmentAssociationSearch,
-} from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
+import { EstablishmentAssociationSearch } from "../../../../outputs/db/association-search/@types/AssociationSearchDbo";
 import { SireneEstablishmentMapper } from "./sirene-establishment.mapper";
 import { DataLogPort } from "../../../../outputs/db/data-log/data-log.port";
 import { ImportPipeline } from "../import-pipeline";
@@ -35,8 +33,6 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
     }
 
     public async run(filePath: string): Promise<ImportReport> {
-        const departmentCodes = (await this.geoPort.getAllDepartmentCodes()).map(code => code.toUpperCase());
-
         // import should occur each month, we secure by taking one more month to be sure to take all new data
         const lastEditionDate = addMonths(
             await this.logAdapter.getLastEditionDateByProvider(SIRENE_ESTABLISHMENT_PROVIDER_ID),
@@ -64,8 +60,7 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
             );
         } else console.log("Starting first Sirene Stock Etablissement importation");
 
-        const affectedSirens = new Set<string>();
-        const mainEstablishmentUpdates = new Map<string, Required<Pick<AssociationSearchDbo, "siren" | "address">>>();
+        const addressesByAffectedSiren = new Map<string, EstablishmentAssociationSearch["address"]>();
 
         stages.push(
             new Writable({
@@ -77,10 +72,12 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
                         const associationDtos = await this.filterAssociationEstablishments(batch);
                         if (associationDtos.length === 0) return callback();
 
-                        associationDtos.forEach(dto => affectedSirens.add(dto.siren));
+                        for (const { siren } of associationDtos) {
+                            if (!addressesByAffectedSiren.has(siren)) addressesByAffectedSiren.set(siren, undefined);
+                        }
                         this.filterMainEstab(associationDtos)
                             .map(dto => SireneEstablishmentMapper.toAssociationSearch(dto))
-                            .forEach(dbo => mainEstablishmentUpdates.set(dbo.siren, dbo));
+                            .forEach(({ siren, address }) => addressesByAffectedSiren.set(siren, address));
 
                         this.report.importedCount += await this.establishmentPort.upsertMany(associationDtos);
                         callback();
@@ -93,16 +90,18 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
 
         await pipeline(stages);
 
-        await this.updateAssociationSearch(Array.from(affectedSirens), mainEstablishmentUpdates, departmentCodes);
+        await this.updateAssociationSearch(addressesByAffectedSiren);
 
         return this.report;
     }
 
     private async updateAssociationSearch(
-        sirens: string[],
-        mainEstablishmentUpdates: Map<string, Required<Pick<AssociationSearchDbo, "siren" | "address">>>,
-        validDepartmentCodes: string[],
+        addressesByAffectedSiren: ReadonlyMap<string, EstablishmentAssociationSearch["address"]>,
     ) {
+        if (addressesByAffectedSiren.size === 0) return;
+
+        const validDepartmentCodes = (await this.geoPort.getAllDepartmentCodes()).map(code => code.toUpperCase());
+        const sirens = Array.from(addressesByAffectedSiren.keys());
         const CHUNK_SIZE = 10000;
 
         console.log(`starting upserting ${sirens.length} association-search...`);
@@ -120,8 +119,8 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
                     ...computedFields,
                     departmentCodes: this.getDepartmentCodes(communeCodes, validDepartmentCodes),
                 };
-                const mainEstablishmentUpdate = mainEstablishmentUpdates.get(association.siren);
-                if (mainEstablishmentUpdate) Object.assign(association, mainEstablishmentUpdate);
+                const address = addressesByAffectedSiren.get(association.siren);
+                if (address) association.address = address;
                 associationSearch.push(association);
             }
 

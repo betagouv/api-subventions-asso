@@ -36,7 +36,7 @@ describe("SireneEstablishmentPipeline", () => {
     } as unknown as jest.Mocked<AssociationSearchPort>;
     const dataLog = { getLastEditionDateByProvider: jest.fn() } as unknown as jest.Mocked<DataLogPort>;
     const geoPort = {
-        getAllDepartmentCodes: jest.fn().mockResolvedValue(["75", "2A"]),
+        getAllDepartmentCodes: jest.fn().mockResolvedValue(["75", "2A", "974"]),
     } as unknown as jest.Mocked<GeoApiPort>;
 
     const ASSOCIATION_SEARCH: Required<Pick<AssociationSearchDbo, "siren" | "address">> = {
@@ -112,9 +112,7 @@ describe("SireneEstablishmentPipeline", () => {
         it("updates association-search", async () => {
             await pipeline.run("file.parquet");
             expect(mockUpdateAssociationSearch).toHaveBeenCalledWith(
-                [SIRENE_ESTABLISHMENT_DTO.siren],
-                new Map([[ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH]]),
-                ["75", "2A"],
+                new Map([[ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH.address]]),
             );
         });
 
@@ -160,7 +158,7 @@ describe("SireneEstablishmentPipeline", () => {
         ]);
 
         it("preserves the main address when only computed fields change", async () => {
-            await pipeline.updateAssociationSearch([ASSOCIATION_SEARCH.siren], new Map(), ["75", "2A", "974"]);
+            await pipeline.updateAssociationSearch(new Map([[ASSOCIATION_SEARCH.siren, undefined]]));
             expect(searchPort.upsertFromEstablishment).toHaveBeenCalledWith([
                 {
                     siren: SIRENE_ESTABLISHMENT_DTO.siren,
@@ -172,11 +170,7 @@ describe("SireneEstablishmentPipeline", () => {
         });
 
         it("updates association search ", async () => {
-            await pipeline.updateAssociationSearch(
-                [ASSOCIATION_SEARCH.siren],
-                new Map([[ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH]]),
-                ["2A", "75", "974"],
-            );
+            await pipeline.updateAssociationSearch(new Map([[ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH.address]]));
             expect(searchPort.upsertFromEstablishment).toHaveBeenCalledWith([
                 {
                     siren: ASSOCIATION_SEARCH.siren,
