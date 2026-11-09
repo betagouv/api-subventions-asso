@@ -3,13 +3,13 @@
 exports[`association search pipeline focus on rna save siret as siren when present 1`] = `
 [
   {
-    "name": {
-      "rna": "ASSOCIATION 3",
-    },
     "nameTokens": [
       "association",
       "3",
     ],
+    "names": {
+      "rna": "ASSOCIATION 3",
+    },
     "object": "object association 3",
     "objectTokens": [
       "object",
@@ -29,13 +29,13 @@ exports[`association search pipeline focus on rna save siret as siren when prese
 exports[`association search pipeline focus on rna updates documents after a second import 1`] = `
 [
   {
-    "name": {
-      "rna": "ASSOCIATION 1",
-    },
     "nameTokens": [
       "association",
       "1",
     ],
+    "names": {
+      "rna": "ASSOCIATION 1",
+    },
     "object": "objet association 1",
     "objectTokens": [
       "objet",
@@ -49,13 +49,13 @@ exports[`association search pipeline focus on rna updates documents after a seco
     "searchObject": " objet association 1 ",
   },
   {
-    "name": {
-      "rna": "ASSOCIATION 2",
-    },
     "nameTokens": [
       "association",
       "2",
     ],
+    "names": {
+      "rna": "ASSOCIATION 2",
+    },
     "object": "object association 2",
     "objectTokens": [
       "object",
@@ -69,13 +69,13 @@ exports[`association search pipeline focus on rna updates documents after a seco
     "searchObject": " object association 2 ",
   },
   {
-    "name": {
-      "rna": "ASSOCIATION 3",
-    },
     "nameTokens": [
       "association",
       "3",
     ],
+    "names": {
+      "rna": "ASSOCIATION 3",
+    },
     "object": "object association 3",
     "objectTokens": [
       "object",
@@ -90,13 +90,13 @@ exports[`association search pipeline focus on rna updates documents after a seco
     "siren": "100000003",
   },
   {
-    "name": {
-      "rna": "ASSOCIATION 3",
-    },
     "nameTokens": [
       "association",
       "3",
     ],
+    "names": {
+      "rna": "ASSOCIATION 3",
+    },
     "object": "object association 3",
     "objectTokens": [
       "object",
@@ -117,13 +117,13 @@ exports[`association search pipeline focus on sirene unité légale updates docu
 [
   {
     "mainEstablishmentSiret": "10000000200022",
-    "name": {
-      "sirene": "ASSOCIATION 100000002",
-    },
     "nameTokens": [
       "association",
       "100000002",
     ],
+    "names": {
+      "sirene": "ASSOCIATION 100000002",
+    },
     "rna": "W000000002",
     "searchName": {
       "sirene": " association 100000002 ",
@@ -132,13 +132,13 @@ exports[`association search pipeline focus on sirene unité légale updates docu
   },
   {
     "mainEstablishmentSiret": "10000000300015",
-    "name": {
-      "sirene": "ASSOCIATION 100000003",
-    },
     "nameTokens": [
       "association",
       "100000003",
     ],
+    "names": {
+      "sirene": "ASSOCIATION 100000003",
+    },
     "rna": "W000000003",
     "searchName": {
       "sirene": " association 100000003 ",
@@ -147,13 +147,13 @@ exports[`association search pipeline focus on sirene unité légale updates docu
   },
   {
     "mainEstablishmentSiret": "10000000400010",
-    "name": {
-      "sirene": "ASSOCIATION 100000004",
-    },
     "nameTokens": [
       "association",
       "100000004",
     ],
+    "names": {
+      "sirene": "ASSOCIATION 100000004",
+    },
     "rna": "W000000004",
     "searchName": {
       "sirene": " association 100000004 ",
@@ -162,13 +162,13 @@ exports[`association search pipeline focus on sirene unité légale updates docu
   },
   {
     "mainEstablishmentSiret": "10000000500018",
-    "name": {
-      "sirene": "ASSOCIATION 100000005",
-    },
     "nameTokens": [
       "association",
       "100000005",
     ],
+    "names": {
+      "sirene": "ASSOCIATION 100000005",
+    },
     "rna": "W000000005",
     "searchName": {
       "sirene": " association 100000005 ",
@@ -189,15 +189,15 @@ exports[`association search pipeline should be the merge of unite legale and rna
       "type": "RUE",
     },
     "mainEstablishmentSiret": "10000000200022",
-    "name": {
-      "rna": "ASSOCIATION 2",
-      "sirene": "ASSOCIATION 100000002",
-    },
     "nameTokens": [
       "association",
       "100000002",
       "2",
     ],
+    "names": {
+      "rna": "ASSOCIATION 2",
+      "sirene": "ASSOCIATION 100000002",
+    },
     "nbEstabs": 1,
     "object": "object association 2",
     "objectTokens": [
@@ -218,15 +218,15 @@ exports[`association search pipeline should be the merge of unite legale and rna
   },
   {
     "mainEstablishmentSiret": "10000000300015",
-    "name": {
-      "rna": "ASSOCIATION 3",
-      "sirene": "ASSOCIATION 100000003",
-    },
     "nameTokens": [
       "association",
       "100000003",
       "3",
     ],
+    "names": {
+      "rna": "ASSOCIATION 3",
+      "sirene": "ASSOCIATION 100000003",
+    },
     "object": "object association 3",
     "objectTokens": [
       "object",
@@ -243,15 +243,15 @@ exports[`association search pipeline should be the merge of unite legale and rna
   },
   {
     "mainEstablishmentSiret": "10000000400010",
-    "name": {
-      "rna": "ASSOCIATION 3",
-      "sirene": "ASSOCIATION 100000004",
-    },
     "nameTokens": [
       "association",
       "100000004",
       "3",
     ],
+    "names": {
+      "rna": "ASSOCIATION 3",
+      "sirene": "ASSOCIATION 100000004",
+    },
     "object": "object association 3",
     "objectTokens": [
       "object",
@@ -268,13 +268,13 @@ exports[`association search pipeline should be the merge of unite legale and rna
   },
   {
     "mainEstablishmentSiret": "10000000500018",
-    "name": {
-      "sirene": "ASSOCIATION 100000005",
-    },
     "nameTokens": [
       "association",
       "100000005",
     ],
+    "names": {
+      "sirene": "ASSOCIATION 100000005",
+    },
     "rna": "W000000005",
     "searchName": {
       "sirene": " association 100000005 ",
@@ -282,13 +282,13 @@ exports[`association search pipeline should be the merge of unite legale and rna
     "siren": "100000005",
   },
   {
-    "name": {
-      "rna": "ASSOCIATION 1",
-    },
     "nameTokens": [
       "association",
       "1",
     ],
+    "names": {
+      "rna": "ASSOCIATION 1",
+    },
     "object": "objet association 1",
     "objectTokens": [
       "objet",

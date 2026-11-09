@@ -270,13 +270,13 @@ exports[`RNA CLI parse only imports updated rows 1`] = `
 exports[`RNA CLI parse updates association-search 1`] = `
 [
   {
-    "name": {
-      "rna": "LUSINE DIGITALE",
-    },
     "nameTokens": [
       "lusine",
       "digitale",
     ],
+    "names": {
+      "rna": "LUSINE DIGITALE",
+    },
     "object": "Cette association a pour objet la promotion musicale",
     "objectTokens": [
       "cette",
@@ -295,14 +295,14 @@ exports[`RNA CLI parse updates association-search 1`] = `
     "searchObject": " cette association a pour objet la promotion musicale ",
   },
   {
-    "name": {
-      "rna": "TEAM QUAD 42",
-    },
     "nameTokens": [
       "team",
       "quad",
       "42",
     ],
+    "names": {
+      "rna": "TEAM QUAD 42",
+    },
     "object": "Favoriser lapproche et la decouverte de cultures et pays etrangers par lorganisation dactivites physiques principalement motorisees suscitant des echanges avec les populations locales.",
     "objectTokens": [
       "favoriser",
@@ -335,9 +335,6 @@ exports[`RNA CLI parse updates association-search 1`] = `
     "searchObject": " favoriser lapproche et la decouverte de cultures et pays etrangers par lorganisation dactivites physiques principalement motorisees suscitant des echanges avec les populations locales. ",
   },
   {
-    "name": {
-      "rna": "COMITE DEPARTEMENTAL PARACHUTISTE DE LA LOIRE",
-    },
     "nameTokens": [
       "comite",
       "departemental",
@@ -346,6 +343,9 @@ exports[`RNA CLI parse updates association-search 1`] = `
       "la",
       "loire",
     ],
+    "names": {
+      "rna": "COMITE DEPARTEMENTAL PARACHUTISTE DE LA LOIRE",
+    },
     "object": "Promouvoir, orienter et coordonner le parachutisme sportif sous toutes ses formes dans le departement de la Loire.",
     "objectTokens": [
       "promouvoir",
@@ -372,9 +372,6 @@ exports[`RNA CLI parse updates association-search 1`] = `
     "searchObject": " promouvoir, orienter et coordonner le parachutisme sportif sous toutes ses formes dans le departement de la loire. ",
   },
   {
-    "name": {
-      "rna": "COMITE DES FETES ET DANIMATION DE ST SIXTE",
-    },
     "nameTokens": [
       "comite",
       "des",
@@ -385,6 +382,9 @@ exports[`RNA CLI parse updates association-search 1`] = `
       "st",
       "sixte",
     ],
+    "names": {
+      "rna": "COMITE DES FETES ET DANIMATION DE ST SIXTE",
+    },
     "object": "Associer la ville toute entiere a lorganisation des fetes par lintermediaire des groupements interesses, veiller a coordonner des activites des diverses associations afin deviter les concurrences toujours regrettables.",
     "objectTokens": [
       "associer",
@@ -419,9 +419,6 @@ exports[`RNA CLI parse updates association-search 1`] = `
     "searchObject": " associer la ville toute entiere a lorganisation des fetes par lintermediaire des groupements interesses, veiller a coordonner des activites des diverses associations afin deviter les concurrences toujours regrettables. ",
   },
   {
-    "name": {
-      "rna": "ASSOCIATION DES PARENTS DELEVES DE LECOLE COMMUNALE DE BOISSET LES MONTROND",
-    },
     "nameTokens": [
       "association",
       "des",
@@ -434,6 +431,9 @@ exports[`RNA CLI parse updates association-search 1`] = `
       "les",
       "montrond",
     ],
+    "names": {
+      "rna": "ASSOCIATION DES PARENTS DELEVES DE LECOLE COMMUNALE DE BOISSET LES MONTROND",
+    },
     "object": "Role de mediation entre les parents et les enseignants, aide financiere a lecole communale dans lachat doutils pedagogiques tels que logiciels, livres, fournitures scolaires",
     "objectTokens": [
       "role",

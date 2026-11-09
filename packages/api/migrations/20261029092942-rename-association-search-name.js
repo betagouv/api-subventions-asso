@@ -1,5 +1,5 @@
 module.exports = {
     async up(db) {
-        db.collection("association-search").updateMany({}, { $rename: { name: "names" } });
+        await db.collection("association-search").updateMany({}, { $rename: { name: "names" } });
     },
 };

@@ -139,7 +139,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
             const { rna, siren, names, searchName, nameTokens, object, searchObject, objectTokens } = dbo;
 
             const updateModel = {
-                $set: { "searchName.rna": searchName.rna, object, searchObject, objectTokens, "name.rna": names.rna },
+                $set: { "searchName.rna": searchName.rna, object, searchObject, objectTokens, "names.rna": names.rna },
                 $addToSet: { nameTokens: { $each: nameTokens } },
             };
 
@@ -171,7 +171,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
             const updateModel = {
                 $set: {
                     mainEstablishmentSiret,
-                    "name.sirene": names.sirene,
+                    "names.sirene": names.sirene,
                     "searchName.sirene": searchName.sirene,
                 },
                 $addToSet: { nameTokens: { $each: nameTokens } },

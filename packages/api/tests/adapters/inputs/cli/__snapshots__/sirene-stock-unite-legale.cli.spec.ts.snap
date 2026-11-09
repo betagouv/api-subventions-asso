@@ -4,13 +4,13 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
 [
   {
     "mainEstablishmentSiret": "10000000200022",
-    "name": {
-      "sirene": "ASSOCIATION 100000002",
-    },
     "nameTokens": [
       "association",
       "100000002",
     ],
+    "names": {
+      "sirene": "ASSOCIATION 100000002",
+    },
     "rna": "W000000002",
     "searchName": {
       "sirene": " association 100000002 ",
@@ -19,13 +19,13 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
   },
   {
     "mainEstablishmentSiret": "10000000300015",
-    "name": {
-      "sirene": "ASSOCIATION 100000003",
-    },
     "nameTokens": [
       "association",
       "100000003",
     ],
+    "names": {
+      "sirene": "ASSOCIATION 100000003",
+    },
     "rna": "W000000003",
     "searchName": {
       "sirene": " association 100000003 ",
@@ -34,13 +34,13 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
   },
   {
     "mainEstablishmentSiret": "10000000400010",
-    "name": {
-      "sirene": "ASSOCIATION 100000004",
-    },
     "nameTokens": [
       "association",
       "100000004",
     ],
+    "names": {
+      "sirene": "ASSOCIATION 100000004",
+    },
     "rna": "W000000004",
     "searchName": {
       "sirene": " association 100000004 ",
@@ -49,13 +49,13 @@ exports[`SireneStockUniteLegaleCli import should persist associaton search docum
   },
   {
     "mainEstablishmentSiret": "10000000500018",
-    "name": {
-      "sirene": "ASSOCIATION 100000005",
-    },
     "nameTokens": [
       "association",
       "100000005",
     ],
+    "names": {
+      "sirene": "ASSOCIATION 100000005",
+    },
     "rna": "W000000005",
     "searchName": {
       "sirene": " association 100000005 ",
