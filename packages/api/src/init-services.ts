@@ -1,6 +1,7 @@
 import depositLogAdapter from "./adapters/outputs/db/deposit-log/deposit-log.adapter";
 import { DepositScdlProcessService } from "./modules/deposit-scdl-process/deposit-scdl-process.service";
-import { DumpService } from "./modules/dump/dump.service";
+import { MetabaseDumpService } from "./modules/dump/metabase-dump.service";
+import { PosthogDumpService } from "./modules/dump/posthog-dump.service";
 import { ScdlDepositCronService } from "./modules/deposit-scdl-process/scdl-deposit.cron.service";
 import dataLogAdapter from "./adapters/outputs/db/data-log/data-log.adapter";
 import userAdapter from "./adapters/outputs/db/user/user.adapter";
@@ -13,4 +14,5 @@ export const depositScdlProcessService = new DepositScdlProcessService(
     getAssociationName,
 );
 export const scdlDepositCronService = new ScdlDepositCronService(depositLogAdapter, dataLogAdapter, userAdapter);
-export const dumpService = new DumpService(depositScdlProcessService);
+export const metabaseDumpService = new MetabaseDumpService(depositScdlProcessService);
+export const posthogDumpService = new PosthogDumpService();
