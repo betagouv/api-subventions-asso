@@ -1,10 +1,10 @@
 import { Ridet, Siret, Tahitiet } from "../../../../../identifier-objects";
-import ChorusEntity from "../../../../../modules/providers/chorus/entities/ChorusEntity";
 import ChorusFseEntity from "../../../../../modules/providers/chorus/entities/ChorusFseEntity";
+import ChorusDbo from "../../../../outputs/db/providers/chorus/chorus.dbo";
 import { ChorusDto, ChorusFseDto } from "./chorus.dto";
 
 export class ChorusMapper {
-    public static toEntity(dto: ChorusDto): ChorusEntity {
+    public static toDbo(dto: ChorusDto): ChorusDbo {
         return {
             ej: dto["N° EJ"],
             numPosteEJ: Number(dto["N° poste EJ"]),

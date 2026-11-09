@@ -1,7 +1,7 @@
 import { GetNewS3File } from "../../../modules/s3-file/use-cases/get-new-s3-file";
 import { TagImportedFile } from "../../../modules/s3-file/use-cases/tag-imported-file";
 import DownloadFile from "../../../usecases/download-file";
-import { ChorusImport } from "../pipeline/import/chorus/chorus.import";
+import { ChorusPipeline } from "../pipeline/import/chorus/chorus.pipeline";
 import { ChorusCron } from "./chorus.cron";
 
 const BUFFER = Buffer.from([]);
@@ -24,10 +24,10 @@ describe("Chorus CRON", () => {
         const mockDownloadFile = {
             execute: jest.fn().mockResolvedValue({ filePath: FILES_PATH[1] }),
         } as unknown as jest.Mocked<DownloadFile>;
-        const mockChorusImport = { run: jest.fn() } as unknown as ChorusImport;
+        const mockChorusPipeline = { run: jest.fn() } as unknown as ChorusPipeline;
         const mockTagFile = { execute: jest.fn() } as unknown as TagImportedFile;
 
-        const cron = new ChorusCron(mockGetFiles, mockDownloadFile, mockChorusImport, mockTagFile);
+        const cron = new ChorusCron(mockGetFiles, mockDownloadFile, mockChorusPipeline, mockTagFile);
 
         beforeAll(() => {
             jest.useFakeTimers().setSystemTime(new Date("2026-05-20"));
@@ -49,7 +49,7 @@ describe("Chorus CRON", () => {
 
         it("runs import", async () => {
             await cron.importNewFile();
-            expect(mockChorusImport.run).toHaveBeenCalledWith(BUFFER);
+            expect(mockChorusPipeline.run).toHaveBeenCalledWith(BUFFER);
         });
     });
 });

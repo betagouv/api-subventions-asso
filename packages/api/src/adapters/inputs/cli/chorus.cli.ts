@@ -4,7 +4,7 @@ import { CliStaticInterface } from "../../../@types";
 import chorusService from "../../../modules/providers/chorus/chorus.service";
 import CliController from "../../../shared/CliController";
 import paymentFlatChorusService from "../../../modules/payment-flat/payment-flat.chorus.service";
-import { ChorusImport } from "../pipeline/import/chorus/chorus.import";
+import { ChorusPipeline } from "../pipeline/import/chorus/chorus.pipeline";
 import { UpdateFlatByExercise } from "../../../modules/providers/chorus/use-cases/update-flat-by-exercise";
 import { DownloadAndImport } from "../pipeline/import/download-and-import.pipeline";
 import DownloadFile from "../../../usecases/download-file";
@@ -24,7 +24,7 @@ export default class ChorusCli extends CliController {
         private uploader: ChorusUpload,
         private downloader: DownloadFile,
         private s3: S3Port,
-        private chorusImport: ChorusImport,
+        private chorusPipeline: ChorusPipeline,
         private updateFlatByExercise: UpdateFlatByExercise,
     ) {
         super();
@@ -50,7 +50,7 @@ export default class ChorusCli extends CliController {
         const fileContent = fs.readFileSync(file);
 
         console.log("start importing chorus data into the system...");
-        return this.chorusImport.run(fileContent, {
+        return this.chorusPipeline.run(fileContent, {
             withoutEuropeanData: args.includes("--no-fse"),
         });
     }

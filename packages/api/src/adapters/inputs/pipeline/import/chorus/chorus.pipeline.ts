@@ -1,10 +1,4 @@
 import chorusService, { ChorusService } from "../../../../../modules/providers/chorus/chorus.service";
-import filtreAssoChorusEntities, {
-    FilterChorusEntities,
-} from "../../../../../modules/providers/chorus/use-cases/filter-entities";
-import filtreAssoChorusFseEntities, {
-    FilterChorusFseEntities,
-} from "../../../../../modules/providers/chorus/use-cases/filter-fse-entities";
 import saveChorusEntities, {
     SaveChorusEntities,
 } from "../../../../../modules/providers/chorus/use-cases/save-entities";
@@ -19,17 +13,24 @@ import { ChorusDto, ChorusFseDto } from "./chorus.dto";
 import { ChorusMapper } from "./chorus.mapper";
 import { ChorusParser } from "./chorus.parser";
 import { ChorusValidator } from "./chorus.validator";
+import ChorusDbo from "../../../../outputs/db/providers/chorus/chorus.dbo";
+import { BRANCHE_ACCEPTED } from "../../../../../shared/ChorusBrancheAccepted";
+import { EstablishmentIdentifier, Siret } from "../../../../../identifier-objects";
+import checkIdentifierIsFromAsso, {
+    CheckIdentifierIsFromAssoUseCase,
+} from "../../../../../modules/associations/use-cases/check-identifier-is-from-asso.use-case";
+import { asyncFilter } from "../../../../../shared/helpers/ArrayHelper";
+import ChorusFseDbo from "../../../../outputs/db/providers/chorus/chorus-fse.dbo";
 
-export interface ChorusImportOptions {
+export interface ChorusPipelineOptions {
     withoutEuropeanData?: boolean;
 }
 
-export class ChorusImport {
+export class ChorusPipeline {
     constructor(
         private saveEntities: SaveChorusEntities,
         private saveFseEntities: SaveChorusFseEntities,
-        private filterAsso: FilterChorusEntities,
-        private filterFseAsso: FilterChorusFseEntities,
+        private checkIsAsso: CheckIdentifierIsFromAssoUseCase,
         private chorusService: ChorusService, // @TODO: make this a use case
         private updateFlatByExercise: UpdateFlatByExercise, // @TODO: make this a use case
     ) {}
@@ -37,7 +38,7 @@ export class ChorusImport {
     // saves national chorus data
     private async save(dtos: ChorusDto[]): Promise<ImportReport> {
         let validationErrorCount = 0;
-        const entities = dtos
+        const dbos = dtos
             ?.filter(dto => {
                 try {
                     return ChorusValidator.validate(dto);
@@ -47,19 +48,19 @@ export class ChorusImport {
                     return false;
                 }
             })
-            ?.map(dto => ChorusMapper.toEntity(dto));
-        if (entities) {
-            const assoEntities = await this.filterAsso.execute(entities);
-            await this.saveEntities.execute(assoEntities);
-            const exercicesSet = assoEntities.reduce((set, entity) => set.add(entity.exercice), new Set<number>());
+            ?.map(dto => ChorusMapper.toDbo(dto));
+        if (dbos) {
+            const assos = await this.filterAssos(dbos);
+            await this.saveEntities.execute(assos);
+            const exercicesSet = assos.reduce((set, entity) => set.add(entity.exercice), new Set<number>());
             for (const exercise of exercicesSet) {
                 await this.updateFlatByExercise.execute(exercise);
             }
 
             return {
                 parsedCount: dtos.length,
-                importedCount: assoEntities.length,
-                errorCount: validationErrorCount + entities.length - assoEntities.length,
+                importedCount: assos.length,
+                errorCount: validationErrorCount + dbos.length - assos.length,
             };
         }
 
@@ -70,9 +71,38 @@ export class ChorusImport {
         };
     }
 
+    private filterAssos(dbos: ChorusDbo[]) {
+        return asyncFilter(dbos, async dbo => {
+            if (!BRANCHE_ACCEPTED[dbo.codeBranche]) return false;
+            try {
+                if (dbo.siret === "#" && dbo.ridetOrTahitiet === "#") return false;
+                if (dbo.siret === "#") {
+                    const identifier = EstablishmentIdentifier.buildIdentifierFromString(dbo.ridetOrTahitiet);
+                    if (!identifier) return false;
+                    return this.checkIsAsso.execute(identifier);
+                } else {
+                    console.log(dbo);
+                    return this.checkIsAsso.execute(new Siret(dbo.siret));
+                }
+            } catch (e) {
+                // filter entities with wrong identifiers format
+                // @TODO: make entity validates identifiers
+                console.log(e);
+                return Promise.resolve(false);
+            }
+        });
+    }
+
+    private filterFseAssos(dbos: ChorusFseDbo[]) {
+        return asyncFilter(dbos, async dbo => {
+            if (!BRANCHE_ACCEPTED[dbo.branchCode]) return false;
+            return this.checkIsAsso.execute(dbo.identifier);
+        });
+    }
+
     // saves european chorus data
     private async saveFse(dtos: ChorusFseDto[]) {
-        const fseEntities = dtos
+        const fseDbos = dtos
             ?.filter(dto => {
                 try {
                     return ChorusValidator.validateFse(dto);
@@ -82,15 +112,15 @@ export class ChorusImport {
                 }
             })
             ?.map(dto => ChorusMapper.toFseEntity(dto));
-        if (fseEntities) {
-            const assoFseEntities = await this.filterFseAsso.execute(fseEntities);
+        if (fseDbos) {
+            const assoFseEntities = await this.filterFseAssos(fseDbos);
             await this.saveFseEntities.execute(assoFseEntities);
             // @TODO: make this a use case
             return this.chorusService.syncFlat(assoFseEntities);
         }
     }
 
-    async run(buffer: Buffer, options: ChorusImportOptions = {}): Promise<ImportReport> {
+    async run(buffer: Buffer, options: ChorusPipelineOptions = {}): Promise<ImportReport> {
         const { national: nationalDtos, european: europeanDtos } = ChorusParser.fromBuffer(buffer);
         const [report] = await Promise.all([
             this.save(nationalDtos ?? []),
@@ -101,12 +131,11 @@ export class ChorusImport {
     }
 }
 
-const chorusImport = new ChorusImport(
+const chorusPipeline = new ChorusPipeline(
     saveChorusEntities,
     saveChorusFseEntities,
-    filtreAssoChorusEntities,
-    filtreAssoChorusFseEntities,
+    checkIdentifierIsFromAsso,
     chorusService,
     updateFlatByExercise,
 );
-export default chorusImport;
+export default chorusPipeline;

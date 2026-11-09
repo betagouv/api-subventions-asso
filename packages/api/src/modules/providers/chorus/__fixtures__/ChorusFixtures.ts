@@ -284,28 +284,6 @@ export const RAW_DUPLICATE_V004 = [
     },
 ];
 
-export const ENTITY_WITH_RIDET = {
-    ej: "0001821732",
-    numPosteEJ: 2,
-    siret: DEFAULT_ASSOCIATION.siret,
-    codeBranche: "Z039",
-    branche: "Associations",
-    activitee: "Appels a projet",
-    codeActivitee: "3222",
-    numeroDemandePaiement: "000195567",
-    numPosteDP: 3,
-    codeSociete: "456",
-    exercice: 2023,
-    numeroTier: "1000011111",
-    centreFinancier: "UO DGER XXXX-C001",
-    codeCentreFinancier: "AA01/0776-C001-4000",
-    domaineFonctionnel: "Appels à projet",
-    codeDomaineFonctionnel: "0101-01-02",
-    amount: 89988.3,
-    dateOperation: new Date("2023-07-12T00:00:00.000Z"),
-    updateDate: new Date("2020-01-01"),
-};
-
 export const CHORUS_FSE_ENTITIES: ChorusFseEntity[] = [
     {
         societyCode: "BNOR",

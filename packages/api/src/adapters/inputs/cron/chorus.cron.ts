@@ -4,7 +4,7 @@ import { GetNewS3File } from "../../../modules/s3-file/use-cases/get-new-s3-file
 import tagImportedFile, { TagImportedFile } from "../../../modules/s3-file/use-cases/tag-imported-file";
 import DownloadFile from "../../../usecases/download-file";
 import { providersS3Adapter } from "../../outputs/s3/s3.adapter";
-import chorusImport, { ChorusImport } from "../pipeline/import/chorus/chorus.import";
+import chorusPipeline, { ChorusPipeline } from "../pipeline/import/chorus/chorus.pipeline";
 import fs from "fs";
 
 export class ChorusCron implements CronController {
@@ -13,7 +13,7 @@ export class ChorusCron implements CronController {
     constructor(
         private getFiles: GetNewS3File,
         private downloadFile: DownloadFile,
-        private chorusImport: ChorusImport,
+        private chorusPipeline: ChorusPipeline,
         private tagFile: TagImportedFile,
     ) {}
 
@@ -31,7 +31,7 @@ export class ChorusCron implements CronController {
             );
 
             const infos = await this.downloadFile.execute(mostRecentFile.path);
-            await this.chorusImport.run(await fs.promises.readFile(infos.filePath));
+            await this.chorusPipeline.run(await fs.promises.readFile(infos.filePath));
             return this.tagFile.execute(mostRecentFile.path);
         }
     }
@@ -40,7 +40,7 @@ export class ChorusCron implements CronController {
 const chorusCron = new ChorusCron(
     new GetNewS3File(providersS3Adapter),
     new DownloadFile(providersS3Adapter),
-    chorusImport,
+    chorusPipeline,
     tagImportedFile,
 );
 export default chorusCron;

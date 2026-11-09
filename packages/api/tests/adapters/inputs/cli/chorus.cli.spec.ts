@@ -16,7 +16,7 @@ import chorusFseAdapter from "../../../../src/adapters/outputs/db/providers/chor
 import dataLogAdapter from "../../../../src/adapters/outputs/db/data-log/data-log.adapter";
 import { toArray } from "../../../__helpers__/ayncIterableHelper";
 import { PROGRAMS } from "../../outputs/db/__fixtures__/state-budget-program.fixtures";
-import chorusImport from "../../../../src/adapters/inputs/pipeline/import/chorus/chorus.import";
+import chorusPipeline from "../../../../src/adapters/inputs/pipeline/import/chorus/chorus.pipeline";
 import updateFlatByExercise from "../../../../src/modules/providers/chorus/use-cases/update-flat-by-exercise";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 import db from "../../../../src/shared/MongoConnection";
@@ -41,7 +41,7 @@ describe("ChorusCli", () => {
             chorusUpload,
             new DownloadFile(providersS3Adapter),
             providersS3Adapter,
-            chorusImport,
+            chorusPipeline,
             updateFlatByExercise,
         );
 
