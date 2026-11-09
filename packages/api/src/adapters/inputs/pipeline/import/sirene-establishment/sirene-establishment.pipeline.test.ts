@@ -20,7 +20,19 @@ describe("SireneEstablishmentPipeline", () => {
         }
     }
 
-    const BATCHES = [[SIRENE_ESTABLISHMENT_DTO, SIRENE_ESTABLISHMENT_DTO], [SIRENE_ESTABLISHMENT_DTO]];
+    const SECONDARY_ESTABLISHMENT = {
+        ...SIRENE_ESTABLISHMENT_DTO,
+        nic: "00013",
+        siret: `${SIRENE_ESTABLISHMENT_DTO.siren}00013`,
+        etablissementSiege: false,
+    };
+    const SIREN_WITHOUT_MAIN_OFFICE_IN_BATCHES = "987654321";
+    const OTHER_SECONDARY_ESTABLISHMENT = {
+        ...SECONDARY_ESTABLISHMENT,
+        siren: SIREN_WITHOUT_MAIN_OFFICE_IN_BATCHES,
+        siret: `${SIREN_WITHOUT_MAIN_OFFICE_IN_BATCHES}00013`,
+    };
+    const BATCHES = [[SIRENE_ESTABLISHMENT_DTO, OTHER_SECONDARY_ESTABLISHMENT], [SECONDARY_ESTABLISHMENT]];
 
     const parser = {
         parse: jest.fn().mockImplementation(() => fakeParse(BATCHES)),
@@ -49,9 +61,7 @@ describe("SireneEstablishmentPipeline", () => {
         .mockReturnValue(ASSOCIATION_SEARCH);
 
     type PipelineWithPrivates = { [K in keyof SireneEstablishmentPipeline]: SireneEstablishmentPipeline[K] } & {
-        filterMainEstab: SireneEstablishmentPipeline["filterMainEstab"];
         updateAssociationSearch: SireneEstablishmentPipeline["updateAssociationSearch"];
-        filterAssociationEstablishments: SireneEstablishmentPipeline["filterAssociationEstablishments"];
     };
 
     const pipeline = new SireneEstablishmentPipeline(
@@ -64,31 +74,27 @@ describe("SireneEstablishmentPipeline", () => {
     ) as unknown as PipelineWithPrivates;
 
     describe("run", () => {
-        const mockFilterMainEstab = jest.spyOn(pipeline as PipelineWithPrivates, "filterMainEstab");
-
         const mockUpdateAssociationSearch = jest.spyOn(pipeline, "updateAssociationSearch");
 
-        const mockFilterAssociationEstablishments = jest.spyOn(pipeline, "filterAssociationEstablishments");
-
         beforeEach(() => {
-            // @ts-expect-error: mock implementation / bypass the filtering
-            mockFilterAssociationEstablishments.mockImplementation(dtos => dtos);
-            mockFilterMainEstab.mockReturnValue([SIRENE_ESTABLISHMENT_DTO]);
             mockUpdateAssociationSearch.mockResolvedValue();
             establishmentPort.upsertMany.mockResolvedValue(1);
-            sireneUniteLegale.filterExistingSirens.mockResolvedValue([SIRENE_ESTABLISHMENT_DTO.siren]);
+            sireneUniteLegale.filterExistingSirens.mockResolvedValue([
+                SIRENE_ESTABLISHMENT_DTO.siren,
+                SIREN_WITHOUT_MAIN_OFFICE_IN_BATCHES,
+            ]);
             dataLog.getLastEditionDateByProvider.mockResolvedValue(null);
         });
 
         afterAll(() => {
-            [mockFilterMainEstab, mockUpdateAssociationSearch, mockFilterAssociationEstablishments].forEach(mock =>
-                mock.mockRestore(),
-            );
+            mockUpdateAssociationSearch.mockRestore();
         });
 
         it("filters establishments with existing association sirens", async () => {
+            sireneUniteLegale.filterExistingSirens.mockResolvedValue([SIRENE_ESTABLISHMENT_DTO.siren]);
             await pipeline.run("file.parquet");
-            expect(establishmentPort.upsertMany).toHaveBeenCalledWith([SIRENE_ESTABLISHMENT_DTO]);
+            expect(establishmentPort.upsertMany).toHaveBeenNthCalledWith(1, [SIRENE_ESTABLISHMENT_DTO]);
+            expect(establishmentPort.upsertMany).toHaveBeenNthCalledWith(2, [SECONDARY_ESTABLISHMENT]);
         });
 
         it("filters establishments older than previous import edition date", async () => {
@@ -99,20 +105,19 @@ describe("SireneEstablishmentPipeline", () => {
             expect(establishmentPort.upsertMany).not.toHaveBeenCalled();
         });
 
-        it("filters main establishment dtos", async () => {
+        it("maps only head office addresses", async () => {
             await pipeline.run("file.parquet");
-            expect(mockFilterMainEstab).toHaveBeenCalledWith([SIRENE_ESTABLISHMENT_DTO]);
+            expect(spyToAssociationSearch).toHaveBeenCalledTimes(1);
+            expect(spyToAssociationSearch).toHaveBeenCalledWith(SIRENE_ESTABLISHMENT_DTO);
         });
 
-        it("transforms most recent dtos into association-search", async () => {
-            await pipeline.run("file.parquet");
-            expect(spyToAssociationSearch).toHaveBeenCalledTimes(BATCHES.length);
-        });
-
-        it("updates association-search", async () => {
+        it("keeps the mian office address across batches and includes sirens without a main office", async () => {
             await pipeline.run("file.parquet");
             expect(mockUpdateAssociationSearch).toHaveBeenCalledWith(
-                new Map([[ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH.address]]),
+                new Map([
+                    [ASSOCIATION_SEARCH.siren, ASSOCIATION_SEARCH.address],
+                    [SIREN_WITHOUT_MAIN_OFFICE_IN_BATCHES, undefined],
+                ]),
             );
         });
 
@@ -120,27 +125,6 @@ describe("SireneEstablishmentPipeline", () => {
             const actual = await pipeline.run("file.parquet");
             // 3 parsed count from parse batch mock and 2 imported count from establishmentPort.updateMany mock
             expect(actual).toEqual({ parsedCount: 3, importedCount: 2, errorCount: 0 });
-        });
-    });
-
-    describe("filterMainEstab", () => {
-        const DTOS = [
-            { ...SIRENE_ESTABLISHMENT_DTO, etablissementSiege: true },
-            { ...SIRENE_ESTABLISHMENT_DTO, etablissementSiege: false },
-        ];
-
-        it("returns partial main establishment dto", async () => {
-            const expected = DTOS.filter(dto => dto.etablissementSiege).map(dto => ({
-                siren: dto.siren,
-                numeroVoieEtablissement: dto.numeroVoieEtablissement,
-                typeVoieEtablissement: dto.typeVoieEtablissement,
-                libelleVoieEtablissement: dto.libelleVoieEtablissement,
-                libelleCommuneEtablissement: dto.libelleCommuneEtablissement,
-                codePostalEtablissement: dto.codePostalEtablissement,
-                dateDernierTraitementEtablissement: dto.dateDernierTraitementEtablissement,
-            }));
-            const actual = await pipeline.filterMainEstab(DTOS);
-            expect(actual).toEqual(expected);
         });
     });
 

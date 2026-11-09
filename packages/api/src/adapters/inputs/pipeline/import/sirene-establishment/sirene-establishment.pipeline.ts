@@ -1,7 +1,7 @@
 import { ImportReport } from "../../../../../@types/ImportReport";
 import sireneEstablishmentAdapter from "../../../../outputs/db/sirene/sirene-establishment.adapter";
 import { SireneEstablishmentPort } from "../../../../outputs/db/sirene/sirene-establishment.port";
-import SireneEstablishmentDto, { AssociationSearchFields } from "./sirene-establishment.dto";
+import SireneEstablishmentDto from "./sirene-establishment.dto";
 import dataLogAdapter from "../../../../outputs/db/data-log/data-log.adapter";
 import { AssociationSearchPort } from "../../../../outputs/db/association-search/association-search.port";
 import associationSearchAdapter from "../../../../outputs/db/association-search/association-search.adapter";
@@ -72,14 +72,9 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
                         const associationDtos = await this.filterAssociationEstablishments(batch);
                         if (associationDtos.length === 0) return callback();
 
-                        for (const { siren } of associationDtos) {
-                            if (!addressesByAffectedSiren.has(siren)) addressesByAffectedSiren.set(siren, undefined);
-                        }
-                        this.filterMainEstab(associationDtos)
-                            .map(dto => SireneEstablishmentMapper.toAssociationSearch(dto))
-                            .forEach(({ siren, address }) => addressesByAffectedSiren.set(siren, address));
-
+                        this.extractAssociationSearchData(associationDtos, addressesByAffectedSiren);
                         this.report.importedCount += await this.establishmentPort.upsertMany(associationDtos);
+
                         callback();
                     } catch (err) {
                         callback(err as Error);
@@ -138,24 +133,18 @@ export class SireneEstablishmentPipeline extends ImportPipeline {
         return [...new Set(departmentCodes.filter((code): code is string => Boolean(code)))];
     }
 
-    // Returns partial main establishment dtos use to create association-search
-    private filterMainEstab(dtos: SireneEstablishmentDto[]) {
-        // for each group filter main and update address
-        const updates: AssociationSearchFields[] = [];
+    private extractAssociationSearchData(
+        dtos: SireneEstablishmentDto[],
+        addressesByAffectedSiren: Map<string, EstablishmentAssociationSearch["address"]>,
+    ) {
         for (const dto of dtos) {
-            if (dto.etablissementSiege)
-                updates.push({
-                    siren: dto.siren,
-                    numeroVoieEtablissement: dto.numeroVoieEtablissement,
-                    typeVoieEtablissement: dto.typeVoieEtablissement,
-                    libelleVoieEtablissement: dto.libelleVoieEtablissement,
-                    libelleCommuneEtablissement: dto.libelleCommuneEtablissement,
-                    codePostalEtablissement: dto.codePostalEtablissement,
-                    dateDernierTraitementEtablissement: dto.dateDernierTraitementEtablissement,
-                });
+            if (dto.etablissementSiege) {
+                const { address } = SireneEstablishmentMapper.toAssociationSearch(dto);
+                addressesByAffectedSiren.set(dto.siren, address);
+            } else if (!addressesByAffectedSiren.has(dto.siren)) {
+                addressesByAffectedSiren.set(dto.siren, undefined);
+            }
         }
-
-        return updates;
     }
 
     private extractSirens(batch: SireneEstablishmentDto[]): string[] {
