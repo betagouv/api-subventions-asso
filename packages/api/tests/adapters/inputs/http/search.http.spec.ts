@@ -44,9 +44,9 @@ describe("/search", () => {
         });
 
         // odd for now but was asked : nothing should return as none of the establishment as this post code
-        it("filter by post code", async () => {
+        it("filters by postal code", async () => {
             await request(g.app)
-                .get(`/search/associations/${DEFAULT_ASSOCIATION.rna}?postalCode=35000`)
+                .get(`/search/associations/${DEFAULT_ASSOCIATION.rna}?location=35000`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json")
                 .then(res => {
@@ -54,13 +54,15 @@ describe("/search", () => {
                 });
         });
 
-        it("rejects invalid postal code", async () => {
+        it("rejects invalid location", async () => {
             await request(g.app)
-                .get(`/search/associations/${DEFAULT_ASSOCIATION.rna}}?postalCode=7A`)
+                .get(`/search/associations/${DEFAULT_ASSOCIATION.rna}}?location=7A`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json")
                 .expect(400)
-                .then(res => expect(res.body.message).toEqual("postalCode must contain between 2 and 5 digits"));
+                .then(res =>
+                    expect(res.body.message).toEqual("location must be a department code or a five-digit postal code"),
+                );
         });
     });
 
@@ -79,9 +81,9 @@ describe("/search", () => {
                 });
         });
 
-        it("filter by post code", async () => {
+        it("filters by postal code", async () => {
             await request(g.app)
-                .get(`/search/associations/tennis?postalCode=69001`) // ASSOCIATION_SEARCH_DBOS[2]
+                .get(`/search/associations/tennis?location=69001`) // ASSOCIATION_SEARCH_DBOS[2]
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json")
                 .then(res => {

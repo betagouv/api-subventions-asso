@@ -3,67 +3,69 @@
 
     type Props = {
         value?: string;
-        postalCode?: string;
+        location?: string;
         nameOnly?: boolean;
-        onSubmit?: (value: string, postalCode: string | undefined, nameOnly: boolean) => void;
+        onSubmit?: (value: string, location: string | undefined, nameOnly: boolean) => void;
     };
 
     let {
         value = $bindable(""),
-        postalCode = $bindable(""),
+        location = $bindable(""),
         nameOnly = $bindable(false),
         onSubmit = () => undefined,
     }: Props = $props();
 
     let locationError = $state<string | undefined>();
 
-    const LOCATION_REGEX = /^\d{2,5}$/;
+    const LOCATION_REGEX = /^(?:\d{2,3}|2[AB]|\d{5})$/;
 
     function handleLocationInput(event: Event) {
-        postalCode = (event.currentTarget as HTMLInputElement).value.replace(/\D/g, "").slice(0, 5);
-        if (!postalCode || LOCATION_REGEX.test(postalCode)) locationError = undefined;
+        location = (event.currentTarget as HTMLInputElement).value
+            .toUpperCase()
+            .replace(/[^\dAB]/g, "")
+            .slice(0, 5);
+        if (!location || LOCATION_REGEX.test(location)) locationError = undefined;
     }
 
     function handleSubmit() {
         if (!value) return;
 
-        const location = postalCode.trim();
-        if (location && !LOCATION_REGEX.test(location)) {
+        const normalizedLocation = location.trim().toUpperCase();
+        if (normalizedLocation && !LOCATION_REGEX.test(normalizedLocation)) {
             locationError = "Veuillez renseigner un code postal ou département valide.";
             return;
         }
 
         locationError = undefined;
-        onSubmit(value, location || undefined, nameOnly);
+        onSubmit(value, normalizedLocation || undefined, nameOnly);
     }
 </script>
 
 <form class="search" novalidate onsubmit={event => (event.preventDefault(), handleSubmit())}>
     <div class="fields">
         <div>
-            <label class="fr-label" for="advanced-search-name">Nom, mot-clé, identifiant</label>
+            <label class="fr-label" for="association-search-name">Nom, mot-clé, identifiant</label>
             <SpellcheckedInput
-                id="advanced-search-name"
+                id="association-search-name"
                 name="search-input"
                 placeholder="Ex : Tennis Club, 48213289100011..."
                 bind:value />
         </div>
         <div>
-            <label class="fr-label" for="advanced-search-location">Code postal ou département</label>
+            <label class="fr-label" for="association-search-location">Code postal ou département</label>
             <input
                 class="fr-input"
-                id="advanced-search-location"
-                name="advanced-search-location"
-                placeholder="Ex : 75 ou 75010"
+                id="association-search-location"
+                name="association-search-location"
+                placeholder="Ex : 2A ou 75010"
                 type="text"
-                inputmode="numeric"
                 maxlength="5"
                 aria-invalid={locationError ? "true" : undefined}
-                aria-describedby={locationError ? "advanced-search-location-error" : undefined}
+                aria-describedby={locationError ? "association-search-location-error" : undefined}
                 oninput={handleLocationInput}
-                bind:value={postalCode} />
+                bind:value={location} />
             {#if locationError}
-                <p id="advanced-search-location-error" class="fr-error-text">
+                <p id="association-search-location-error" class="fr-error-text">
                     {locationError}
                 </p>
             {/if}
@@ -75,11 +77,13 @@
     </div>
     <div class="fr-checkbox-group checkbox">
         <input
-            id="advanced-search-name-only"
-            name="advanced-search-name-only"
+            id="association-search-name-only"
+            name="association-search-name-only"
             type="checkbox"
             bind:checked={nameOnly} />
-        <label class="fr-label" for="advanced-search-name-only">Rechercher uniquement dans le nom d’association</label>
+        <label class="fr-label" for="association-search-name-only">
+            Rechercher uniquement dans le nom d’association
+        </label>
     </div>
 </form>
 
@@ -100,6 +104,7 @@
     }
 
     .fields > .submit {
+        align-self: start;
         margin-top: 2rem;
     }
 

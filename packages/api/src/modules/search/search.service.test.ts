@@ -1,3 +1,4 @@
+import { parseSearchLocation } from "../../usecases/search/parse-search-location";
 import { SearchService } from "./search.service";
 import searchCacheAdapter from "../../adapters/outputs/db/search/search.adapter";
 import { BadRequestError } from "core";
@@ -14,7 +15,7 @@ describe("SearchService", () => {
     let service: SearchService;
 
     beforeEach(() => {
-        service = new SearchService(mockSearch);
+        service = new SearchService(mockSearch, parseSearchLocation);
         // @ts-expect-error: mock return value
         jest.mocked(searchCacheAdapter.getResults).mockResolvedValue(RES);
     });
@@ -41,26 +42,26 @@ describe("SearchService", () => {
             await service.getAssociationsKeys(SEARCH_TOKEN);
             expect(mockSearch.execute).toHaveBeenCalledWith({
                 value: SEARCH_TOKEN,
-                postalCode: undefined,
+                location: undefined,
                 nameOnly: false,
             });
         });
 
-        it("uses postal code and name-only in cache key", async () => {
+        it("uses location and name-only in cache key", async () => {
             jest.clearAllMocks();
             const DATE_NOW = new Date(2024, 0, 2);
             jest.useFakeTimers();
             jest.setSystemTime(DATE_NOW);
-            await service.getAssociationsKeys(SEARCH_TOKEN, { postalCode: "75", nameOnly: true });
+            await service.getAssociationsKeys(SEARCH_TOKEN, { location: "75", nameOnly: true });
             jest.useRealTimers();
             expect(searchCacheAdapter.getResults).toHaveBeenCalledWith(
-                `${SEARCH_TOKEN}__postalCode:75__nameOnly:true`,
+                `${SEARCH_TOKEN}__location:75__nameOnly:true`,
                 new Date(2024, 0, 1),
             );
         });
 
-        it("throws BadRequestError for invalid postal code", async () => {
-            await expect(service.getAssociationsKeys(SEARCH_TOKEN, { postalCode: "7A" })).rejects.toThrow(
+        it("throws BadRequestError for invalid location", async () => {
+            await expect(service.getAssociationsKeys(SEARCH_TOKEN, { location: "7A" })).rejects.toThrow(
                 BadRequestError,
             );
         });

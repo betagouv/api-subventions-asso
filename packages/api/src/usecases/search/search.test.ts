@@ -9,7 +9,7 @@ describe("Search Use Case", () => {
     } as unknown as AssociationSearchPort;
     const SEARCH_INPUT = {
         value: "Tennis",
-        postalCode: "35000",
+        location: { postalCode: "35000" },
     };
     const useCase = new Search(mockSearchPort);
 
@@ -21,7 +21,7 @@ describe("Search Use Case", () => {
 
     it("returns association entities from identifier", async () => {
         const expected = ASSOCIATION_SEARCH_ENTITIES;
-        const actual = await useCase.execute({ ...SEARCH_INPUT, value: ASSOCIATION_SEARCH_ENTITIES[0].siren.value });
+        const actual = await useCase.execute({ ...SEARCH_INPUT, value: ASSOCIATION_SEARCH_ENTITIES[0].siren!.value });
         expect(actual).toEqual(expected);
     });
 });

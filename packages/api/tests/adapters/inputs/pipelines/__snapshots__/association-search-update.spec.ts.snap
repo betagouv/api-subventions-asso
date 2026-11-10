@@ -188,6 +188,9 @@ exports[`association search pipeline should be the merge of unite legale and rna
       "postalCode": "75003",
       "type": "RUE",
     },
+    "departmentCodes": [
+      "75",
+    ],
     "mainEstablishmentSiret": "10000000200022",
     "nameTokens": [
       "association",

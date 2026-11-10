@@ -6,4 +6,5 @@ export interface GeoApiPort {
     insertMany(entities): Promise<void>;
     deleteAll(): Promise<void>;
     findByDepartmentName(departmentName: string): Promise<GeoDbo | null>;
+    getAllDepartmentCodes(): Promise<string[]>;
 }

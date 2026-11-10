@@ -43,10 +43,10 @@ class AssociationPort {
 
     async search(
         lookup: string,
-        { page = 1, postalCode, sort = SearchSort.RELEVANCE, nameOnly = false }: AssociationSearchOptions = {},
+        { page = 1, location, sort = SearchSort.RELEVANCE, nameOnly = false }: AssociationSearchOptions = {},
     ) {
         const params = new URLSearchParams({ page: String(page) });
-        if (postalCode) params.set("postalCode", postalCode);
+        if (location) params.set("location", location);
         if (sort !== SearchSort.RELEVANCE) params.set("sort", sort);
         if (nameOnly) params.set("nameOnly", "true");
         const path = `/search/associations/${lookup}?${params.toString()}`;

@@ -3,10 +3,11 @@ import associationSearchAdapter from "../../adapters/outputs/db/association-sear
 import { AssociationSearchPort } from "../../adapters/outputs/db/association-search/association-search.port";
 import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
 import { AssociationIdentifier, EstablishmentIdentifier, Rna, Siren, Siret } from "../../identifier-objects";
+import type { SearchLocation } from "./parse-search-location";
 
 export interface SearchInput {
     value: string;
-    postalCode?: string;
+    location?: SearchLocation;
     nameOnly?: boolean;
 }
 
@@ -24,12 +25,12 @@ export class Search implements AsyncUseCase<SearchInput, AssociationSearchEntity
 
         if (identifier instanceof Siren || identifier instanceof Rna) {
             // search by identifier
-            const entity = await this.searchPort.findByIdentifier(identifier, args.postalCode);
+            const entity = await this.searchPort.findByIdentifier(identifier, args.location);
             if (entity) results = [entity];
         } else if (!identifier) {
             // search by name/object
             results = await this.searchPort.findByText(args.value, {
-                postalCode: args.postalCode,
+                location: args.location,
                 nameOnly: args.nameOnly,
             });
         } else {

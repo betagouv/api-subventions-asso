@@ -12,6 +12,7 @@ import AssociationSearchDbo, {
 import { Rna } from "../../../../identifier-objects";
 import { SanitizeSearchText } from "../../../../usecases/search/sanitize-search-text";
 import { SplitTextInTokens } from "../../../../usecases/search/split-text-in-tokens";
+import type { SearchLocation } from "../../../../usecases/search/parse-search-location";
 
 export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo> implements AssociationSearchPort {
     constructor(
@@ -27,13 +28,14 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         await this.collection.createIndex({ siren: 1, rna: 1 }, { unique: true });
         await this.collection.createIndex({ rna: 1 }); // for direct search on rna (no siren)
         await this.collection.createIndex({ postalCodes: 1 });
+        await this.collection.createIndex({ departmentCodes: 1 });
         await this.collection.createIndex({ nameTokens: 1 });
         await this.collection.createIndex({ objectTokens: 1 });
     }
 
     findByText(
         text: string,
-        { postalCode, nameOnly = false }: FindByTextOptions = {},
+        { location, nameOnly = false }: FindByTextOptions = {},
     ): Promise<AssociationSearchEntity[]> {
         const needle = this.sanitize.execute(text); // search a needle in a haystack
         const words = this.split.execute(needle);
@@ -58,7 +60,7 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
 
         return this.collection
             .aggregate<AssociationSearchDbo & { score: number }>([
-                ...(postalCode ? [{ $match: { postalCodes: { $regex: `^${postalCode}` } } }] : []), // filter on post code when provided
+                ...(location ? [{ $match: this.buildLocationFilter(location) }] : []),
 
                 // 1. filter all documents having all given words in their name or object
                 {
@@ -107,9 +109,12 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
      * @param {Siren} siren
      * @returns the latest name associate at the siren
      */
-    async findByIdentifier(identifier: Siren | Rna, postalCode?: string): Promise<AssociationSearchEntity | null> {
+    async findByIdentifier(
+        identifier: Siren | Rna,
+        location?: SearchLocation,
+    ): Promise<AssociationSearchEntity | null> {
         const query = identifier instanceof Siren ? { siren: identifier.value } : { rna: identifier.value };
-        const cursor = this.collection.find(this.buildQueryWithPostalCodeFilter(query, postalCode));
+        const cursor = this.collection.find(location ? { ...query, ...this.buildLocationFilter(location) } : query);
 
         if (!(await cursor.hasNext())) return null;
         const dbo = await cursor.next();
@@ -120,11 +125,11 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
 
     public async upsertFromEstablishment(dbos: EstablishmentAssociationSearch[]) {
         const operations = dbos.map(dbo => {
-            const { siren, address, nbEstabs, postalCodes } = dbo;
+            const { siren, address, nbEstabs, postalCodes, departmentCodes } = dbo;
             return {
                 updateMany: {
                     filter: { siren },
-                    update: { $set: { nbEstabs, postalCodes, ...(address && { address }) } },
+                    update: { $set: { nbEstabs, postalCodes, departmentCodes, ...(address && { address }) } },
                     upsert: true,
                 },
             };
@@ -207,12 +212,9 @@ export class AssociationSearchAdapter extends MongoAdapter<AssociationSearchDbo>
         return;
     }
 
-    private buildQueryWithPostalCodeFilter(
-        query: Filter<AssociationSearchDbo>,
-        postalCode?: string,
-    ): Filter<AssociationSearchDbo> {
-        if (!postalCode) return query;
-        return { ...query, postalCodes: { $regex: `^${postalCode}` } };
+    private buildLocationFilter(location: SearchLocation): Filter<AssociationSearchDbo> {
+        if ("departmentCode" in location) return { departmentCodes: location.departmentCode };
+        return { postalCodes: location.postalCode };
     }
 }
 
