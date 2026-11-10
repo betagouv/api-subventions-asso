@@ -217,7 +217,7 @@
         }
     }
 
-    @media (min-width: 48em) {
+    @media (--dsfr-min-width-md) {
         :global(.fr-search-bar--lg) .spellcheck > input {
             height: 3rem;
         }

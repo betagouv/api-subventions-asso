@@ -108,7 +108,7 @@
         margin-top: 2rem;
     }
 
-    @media (max-width: 62em) {
+    @media (--dsfr-max-width-lg) {
         .search > .fields {
             grid-template-columns: 1fr;
             gap: 1rem;

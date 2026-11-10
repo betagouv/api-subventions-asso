@@ -5,6 +5,8 @@ import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig, loadEnv } from "vite";
 import dotenv from "dotenv";
 
+import { dsfrBreakpoints } from "./plugins/dsfr-breakpoints";
+
 const file = fileURLToPath(new URL("package.json", import.meta.url));
 const json = readFileSync(file, "utf8");
 const pkg = JSON.parse(json);
@@ -26,6 +28,13 @@ export default defineConfig(({ mode }) => {
             }),
             sveltekit(),
         ],
+        css: {
+            postcss: {
+                plugins: [
+                    dsfrBreakpoints,
+                ],
+            },
+        },
         test: {
             include: ["src/**/*.{test,spec}.{js,ts}"],
             globals: true,
