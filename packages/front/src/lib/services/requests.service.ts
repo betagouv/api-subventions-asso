@@ -10,7 +10,7 @@ class RequestsService {
 
         axios.interceptors.response.use(
             response => response,
-            error => errorsService.axiosErrorToError(error),
+            error => Promise.reject(errorsService.axiosErrorToError(error)),
         );
     }
 

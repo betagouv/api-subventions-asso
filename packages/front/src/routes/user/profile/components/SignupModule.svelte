@@ -14,8 +14,9 @@
     }
 
     let { user = $bindable(), readOnly = false, onchange = () => {} }: Props = $props();
-    let firstName = $state(user.firstName);
-    let lastName = $state(user.lastName);
+    let firstName = $state(user?.firstName);
+    let lastName = $state(user?.lastName);
+    let email = $state(user?.email);
 
     function updateUser() {
         user.firstName = firstName;
@@ -49,7 +50,7 @@
         label="Adresse e-mail professionnelle :"
         id="signup-email"
         hint="A ce jour, l’adresse e-mail n’est pas modifiable."
-        value={user.email}
+        value={email}
         required={true}
         onchange={() => onchange()}
         disabled={true} />

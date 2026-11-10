@@ -1,4 +1,5 @@
 import requestsService from "$lib/services/requests.service";
+import type { UserDto } from "dto";
 
 export class UserPort {
     BASE_PATH = "/user";
@@ -7,7 +8,7 @@ export class UserPort {
         return requestsService.delete(this.BASE_PATH);
     }
 
-    async getSelfUser() {
+    async getSelfUser(): Promise<UserDto> {
         const res = await requestsService.get(`${this.BASE_PATH}/me`);
         return res.data;
     }

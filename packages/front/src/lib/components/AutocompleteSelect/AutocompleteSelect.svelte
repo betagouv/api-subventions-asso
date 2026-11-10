@@ -49,7 +49,9 @@
         listElement: HTMLUListElement | undefined = $state();
 
     const storeValue = new Store(value);
+    let lastValue = value;
     storeValue.subscribe(newV => {
+        if (newV === lastValue) return;
         value = newV; // cannot be in controller so that binding works
         onchange();
     });
