@@ -30,7 +30,6 @@
     });
 
     const { errors, subStep } = ctrl;
-    let service = $derived(values.service);
 
     function notifyChange() {
         onchange();
@@ -56,7 +55,7 @@
             id="service-input"
             type="text"
             label="Quel est votre service ?"
-            bind:value={service}
+            bind:value={values.service}
             errorMsg={$errors.service}
             error={$errors.service}
             onchange={() => notifyChange()}
