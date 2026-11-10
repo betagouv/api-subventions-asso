@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.87.1](https://github.com/betagouv/api-subventions-asso/compare/v0.87.0...v0.87.1) (2026-11-10)
+
+
+### Features
+
+* **api:** [#4072](https://github.com/betagouv/api-subventions-asso/issues/4072) connection to chorus omogen ([#4094](https://github.com/betagouv/api-subventions-asso/issues/4094)) ([30ca39e](https://github.com/betagouv/api-subventions-asso/commit/30ca39e4a88aafff1599fb6394d8a9922b34d05a))
+* **api:** [#4092](https://github.com/betagouv/api-subventions-asso/issues/4092) move usecase inside association-search entity getter ([#4100](https://github.com/betagouv/api-subventions-asso/issues/4100)) ([beb4bf2](https://github.com/betagouv/api-subventions-asso/commit/beb4bf2f190ff54868f01a28bdc822b78565e3ef))
+
+
+### Bug Fixes
+
+* **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) hotfix - convert exercise cli arg into number ([#4095](https://github.com/betagouv/api-subventions-asso/issues/4095)) ([5050b4f](https://github.com/betagouv/api-subventions-asso/commit/5050b4f2f15b65f88f59c1adfa2061a5aa254c5d))
+* **front, api:** [#4048](https://github.com/betagouv/api-subventions-asso/issues/4048) fix search history ([#4107](https://github.com/betagouv/api-subventions-asso/issues/4107)) ([16c7446](https://github.com/betagouv/api-subventions-asso/commit/16c7446f3136b223dc41e3cfa53c471be9f7a506))
+* **front:** [#4110](https://github.com/betagouv/api-subventions-asso/issues/4110) v0.87 fixes ([#4111](https://github.com/betagouv/api-subventions-asso/issues/4111)) ([7af935a](https://github.com/betagouv/api-subventions-asso/commit/7af935acf324f2ea5d791f28e98427dac8b7d6d3)), closes [#4098](https://github.com/betagouv/api-subventions-asso/issues/4098) [#4101](https://github.com/betagouv/api-subventions-asso/issues/4101)
+* **front:** form user using autocomplete ([7ec429f](https://github.com/betagouv/api-subventions-asso/commit/7ec429f865a7428aa339f1acf1a648d650dd6503))
+
 ## [0.87.0](https://github.com/betagouv/api-subventions-asso/compare/v0.86.2...v0.87.0) (2026-10-28)
 
 ## [0.86.2](https://github.com/betagouv/api-subventions-asso/compare/v0.86.1...v0.86.2) (2026-10-28)
