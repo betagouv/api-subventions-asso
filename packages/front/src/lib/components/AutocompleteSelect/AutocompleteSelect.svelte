@@ -50,9 +50,10 @@
 
     const storeValue = new Store(value);
     let lastValue = value;
-    storeValue.subscribe(newV => {
-        if (newV === lastValue) return;
-        value = newV; // cannot be in controller so that binding works
+    storeValue.subscribe(newValue => {
+        if (newValue === lastValue) return;
+        lastValue = newValue; // cannot be in controller so that binding works
+        value = newValue;
         onchange();
     });
 

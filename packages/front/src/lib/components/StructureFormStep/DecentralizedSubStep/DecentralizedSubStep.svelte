@@ -31,23 +31,8 @@
 
     const ctrl = new DecentralizedSubStepController(() => onchange());
     const { departmentOptions, structureOptions } = ctrl;
-    let decentralizedLevel = $derived(values.decentralizedLevel);
-    let decentralizedTerritory = $derived(values.decentralizedTerritory);
-    let structure = $derived(values.structure);
-
-    function syncValues() {
-        values.decentralizedLevel = decentralizedLevel;
-        values.decentralizedTerritory = decentralizedTerritory;
-        values.structure = structure;
-    }
-
-    function notifyChange() {
-        syncValues();
-        onchange();
-    }
 
     function chooseLevel(detail: Option<AdminTerritorialLevel>) {
-        syncValues();
         ctrl.onChoosingLevel(detail);
     }
 
@@ -57,43 +42,40 @@
 <Radio
     options={ctrl.levelOptions}
     label="Sélectionnez votre périmètre :"
-    bind:value={decentralizedLevel}
-    onchange={detail => chooseLevel(detail)} />
+    bind:value={values.decentralizedLevel}
+    onchange={detail => chooseLevel(detail as Option<AdminTerritorialLevel>)} />
 
 <fieldset class="fr-fieldset">
-    {#if decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
+    {#if values.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
         <div class="fr-fieldset__element fr-mb-4v">
             <AutocompleteSelect
                 options={$departmentOptions}
-                bind:value={decentralizedTerritory}
+                bind:value={values.decentralizedTerritory}
                 label="Quel est votre département ?"
-                onchange={() => notifyChange()}
+                {onchange}
                 placeholder="Ex : 01 - Ain" />
         </div>
-    {:else if decentralizedLevel === AdminTerritorialLevel.REGIONAL}
+    {:else if values.decentralizedLevel === AdminTerritorialLevel.REGIONAL}
         <div class="fr-fieldset__element fr-mb-4v">
-            <RegionField
-                bind:value={decentralizedTerritory}
-                label="Quelle est votre région ?"
-                onchange={() => notifyChange()} />
+            <RegionField bind:value={values.decentralizedTerritory} label="Quelle est votre région ?" {onchange} />
         </div>
     {/if}
 
     <div class="fr-fieldset__element">
-        {#if decentralizedLevel === AdminTerritorialLevel.REGIONAL || decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
+        {#if values.decentralizedLevel === AdminTerritorialLevel.REGIONAL || values.decentralizedLevel === AdminTerritorialLevel.DEPARTMENTAL}
             <AutocompleteSelect
                 options={$structureOptions}
-                bind:value={structure}
+                bind:value={values.structure}
                 label="Quelle est votre administration ?"
-                onchange={() => notifyChange()}
+                {onchange}
                 placeholder="Ex : DDETS59, Préfecture" />
         {:else}
             <Input
                 id="structure"
                 type="text"
-                bind:value={structure}
+                bind:value={values.structure}
                 label="Quelle est votre administration ?"
-                onchange={() => notifyChange()}
+                {onchange}
                 placeholder="Ex : DDETS59, Préfecture" />
         {/if}
     </div>

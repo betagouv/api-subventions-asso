@@ -15,12 +15,6 @@
 
     const ctrl = new CentralSubStepController();
     const { options } = ctrl;
-    let structure = $derived(values.structure);
-
-    function notifyChange() {
-        values.structure = structure;
-        onchange();
-    }
 
     ctrl.init();
 </script>
@@ -29,9 +23,9 @@
     <div class="fr-fieldset__element">
         <AutocompleteSelect
             options={$options}
-            bind:value={structure}
+            bind:value={values.structure}
             label="Dans quelle administration centrale travaillez-vous ?"
-            onchange={() => notifyChange()}
+            {onchange}
             placeholder="Ex : DIHAL" />
     </div>
 </fieldset>
