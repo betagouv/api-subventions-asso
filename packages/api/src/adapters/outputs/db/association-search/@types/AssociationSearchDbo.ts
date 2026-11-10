@@ -14,7 +14,7 @@ export default interface AssociationSearchDbo {
     siren?: string;
     mainEstablishmentSiret?: string;
     rna?: string;
-    name: RnaOrSirene;
+    names: RnaOrSirene;
     searchName?: RnaOrSirene; // sanitized names for the search engine
     nameTokens?: string[]; // names (set from rna and sirene name) split in words for the search engine
     object?: string;
@@ -33,9 +33,9 @@ export type EstablishmentAssociationSearch = Required<
 export type UniteLegaleAssociationSearch = Required<
     Pick<AssociationSearchDbo, "siren" | "mainEstablishmentSiret" | "searchName" | "nameTokens">
 > & {
-    name: { sirene: string };
+    names: { sirene: string };
 } & Pick<AssociationSearchDbo, "rna">;
 
 export type RnaAssociationSearch = Required<Pick<AssociationSearchDbo, "rna" | "searchName" | "nameTokens">> & {
-    name: { rna: string };
+    names: { rna: string };
 } & Pick<AssociationSearchDbo, "siren" | "object" | "searchObject" | "objectTokens">;

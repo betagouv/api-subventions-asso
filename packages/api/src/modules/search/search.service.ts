@@ -3,7 +3,6 @@ import searchAdapter from "../../adapters/outputs/db/search/search.adapter";
 import PaginatedResult from "../../@types/PaginatedResult";
 import AssociationSearchEntity from "../../entities/AssociationSearchEntity";
 import search, { Search } from "../../usecases/search/search";
-import getAssociationName from "../../usecases/search/get-association-name";
 import { SearchSort, type AssociationSearchOptions } from "dto";
 
 const POSTAL_CODE_REGEX = /^\d{2,5}$/;
@@ -56,7 +55,7 @@ export class SearchService {
 
     private sortAlphabetically(results: AssociationSearchEntity[]) {
         return [...results].sort((left, right) =>
-            getAssociationName.execute(left).localeCompare(getAssociationName.execute(right), "fr", {
+            left.name.localeCompare(right.name, "fr", {
                 sensitivity: "base",
             }),
         );

@@ -9,7 +9,7 @@ export const ASSOCIATION_SEARCH_DBOS: AssociationSearchDbo[] = [
         siren: DEFAULT_ASSOCIATION.siren,
         mainEstablishmentSiret: DEFAULT_ASSOCIATION.siret,
         rna: DEFAULT_ASSOCIATION.rna,
-        name: {
+        names: {
             rna: `rna-${DEFAULT_ASSOCIATION.name}`,
             sirene: `sirene-${DEFAULT_ASSOCIATION.name}`,
         },
@@ -33,7 +33,7 @@ export const ASSOCIATION_SEARCH_DBOS: AssociationSearchDbo[] = [
         siren: "200000000",
         mainEstablishmentSiret: "20000000000020",
         rna: "W200000000",
-        name: {
+        names: {
             rna: `${COMMON_WORD} DE TABLE LYON`,
             sirene: `LE ${COMMON_WORD} DE TABLE LYONNAIS`,
         },
@@ -57,7 +57,7 @@ export const ASSOCIATION_SEARCH_DBOS: AssociationSearchDbo[] = [
         siren: "300000000",
         mainEstablishmentSiret: "30000000000018",
         rna: "W300000000",
-        name: {
+        names: {
             rna: `${COMMON_WORD} CLUB DE LYON`,
             sirene: `LE ${COMMON_WORD} LYONNAIS`,
         },
@@ -81,7 +81,7 @@ export const ASSOCIATION_SEARCH_DBOS: AssociationSearchDbo[] = [
         siren: "400000000",
         mainEstablishmentSiret: "40000000000018",
         rna: "W400000000",
-        name: {
+        names: {
             rna: `Le bal masqué`,
         },
         searchName: { rna: ` le bal masque ` },
@@ -104,7 +104,7 @@ export const ASSOCIATION_SEARCH_DBOS: AssociationSearchDbo[] = [
         siren: "500000000",
         mainEstablishmentSiret: "50000000000018",
         rna: "W500000000",
-        name: {
+        names: {
             rna: `Poupenn`,
         },
         searchName: { rna: ` creche parentale ` },
@@ -127,7 +127,7 @@ export const ASSOCIATION_SEARCH_DBOS: AssociationSearchDbo[] = [
         siren: "600000000",
         mainEstablishmentSiret: "60000000000018",
         rna: "W600000000",
-        name: {
+        names: {
             sirene: "BAT' KARE",
             rna: "BAT KARE",
         },

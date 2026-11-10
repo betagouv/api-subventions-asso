@@ -5,7 +5,7 @@ import AssociationSearchEntity from "../../../../entities/AssociationSearchEntit
 
 function toEntity(dbo: SearchResultDbo): AssociationSearchEntity {
     return new AssociationSearchEntity({
-        name: dbo.name,
+        names: dbo.names,
         siren: dbo.siren,
         rna: dbo.rna,
         mainEstablishmentSiret: dbo.mainEstablishmentSiret,
