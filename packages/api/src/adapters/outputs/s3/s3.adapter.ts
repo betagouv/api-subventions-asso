@@ -25,8 +25,9 @@ import FileTags from "../../../modules/s3-file/@types/FileTags";
 import { Readable } from "stream";
 import { STATUS_CODES } from "http";
 import { RequestResponse } from "../../../modules/provider-request/@types/RequestResponse";
+import FileStreamPort from "../file-stream.port";
 
-export class S3Adapter implements S3Port {
+export class S3Adapter implements S3Port, FileStreamPort {
     public name: string;
 
     constructor(
@@ -42,14 +43,21 @@ export class S3Adapter implements S3Port {
      * @param key - Key of the file in S3 bucket (path).
      * @returns Key of the uploaded file.
      * */
-    async uploadFile(file: Express.Multer.File, key: string, tag?: { name: string; value: string }): Promise<string> {
+    async uploadFile(
+        file: Buffer | Readable,
+        key: string,
+        options?: { contentType?: string; tag?: { name: string; value: string } },
+    ): Promise<string> {
+        console.log("trying to upload file to bucket: ", this.bucketName);
         try {
             const input: PutObjectCommandInput = {
                 Bucket: this.bucketName,
                 Key: key,
-                Body: file.buffer,
-                ContentType: file.mimetype,
+                Body: file,
+                ContentType: options?.contentType ?? "application/octet-stream",
             };
+
+            const tag = options?.tag;
 
             if (tag && (!tag.name || !tag?.value)) throw new S3Error("Tag must have a name and value");
             if (tag && tag.name && tag.value) input.Tagging = `${tag.name}=${tag.value}`;

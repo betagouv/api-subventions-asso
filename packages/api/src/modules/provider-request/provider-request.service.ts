@@ -6,6 +6,8 @@ import RequestConfigMapper from "./mappers/request-config.mapper";
 import RequestResponseMapper from "./mappers/request-response.mapper";
 import providerRequestAdapter from "../../adapters/outputs/db/provider-request/provider-request.adapter";
 
+export type RequestError = AxiosError;
+
 export class ProviderRequestService {
     constructor(private providerId: string) {}
 

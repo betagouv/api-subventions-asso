@@ -18,6 +18,13 @@ process.env.TCHAP_ROOM_ID_DEV = "!dev-room:tchap.example.test";
 process.env.TCHAP_ROOM_ID_PRODUCT = "!product-room:tchap.example.test";
 process.env.TCHAP_ROOM_ID_ACCOUNTS = "!accounts-room:tchap.example.test";
 
+import { OMOGEN_URL, OMOGEN_AUTH_URL, OMOGEN_CLIENT, OMOGEN_SECRET, OMOGEN_API_KEY } from "./jest.config.env";
+process.env.OMOGEN_URL = OMOGEN_URL;
+process.env.OMOGEN_AUTH_URL = OMOGEN_AUTH_URL;
+process.env.OMOGEN_CLIENT = OMOGEN_CLIENT;
+process.env.OMOGEN_SECRET = OMOGEN_SECRET;
+process.env.OMOGEN_API_KEY = OMOGEN_API_KEY;
+
 /**
  *
  *      MODULE IMPORTATION

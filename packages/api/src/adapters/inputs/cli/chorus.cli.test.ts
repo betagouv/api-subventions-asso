@@ -4,6 +4,9 @@ import ChorusCli from "./chorus.cli";
 import paymentFlatChorusService from "../../../modules/payment-flat/payment-flat.chorus.service";
 import { ChorusImport } from "../pipeline/import/chorus/chorus.import";
 import { UpdateFlatByExercise } from "../../../modules/providers/chorus/use-cases/update-flat-by-exercise";
+import { ChorusUpload } from "../pipeline/upload/chorus/chorus.upload";
+import DownloadFile from "../../../usecases/download-file";
+import { S3Port } from "../../outputs/s3/s3.port";
 
 jest.mock("fs");
 const mockedFs = jest.mocked(fs);
@@ -20,6 +23,9 @@ describe("Chorus CLI", () => {
     const FILE_CONTENT = "HERE_MY_CONTENT";
     const IMPORT_REPORT = { parsedCount: 100, importedCount: 80, errorCount: 20 };
 
+    const mockUploader = jest.fn() as unknown as jest.Mocked<ChorusUpload>;
+    const mockDownloader = jest.fn() as unknown as jest.Mocked<DownloadFile>;
+    const mockS3 = jest.fn() as unknown as jest.Mocked<S3Port>;
     const mockChorusImport = { run: jest.fn() } as unknown as jest.Mocked<ChorusImport>;
     const mockUpdateFlatByExercise = { execute: jest.fn() } as unknown as jest.Mocked<UpdateFlatByExercise>;
     let controller: ChorusCli;
@@ -29,7 +35,7 @@ describe("Chorus CLI", () => {
         mockedFs.readFileSync.mockReturnValue(FILE_CONTENT);
         mockedFs.writeFileSync.mockImplementation(jest.fn());
         mockChorusImport.run.mockResolvedValue(IMPORT_REPORT);
-        controller = new ChorusCli(mockChorusImport, mockUpdateFlatByExercise);
+        controller = new ChorusCli(mockUploader, mockDownloader, mockS3, mockChorusImport, mockUpdateFlatByExercise);
     });
 
     describe("_parse()", () => {
