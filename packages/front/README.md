@@ -164,3 +164,7 @@ describe("front end app unit tests examples", () => {
     });
 });
 ```
+
+## Correction orthographique
+
+La correction orthographique dans la barre de recherche repose sur le dictionnaire français [dictionary-fr](https://www.npmjs.com/package/dictionary-fr), enrichi avec les [données des prénoms de l'INSEE](https://www.data.gouv.fr/datasets/fichier-des-prenoms-depuis-1900).
