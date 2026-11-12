@@ -20,7 +20,7 @@ function toDbo(searchToken: string, searchResult: Partial<AssociationSearchEntit
     if (searchResult.length > 0) {
         resultats = searchResult.map(associationSearch => {
             return {
-                name: associationSearch.name,
+                names: associationSearch.names,
                 rna: associationSearch.rna?.value,
                 siren: associationSearch.siren?.value,
                 address: associationSearch.address,
