@@ -7,7 +7,7 @@ import dataLogService from "../data-log/dataLog.service";
 import { DepositScdlProcessService } from "../deposit-scdl-process/deposit-scdl-process.service";
 import { WinstonLog } from "../../@types/WinstonLog";
 
-export class DumpService {
+export class MetabaseDumpService {
     constructor(private readonly depositScdlProcessService: DepositScdlProcessService) {}
 
     // Dump logs, stats tables

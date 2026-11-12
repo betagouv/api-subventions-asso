@@ -16,3 +16,4 @@ export type LoggedMeta = {
 };
 
 export type WinstonLog = LogEntry & { meta: LoggedMeta; timestamp: Date };
+export type AnonymizedWinstonLog = WinstonLog & { meta: { req: { userId?: ObjectId } } };
