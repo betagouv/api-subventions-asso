@@ -120,6 +120,10 @@ Pour l'instant le fil d'ariane n'est pas dynamique. Il faut donc le spécifier d
 
 Utiliser le moins possible de CSS dans les composants Svelte. Le DSFR met à disposition des classes pour le positionnement et l'espacement. Si ces dernières ne répondent pas au besoin et qu'il est redondant, il faut alors créer une classe générique dans `src/global.css`. Si c'est un besoin vraiment spécifique au composant, il faut d'abord s'assurer avec l'équipe design si ce n'est pas réalisable avec le DSFR en modifiant légèrement le composant. Dans le cas où il n'y a pas le choix, il faudra nommer la classe CSS le plus proche possible de l'effet désiré.
 
+### Utilitaires liés au DSFR
+
+Pour facilement définir un taille (@media), le plugin DSFR Breakpoints (/plugins/dsfr-breakpoints.ts) définit des varibles CSS.
+
 ## Interactions entre composants et contrôleurs
 
 Le composant ne doit faire qu'afficher la donnée. Tous traitements et récupérations de données doit se faire à l'aide du contrôleur associé qui délèguera si nécessaire à des services.
