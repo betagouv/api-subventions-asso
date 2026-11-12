@@ -97,7 +97,7 @@
         color: var(--text-active-blue-france);
     }
 
-    @media (max-width: 48em) {
+    @media (--dsfr-max-width-md) {
         .association > .identifiers {
             align-items: flex-start;
             flex-direction: column;

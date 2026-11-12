@@ -143,7 +143,7 @@
         box-shadow: inset 0 0 0 1px var(--border-active-blue-france);
     }
 
-    @media (max-width: 48em) {
+    @media (--dsfr-max-width-md) {
         .header {
             align-items: flex-start;
             flex-direction: column;

@@ -78,7 +78,7 @@
         margin-top: 0.5rem;
     }
 
-    @media (max-width: 62em) {
+    @media (--dsfr-max-width-lg) {
         .association-tags {
             flex-direction: column;
             flex-wrap: nowrap;
