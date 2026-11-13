@@ -1,6 +1,7 @@
 import { CHORUS_FSE_ENTITIES } from "../../../../../modules/providers/chorus/__fixtures__/ChorusFixtures";
 import MongoAdapter from "../../MongoAdapter";
 import chorusFseAdapter from "./chorus-fse.adapter";
+import * as ChorusFseMapper from "./chorus-fse.mapper";
 
 describe("ChorusFsePort", () => {
     const cursor = CHORUS_FSE_ENTITIES;
@@ -13,7 +14,7 @@ describe("ChorusFsePort", () => {
 
     beforeAll(() => {
         // @ts-expect-error: mock private method
-        mockToEntity = jest.spyOn(chorusFseAdapter, "toEntity").mockImplementation(dbo => dbo);
+        mockToEntity = jest.spyOn(ChorusFseMapper, "toEntity").mockImplementation(dbo => dbo);
         // @ts-expect-error: mock toArray
         cursor.toArray = async () => CHORUS_FSE_ENTITIES;
         // @ts-expect-error: mock MongoAdapter class

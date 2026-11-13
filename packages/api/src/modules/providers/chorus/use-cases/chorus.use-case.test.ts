@@ -1,12 +1,13 @@
 import chorusFseAdapter from "../../../../adapters/outputs/db/providers/chorus/chorus-fse.adapter";
 import chorusAdapter from "../../../../adapters/outputs/db/providers/chorus/chorus.adapter";
+import { CHORUS_DBOS, CHORUS_FSE_DBOS } from "../../../../adapters/outputs/db/providers/chorus/chorus.fixtures";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { sanitizeFloat } from "../../../../shared/helpers/NumberHelper";
 import paymentFlatChorusService from "../../../payment-flat/payment-flat.chorus.service";
-import { CHORUS_ENTITIES, CHORUS_FSE_ENTITIES, PARSED_DATA } from "../__fixtures__/ChorusFixtures";
+import { CHORUS_FSE_ENTITIES, PARSED_DATA } from "../__fixtures__/ChorusFixtures";
 import chorusService from "../chorus.service";
-import { SaveChorusEntities } from "./save-entities";
-import { SaveChorusFseEntities } from "./save-fse-entities";
+import { SaveChorusDbos } from "./save-dbos";
+import { SaveChorusFseDbos } from "./save-fse-dbos";
 import { TransformFseToFlat } from "./transform-fse-to-flat";
 import { UpdateFlatByExercise } from "./update-flat-by-exercise";
 
@@ -18,33 +19,31 @@ jest.mock("../chorus.service");
 jest.mock("../../../payment-flat/payment-flat.chorus.service");
 
 describe("Chorus Use Cases", () => {
-    const CHORUS_DTO = PARSED_DATA[0];
-
     beforeEach(() => {
-        jest.mocked(sanitizeFloat).mockReturnValue(CHORUS_DTO["Montant payé"]);
+        jest.mocked(sanitizeFloat).mockReturnValue(PARSED_DATA["Montant payé"]);
         jest.mocked(GenericParser.getDateFromXLSX).mockReturnValue(new Date("2026-03-03"));
     });
 
-    describe("SaveChorusEntities", () => {
-        const useCase = new SaveChorusEntities(chorusAdapter);
+    describe("SaveChorusDbos", () => {
+        const useCase = new SaveChorusDbos(chorusAdapter);
         // @ts-expect-error: set private property
         useCase.BATCH_SIZE = 1;
 
         it("upserts each batch", async () => {
-            await useCase.execute(CHORUS_ENTITIES);
+            await useCase.execute(CHORUS_DBOS);
             // batch size is set to 1
-            CHORUS_ENTITIES.forEach((entity, index) => {
+            CHORUS_DBOS.forEach((entity, index) => {
                 expect(chorusAdapter.upsertMany).toHaveBeenNthCalledWith(index + 1, [entity]);
             });
         });
     });
 
-    describe("SaveChorusFseEntities", () => {
-        const useCase = new SaveChorusFseEntities(chorusFseAdapter);
+    describe("SaveChorusFseDbos", () => {
+        const useCase = new SaveChorusFseDbos(chorusFseAdapter);
 
         it("upserts entities", async () => {
-            await useCase.execute(CHORUS_FSE_ENTITIES);
-            expect(chorusFseAdapter.upsertMany).toHaveBeenCalledWith(CHORUS_FSE_ENTITIES);
+            await useCase.execute(CHORUS_FSE_DBOS);
+            expect(chorusFseAdapter.upsertMany).toHaveBeenCalledWith(CHORUS_FSE_DBOS);
         });
     });
 

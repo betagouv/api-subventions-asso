@@ -5,7 +5,6 @@ import CacheData from "../../../shared/Cache";
 import Siret from "../../../identifier-objects/Siret";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
-import chorusFseAdapter from "../../../adapters/outputs/db/providers/chorus/chorus-fse.adapter";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../payment-flat/__fixtures__/payment-flat.fixture";
 import paymentFlatService from "../../payment-flat/payment-flat.service";
 import { PROGRAMS } from "../../../../tests/adapters/outputs/db/__fixtures__/state-budget-program.fixtures";
@@ -105,31 +104,6 @@ describe("ChorusService", () => {
         it("returns result", async () => {
             const actual = await service.isEntityAccepted(ENTITY);
             expect(actual).toEqual(IS_ASSO);
-        });
-    });
-
-    describe("persistEuropeanEntities", () => {
-        // test with more than one
-        const ENTITIES = [...CHORUS_FSE_ENTITIES, ...CHORUS_FSE_ENTITIES];
-        let mockSyncFlat: jest.SpyInstance;
-        let mockIsEntityAccepted: jest.SpyInstance;
-
-        beforeEach(() => {
-            mockSyncFlat = jest.spyOn(service, "syncFlat").mockResolvedValue();
-            mockIsEntityAccepted = jest.spyOn(service, "isEntityAccepted").mockResolvedValue(true);
-            jest.spyOn(chorusFseAdapter, "upsertMany").mockResolvedValue();
-        });
-
-        afterAll(() => [mockIsEntityAccepted, mockSyncFlat].map(mock => mock.mockRestore()));
-
-        it("filters entities", async () => {
-            await service.persistEuropeanEntities(ENTITIES);
-            expect(mockIsEntityAccepted).toHaveBeenCalledTimes(ENTITIES.length);
-        });
-
-        it("pass entities to port", async () => {
-            await service.persistEuropeanEntities(ENTITIES);
-            expect(chorusFseAdapter.upsertMany).toHaveBeenCalledWith(ENTITIES);
         });
     });
 

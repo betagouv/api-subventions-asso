@@ -1,5 +1,5 @@
+import { ReadableStream, TransformStream } from "stream/web";
 import CacheData from "../../../shared/Cache";
-import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ProviderCore from "../provider.core";
 import Siren from "../../../identifier-objects/Siren";
@@ -66,12 +66,6 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
     // TODO: unit test this
     public getProgramCode(entity: ChorusEntity) {
         return parseInt(entity.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
-    }
-
-    public async persistEuropeanEntities(entities: ChorusFseEntity[]) {
-        const validEntities = await asyncFilter(entities, entity => this.isEntityAccepted(entity));
-        await chorusFseAdapter.upsertMany(validEntities);
-        return this.syncFlat(validEntities);
     }
 
     public savePaymentsFromStream(stream: ReadableStream<PaymentFlatEntity>) {

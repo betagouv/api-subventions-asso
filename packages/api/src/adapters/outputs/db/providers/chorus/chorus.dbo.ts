@@ -3,7 +3,6 @@ import { ProviderDataEntity } from "../../../../../@types/ProviderData";
 export default interface ChorusDbo extends ProviderDataEntity {
     ej: string;
     numPosteEJ: number;
-    // @TODO: make it a Siret
     siret: string;
     ridetOrTahitiet: string;
     codeBranche: string;
@@ -23,3 +22,5 @@ export default interface ChorusDbo extends ProviderDataEntity {
     amount: number;
     dateOperation: Date;
 }
+
+export type ChorusFseDbo = Omit<ChorusDbo, "ej" | "numPosteEJ"> & { ej: "#"; numPosteEJ: "#" };

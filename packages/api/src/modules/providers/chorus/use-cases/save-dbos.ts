@@ -1,7 +1,7 @@
 import chorusAdapter, { ChorusAdapter } from "../../../../adapters/outputs/db/providers/chorus/chorus.adapter";
 import ChorusEntity from "../entities/ChorusEntity";
 
-export class SaveChorusEntities {
+export class SaveChorusDbos {
     private BATCH_SIZE = 10000;
     constructor(private chorusAdapter: ChorusAdapter) {}
 
@@ -19,5 +19,5 @@ export class SaveChorusEntities {
     }
 }
 
-const saveChorusEntities = new SaveChorusEntities(chorusAdapter);
-export default saveChorusEntities;
+const saveChorusDbos = new SaveChorusDbos(chorusAdapter);
+export default saveChorusDbos;

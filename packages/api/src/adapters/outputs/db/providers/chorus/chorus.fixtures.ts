@@ -1,29 +1,28 @@
 import DEFAULT_ASSOCIATION from "../../../../../../tests/__fixtures__/association.fixture";
-import { Siret } from "../../../../../identifier-objects";
-import ChorusFseDbo from "./chorus-fse.dbo";
-import ChorusDbo from "./chorus.dbo";
+import ChorusDbo, { ChorusFseDbo } from "./chorus.dbo";
 
 export const CHORUS_FSE_DBOS: ChorusFseDbo[] = [
     {
-        societyCode: "BNOR",
-        paymentRequestNum: "500000744",
-        budgetaryYear: 2026,
-        paymentRequestPostNum: 2,
+        codeSociete: "BNOR",
+        numeroDemandePaiement: "500000744",
+        exercice: 2026,
+        numPosteDP: 2,
         amount: 12017.88,
-        beneficiaryName: "MAISON EMPLOI FORMAT BASSIN",
-        branch: "Associations",
-        branchCode: "Z039",
+        nomStructure: "MAISON EMPLOI FORMAT BASSIN",
+        branche: "Associations",
+        codeBranche: "Z039",
         ej: "#",
-        ejPostNum: "#",
-        financialCenter: "TG CALVADOS",
-        financialCenterCode: "BG00/L014",
-        functionalDomain: "Prog nat.Etat FSE+2021-27",
-        functionalDomainCode: "FSE00-14",
-        identifier: new Siret(DEFAULT_ASSOCIATION.siret),
-        operationDate: new Date("2026-01-15"),
-        paidSupplierId: "1000016402",
-        programRef: "N/A",
-        programRefCode: "BG00/N/A",
+        numPosteEJ: "#",
+        centreFinancier: "TG CALVADOS",
+        codeCentreFinancier: "BG00/L014",
+        domaineFonctionnel: "Prog nat.Etat FSE+2021-27",
+        codeDomaineFonctionnel: "FSE00-14",
+        siret: DEFAULT_ASSOCIATION.siret,
+        ridetOrTahitiet: "#",
+        dateOperation: new Date("2026-01-15"),
+        numeroTier: "1000016402",
+        activitee: "N/A",
+        codeActivitee: "BG00/N/A",
         updateDate: new Date("2025-12-24"),
     },
 ];

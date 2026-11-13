@@ -24,4 +24,4 @@ export interface ChorusDto {
     "Date de dernière opération sur la DP": Date;
 }
 
-export type ChorusFseDto = Omit<ChorusDto, "N° poste EJ" | "N° EJ"> & { "N° poste EJ": "#"; "N° EJ": "#" };
+export type ChorusFseDto = Omit<ChorusDto, "N° EJ" | "N° poste EJ"> & { "N° EJ": "#"; "N° poste EJ": "#" };

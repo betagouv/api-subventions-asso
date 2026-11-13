@@ -20,8 +20,8 @@ import chorusFseAdapter from "../../../../src/adapters/outputs/db/providers/chor
 import { CheckIdentifierIsFromAssoUseCase } from "../../../../src/modules/associations/use-cases/check-identifier-is-from-asso.use-case";
 import { CheckSirenIsFromAssoUseCase } from "../../../../src/modules/associations/use-cases/check-siren-is-from-asso.use-case";
 import chorusService from "../../../../src/modules/providers/chorus/chorus.service";
-import saveChorusEntities from "../../../../src/modules/providers/chorus/use-cases/save-entities";
-import saveChorusFseEntities from "../../../../src/modules/providers/chorus/use-cases/save-fse-entities";
+import saveChorusEntities from "../../../../src/modules/providers/chorus/use-cases/save-dbos";
+import saveChorusFseEntities from "../../../../src/modules/providers/chorus/use-cases/save-fse-dbos";
 import updateFlatByExercise from "../../../../src/modules/providers/chorus/use-cases/update-flat-by-exercise";
 import { TagImportedFile } from "../../../../src/modules/s3-file/use-cases/tag-imported-file";
 import DownloadFile from "../../../../src/usecases/download-file";

@@ -7,10 +7,6 @@ import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.
 import { AssociationWithProviderValues } from "dto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../src/shared/LegalCategoriesAccepted";
 import Siren from "../../../../src/identifier-objects/Siren";
-import {
-    CHORUS_FSE_ENTITIES,
-    CHORUS_ENTITIES,
-} from "../../../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
 import stateBudgetProgramAdapter from "../../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
 import chorusFseAdapter from "../../../../src/adapters/outputs/db/providers/chorus/chorus-fse.adapter";
 import dataLogAdapter from "../../../../src/adapters/outputs/db/data-log/data-log.adapter";
@@ -24,6 +20,7 @@ import { ASSOCIATION_SEARCH_DBOS } from "../../../../src/adapters/outputs/db/ass
 import chorusUpload from "../../../../src/adapters/inputs/pipeline/upload/chorus/chorus.upload";
 import DownloadFile from "../../../../src/usecases/download-file";
 import { providersS3Adapter } from "../../../../src/adapters/outputs/s3/s3.adapter";
+import { CHORUS_DBOS, CHORUS_FSE_DBOS } from "../../../../src/adapters/outputs/db/providers/chorus/chorus.fixtures";
 
 describe("ChorusCli", () => {
     // it contains :
@@ -129,12 +126,12 @@ describe("ChorusCli", () => {
     describe("resyncPaymentFlatByExercise", () => {
         it("add payments flat for exercice", async () => {
             await chorusAdapter.upsertMany(
-                CHORUS_ENTITIES.map(entity => ({
-                    ...entity,
+                CHORUS_DBOS.map(dbo => ({
+                    ...dbo,
                     exercice: 2025,
                 })),
             );
-            await chorusFseAdapter.upsertMany(CHORUS_FSE_ENTITIES.map(entity => ({ ...entity, budgetaryYear: 2025 })));
+            await chorusFseAdapter.upsertMany(CHORUS_FSE_DBOS.map(dbo => ({ ...dbo, exercice: 2025 })));
 
             await controller.syncFlatByExercise("2025");
             const actual = await paymentFlatAdapter.findAll();
@@ -145,16 +142,16 @@ describe("ChorusCli", () => {
     describe("resetPaymentFlat", () => {
         it("add payments flat", async () => {
             await chorusAdapter.upsertMany([
-                ...CHORUS_ENTITIES.map(entity => ({
+                ...CHORUS_DBOS.map(entity => ({
                     ...entity,
                     exercice: 2024,
                 })),
-                ...CHORUS_ENTITIES.map(entity => ({
+                ...CHORUS_DBOS.map(entity => ({
                     ...entity,
                     exercice: 2025,
                 })),
             ]);
-            await chorusFseAdapter.upsertMany(CHORUS_FSE_ENTITIES);
+            await chorusFseAdapter.upsertMany(CHORUS_FSE_DBOS);
             await controller.resetFlat();
             const actual = await paymentFlatAdapter.findAll();
             expect(actual).toMatchSnapshot();
