@@ -13,7 +13,6 @@ import uniteLegaleEntrepriseAdapter from "../../../../src/adapters/outputs/db/un
 import { Siren } from "../../../../src/identifier-objects";
 import { PROGRAMS } from "../../../__fixtures__/paymentsFlat.fixture";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../src/shared/LegalCategoriesAccepted";
-import chorusAdapter from "../../../../src/adapters/outputs/db/providers/chorus/chorus.adapter";
 import { AssociationWithProviderValues } from "dto";
 import paymentFlatAdapter from "../../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
 import chorusFseAdapter from "../../../../src/adapters/outputs/db/providers/chorus/chorus-fse.adapter";
@@ -128,8 +127,13 @@ describe("Chorus CRON", () => {
 
     it("imports chorus data", async () => {
         await cron.importNewFile();
+        const documents = await db
+            .collection("chorus")
+            .find({}, { projection: { _id: 0 } })
+            .toArray();
+
         expect(
-            (await chorusAdapter.cursorFind({}, { _id: 0 }).toArray()).map(data => ({
+            documents.map(data => ({
                 ...data,
                 updateDate: expect.any(Date),
             })),

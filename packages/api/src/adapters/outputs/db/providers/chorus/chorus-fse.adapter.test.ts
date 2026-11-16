@@ -25,7 +25,7 @@ describe("ChorusFsePort", () => {
         const EXERCISE = 2026;
         it("query collection by exercise", async () => {
             await chorusFseAdapter.findByExercise(EXERCISE);
-            expect(mockFind).toHaveBeenCalledWith({ budgetaryYear: EXERCISE });
+            expect(mockFind).toHaveBeenCalledWith({ exercice: EXERCISE });
         });
 
         it("maps dto to entity", async () => {

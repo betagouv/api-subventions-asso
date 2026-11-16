@@ -1,5 +1,5 @@
+import { ReadableStream } from "node:stream/web";
 import { ChorusService } from "./chorus.service";
-import chorusAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.adapter";
 import { CHORUS_FSE_ENTITIES, CHORUS_ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
 import Siret from "../../../identifier-objects/Siret";
@@ -11,13 +11,10 @@ import { PROGRAMS } from "../../../../tests/adapters/outputs/db/__fixtures__/sta
 import { TransformFseToFlat } from "./use-cases/transform-fse-to-flat";
 
 jest.mock("../../../adapters/outputs/db/providers/chorus/chorus.adapter");
-jest.mock("./mappers/chorus.mapper");
 jest.mock("../../../shared/helpers/StringHelper");
 jest.mock("../../payment-flat/payment-flat.service");
 jest.mock("../../associations/associations.helper");
 jest.mock("../../payment-flat/payment-flat.chorus.service");
-
-const mockedChorusPort = jest.mocked(chorusAdapter);
 
 describe("ChorusService", () => {
     let service: ChorusService;
@@ -31,19 +28,6 @@ describe("ChorusService", () => {
     describe("upsertMany", () => {
         it("should call port with entities", async () => {
             await service.upsertMany(CHORUS_ENTITIES);
-        });
-    });
-
-    describe("cursorFind", () => {
-        it("should call chorusPort.cursorFind", () => {
-            service.cursorFind();
-            expect(mockedChorusPort.cursorFind).toHaveBeenCalledWith({});
-        });
-
-        it("should call chorusPort.cursorFindOnExercise", () => {
-            const exerciceBudgetaire = 2021;
-            service.cursorFind(exerciceBudgetaire);
-            expect(mockedChorusPort.cursorFindOnExercise).toHaveBeenCalledWith(exerciceBudgetaire);
         });
     });
 

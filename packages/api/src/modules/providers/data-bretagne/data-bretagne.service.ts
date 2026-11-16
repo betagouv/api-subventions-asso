@@ -16,7 +16,7 @@ import {
 /**
  * Service for interacting with the Data Bretagne API.
  */
-class DataBretagneService extends ProviderCore {
+export class DataBretagneService extends ProviderCore {
     constructor() {
         super({
             name: "Data Bretagne",

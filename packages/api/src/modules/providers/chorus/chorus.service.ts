@@ -58,11 +58,6 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
         return result;
     }
 
-    public cursorFind(exerciceBudgetaire?: number) {
-        if (!exerciceBudgetaire) return chorusAdapter.cursorFind({});
-        else return chorusAdapter.cursorFindOnExercise(exerciceBudgetaire);
-    }
-
     // TODO: unit test this
     public getProgramCode(entity: ChorusEntity) {
         return parseInt(entity.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143

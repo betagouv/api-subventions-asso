@@ -83,8 +83,18 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusP
             .toArray();
     }
 
-    public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
-        return this.collection.find(query, { projection });
+    public async *cursorFind(
+        query: DefaultObject<unknown> = {},
+        projection: DefaultObject<unknown> = {},
+    ): AsyncIterable<ChorusEntity> {
+        const cursor = this.collection.find(query, { projection });
+        try {
+            for await (const dbo of cursor) {
+                yield dbo; // @TODO: transform this to Entity
+            }
+        } finally {
+            await cursor.close();
+        }
     }
 
     public cursorFindOnExercise(exerciceBudgetaire: number) {

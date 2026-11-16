@@ -14,6 +14,6 @@ export interface ChorusPort {
     findBySiret(siret: Siret): Promise<ChorusEntity[]>;
     findByEJ(ej: string): Promise<ChorusEntity[]>;
     findBySiren(siren: Siren): Promise<ChorusEntity[]>;
-    cursorFind(): AsyncIterable<ChorusEntity>;
+    cursorFind(query?): AsyncIterable<ChorusEntity>;
     cursorFindOnExercise(exercice: number): AsyncIterable<ChorusEntity>;
 }

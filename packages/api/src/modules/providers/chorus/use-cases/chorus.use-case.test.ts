@@ -3,6 +3,7 @@ import chorusAdapter from "../../../../adapters/outputs/db/providers/chorus/chor
 import { CHORUS_DBOS, CHORUS_FSE_DBOS } from "../../../../adapters/outputs/db/providers/chorus/chorus.fixtures";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { sanitizeFloat } from "../../../../shared/helpers/NumberHelper";
+import { GetRegionAttachementComptable } from "../../../../usecases/chorus/get-region-attachement-comptable";
 import paymentFlatChorusService from "../../../payment-flat/payment-flat.chorus.service";
 import { CHORUS_FSE_ENTITIES, PARSED_DATA } from "../__fixtures__/ChorusFixtures";
 import chorusService from "../chorus.service";
@@ -48,7 +49,11 @@ describe("Chorus Use Cases", () => {
     });
 
     describe("TransformFseToFlat", () => {
-        const useCase = new TransformFseToFlat();
+        const mockGetRegion = {
+            execute: jest.fn().mockReturnValue("REGION"),
+        } as unknown as jest.Mocked<GetRegionAttachementComptable>;
+        const useCase = new TransformFseToFlat(mockGetRegion);
+
         it("returns ChorusFseEntity", () => {
             const actual = useCase.execute(CHORUS_FSE_ENTITIES[0]);
             expect(actual).toMatchSnapshot({ updateDate: expect.any(Date) });

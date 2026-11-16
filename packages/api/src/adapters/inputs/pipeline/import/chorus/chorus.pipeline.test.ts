@@ -8,8 +8,8 @@ import { CHORUS_DBOS } from "../../../../outputs/db/providers/chorus/chorus.fixt
 import { ChorusPipeline } from "./chorus.pipeline";
 
 describe("Chorus Pipeline", () => {
-    const mockSaveEntities = { execute: jest.fn() } as unknown as jest.Mocked<SaveChorusDbos>;
-    const mockSaveFseEntities = { execute: jest.fn() } as unknown as jest.Mocked<SaveChorusFseDbos>;
+    const mockSaveDbos = { execute: jest.fn() } as unknown as jest.Mocked<SaveChorusDbos>;
+    const mockSaveFseDbos = { execute: jest.fn() } as unknown as jest.Mocked<SaveChorusFseDbos>;
     const mockCheckIsAsso = {
         execute: jest.fn(),
     } as unknown as jest.Mocked<CheckIdentifierIsFromAssoUseCase>;
@@ -17,8 +17,8 @@ describe("Chorus Pipeline", () => {
     const mockUpdateFlatByExercise = { execute: jest.fn() } as unknown as jest.Mocked<UpdateFlatByExercise>;
 
     const pipeline = new ChorusPipeline(
-        mockSaveEntities,
-        mockSaveFseEntities,
+        mockSaveDbos,
+        mockSaveFseDbos,
         mockCheckIsAsso,
         mockChorusService,
         mockUpdateFlatByExercise,

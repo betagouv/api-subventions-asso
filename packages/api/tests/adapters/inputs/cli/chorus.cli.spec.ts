@@ -73,7 +73,10 @@ describe("ChorusCli", () => {
         it("should save association but not companies' payments", async () => {
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = await chorusAdapter.cursorFind({}, { _id: 0 }).toArray();
+            const actual = await db
+                .collection("chorus")
+                .find({}, { projection: { _id: 0 } })
+                .toArray();
             expect(actual.map(document => ({ ...document, updateDate: expect.any(Date) }))).toMatchSnapshot();
         });
 
@@ -83,7 +86,10 @@ describe("ChorusCli", () => {
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = await chorusAdapter.cursorFind({}, { _id: 0 }).toArray();
+            const actual = await db
+                .collection("chorus")
+                .find({}, { projection: { _id: 0 } })
+                .toArray();
             expect(actual.map(document => ({ ...document, updateDate: expect.any(Date) }))).toMatchSnapshot();
         });
 
