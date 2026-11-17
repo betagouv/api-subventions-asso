@@ -52,7 +52,7 @@ export class ChorusToPaymentFlat implements UseCase<
             refProgrammationEntity,
         } = this.buildComplementaryData(chorusEntity, programs, ministries, fonctionalDomains, programsRef);
 
-        const budgetaryYear = chorusEntity.exercice;
+        const budgetaryYear = Number(chorusEntity.exercice);
         const beneficiaryEstablishmentId = this.getEstablishmentValueObject(chorusEntity);
         const beneficiaryCompanyId = this.getCompanyId(beneficiaryEstablishmentId);
         const beneficiaryEstablishmentIdType = beneficiaryEstablishmentId.name;

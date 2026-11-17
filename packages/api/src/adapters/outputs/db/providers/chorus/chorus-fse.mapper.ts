@@ -15,7 +15,7 @@ export function toEntity(dbo: ChorusFseDbo): ChorusFseEntity {
         programRef: dbo.activitee,
         programRefCode: dbo.codeActivitee,
         paymentRequestNum: dbo.numeroDemandePaiement,
-        paymentRequestPostNum: dbo.numPosteDP,
+        paymentRequestPostNum: Number(dbo.numPosteDP),
         societyCode: dbo.codeSociete,
         budgetaryYear: Number(dbo.exercice),
         paidSupplierId: dbo.numeroTier,
@@ -24,7 +24,7 @@ export function toEntity(dbo: ChorusFseDbo): ChorusFseEntity {
         financialCenterCode: dbo.codeCentreFinancier,
         functionalDomain: dbo.domaineFonctionnel,
         functionalDomainCode: dbo.codeDomaineFonctionnel,
-        amount: dbo.amount,
+        amount: dbo.montant,
         operationDate: dbo.dateOperation,
         updateDate: dbo.updateDate,
     };

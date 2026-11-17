@@ -181,8 +181,8 @@ export const PARSED_DATA: ChorusDto[] = [
         "Montant payé": 89988.3,
         "No TVA 3 (COM-RIDET ou TAHITI)": "#",
         "Exercice comptable": 2025,
-        "N° poste DP": 23,
-        "N° poste EJ": 2,
+        "N° poste DP": "23",
+        "N° poste EJ": "2",
         Société: "SOCIETY",
     },
     {
@@ -203,8 +203,8 @@ export const PARSED_DATA: ChorusDto[] = [
         "Montant payé": 89931.9,
         "No TVA 3 (COM-RIDET ou TAHITI)": "#",
         "Exercice comptable": 2025,
-        "N° poste DP": 23,
-        "N° poste EJ": 2,
+        "N° poste DP": "23",
+        "N° poste EJ": "2",
         Société: "SOCIETY",
     },
     {
@@ -225,8 +225,8 @@ export const PARSED_DATA: ChorusDto[] = [
         "Montant payé": 62655.2,
         "No TVA 3 (COM-RIDET ou TAHITI)": "#",
         "Exercice comptable": 2025,
-        "N° poste DP": 23,
-        "N° poste EJ": 2,
+        "N° poste DP": "23",
+        "N° poste EJ": "2",
         Société: "SOCIETY",
     },
 ];

@@ -25,10 +25,31 @@ module.exports = {
                     functionalDomain: "domaineFonctionnel",
                     functionalDomainCode: "codeDomaineFonctionnel",
                     operationDate: "dateOperation",
+                    amount: "montant",
                 },
                 $set: { ridetOrTahitiet: "#" },
             }, // all data were linked to siret so # is fine here
         );
+
+        await db.collection("chorus").updateMany(
+            {},
+            {
+                $rename: { amount: "montant" },
+            },
+        );
+
+        await db
+            .collection("chorus")
+            .aggregate([
+                {
+                    $addFields: {
+                        numPosteEJ: { $toString: "$numPosteEJ" },
+                        numPosteDP: { $toString: "$numPosteDP" },
+                    },
+                },
+                { $out: "chorus" },
+            ])
+            .toArray();
 
         await db.collection("chorus-fse").createIndex("exercice_1_codeSociete_1_numPosteDP_1_numeroDemandePaiement_1");
     },

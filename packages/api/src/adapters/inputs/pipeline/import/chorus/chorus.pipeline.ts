@@ -6,7 +6,6 @@ import updateFlatByExercise, {
     UpdateFlatByExercise,
 } from "../../../../../modules/providers/chorus/use-cases/update-flat-by-exercise";
 import { ImportReport } from "../../../../../@types/ImportReport";
-import { ChorusDto, ChorusFseDto } from "./chorus.dto";
 import { ChorusMapper } from "./chorus.mapper";
 import { ChorusParser } from "./chorus.parser";
 import { ChorusValidator } from "./chorus.validator";
@@ -18,74 +17,21 @@ import checkIdentifierIsFromAsso, {
 } from "../../../../../modules/associations/use-cases/check-identifier-is-from-asso.use-case";
 import { asyncFilter } from "../../../../../shared/helpers/ArrayHelper";
 import { toEntity } from "../../../../outputs/db/providers/chorus/chorus-fse.mapper";
+import { ImportPipeline } from "../import-pipeline";
 
 export interface ChorusPipelineOptions {
     withoutEuropeanData?: boolean;
 }
 
-export class ChorusPipeline {
+export class ChorusPipeline extends ImportPipeline {
     constructor(
         private saveDbos: SaveChorusDbos,
         private saveFseDbos: SaveChorusFseDbos,
         private checkIsAsso: CheckIdentifierIsFromAssoUseCase,
         private chorusService: ChorusService, // @TODO: make this a use case
         private updateFlatByExercise: UpdateFlatByExercise, // @TODO: make this a use case
-    ) {}
-
-    // saves national chorus data
-    private async save(dtos: ChorusDto[]): Promise<ImportReport> {
-        let validationErrorCount = 0;
-        const dbos = dtos
-            ?.filter(dto => {
-                try {
-                    return ChorusValidator.validate(dto);
-                } catch (e) {
-                    if (e instanceof Error) console.log(e.message);
-                    validationErrorCount++;
-                    return false;
-                }
-            })
-            ?.map(dto => ChorusMapper.toDbo(dto));
-        if (dbos) {
-            const assos = (await this.filterAssos(dbos)) as ChorusDbo[];
-            await this.saveDbos.execute(assos);
-            const exercicesSet = assos.reduce((set, entity) => set.add(entity.exercice), new Set<number>());
-            for (const exercise of exercicesSet) {
-                await this.updateFlatByExercise.execute(exercise);
-            }
-
-            return {
-                parsedCount: dtos.length,
-                importedCount: assos.length,
-                errorCount: validationErrorCount + dbos.length - assos.length,
-            };
-        }
-
-        return {
-            parsedCount: dtos.length,
-            importedCount: 0,
-            errorCount: dtos.length,
-        };
-    }
-
-    // saves european chorus data
-    private async saveFse(dtos: ChorusFseDto[]) {
-        const dbos = dtos
-            ?.filter(dto => {
-                try {
-                    return ChorusValidator.validateFse(dto);
-                } catch (e) {
-                    if (e instanceof Error) console.log(e.message);
-                    return false;
-                }
-            })
-            ?.map(dto => ChorusMapper.toFseDbo(dto));
-        if (dbos) {
-            const assos = (await this.filterAssos(dbos)) as ChorusFseDbo[];
-            await this.saveFseDbos.execute(assos);
-            // @TODO: make this a use case
-            return this.chorusService.syncFlat(assos.map(asso => toEntity(asso)));
-        }
+    ) {
+        super();
     }
 
     private filterAssos(dbos: ChorusDbo[] | ChorusFseDbo[]) {
@@ -113,12 +59,59 @@ export class ChorusPipeline {
     async run(filePath: string, options: ChorusPipelineOptions = {}): Promise<ImportReport> {
         const file = fs.readFileSync(filePath);
         const { national: nationalDtos, european: europeanDtos } = ChorusParser.fromBuffer(file);
-        const [report] = await Promise.all([
-            this.save(nationalDtos ?? []),
-            options.withoutEuropeanData ? Promise.resolve() : this.saveFse(europeanDtos ?? []),
-        ]);
 
-        return report;
+        let validationErrorCount = 0;
+
+        const nationalDbos = nationalDtos
+            ?.filter(dto => {
+                try {
+                    return ChorusValidator.validate(dto);
+                } catch (e) {
+                    if (e instanceof Error) console.log(e.message);
+                    validationErrorCount++;
+                    return false;
+                }
+            })
+            ?.map(dto => ChorusMapper.toDbo(dto));
+
+        if (nationalDbos) {
+            const assos = (await this.filterAssos(nationalDbos)) as ChorusDbo[];
+            await this.saveDbos.execute(assos);
+            const exercicesSet = assos.reduce((set, dbo) => set.add(dbo.exercice), new Set<number>());
+            for (const exercise of exercicesSet) {
+                await this.updateFlatByExercise.execute(exercise);
+            }
+
+            this.report.parsedCount += nationalDbos.length;
+            this.report.importedCount += assos.length;
+            this.report.errorCount += validationErrorCount;
+        }
+
+        if (options.withoutEuropeanData) return this.report;
+
+        const europeanDbos = europeanDtos
+            ?.filter(dto => {
+                try {
+                    return ChorusValidator.validateFse(dto);
+                } catch (e) {
+                    if (e instanceof Error) console.log(e.message);
+                    validationErrorCount++;
+                    return false;
+                }
+            })
+            ?.map(dto => ChorusMapper.toDbo(dto));
+
+        if (europeanDbos) {
+            const assos = (await this.filterAssos(europeanDbos)) as ChorusFseDbo[];
+            await this.saveFseDbos.execute(assos);
+            // @TODO: make this a use case
+            await this.chorusService.syncFlat(assos.map(asso => toEntity(asso)));
+            this.report.parsedCount += europeanDbos.length;
+            this.report.importedCount += assos.length;
+            this.report.errorCount += validationErrorCount;
+        }
+
+        return this.report;
     }
 }
 

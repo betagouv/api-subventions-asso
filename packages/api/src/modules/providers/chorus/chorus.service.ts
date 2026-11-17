@@ -3,7 +3,6 @@ import CacheData from "../../../shared/Cache";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ProviderCore from "../provider.core";
 import Siren from "../../../identifier-objects/Siren";
-import chorusAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.adapter";
 import ChorusEntity from "./entities/ChorusEntity";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
@@ -32,10 +31,6 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
     }
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
-
-    public async upsertMany(entities: ChorusEntity[]) {
-        return chorusAdapter.upsertMany(entities);
-    }
 
     // will replace isAcceptedEntity when Chorus will be refactored to match new ChorusFseEntity process
     public async isEntityAccepted(entity: ChorusFseEntity) {

@@ -15,7 +15,7 @@ export class UpdateFlatByExercise {
         // @TODO: check if this is really needed after performance refactor
         const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
         await this.paymentFlatChorusService.updatePaymentsFlatCollection(exercise);
-        await this.chorusService.syncFlatByExercise(exercise);
+        await this.chorusService.syncFlatByExercise(Number(exercise));
         clearInterval(ticTacInterval);
     }
 }

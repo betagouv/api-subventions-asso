@@ -25,12 +25,6 @@ describe("ChorusService", () => {
         service.sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
     });
 
-    describe("upsertMany", () => {
-        it("should call port with entities", async () => {
-            await service.upsertMany(CHORUS_ENTITIES);
-        });
-    });
-
     describe("getProgramCode", () => {
         it("should return code", () => {
             const expected = PROGRAMS[0].code_programme;

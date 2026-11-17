@@ -2,7 +2,7 @@ import { ProviderDataEntity } from "../../../../../@types/ProviderData";
 
 export default interface ChorusDbo extends ProviderDataEntity {
     ej: string;
-    numPosteEJ: number;
+    numPosteEJ: string;
     siret: string;
     ridetOrTahitiet: string;
     codeBranche: string;
@@ -10,7 +10,7 @@ export default interface ChorusDbo extends ProviderDataEntity {
     activitee: string;
     codeActivitee: string;
     numeroDemandePaiement: string;
-    numPosteDP: number;
+    numPosteDP: string;
     codeSociete: string;
     exercice: number;
     numeroTier: string;
@@ -19,7 +19,7 @@ export default interface ChorusDbo extends ProviderDataEntity {
     codeCentreFinancier: string;
     domaineFonctionnel: string;
     codeDomaineFonctionnel: string;
-    amount: number;
+    montant: number;
     dateOperation: Date;
 }
 

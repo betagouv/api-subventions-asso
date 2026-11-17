@@ -1,9 +1,9 @@
 import AsyncUseCase from "../../@types/use-case/AsyncUseCase";
 import chorusAdapter from "../../adapters/outputs/db/providers/chorus/chorus.adapter";
+import ChorusDbo from "../../adapters/outputs/db/providers/chorus/chorus.dbo";
 import { ChorusPort } from "../../adapters/outputs/db/providers/chorus/chorus.port";
 import { EstablishmentIdentifier } from "../../identifier-objects";
 import { ChorusPaymentFlatEntity } from "../../modules/providers/chorus/@types/ChorusPaymentFlat";
-import ChorusEntity from "../../modules/providers/chorus/entities/ChorusEntity";
 import dataBretagneService, { DataBretagneService } from "../../modules/providers/data-bretagne/data-bretagne.service";
 import chorusToPaymentFlat, { ChorusToPaymentFlat } from "./chorus-to-payment-flat";
 
@@ -31,17 +31,17 @@ export class AggregateChorusPayments implements AsyncUseCase<number | undefined,
         const chorusCursor = this.chorusAdapter.cursorFindOnExercise(exercise);
         const entitiesByUniqueId: Record<string, ChorusPaymentFlatEntity> = {};
 
-        const invalidDocuments: ChorusEntity[] = [];
-        for await (const entity of chorusCursor) {
+        const invalidDocuments: ChorusDbo[] = [];
+        for await (const dbo of chorusCursor) {
             try {
                 // payment-flat does not handle other identifier than siret for now
-                if (!EstablishmentIdentifier.getIdentifierType(entity.siret)) {
-                    invalidDocuments.push(entity);
+                if (!EstablishmentIdentifier.getIdentifierType(dbo.siret)) {
+                    invalidDocuments.push(dbo);
                     continue;
                 }
-
+                const { montant, ...entity } = dbo;
                 const payment = this.mapper.execute({
-                    chorusEntity: entity,
+                    chorusEntity: { ...entity, amount: montant },
                     programs,
                     ministries,
                     fonctionalDomains,

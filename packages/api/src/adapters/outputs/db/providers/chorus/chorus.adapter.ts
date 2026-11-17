@@ -5,8 +5,9 @@ import { DefaultObject } from "../../../../../@types";
 import MongoAdapter from "../../MongoAdapter";
 import ChorusEntity from "../../../../../modules/providers/chorus/entities/ChorusEntity";
 import { ChorusPort } from "./chorus.port";
+import ChorusDbo from "./chorus.dbo";
 
-export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusPort {
+export class ChorusAdapter extends MongoAdapter<ChorusDbo> implements ChorusPort {
     readonly collectionName = "chorus";
 
     public async findOneByEJ(ej: string) {
@@ -23,27 +24,23 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusP
         });
     }
 
-    public async create(entity: ChorusEntity) {
-        await this.collection.insertOne(entity);
-    }
-
-    public async upsertMany(entities: ChorusEntity[]) {
-        const operations = entities.map(
-            e =>
+    public async upsertMany(dbos: ChorusDbo[]) {
+        const operations = dbos.map(
+            dbo =>
                 ({
                     updateOne: {
                         filter: {
-                            ej: e.ej,
-                            numPosteEJ: e.numPosteEJ,
-                            numeroDemandePaiement: e.numeroDemandePaiement,
-                            numPosteDP: e.numPosteDP,
-                            codeSociete: e.codeSociete,
-                            exercice: e.exercice,
+                            ej: dbo.ej,
+                            numPosteEJ: dbo.numPosteEJ,
+                            numeroDemandePaiement: dbo.numeroDemandePaiement,
+                            numPosteDP: dbo.numPosteDP,
+                            codeSociete: dbo.codeSociete,
+                            exercice: dbo.exercice,
                         },
-                        update: { $set: e },
+                        update: { $set: dbo },
                         upsert: true,
                     },
-                }) as AnyBulkWriteOperation<ChorusEntity>,
+                }) as AnyBulkWriteOperation<ChorusDbo>,
         );
         await this.collection.bulkWrite(operations);
         return;
@@ -86,7 +83,7 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusP
     public async *cursorFind(
         query: DefaultObject<unknown> = {},
         projection: DefaultObject<unknown> = {},
-    ): AsyncIterable<ChorusEntity> {
+    ): AsyncIterable<ChorusDbo> {
         const cursor = this.collection.find(query, { projection });
         try {
             for await (const dbo of cursor) {
