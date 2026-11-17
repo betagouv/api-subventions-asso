@@ -47,10 +47,8 @@ export default class ChorusCli extends CliController {
         console.info("\nStart parse file: ", file);
         logger.push(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
-        const fileContent = fs.readFileSync(file);
-
         console.log("start importing chorus data into the system...");
-        return this.chorusPipeline.run(fileContent, {
+        return this.chorusPipeline.run(file, {
             withoutEuropeanData: args.includes("--no-fse"),
         });
     }

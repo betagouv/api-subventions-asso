@@ -1,3 +1,4 @@
+import fs from "fs";
 import chorusService, { ChorusService } from "../../../../../modules/providers/chorus/chorus.service";
 import saveChorusDbos, { SaveChorusDbos } from "../../../../../modules/providers/chorus/use-cases/save-dbos";
 import saveChorusFseDbos, { SaveChorusFseDbos } from "../../../../../modules/providers/chorus/use-cases/save-fse-dbos";
@@ -109,8 +110,9 @@ export class ChorusPipeline {
         });
     }
 
-    async run(buffer: Buffer, options: ChorusPipelineOptions = {}): Promise<ImportReport> {
-        const { national: nationalDtos, european: europeanDtos } = ChorusParser.fromBuffer(buffer);
+    async run(filePath: string, options: ChorusPipelineOptions = {}): Promise<ImportReport> {
+        const file = fs.readFileSync(filePath);
+        const { national: nationalDtos, european: europeanDtos } = ChorusParser.fromBuffer(file);
         const [report] = await Promise.all([
             this.save(nationalDtos ?? []),
             options.withoutEuropeanData ? Promise.resolve() : this.saveFse(europeanDtos ?? []),

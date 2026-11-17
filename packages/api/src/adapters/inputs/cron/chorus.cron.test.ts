@@ -4,14 +4,6 @@ import DownloadFile from "../../../usecases/download-file";
 import { ChorusPipeline } from "../pipeline/import/chorus/chorus.pipeline";
 import { ChorusCron } from "./chorus.cron";
 
-const BUFFER = Buffer.from([]);
-
-jest.mock("fs", () => ({
-    promises: {
-        readFile: jest.fn().mockImplementation(() => BUFFER),
-    },
-}));
-
 describe("Chorus CRON", () => {
     describe("importNewFile", () => {
         const FILES_PATH = ["/providers/chorus/2026/data-1.xlsx", "/providers/chorus/2026/data-2.xlsx"];
@@ -49,7 +41,7 @@ describe("Chorus CRON", () => {
 
         it("runs import", async () => {
             await cron.importNewFile();
-            expect(mockChorusPipeline.run).toHaveBeenCalledWith(BUFFER);
+            expect(mockChorusPipeline.run).toHaveBeenCalledWith(FILES_PATH[1]);
         });
     });
 });
