@@ -1,8 +1,8 @@
 import AsyncUseCase from "../../@types/use-case/AsyncUseCase";
 import chorusAdapter from "../../adapters/outputs/db/providers/chorus/chorus.adapter";
-import ChorusDbo from "../../adapters/outputs/db/providers/chorus/chorus.dbo";
 import { ChorusPort } from "../../adapters/outputs/db/providers/chorus/chorus.port";
-import { EstablishmentIdentifier } from "../../identifier-objects";
+import ChorusEntity from "../../domain/providers/chorus/ChorusEntity";
+import { Siret } from "../../identifier-objects";
 import { ChorusPaymentFlatEntity } from "../../modules/providers/chorus/@types/ChorusPaymentFlat";
 import dataBretagneService, { DataBretagneService } from "../../modules/providers/data-bretagne/data-bretagne.service";
 import chorusToPaymentFlat, { ChorusToPaymentFlat } from "./chorus-to-payment-flat";
@@ -31,17 +31,16 @@ export class AggregateChorusPayments implements AsyncUseCase<number | undefined,
         const chorusCursor = this.chorusAdapter.cursorFindOnExercise(exercise);
         const entitiesByUniqueId: Record<string, ChorusPaymentFlatEntity> = {};
 
-        const invalidDocuments: ChorusDbo[] = [];
-        for await (const dbo of chorusCursor) {
+        const invalidDocuments: ChorusEntity[] = [];
+        for await (const entity of chorusCursor) {
             try {
                 // payment-flat does not handle other identifier than siret for now
-                if (!EstablishmentIdentifier.getIdentifierType(dbo.siret)) {
-                    invalidDocuments.push(dbo);
+                if (!(entity.identifier instanceof Siret)) {
+                    invalidDocuments.push(entity);
                     continue;
                 }
-                const { montant, ...entity } = dbo;
                 const payment = this.mapper.execute({
-                    chorusEntity: { ...entity, amount: montant },
+                    chorusEntity: entity,
                     programs,
                     ministries,
                     fonctionalDomains,
@@ -66,7 +65,7 @@ export class AggregateChorusPayments implements AsyncUseCase<number | undefined,
         console.log(
             `Here are some of them : \n${invalidDocuments
                 .splice(0, 5)
-                .map(document => `- ${document.siret} \n`)
+                .map(document => `- ${document.identifier.value} \n`)
                 .reduce((acc, str) => (acc += str), "")}`,
         );
 

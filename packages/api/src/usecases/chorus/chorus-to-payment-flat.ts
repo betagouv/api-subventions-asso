@@ -3,12 +3,12 @@ import DomaineFonctionnelEntity from "../../entities/DomaineFonctionnelEntity";
 import MinistryEntity from "../../entities/MinistryEntity";
 import RefProgrammationEntity from "../../entities/RefProgrammationEntity";
 import StateBudgetProgramEntity from "../../entities/StateBudgetProgramEntity";
-import { Siret, Ridet, Tahitiet } from "../../identifier-objects";
+import { Siret, Ridet } from "../../identifier-objects";
 import { EstablishmentIdType } from "../../identifier-objects/@types/IdentifierType";
 import { ChorusPaymentFlatEntity } from "../../modules/providers/chorus/@types/ChorusPaymentFlat";
-import ChorusEntity from "../../modules/providers/chorus/entities/ChorusEntity";
+import ChorusEntity from "../../domain/providers/chorus/ChorusEntity";
 import { getShortISODate } from "../../shared/helpers/DateHelper";
-import ChorusFseEntity from "../../modules/providers/chorus/entities/ChorusFseEntity";
+import ChorusFseEntity from "../../domain/providers/chorus/ChorusFseEntity";
 import dataBretagneService, { DataBretagneService } from "../../modules/providers/data-bretagne/data-bretagne.service";
 import getRegionAttachementComptable, { GetRegionAttachementComptable } from "./get-region-attachement-comptable";
 
@@ -53,7 +53,7 @@ export class ChorusToPaymentFlat implements UseCase<
         } = this.buildComplementaryData(chorusEntity, programs, ministries, fonctionalDomains, programsRef);
 
         const budgetaryYear = Number(chorusEntity.exercice);
-        const beneficiaryEstablishmentId = this.getEstablishmentValueObject(chorusEntity);
+        const beneficiaryEstablishmentId = chorusEntity.identifier;
         const beneficiaryCompanyId = this.getCompanyId(beneficiaryEstablishmentId);
         const beneficiaryEstablishmentIdType = beneficiaryEstablishmentId.name;
         const beneficiaryCompanyIdType = beneficiaryCompanyId.name;
@@ -71,7 +71,7 @@ export class ChorusToPaymentFlat implements UseCase<
             beneficiaryEstablishmentId,
             beneficiaryCompanyIdType,
             beneficiaryCompanyId,
-            amount: chorusEntity.amount,
+            amount: chorusEntity.montant,
             operationDate: chorusEntity.dateOperation,
             ej: chorusEntity.ej,
             financialCenterCode: chorusEntity.codeCentreFinancier,
@@ -172,16 +172,6 @@ export class ChorusToPaymentFlat implements UseCase<
             return { code, entity: null };
         }
         return { code, entity };
-    }
-
-    private getEstablishmentValueObject(entity: ChorusEntity): EstablishmentIdType {
-        if (Siret.isSiret(entity.siret)) return new Siret(entity.siret);
-        if (Ridet.isRidet(entity.ridetOrTahitiet)) return new Ridet(entity.ridetOrTahitiet);
-        if (Tahitiet.isTahitiet(entity.ridetOrTahitiet)) return new Tahitiet(entity.ridetOrTahitiet);
-        else
-            throw new Error(
-                `Not able to retrieve an establishment identifier for chorus entity with EJ ${entity.ej} for exercice ${entity.exercice}`,
-            );
     }
 
     private getCompanyId(estabId: EstablishmentIdType) {

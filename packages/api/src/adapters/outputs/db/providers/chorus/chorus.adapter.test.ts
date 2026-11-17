@@ -1,6 +1,6 @@
 import MongoAdapter from "../../MongoAdapter";
 import chorusAdapter from "./chorus.adapter";
-import { CHORUS_ENTITIES } from "../../../../../modules/providers/chorus/__fixtures__/ChorusFixtures";
+import { CHORUS_DBOS } from "./chorus.fixtures";
 
 describe("chorusPort", () => {
     const mockBulkWrite = jest.fn();
@@ -17,36 +17,9 @@ describe("chorusPort", () => {
 
     describe("upsertMany", () => {
         it("calls bulkWrite with filters from chorus unique index", async () => {
-            await chorusAdapter.upsertMany(CHORUS_ENTITIES);
+            await chorusAdapter.upsertMany(CHORUS_DBOS);
             const actual = mockBulkWrite.mock.calls[0][0].map(({ updateOne }) => updateOne.filter);
-            expect(actual).toMatchInlineSnapshot(`
-                [
-                  {
-                    "codeSociete": "HNOR",
-                    "ej": "0001821732",
-                    "exercice": 2023,
-                    "numPosteDP": 3,
-                    "numPosteEJ": 2,
-                    "numeroDemandePaiement": "000195567",
-                  },
-                  {
-                    "codeSociete": "HNOR",
-                    "ej": "0001821732",
-                    "exercice": 2023,
-                    "numPosteDP": 2,
-                    "numPosteEJ": 21,
-                    "numeroDemandePaiement": "000212692",
-                  },
-                  {
-                    "codeSociete": "HNOR",
-                    "ej": "0003823760",
-                    "exercice": 2022,
-                    "numPosteDP": 2,
-                    "numPosteEJ": 2,
-                    "numeroDemandePaiement": "000311141",
-                  },
-                ]
-            `);
+            expect(actual).toMatchSnapshot();
         });
     });
 

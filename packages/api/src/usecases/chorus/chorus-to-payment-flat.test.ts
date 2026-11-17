@@ -1,6 +1,6 @@
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
+import { CHORUS_ENTITIES } from "../../domain/providers/chorus/chorus.fixture";
 import { Siren, Siret, Ridet, Tahitiet, Tahiti, Rid } from "../../identifier-objects";
-import { CHORUS_ENTITIES } from "../../modules/providers/chorus/__fixtures__/ChorusFixtures";
 import { DATA_BRETAGNE_RECORDS } from "../../modules/providers/data-bretagne/__fixtures__/dataBretagne.fixture";
 import { DataBretagneService } from "../../modules/providers/data-bretagne/data-bretagne.service";
 import { ChorusToPaymentFlat } from "./chorus-to-payment-flat";
@@ -26,7 +26,6 @@ describe("ToPaymentFlat UseCase", () => {
         const SIREN = new Siren(DEFAULT_ASSOCIATION.siren);
         const SIRET = new Siret(DEFAULT_ASSOCIATION.siret);
         let mockBuildComplementaryData: jest.SpyInstance;
-        let mockGetEstablishmentValueObject: jest.SpyInstance;
         let mockGetCompanyId: jest.SpyInstance;
 
         beforeEach(() => {
@@ -35,11 +34,7 @@ describe("ToPaymentFlat UseCase", () => {
                 //@ts-expect-error : test private method
                 "buildComplementaryData",
             );
-            mockGetEstablishmentValueObject = jest
-                //@ts-expect-error : test private method
-                .spyOn(usecase, "getEstablishmentValueObject")
-                //@ts-expect-error : test private method
-                .mockReturnValue(SIRET);
+
             mockGetCompanyId = jest
                 //@ts-expect-error : test private method
                 .spyOn(usecase, "getCompanyId")
@@ -50,9 +45,7 @@ describe("ToPaymentFlat UseCase", () => {
         });
 
         afterAll(() => {
-            [mockBuildComplementaryData, mockGetEstablishmentValueObject, mockGetCompanyId].forEach(mock =>
-                mock.mockRestore(),
-            );
+            [mockBuildComplementaryData, mockGetCompanyId].forEach(mock => mock.mockRestore());
         });
 
         const INPUT = {
@@ -72,11 +65,6 @@ describe("ToPaymentFlat UseCase", () => {
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
                 DATA_BRETAGNE_RECORDS.programsRef,
             );
-        });
-
-        it("defines establishment identifier", () => {
-            usecase.execute(INPUT);
-            expect(mockGetEstablishmentValueObject).toHaveBeenCalledWith(CHORUS_ENTITIES[0]);
         });
 
         it("defines association identifier", () => {
@@ -291,56 +279,6 @@ describe("ToPaymentFlat UseCase", () => {
             );
 
             expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getEstablishmentValueObject", () => {
-        const mockIsRidet = jest.fn().mockReturnValue(true);
-        const mockIsTahitiet = jest.fn().mockReturnValue(true);
-        const mockIsSiret = jest.fn().mockReturnValue(true);
-
-        // Only mock isRidet, isTahitiet and isSiret
-        // If we wanted to be 100% unit testing we should create a mock in __mocks__ folder
-        beforeAll(() => {
-            Ridet.isRidet = mockIsRidet;
-            Siret.isSiret = mockIsSiret;
-            Tahitiet.isTahitiet = mockIsTahitiet;
-        });
-
-        it("throws error if no SIRET or RIDET or TAHITI defined", () => {
-            mockIsSiret.mockReturnValueOnce(false);
-            mockIsRidet.mockReturnValueOnce(false);
-            mockIsTahitiet.mockReturnValueOnce(false);
-            expect(() =>
-                // @ts-expect-error: private method
-                usecase.getEstablishmentValueObject({ ...CHORUS_ENTITIES[0], siret: "#", ridetOrTahitiet: "#" }),
-            ).toThrow(
-                `Not able to retrieve an establishment identifier for chorus entity with EJ ${CHORUS_ENTITIES[0].ej} for exercice ${CHORUS_ENTITIES[0].exercice}`,
-            );
-        });
-
-        it("returns Siret", () => {
-            // @ts-expect-error: test private methode
-            const actual = usecase.getEstablishmentValueObject({ ...CHORUS_ENTITIES[0] });
-            expect(actual).toEqual(new Siret(CHORUS_ENTITIES[0].siret));
-        });
-        it("returns Ridet", () => {
-            const RIDET = "123456789";
-            mockIsSiret.mockReturnValueOnce(false);
-            // @ts-expect-error: test private methode
-            const actual = usecase.getEstablishmentValueObject({ ...CHORUS_ENTITIES[0], ridetOrTahitiet: RIDET });
-            expect(actual).toEqual(new Ridet(RIDET));
-        });
-        it("returns Tahitied", () => {
-            const TAHITIET = "A12345678";
-            mockIsSiret.mockReturnValueOnce(false);
-            mockIsRidet.mockReturnValueOnce(false);
-            // @ts-expect-error: test private methode
-            const actual = usecase.getEstablishmentValueObject({
-                ...CHORUS_ENTITIES[0],
-                ridetOrTahitiet: TAHITIET,
-            });
-            expect(actual).toEqual(new Siret(TAHITIET));
         });
     });
 });

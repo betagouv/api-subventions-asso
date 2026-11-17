@@ -1,5 +1,5 @@
 import { EstablishmentIdentifier } from "../../../../../identifier-objects";
-import ChorusFseEntity from "../../../../../modules/providers/chorus/entities/ChorusFseEntity";
+import ChorusFseEntity from "../../../../../domain/providers/chorus/ChorusFseEntity";
 import { ChorusFseDbo } from "./chorus.dbo";
 
 export function toEntity(dbo: ChorusFseDbo): ChorusFseEntity {

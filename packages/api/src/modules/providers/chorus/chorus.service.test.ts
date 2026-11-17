@@ -1,6 +1,5 @@
 import { ReadableStream } from "node:stream/web";
 import { ChorusService } from "./chorus.service";
-import { CHORUS_FSE_ENTITIES, CHORUS_ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
 import Siret from "../../../identifier-objects/Siret";
 import associationHelper from "../../associations/associations.helper";
@@ -9,6 +8,7 @@ import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../payment-flat/__fixtures__/paym
 import paymentFlatService from "../../payment-flat/payment-flat.service";
 import { PROGRAMS } from "../../../../tests/adapters/outputs/db/__fixtures__/state-budget-program.fixtures";
 import { TransformFseToFlat } from "./use-cases/transform-fse-to-flat";
+import { CHORUS_ENTITIES, CHORUS_FSE_ENTITIES } from "../../../domain/providers/chorus/chorus.fixture";
 
 jest.mock("../../../adapters/outputs/db/providers/chorus/chorus.adapter");
 jest.mock("../../../shared/helpers/StringHelper");
@@ -39,7 +39,7 @@ describe("ChorusService", () => {
         beforeAll(() => {
             jest.mocked(associationHelper.isIdentifierFromAsso).mockReturnValue(SOME_PROMISE);
         });
-        const SIREN = new Siret(CHORUS_ENTITIES[0].siret).toSiren();
+        const SIREN = (CHORUS_ENTITIES[0].identifier as Siret).toSiren();
 
         it("calls associationService test with valueObject association identifier", async () => {
             service.sirenBelongAsso(SIREN);

@@ -6,7 +6,7 @@ import { getShortISODate } from "../../../../shared/helpers/DateHelper";
 import getRegionAttachementComptable, {
     GetRegionAttachementComptable,
 } from "../../../../usecases/chorus/get-region-attachement-comptable";
-import ChorusFseEntity from "../entities/ChorusFseEntity";
+import ChorusFseEntity from "../../../../domain/providers/chorus/ChorusFseEntity";
 
 export class TransformFseToFlat {
     constructor(private getRegion: GetRegionAttachementComptable) {}

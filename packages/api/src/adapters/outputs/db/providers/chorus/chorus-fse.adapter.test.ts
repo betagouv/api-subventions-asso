@@ -1,4 +1,4 @@
-import { CHORUS_FSE_ENTITIES } from "../../../../../modules/providers/chorus/__fixtures__/ChorusFixtures";
+import { CHORUS_FSE_ENTITIES } from "../../../../../domain/providers/chorus/chorus.fixture";
 import MongoAdapter from "../../MongoAdapter";
 import chorusFseAdapter from "./chorus-fse.adapter";
 import * as ChorusFseMapper from "./chorus-fse.mapper";

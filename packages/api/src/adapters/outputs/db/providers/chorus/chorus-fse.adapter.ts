@@ -1,4 +1,4 @@
-import ChorusFseEntity from "../../../../../modules/providers/chorus/entities/ChorusFseEntity";
+import ChorusFseEntity from "../../../../../domain/providers/chorus/ChorusFseEntity";
 import MongoAdapter from "../../MongoAdapter";
 import { toEntity } from "./chorus-fse.mapper";
 import { ChorusFsePort } from "./chorus-fse.port";

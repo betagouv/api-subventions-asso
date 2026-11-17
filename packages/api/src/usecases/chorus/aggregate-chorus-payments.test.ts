@@ -1,6 +1,6 @@
 import { ChorusAdapter } from "../../adapters/outputs/db/providers/chorus/chorus.adapter";
+import { CHORUS_ENTITIES } from "../../domain/providers/chorus/chorus.fixture";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../modules/payment-flat/__fixtures__/payment-flat.fixture";
-import { CHORUS_ENTITIES } from "../../modules/providers/chorus/__fixtures__/ChorusFixtures";
 import { DATA_BRETAGNE_RECORDS } from "../../modules/providers/data-bretagne/__fixtures__/dataBretagne.fixture";
 import { DataBretagneService } from "../../modules/providers/data-bretagne/data-bretagne.service";
 import { AggregateChorusPayments } from "./aggregate-chorus-payments";

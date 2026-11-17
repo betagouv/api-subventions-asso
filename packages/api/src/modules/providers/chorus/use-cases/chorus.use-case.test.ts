@@ -1,11 +1,12 @@
+import { PARSED_DATA } from "../../../../adapters/inputs/pipeline/import/chorus/chorus.fixtures";
 import chorusFseAdapter from "../../../../adapters/outputs/db/providers/chorus/chorus-fse.adapter";
 import chorusAdapter from "../../../../adapters/outputs/db/providers/chorus/chorus.adapter";
 import { CHORUS_DBOS, CHORUS_FSE_DBOS } from "../../../../adapters/outputs/db/providers/chorus/chorus.fixtures";
+import { CHORUS_FSE_ENTITIES } from "../../../../domain/providers/chorus/chorus.fixture";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { sanitizeFloat } from "../../../../shared/helpers/NumberHelper";
 import { GetRegionAttachementComptable } from "../../../../usecases/chorus/get-region-attachement-comptable";
 import paymentFlatChorusService from "../../../payment-flat/payment-flat.chorus.service";
-import { CHORUS_FSE_ENTITIES, PARSED_DATA } from "../__fixtures__/ChorusFixtures";
 import chorusService from "../chorus.service";
 import { SaveChorusDbos } from "./save-dbos";
 import { SaveChorusFseDbos } from "./save-fse-dbos";
