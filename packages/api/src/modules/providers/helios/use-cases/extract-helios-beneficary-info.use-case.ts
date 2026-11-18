@@ -6,7 +6,7 @@ import {
 } from "../../../../identifier-objects/@types/IdentifierType";
 import AssociationIdentifier from "../../../../identifier-objects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../../../identifier-objects/EstablishmentIdentifier";
-import { IdentifierError } from "../../../association-identifier/IdentifierError";
+import { IdentifierError } from "../../../../domain/errors/IdentifierError";
 import HeliosEntity from "../domain/helios.entity";
 import Siren from "../../../../identifier-objects/Siren";
 import Rna from "../../../../identifier-objects/Rna";

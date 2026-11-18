@@ -1,8 +1,9 @@
-import { FullAssociationIdentifier } from "./@types/StructureIdentifier";
 import Rid from "./Rid";
 import Rna from "./Rna";
 import Siren from "./Siren";
 import Tahiti from "./Tahiti";
+
+export type FullAssociationIdentifier = Required<AssociationIdentifier>;
 
 export default class AssociationIdentifier {
     public rna?: Rna;

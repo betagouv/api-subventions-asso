@@ -3,7 +3,6 @@ import rnaSirenAdapter from "../../adapters/outputs/db/rna-siren/rna-siren.adapt
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
-import associationIdentifierService from "../association-identifier/association-identifier.service";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
 import Siret from "../../identifier-objects/Siret";
 import { FullAssociationIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
@@ -12,11 +11,6 @@ import { findRnaSiren } from "../providers/api-asso/use-cases/api-asso.use-case.
 
 export class RnaSirenService {
     constructor(private findApiAssoRnaSiren: FindRnaSirenUseCase) {}
-
-    async findFromUnknownIdentifier(str: string) {
-        const identifier = associationIdentifierService.identifierStringToEntity(str);
-        return this.find(identifier);
-    }
 
     async find(identifier: Rna | Siren, offline = false): Promise<RnaSirenEntity[] | null> {
         const entities = await rnaSirenAdapter.find(identifier);

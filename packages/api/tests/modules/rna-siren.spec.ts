@@ -1,20 +1,20 @@
 import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
 import Rna from "../../src/identifier-objects/Rna";
-import Siren from "../../src/identifier-objects/Siren";
 import { App } from "supertest/types";
-import rnaSirenAdapter from "../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
-import RnaSirenEntity from "../../src/entities/RnaSirenEntity";
+import db from "../../src/shared/MongoConnection";
+import { ASSOCIATION_SEARCH_DBOS } from "../../src/adapters/outputs/db/association-search/__fixtures__/association-search.fixture";
+import { Siren } from "../../src/identifier-objects";
 
 const g = global as unknown as { app: App };
 
 describe("RnaSirenController", () => {
-    const RNA = new Rna("W123456789");
-    const NO_MATCH_RNA = new Rna("W000000000");
-    const SIREN = new Siren("123456789");
+    const RNA = new Rna(ASSOCIATION_SEARCH_DBOS[0].rna!);
+    const NO_MATCH_RNA = new Rna("W000000001");
+    const SIREN = new Siren(ASSOCIATION_SEARCH_DBOS[0].siren!);
 
     beforeEach(async () => {
-        await rnaSirenAdapter.insert(new RnaSirenEntity(RNA, SIREN));
+        await db.collection("association-search").insertOne(ASSOCIATION_SEARCH_DBOS[0]);
     });
 
     describe("GET /open-data/rna-siren/{identifier}", () => {
@@ -54,7 +54,7 @@ describe("RnaSirenController", () => {
                 .expect(422)
                 .then(res =>
                     expect(res.body).toEqual({
-                        message: "identifier must be valid RNA, SIREN or SIRET",
+                        message: "Identifier must be valid RNA, SIREN or SIRET",
                         value: "invalid-identifier",
                     }),
                 );

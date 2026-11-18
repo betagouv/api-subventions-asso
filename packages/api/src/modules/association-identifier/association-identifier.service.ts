@@ -3,7 +3,7 @@ import AssociationIdentifier from "../../identifier-objects/AssociationIdentifie
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
 import Siret from "../../identifier-objects/Siret";
-import { IdentifierError } from "./IdentifierError";
+import { IdentifierError } from "../../domain/errors/IdentifierError";
 import rnaSirenService from "../rna-siren/rna-siren.service";
 import { AssociationIdType } from "../../identifier-objects/@types/IdentifierType";
 import sireneUniteLegaleAdapter from "../../adapters/outputs/db/sirene/sirene-unite-legale.adapter";

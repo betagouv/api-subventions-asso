@@ -1,8 +1,9 @@
 import { Route, Get, Controller, Tags, Path, SuccessResponse, Response, Example } from "tsoa";
 import { RnaSirenResponseDto } from "dto";
 import { PathParamError } from "core";
-import { IdentifierError } from "../../../modules/association-identifier/IdentifierError";
-import rnaSirenService from "../../../modules/rna-siren/rna-siren.service";
+import { IdentifierError } from "../../../domain/errors/IdentifierError";
+import getAssociationIdentifiers from "../../../usecases/association/get-association-identifiers";
+import { type FullAssociationIdentifier } from "../../../identifier-objects/AssociationIdentifier";
 
 @Route("open-data/rna-siren")
 @Tags("Open Data")
@@ -23,26 +24,29 @@ export class RnaSirenHttp extends Controller {
     @Response(204, "No Content")
     @Response<IdentifierError>(422, "Invalid Query String")
     public async findByIdentifier(@Path() identifier: string): Promise<RnaSirenResponseDto[] | null> {
-        let entities;
+        let entities: FullAssociationIdentifier[];
 
         try {
-            entities = await rnaSirenService.findFromUnknownIdentifier(identifier);
+            entities = (await getAssociationIdentifiers.execute(identifier)).filter(
+                (asso): asso is FullAssociationIdentifier => Boolean(asso.rna && asso.siren),
+            );
         } catch (e) {
             if (e instanceof IdentifierError) {
-                throw new PathParamError("identifier must be valid RNA, SIREN or SIRET", {
+                throw new PathParamError("Identifier must be valid RNA, SIREN or SIRET", {
                     value: identifier,
                 });
             } else throw e;
         }
 
-        if (!entities) {
+        if (entities.length === 0) {
             this.setStatus(204);
             return null;
         }
 
-        return entities.map(entity => ({
+        const result = entities.map(entity => ({
             siren: entity.siren.value,
             rna: entity.rna.value,
         }));
+        return result;
     }
 }
