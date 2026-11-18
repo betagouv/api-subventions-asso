@@ -1,54 +1,31 @@
-import type ChorusEntity from "../entities/ChorusEntity";
-import type StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
-import type MinistryEntity from "../../../../entities/MinistryEntity";
-import type DomaineFonctionnelEntity from "../../../../entities/DomaineFonctionnelEntity";
-import type RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
-import type { ChorusPaymentFlatEntity } from "../@types/ChorusPaymentFlat";
-import type { EstablishmentIdType } from "../../../../identifier-objects/@types/IdentifierType";
+import UseCase from "../../@types/use-case/UseCase";
+import DomaineFonctionnelEntity from "../../entities/DomaineFonctionnelEntity";
+import MinistryEntity from "../../entities/MinistryEntity";
+import RefProgrammationEntity from "../../entities/RefProgrammationEntity";
+import StateBudgetProgramEntity from "../../entities/StateBudgetProgramEntity";
+import { Siret, Ridet } from "../../identifier-objects";
+import { EstablishmentIdType } from "../../identifier-objects/@types/IdentifierType";
+import { ChorusPaymentFlatEntity } from "../../modules/providers/chorus/@types/ChorusPaymentFlat";
+import ChorusEntity from "../../domain/providers/chorus/ChorusEntity";
+import { getShortISODate } from "../../shared/helpers/DateHelper";
+import ChorusFseEntity from "../../domain/providers/chorus/ChorusFseEntity";
+import dataBretagneService, { DataBretagneService } from "../../modules/providers/data-bretagne/data-bretagne.service";
+import getRegionAttachementComptable, { GetRegionAttachementComptable } from "./get-region-attachement-comptable";
 
-import dataBretagneService from "../../data-bretagne/data-bretagne.service";
-import Siret from "../../../../identifier-objects/Siret";
-import Ridet from "../../../../identifier-objects/Ridet";
-import Tahitiet from "../../../../identifier-objects/Tahitiet";
-import { getShortISODate } from "../../../../shared/helpers/DateHelper";
-import REGION_MAPPING from "./chorus-region.mapping";
-import { NOT_APPLICABLE_VALUE } from "core";
-
-export default class ChorusMapper {
-    public static getRegionAttachementComptable(attachementComptable: string): string | null {
-        if (attachementComptable == NOT_APPLICABLE_VALUE) return NOT_APPLICABLE_VALUE;
-
-        const region = REGION_MAPPING[attachementComptable];
-        if (region === undefined) {
-            const errorMessage = `Unknown region code: ${attachementComptable}`;
-            console.error(errorMessage);
-            return null;
-        }
-        return region;
-    }
-
-    private static getEstablishmentValueObject(entity: ChorusEntity): EstablishmentIdType {
-        if (Siret.isSiret(entity.siret)) return new Siret(entity.siret);
-        if (Ridet.isRidet(entity.ridetOrTahitiet)) return new Ridet(entity.ridetOrTahitiet);
-        if (Tahitiet.isTahitiet(entity.ridetOrTahitiet)) return new Tahitiet(entity.ridetOrTahitiet);
-        else
-            throw new Error(
-                `Not able to retrieve an establishment identifier for chorus entity with EJ ${entity.ej} for exercice ${entity.exercice}`,
-            );
-    }
-
-    private static getCompanyId(estabId: EstablishmentIdType) {
-        if (estabId instanceof Siret) {
-            return estabId.toSiren();
-        } else if (estabId instanceof Ridet) {
-            return estabId.toRid();
-        }
-        // Tahitiet
-        else {
-            return estabId.toTahiti();
-        }
-    }
-
+export class ChorusToPaymentFlat implements UseCase<
+    {
+        chorusEntity: ChorusEntity | ChorusFseEntity;
+        programs: Record<string, StateBudgetProgramEntity>;
+        ministries: Record<string, MinistryEntity>;
+        fonctionalDomains: Record<string, DomaineFonctionnelEntity>;
+        programsRef: Record<string, RefProgrammationEntity>;
+    },
+    ChorusPaymentFlatEntity
+> {
+    constructor(
+        private dataBretagneService: DataBretagneService,
+        private getRegion: GetRegionAttachementComptable,
+    ) {}
     /**
      *   /!\ DO NOT USE THIS DIRECTLY TO PERSIT IN PAYMENT FLAT DATABASE /!\
      *
@@ -57,13 +34,14 @@ export default class ChorusMapper {
      *   To get a "full" PaymentFlatEntity in order to process persistance in database,
      *   ensure to aggregate all PaymentFlatEntity by uniqueId and merge the amount
      */
-    public static toNotAggregatedPaymentFlatEntity(
-        chorusEntity: ChorusEntity,
-        programs: Record<string, StateBudgetProgramEntity>,
-        ministries: Record<string, MinistryEntity>,
-        fonctionalDomains: Record<string, DomaineFonctionnelEntity>,
-        programsRef: Record<string, RefProgrammationEntity>,
-    ): ChorusPaymentFlatEntity {
+    execute(input: {
+        chorusEntity: ChorusEntity;
+        programs: Record<string, StateBudgetProgramEntity>;
+        ministries: Record<string, MinistryEntity>;
+        fonctionalDomains: Record<string, DomaineFonctionnelEntity>;
+        programsRef: Record<string, RefProgrammationEntity>;
+    }): ChorusPaymentFlatEntity {
+        const { chorusEntity, programs, ministries, fonctionalDomains, programsRef } = input;
         const {
             programCode,
             activityCode,
@@ -74,13 +52,13 @@ export default class ChorusMapper {
             refProgrammationEntity,
         } = this.buildComplementaryData(chorusEntity, programs, ministries, fonctionalDomains, programsRef);
 
-        const budgetaryYear = chorusEntity.exercice;
-        const beneficiaryEstablishmentId = this.getEstablishmentValueObject(chorusEntity);
+        const budgetaryYear = Number(chorusEntity.exercice);
+        const beneficiaryEstablishmentId = chorusEntity.identifier;
         const beneficiaryCompanyId = this.getCompanyId(beneficiaryEstablishmentId);
         const beneficiaryEstablishmentIdType = beneficiaryEstablishmentId.name;
         const beneficiaryCompanyIdType = beneficiaryCompanyId.name;
         const accountingAttachment = chorusEntity.codeSociete;
-        const accountingAttachmentRegion = this.getRegionAttachementComptable(chorusEntity.codeSociete);
+        const accountingAttachmentRegion = this.getRegion.execute(chorusEntity.codeSociete);
         const paymentId = `${beneficiaryEstablishmentId.value}-${chorusEntity.ej}-${budgetaryYear}`;
         const programNumber = programCode;
         const uniqueId = `chorus-${paymentId}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(chorusEntity.dateOperation)}-${accountingAttachment}-${chorusEntity.codeCentreFinancier}`;
@@ -93,7 +71,7 @@ export default class ChorusMapper {
             beneficiaryEstablishmentId,
             beneficiaryCompanyIdType,
             beneficiaryCompanyId,
-            amount: chorusEntity.amount,
+            amount: chorusEntity.montant,
             operationDate: chorusEntity.dateOperation,
             ej: chorusEntity.ej,
             financialCenterCode: chorusEntity.codeCentreFinancier,
@@ -126,7 +104,7 @@ export default class ChorusMapper {
      *
      * @returns Object containing complementary data if found, otherwise null
      */
-    private static buildComplementaryData(
+    private buildComplementaryData(
         chorusEntity: ChorusEntity,
         programs: Record<number, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
@@ -135,8 +113,9 @@ export default class ChorusMapper {
     ) {
         const { code: programCode, entity: programEntity } = this.getProgramCodeAndEntity(chorusEntity, programs);
         let ministryEntity: MinistryEntity | null = null;
+        console.log(programEntity);
         if (programEntity) {
-            ministryEntity = dataBretagneService.getMinistryEntity(programEntity, ministries);
+            ministryEntity = this.dataBretagneService.getMinistryEntity(programEntity, ministries);
         }
 
         const { code: activityCode, entity: refProgrammationEntity } = this.getActivityCodeAndEntity(
@@ -160,10 +139,7 @@ export default class ChorusMapper {
         };
     }
 
-    private static getProgramCodeAndEntity(
-        chorusEntity: ChorusEntity,
-        programs: Record<string, StateBudgetProgramEntity>,
-    ) {
+    private getProgramCodeAndEntity(chorusEntity: ChorusEntity, programs: Record<string, StateBudgetProgramEntity>) {
         // trick to trim 0 at the beginning of the code
         // i.e "0161" => "161"
         const code = parseInt(chorusEntity.codeDomaineFonctionnel?.slice(1, 4));
@@ -175,10 +151,7 @@ export default class ChorusMapper {
         return { code, entity };
     }
 
-    private static getActivityCodeAndEntity(
-        chorusEntity: ChorusEntity,
-        programsRef: Record<string, RefProgrammationEntity>,
-    ) {
+    private getActivityCodeAndEntity(chorusEntity: ChorusEntity, programsRef: Record<string, RefProgrammationEntity>) {
         const code = chorusEntity.codeActivitee?.slice(-12);
         const entity = programsRef[code];
         if (!entity) {
@@ -188,7 +161,7 @@ export default class ChorusMapper {
         return { code, entity };
     }
 
-    private static getActionCodeAndEntity(
+    private getActionCodeAndEntity(
         chorusEntity: ChorusEntity,
         fonctionalDomains: Record<string, DomaineFonctionnelEntity>,
     ) {
@@ -200,4 +173,19 @@ export default class ChorusMapper {
         }
         return { code, entity };
     }
+
+    private getCompanyId(estabId: EstablishmentIdType) {
+        if (estabId instanceof Siret) {
+            return estabId.toSiren();
+        } else if (estabId instanceof Ridet) {
+            return estabId.toRid();
+        }
+        // Tahitiet
+        else {
+            return estabId.toTahiti();
+        }
+    }
 }
+
+const chorusToPaymentFlat = new ChorusToPaymentFlat(dataBretagneService, getRegionAttachementComptable);
+export default chorusToPaymentFlat;

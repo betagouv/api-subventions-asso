@@ -1,35 +1,25 @@
 import paymentFlatAdapter from "../../adapters/outputs/db/payment-flat/payment-flat.adapter";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
-import EstablishmentIdentifier from "../../identifier-objects/EstablishmentIdentifier";
 import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymentFlat";
-import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
-import chorusService from "../providers/chorus/chorus.service";
-import ChorusEntity from "../providers/chorus/entities/ChorusEntity";
-import dataBretagneService from "../providers/data-bretagne/data-bretagne.service";
 import PaymentFlatProvider from "./@types/paymentFlatProvider";
 import paymentFlatService from "./payment-flat.service";
 import { ReadableStream } from "stream/web";
+import aggregateChorusPayments, { AggregateChorusPayments } from "../../usecases/chorus/aggregate-chorus-payments";
 
 // TODO: this was only created to extract chorus dependent process from paymentFlatService
 // This should be better thought and refactored
 export class PaymentFlatChorusService implements PaymentFlatProvider {
+    constructor(private aggregate: AggregateChorusPayments) {}
+
     // init chorus data in paymentFlat (all exercises since 2017)
     public async init() {
-        const { programs, ministries, fonctionalDomains, programsRef } = await dataBretagneService.getAllDataRecords();
-
         const START_YEAR = 2017;
         const END_YEAR = new Date().getFullYear();
 
         for (let year = START_YEAR; year <= END_YEAR; year++) {
             console.log(`init payment flat collection for exercise ${year}`);
 
-            const payments = await this.toAggregatedPaymentFlatEntities(
-                programs,
-                ministries,
-                fonctionalDomains,
-                programsRef,
-                year,
-            );
+            const payments = await this.aggregate.execute(year);
 
             // if no payments for year, we move on
             // mainly used for current year if no data has been added yet
@@ -44,84 +34,8 @@ export class PaymentFlatChorusService implements PaymentFlatProvider {
         return this.savePaymentsFromStream(stream);
     }
 
-    /**
-     *  Create a list of PaymentFlatEntity from Chorus collection
-     *  It aggregates NotAggregatedChorusPaymentFlatEntity having the same uniqueId, to calculate the total amount
-     */
-    // TODO: move this in ChorusAdapter ?
-    // We should rename this to toAggregatedPaymentFlat
-    // And explain somewhere that to be able to store a PaymentFlat from Chorus we need to aggregate some of them (and why)
-    public async toAggregatedPaymentFlatEntities(
-        programs,
-        ministries,
-        fonctionalDomains,
-        programsRef,
-        exerciceBudgetaire?: number,
-    ) {
-        const chorusCursor = chorusService.cursorFind(exerciceBudgetaire);
-        const entitiesByUniqueId: Record<string, ChorusPaymentFlatEntity> = {};
-
-        const invalidDocuments: ChorusEntity[] = [];
-        while (await chorusCursor.hasNext()) {
-            const document = (await chorusCursor.next()) as ChorusEntity;
-
-            // @TODO: remove this ? Chorus Entity persistance already check identifier
-            // throught Siret.isSiret, Ridet.isRidet, Tahitiet.isTahitiet
-            // filter chorus documents with wrong or weird establishment identifier
-            // that will make payment-flat adaptation fails
-            if (!EstablishmentIdentifier.getIdentifierType(document.siret)) {
-                invalidDocuments.push(document);
-                continue;
-            }
-
-            let paymentFlatEntity;
-
-            try {
-                paymentFlatEntity = ChorusMapper.toNotAggregatedPaymentFlatEntity(
-                    document,
-                    programs,
-                    ministries,
-                    fonctionalDomains,
-                    programsRef,
-                );
-            } catch (e) {
-                console.log((e as Error).message);
-                // means that a chorus line is not valid to be inserted in payment flat
-                continue;
-            }
-
-            if (entitiesByUniqueId[paymentFlatEntity.uniqueId]) {
-                entitiesByUniqueId[paymentFlatEntity.uniqueId].amount = parseFloat(
-                    (entitiesByUniqueId[paymentFlatEntity.uniqueId].amount + paymentFlatEntity.amount).toFixed(2),
-                );
-            } else {
-                entitiesByUniqueId[paymentFlatEntity.uniqueId] = paymentFlatEntity;
-            }
-        }
-
-        console.log(`Set aside ${invalidDocuments.length} chorus document with invalid establishment identifier`);
-        console.log(
-            `Here are some of them : \n${invalidDocuments
-                .splice(0, 5)
-                .map(document => `- ${document.siret} \n`)
-                .reduce((acc, str) => (acc += str), "")}`,
-        );
-
-        const entities = Object.values(entitiesByUniqueId);
-        console.log(`${entities.length} documents transformed`);
-        return entities;
-    }
-
-    public async updatePaymentsFlatCollection(exerciceBudgetaire?: number) {
-        const { programs, ministries, fonctionalDomains, programsRef } = await dataBretagneService.getAllDataRecords();
-
-        const payments = await this.toAggregatedPaymentFlatEntities(
-            programs,
-            ministries,
-            fonctionalDomains,
-            programsRef,
-            exerciceBudgetaire,
-        );
+    public async updatePaymentsFlatCollection(exerciceBudgetaire: number) {
+        const payments = await this.aggregate.execute(exerciceBudgetaire);
 
         await this.addToPaymentFlat(payments);
     }
@@ -135,5 +49,5 @@ export class PaymentFlatChorusService implements PaymentFlatProvider {
     }
 }
 
-const paymentFlatChorusService = new PaymentFlatChorusService();
+const paymentFlatChorusService = new PaymentFlatChorusService(aggregateChorusPayments);
 export default paymentFlatChorusService;

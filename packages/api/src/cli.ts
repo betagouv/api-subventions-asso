@@ -30,7 +30,7 @@ import ScdlBatchCli from "./adapters/inputs/cli/scdl-batch.cli";
 import HeliosCli from "./adapters/inputs/cli/helios/helios.cli";
 import createHeliosCli from "./adapters/inputs/cli/helios/helios.cli.factory";
 import DepositLogCli from "./adapters/inputs/cli/scdl-deposit.cli";
-import chorusImport from "./adapters/inputs/pipeline/import/chorus/chorus.import";
+import chorusPipeline from "./adapters/inputs/pipeline/import/chorus/chorus.pipeline";
 import updateFlatByExercise from "./modules/providers/chorus/use-cases/update-flat-by-exercise";
 import rnaCli, { RnaCli } from "./adapters/inputs/cli/rna.cli";
 import OmogenCli, { createOmogenCli } from "./adapters/inputs/cli/omogen.cli";
@@ -81,7 +81,7 @@ async function main() {
                         chorusUpload,
                         new DownloadFile(providersS3Adapter),
                         providersS3Adapter,
-                        chorusImport,
+                        chorusPipeline,
                         updateFlatByExercise,
                     ),
             },

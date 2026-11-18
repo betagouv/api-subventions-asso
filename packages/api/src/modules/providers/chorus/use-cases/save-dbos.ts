@@ -1,12 +1,12 @@
 import chorusAdapter, { ChorusAdapter } from "../../../../adapters/outputs/db/providers/chorus/chorus.adapter";
-import ChorusEntity from "../entities/ChorusEntity";
+import ChorusDbo from "../../../../adapters/outputs/db/providers/chorus/chorus.dbo";
 
-export class SaveChorusEntities {
+export class SaveChorusDbos {
     private BATCH_SIZE = 10000;
     constructor(private chorusAdapter: ChorusAdapter) {}
 
-    async execute(entities: ChorusEntity[]) {
-        const batches: ChorusEntity[][] = [];
+    async execute(entities: ChorusDbo[]) {
+        const batches: ChorusDbo[][] = [];
 
         for (let i = 0; i < entities.length; i += this.BATCH_SIZE) {
             batches.push(entities.slice(i, i + this.BATCH_SIZE));
@@ -19,5 +19,5 @@ export class SaveChorusEntities {
     }
 }
 
-const saveChorusEntities = new SaveChorusEntities(chorusAdapter);
-export default saveChorusEntities;
+const saveChorusDbos = new SaveChorusDbos(chorusAdapter);
+export default saveChorusDbos;

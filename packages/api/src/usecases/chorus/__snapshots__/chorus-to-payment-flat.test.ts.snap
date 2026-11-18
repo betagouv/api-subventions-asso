@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ChorusMapper toNotAggregatedPaymentFlatEntity returns PaymentFlatEntity when data is fully provided 1`] = `
+exports[`ToPaymentFlat UseCase execute returns PaymentFlatEntity when data is fully provided 1`] = `
 {
   "accountingAttachment": "HNOR",
   "accountingAttachmentRegion": "REGION",
@@ -34,7 +34,7 @@ exports[`ChorusMapper toNotAggregatedPaymentFlatEntity returns PaymentFlatEntity
 }
 `;
 
-exports[`ChorusMapper toNotAggregatedPaymentFlatEntity should return PaymentFlatEntity with null when data is not fully provided 1`] = `
+exports[`ToPaymentFlat UseCase execute should return PaymentFlatEntity with null when data is not fully provided 1`] = `
 {
   "accountingAttachment": "HNOR",
   "accountingAttachmentRegion": "REGION",

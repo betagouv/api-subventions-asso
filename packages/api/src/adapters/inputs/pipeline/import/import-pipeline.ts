@@ -4,7 +4,7 @@ export abstract class ImportPipeline {
     protected report: ImportReport = {
         parsedCount: 0,
         importedCount: 0,
-        errorCount: 0, // no validation or format error here
+        errorCount: 0, // validation or format error here
     };
 
     constructor() {
