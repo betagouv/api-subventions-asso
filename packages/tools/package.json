@@ -38,7 +38,7 @@
         "eventsource": "^2.0.2",
         "fetch": "^1.1.0",
         "hyparquet": "~1.26.2",
-        "hyparquet-compressors": "~1.1.1",
+        "hyparquet-compressors": "~1.1.2",
         "hyparquet-writer": "~0.15.7",
         "jquery": "^3.7.1",
         "jsdom": "^19.0.0",
@@ -46,7 +46,7 @@
         "node-fetch": "^3.3.2",
         "node-xlsx": "^0.24.0",
         "puppeteer": "^14.4.1",
-        "qs": "^6.16.0",
+        "qs": "^6.16.1",
         "signalr": "^2.4.3",
         "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"
     }
