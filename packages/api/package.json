@@ -109,6 +109,7 @@
         "toad-scheduler": "^2.3.0",
         "tqdm": "^2.0.3",
         "tsoa": "^5.1.1",
+        "uuid": "11.1.1",
         "winston": "^3.19.0",
         "winston-mongodb": "^5.1.1",
         "xlsx": "file:../../vendor/xlsx-0.20.3.tgz",

@@ -1,24 +1,14 @@
 import axios from "axios";
-import { createHash } from "node:crypto";
+import { v5 as uuidv5 } from "uuid";
 import { AnonymizedWinstonLog } from "../../../../@types/WinstonLog";
 import { POSTHOG_API_KEY, POSTHOG_HOST } from "../../../../configurations/posthog.conf";
 
 // Changing this namespace changes the UUID (v5) of every log
-const LOG_NAMESPACE = Buffer.from("899c6eb805fb49fba976550d466f00d1", "hex");
+const LOG_NAMESPACE = "899c6eb8-05fb-49fb-a976-550d466f00d1";
 
 export class PosthogAdapter {
     isConfigured(): boolean {
         return Boolean(POSTHOG_API_KEY && POSTHOG_HOST);
-    }
-
-    private getLogUuidV5(logId: string): string {
-        const bytes = createHash("sha1").update(LOG_NAMESPACE).update(logId).digest().subarray(0, 16);
-
-        bytes[6] = (bytes[6] & 0x0f) | 0x50;
-        bytes[8] = (bytes[8] & 0x3f) | 0x80;
-
-        const hex = bytes.toString("hex");
-        return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
     }
 
     async sendLogs(logs: AnonymizedWinstonLog[]): Promise<void> {
@@ -26,14 +16,14 @@ export class PosthogAdapter {
         if (!POSTHOG_API_KEY || !POSTHOG_HOST) throw new Error("PostHog log export is not configured");
 
         const batch = logs.map(log => {
-            const uuid = this.getLogUuidV5(log._id.toString());
+            const uuid = uuidv5(log._id.toString(), LOG_NAMESPACE);
             const req = log.meta?.req;
             return {
                 uuid,
                 event: "api_log",
                 timestamp: log.timestamp.toISOString(),
                 properties: {
-                    distinct_id: req?.userId?.toString() || `anonymous:${uuid}`,
+                    distinct_id: req?.userId || `anonymous:${uuid}`,
                     $process_person_profile: false,
                     level: log.level,
                     method: req?.method,

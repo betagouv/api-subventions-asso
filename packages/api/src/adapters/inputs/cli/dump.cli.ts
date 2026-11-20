@@ -2,7 +2,8 @@ import fs from "fs";
 import { StaticImplements } from "../../../decorators/static-implements.decorator";
 import { CliStaticInterface } from "../../../@types";
 import DumpPipedriveParser from "../../../modules/dump/dump.pipedrive.parser";
-import { metabaseDumpService, posthogDumpService } from "../../../init-services";
+import { metabaseDumpService } from "../../../init-services";
+import publishLogs from "../../../usecases/posthog/publish-logs";
 
 @StaticImplements<CliStaticInterface>()
 export default class DumpCli {
@@ -13,7 +14,7 @@ export default class DumpCli {
     }
 
     public publishPosthogLogs() {
-        return posthogDumpService.publishLogs();
+        return publishLogs.execute();
     }
 
     public importPipedriveData(file: string) {

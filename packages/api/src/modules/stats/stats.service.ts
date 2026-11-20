@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import statsAssociationsVisitAdapter from "../../adapters/outputs/db/stats/association-visit.adapter";
 import logsAdapter from "../../adapters/outputs/db/stats/logs.adapter";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
-import { AnonymizedWinstonLog, WinstonLog } from "../../@types/WinstonLog";
+import { AnonymizedWinstonLog } from "../../@types/WinstonLog";
 import RouteTypesEnum from "./@types/RouteTypesEnum";
 import { groupByKeyFactory } from "../../shared/helpers/ArrayHelper";
 import userCrudService from "../user/services/crud/user.crud.service";
@@ -24,8 +24,8 @@ class StatsService {
         return logsAdapter.findByEmail(email);
     }
 
-    async getAnonymizedLogsOnPeriod(start: Date, end: Date): Promise<WinstonLog[]> {
-        const result: WinstonLog[] = [];
+    async getAnonymizedLogsOnPeriod(start: Date, end: Date): Promise<AnonymizedWinstonLog[]> {
+        const result: AnonymizedWinstonLog[] = [];
         for await (const log of this.iterateAnonymizedLogsOnPeriod(start, end)) result.push(log);
         return result;
     }
@@ -42,9 +42,9 @@ class StatsService {
             if (logToAnonymize.meta.req?.body?.phoneNumber) delete logToAnonymize.meta.req.body.phoneNumber;
 
             if (logToAnonymize.meta.req?.user) {
-                // userId is needed for joins with another table, but is saved as a string because of a dependency bug
                 const userId = logToAnonymize.meta.req.user._id;
-                if (userId && ObjectId.isValid(userId)) logToAnonymize.meta.req.userId = new ObjectId(userId);
+                if (userId && ObjectId.isValid(userId))
+                    logToAnonymize.meta.req.userId = userId.toString().toLowerCase();
                 delete logToAnonymize.meta.req.user;
             }
 

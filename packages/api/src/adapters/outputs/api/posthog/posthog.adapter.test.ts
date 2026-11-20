@@ -8,7 +8,7 @@ jest.mock("../../../../configurations/posthog.conf", () => ({
     POSTHOG_HOST: "https://eu.i.posthog.com/",
 }));
 
-const USER_ID = new ObjectId();
+const USER_ID = new ObjectId().toHexString();
 const LOG = {
     _id: new ObjectId("507f1f77bcf86cd799439011"),
     timestamp: new Date("2026-10-01"),
@@ -44,7 +44,7 @@ describe("PosthogAdapter", () => {
                         event: "api_log",
                         timestamp: "2026-10-01T00:00:00.000Z",
                         properties: {
-                            distinct_id: USER_ID.toString(),
+                            distinct_id: USER_ID,
                             $process_person_profile: false,
                             level: "info",
                             method: "GET",

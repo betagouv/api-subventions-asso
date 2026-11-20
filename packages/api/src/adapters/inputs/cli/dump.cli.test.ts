@@ -1,7 +1,8 @@
-import { metabaseDumpService, posthogDumpService } from "../../../init-services";
+import { metabaseDumpService } from "../../../init-services";
+import publishLogs from "../../../usecases/posthog/publish-logs";
 jest.mock("../../../modules/dump/dump.pipedrive.parser");
 jest.mock("../../../modules/dump/metabase-dump.service");
-jest.mock("../../../modules/dump/posthog-dump.service");
+jest.mock("../../../usecases/posthog/publish-logs");
 import fs from "fs";
 
 import DumpPipedriveParser from "../../../modules/dump/dump.pipedrive.parser";
@@ -71,6 +72,6 @@ describe("publishPosthogLogs", () => {
     it("publishes PostHog logs", async () => {
         const dumpCli = new DumpCli();
         await dumpCli.publishPosthogLogs();
-        expect(posthogDumpService.publishLogs).toHaveBeenCalled();
+        expect(publishLogs.execute).toHaveBeenCalled();
     });
 });
