@@ -9,6 +9,7 @@ export enum CONFIGURATION_NAMES {
     DAUPHIN_TOKEN = "DAUPHIN-TOKEN",
     DAUPHIN_TOKEN_AVAILABLE = "DAUPHIN-TOKEN-AVAILABLE",
     ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS",
+    POSTHOG_PUBLISH_DATE = "POSTHOG-PUBLISH-DATE",
     DUMP_PUBLISH_DATE = "DUMP-PUBLISH-DATE",
     LAST_RGPD_WARNED_DATE = "LAST-RGPD-WARNED-DATE",
     LAST_DS_UPDATE_DATE = "LAST_DS_UPDATE_DATE",
@@ -106,6 +107,19 @@ export class ConfigurationsService {
 
     async setLastPublishDumpDate(date: Date) {
         return configurationsAdapter.upsert(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE, {
+            data: date,
+        });
+    }
+
+    async getLastPublishPosthogDate(): Promise<Date> {
+        return (
+            ((await configurationsAdapter.getByName(CONFIGURATION_NAMES.POSTHOG_PUBLISH_DATE))?.data as Date) ||
+            new Date(1970)
+        );
+    }
+
+    async setLastPublishPosthogDate(date: Date) {
+        return configurationsAdapter.upsert(CONFIGURATION_NAMES.POSTHOG_PUBLISH_DATE, {
             data: date,
         });
     }

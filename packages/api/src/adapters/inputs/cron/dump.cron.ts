@@ -1,13 +1,19 @@
 import { AsyncCron } from "../../../decorators/cron.decorator";
 import { CronController } from "../../../@types/CronController";
-import { dumpService } from "../../../init-services";
+import { metabaseDumpService } from "../../../init-services";
+import publishLogs from "../../../usecases/posthog/publish-logs";
 
 export class DumpCron implements CronController {
     name = "dumpCron";
 
+    @AsyncCron({ cronExpression: "0 0 * * 0" })
+    publishPosthogLogs() {
+        return publishLogs.execute();
+    }
+
     // every Sunday at 00:00
     @AsyncCron({ cronExpression: "0 0 * * 0" })
     publishStatsData() {
-        return dumpService.publishStatsData();
+        return metabaseDumpService.publishStatsData();
     }
 }

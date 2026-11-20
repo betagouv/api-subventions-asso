@@ -2,14 +2,19 @@ import fs from "fs";
 import { StaticImplements } from "../../../decorators/static-implements.decorator";
 import { CliStaticInterface } from "../../../@types";
 import DumpPipedriveParser from "../../../modules/dump/dump.pipedrive.parser";
-import { dumpService } from "../../../init-services";
+import { metabaseDumpService } from "../../../init-services";
+import publishLogs from "../../../usecases/posthog/publish-logs";
 
 @StaticImplements<CliStaticInterface>()
 export default class DumpCli {
     static cmdName = "dump";
 
     public publishStatsData() {
-        return dumpService.publishStatsData();
+        return metabaseDumpService.publishStatsData();
+    }
+
+    public publishPosthogLogs() {
+        return publishLogs.execute();
     }
 
     public importPipedriveData(file: string) {
@@ -24,6 +29,6 @@ export default class DumpCli {
         console.info("\nStart parse file: ", file);
 
         const fileContent = fs.readFileSync(file);
-        return dumpService.importPipedriveData(DumpPipedriveParser.parse(fileContent));
+        return metabaseDumpService.importPipedriveData(DumpPipedriveParser.parse(fileContent));
     }
 }

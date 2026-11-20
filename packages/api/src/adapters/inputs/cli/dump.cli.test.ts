@@ -1,6 +1,8 @@
-import { dumpService } from "../../../init-services";
+import { metabaseDumpService } from "../../../init-services";
+import publishLogs from "../../../usecases/posthog/publish-logs";
 jest.mock("../../../modules/dump/dump.pipedrive.parser");
-jest.mock("../../../modules/dump/dump.service");
+jest.mock("../../../modules/dump/metabase-dump.service");
+jest.mock("../../../usecases/posthog/publish-logs");
 import fs from "fs";
 
 import DumpPipedriveParser from "../../../modules/dump/dump.pipedrive.parser";
@@ -62,6 +64,14 @@ describe("importPipedriveData", () => {
         const parsedData = "buffer" as DefaultObject<string | number>;
         jest.mocked(DumpPipedriveParser.parse).mockReturnValueOnce(parsedData);
         dumpCli.importPipedriveData(FILE_PATH);
-        expect(dumpService.importPipedriveData).toHaveBeenCalledWith(parsedData);
+        expect(metabaseDumpService.importPipedriveData).toHaveBeenCalledWith(parsedData);
+    });
+});
+
+describe("publishPosthogLogs", () => {
+    it("publishes PostHog logs", async () => {
+        const dumpCli = new DumpCli();
+        await dumpCli.publishPosthogLogs();
+        expect(publishLogs.execute).toHaveBeenCalled();
     });
 });
