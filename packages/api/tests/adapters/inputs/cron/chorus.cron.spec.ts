@@ -6,24 +6,21 @@ import path from "path";
 import { readFileSync } from "fs";
 import { Readable } from "stream";
 import { GetNewS3File } from "../../../../src/modules/s3-file/use-cases/get-new-s3-file";
-import { ChorusImport } from "../../../../src/adapters/inputs/pipeline/import/chorus/chorus.import";
+import { ChorusPipeline } from "../../../../src/adapters/inputs/pipeline/import/chorus/chorus.pipeline";
 import apiAssoService from "../../../../src/modules/providers/api-asso/api-asso.service";
 import stateBudgetProgramAdapter from "../../../../src/adapters/outputs/db/state-budget-program/state-budget-program.adapter";
 import uniteLegaleEntrepriseAdapter from "../../../../src/adapters/outputs/db/unite-legale-entreprise/unite-legale-entreprise.adapter";
 import { Siren } from "../../../../src/identifier-objects";
 import { PROGRAMS } from "../../../__fixtures__/paymentsFlat.fixture";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../src/shared/LegalCategoriesAccepted";
-import chorusAdapter from "../../../../src/adapters/outputs/db/providers/chorus/chorus.adapter";
 import { AssociationWithProviderValues } from "dto";
 import paymentFlatAdapter from "../../../../src/adapters/outputs/db/payment-flat/payment-flat.adapter";
 import chorusFseAdapter from "../../../../src/adapters/outputs/db/providers/chorus/chorus-fse.adapter";
-import { FilterChorusEntities } from "../../../../src/modules/providers/chorus/use-cases/filter-entities";
-import { FilterChorusFseEntities } from "../../../../src/modules/providers/chorus/use-cases/filter-fse-entities";
 import { CheckIdentifierIsFromAssoUseCase } from "../../../../src/modules/associations/use-cases/check-identifier-is-from-asso.use-case";
 import { CheckSirenIsFromAssoUseCase } from "../../../../src/modules/associations/use-cases/check-siren-is-from-asso.use-case";
 import chorusService from "../../../../src/modules/providers/chorus/chorus.service";
-import saveChorusEntities from "../../../../src/modules/providers/chorus/use-cases/save-entities";
-import saveChorusFseEntities from "../../../../src/modules/providers/chorus/use-cases/save-fse-entities";
+import saveChorusEntities from "../../../../src/modules/providers/chorus/use-cases/save-dbos";
+import saveChorusFseEntities from "../../../../src/modules/providers/chorus/use-cases/save-fse-dbos";
 import updateFlatByExercise from "../../../../src/modules/providers/chorus/use-cases/update-flat-by-exercise";
 import { TagImportedFile } from "../../../../src/modules/s3-file/use-cases/tag-imported-file";
 import DownloadFile from "../../../../src/usecases/download-file";
@@ -73,13 +70,10 @@ describe("Chorus CRON", () => {
     const cron = new ChorusCron(
         mockGetFile,
         mockDownloadFile,
-        new ChorusImport(
+        new ChorusPipeline(
             saveChorusEntities,
             saveChorusFseEntities,
-            // mock API ASSO
-            // @TODO: this should be simplified when api-asso.service will be split into use cases
-            new FilterChorusEntities(mockCheckIdentifierIsFromAsso),
-            new FilterChorusFseEntities(mockCheckIdentifierIsFromAsso),
+            mockCheckIdentifierIsFromAsso,
             chorusService,
             updateFlatByExercise,
         ),
@@ -133,8 +127,13 @@ describe("Chorus CRON", () => {
 
     it("imports chorus data", async () => {
         await cron.importNewFile();
+        const documents = await db
+            .collection("chorus")
+            .find({}, { projection: { _id: 0 } })
+            .toArray();
+
         expect(
-            (await chorusAdapter.cursorFind({}, { _id: 0 }).toArray()).map(data => ({
+            documents.map(data => ({
                 ...data,
                 updateDate: expect.any(Date),
             })),

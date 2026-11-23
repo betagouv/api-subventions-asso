@@ -2,7 +2,7 @@ import fs from "fs";
 import chorusService from "../../../modules/providers/chorus/chorus.service";
 import ChorusCli from "./chorus.cli";
 import paymentFlatChorusService from "../../../modules/payment-flat/payment-flat.chorus.service";
-import { ChorusImport } from "../pipeline/import/chorus/chorus.import";
+import { ChorusPipeline } from "../pipeline/import/chorus/chorus.pipeline";
 import { UpdateFlatByExercise } from "../../../modules/providers/chorus/use-cases/update-flat-by-exercise";
 import { ChorusUpload } from "../pipeline/upload/chorus/chorus.upload";
 import DownloadFile from "../../../usecases/download-file";
@@ -20,22 +20,20 @@ describe("Chorus CLI", () => {
     const LOGGER = { push: jest.fn(), join: jest.fn() };
 
     const FILE_PATH = "../../file/path";
-    const FILE_CONTENT = "HERE_MY_CONTENT";
     const IMPORT_REPORT = { parsedCount: 100, importedCount: 80, errorCount: 20 };
 
     const mockUploader = jest.fn() as unknown as jest.Mocked<ChorusUpload>;
     const mockDownloader = jest.fn() as unknown as jest.Mocked<DownloadFile>;
     const mockS3 = jest.fn() as unknown as jest.Mocked<S3Port>;
-    const mockChorusImport = { run: jest.fn() } as unknown as jest.Mocked<ChorusImport>;
+    const mockChorusPipeline = { run: jest.fn() } as unknown as jest.Mocked<ChorusPipeline>;
     const mockUpdateFlatByExercise = { execute: jest.fn() } as unknown as jest.Mocked<UpdateFlatByExercise>;
     let controller: ChorusCli;
 
     beforeEach(() => {
         mockedFs.existsSync.mockReturnValue(true);
-        mockedFs.readFileSync.mockReturnValue(FILE_CONTENT);
         mockedFs.writeFileSync.mockImplementation(jest.fn());
-        mockChorusImport.run.mockResolvedValue(IMPORT_REPORT);
-        controller = new ChorusCli(mockUploader, mockDownloader, mockS3, mockChorusImport, mockUpdateFlatByExercise);
+        mockChorusPipeline.run.mockResolvedValue(IMPORT_REPORT);
+        controller = new ChorusCli(mockUploader, mockDownloader, mockS3, mockChorusPipeline, mockUpdateFlatByExercise);
     });
 
     describe("_parse()", () => {
@@ -57,13 +55,13 @@ describe("Chorus CLI", () => {
         it("runs chorus import", async () => {
             // @ts-expect-error: test protected method
             await controller._parse(FILE_PATH, LOGGER);
-            expect(mockChorusImport.run).toHaveBeenCalledWith(FILE_CONTENT, { withoutEuropeanData: false });
+            expect(mockChorusPipeline.run).toHaveBeenCalledWith(FILE_PATH, { withoutEuropeanData: false });
         });
 
         it("passes --no-fse option to chorus import", async () => {
             // @ts-expect-error: test protected method
             await controller._parse(FILE_PATH, LOGGER, "--no-fse");
-            expect(mockChorusImport.run).toHaveBeenCalledWith(FILE_CONTENT, { withoutEuropeanData: true });
+            expect(mockChorusPipeline.run).toHaveBeenCalledWith(FILE_PATH, { withoutEuropeanData: true });
         });
 
         it("returns ImportReport from chorus import", async () => {

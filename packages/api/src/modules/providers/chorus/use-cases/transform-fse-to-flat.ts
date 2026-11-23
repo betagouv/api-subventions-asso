@@ -3,10 +3,14 @@ import PaymentFlatEntity from "../../../../entities/flats/PaymentFlatEntity";
 import { EstablishmentIdentifier } from "../../../../identifier-objects";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { getShortISODate } from "../../../../shared/helpers/DateHelper";
-import ChorusFseEntity from "../entities/ChorusFseEntity";
-import ChorusMapper from "../mappers/chorus.mapper";
+import getRegionAttachementComptable, {
+    GetRegionAttachementComptable,
+} from "../../../../usecases/chorus/get-region-attachement-comptable";
+import ChorusFseEntity from "../../../../domain/providers/chorus/ChorusFseEntity";
 
 export class TransformFseToFlat {
+    constructor(private getRegion: GetRegionAttachementComptable) {}
+
     execute(entity: ChorusFseEntity): PaymentFlatEntity {
         const PROGRAM_NAMES_MAP = new Map([
             ["FSE", { code: "FSE+", desc: "Fonds social européen +" }],
@@ -29,7 +33,7 @@ export class TransformFseToFlat {
             financialCenterLabel: entity.financialCenter,
             accountingAttachment: entity.societyCode,
             // @TODO: inject this dependency
-            accountingAttachmentRegion: ChorusMapper.getRegionAttachementComptable(entity.societyCode),
+            accountingAttachmentRegion: this.getRegion.execute(entity.societyCode),
             programName,
             // @TODO: rename PaymentFlat.programNumber into programCode to be more accurate
             programNumber,
@@ -64,5 +68,5 @@ export class TransformFseToFlat {
     }
 }
 
-const transformFseToFlat = new TransformFseToFlat();
+const transformFseToFlat = new TransformFseToFlat(getRegionAttachementComptable);
 export default transformFseToFlat;

@@ -1,0 +1,59 @@
+module.exports = {
+    async up(db) {
+        await db
+            .collection("chorus-fse")
+            .dropIndex("budgetaryYear_1_societyCode_1_paymentRequestPostNum_1_paymentRequestNum_1");
+
+        await db.collection("chorus-fse").updateMany(
+            {},
+            {
+                $rename: {
+                    ejPostNum: "numPosteEJ",
+                    identifier: "siret",
+                    branchCode: "codeBranche",
+                    branch: "branche",
+                    programRef: "activitee",
+                    programRefCode: "codeActivitee",
+                    paymentRequestNum: "numeroDemandePaiement",
+                    paymentRequestPostNum: "numPosteDP",
+                    societyCode: "codeSociete",
+                    budgetaryYear: "exercice",
+                    paidSupplierId: "numeroTier",
+                    beneficiaryName: "nomStructure",
+                    financialCenter: "centreFinancier",
+                    financialCenterCode: "codeCentreFinancier",
+                    functionalDomain: "domaineFonctionnel",
+                    functionalDomainCode: "codeDomaineFonctionnel",
+                    operationDate: "dateOperation",
+                    amount: "montant",
+                },
+                $set: { ridetOrTahitiet: "#" },
+            }, // all data were linked to siret so # is fine here
+        );
+
+        await db.collection("chorus").updateMany(
+            {},
+            {
+                $rename: { amount: "montant" },
+            },
+        );
+
+        await db
+            .collection("chorus")
+            .aggregate([
+                {
+                    $addFields: {
+                        numPosteEJ: { $toString: "$numPosteEJ" },
+                        numPosteDP: { $toString: "$numPosteDP" },
+                    },
+                },
+                { $out: "chorus" },
+            ])
+            .toArray();
+
+        await db.collection("chorus-fse").createIndex(
+            { exercice: 1, codeSociete: 1, numPosteDP: 1, numeroDemandePaiement: 1 },
+            { unique: true },
+        );
+    },
+};

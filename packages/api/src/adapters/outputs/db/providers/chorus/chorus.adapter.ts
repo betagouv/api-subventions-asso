@@ -3,100 +3,93 @@ import Siret from "../../../../../identifier-objects/Siret";
 import Siren from "../../../../../identifier-objects/Siren";
 import { DefaultObject } from "../../../../../@types";
 import MongoAdapter from "../../MongoAdapter";
-import ChorusEntity from "../../../../../modules/providers/chorus/entities/ChorusEntity";
 import { ChorusPort } from "./chorus.port";
+import ChorusDbo from "./chorus.dbo";
+import { dboToEntity } from "./chorus.mapper";
 
-export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusPort {
+export class ChorusAdapter extends MongoAdapter<ChorusDbo> implements ChorusPort {
     readonly collectionName = "chorus";
 
-    public async findOneByEJ(ej: string) {
-        return this.collection.findOne({ ej: ej }, { projection: { _id: 0 } });
+    public findOneByEJ(ej: string) {
+        return this.findOneBy({ ej: ej });
     }
 
-    public async findOneBySiret(siret: Siret) {
-        return this.collection.findOne({ siret: siret.value });
+    public findOneBySiret(siret: Siret) {
+        return this.findOneBy({ siret: siret.value });
     }
 
-    public async findOneBySiren(siren: Siren) {
-        return this.collection.findOne({
+    public findOneBySiren(siren: Siren) {
+        return this.findOneBy({
             siret: new RegExp(`^${siren.value}\\d{5}`),
         });
     }
 
-    public async create(entity: ChorusEntity) {
-        await this.collection.insertOne(entity);
+    private async findOneBy(query) {
+        const dbo = await this.collection.findOne(query);
+        if (dbo) return dboToEntity(dbo);
+        return null;
     }
 
-    public async upsertMany(entities: ChorusEntity[]) {
-        const operations = entities.map(
-            e =>
+    public async upsertMany(dbos: ChorusDbo[]) {
+        const operations = dbos.map(
+            dbo =>
                 ({
                     updateOne: {
                         filter: {
-                            ej: e.ej,
-                            numPosteEJ: e.numPosteEJ,
-                            numeroDemandePaiement: e.numeroDemandePaiement,
-                            numPosteDP: e.numPosteDP,
-                            codeSociete: e.codeSociete,
-                            exercice: e.exercice,
+                            ej: dbo.ej,
+                            numPosteEJ: dbo.numPosteEJ,
+                            numeroDemandePaiement: dbo.numeroDemandePaiement,
+                            numPosteDP: dbo.numPosteDP,
+                            codeSociete: dbo.codeSociete,
+                            exercice: dbo.exercice,
                         },
-                        update: { $set: e },
+                        update: { $set: dbo },
                         upsert: true,
                     },
-                }) as AnyBulkWriteOperation<ChorusEntity>,
+                }) as AnyBulkWriteOperation<ChorusDbo>,
         );
         await this.collection.bulkWrite(operations);
         return;
     }
 
-    public async update(entity: ChorusEntity) {
-        await this.collection.updateOne(
-            {
-                ej: entity.ej,
-                numPosteEJ: entity.numPosteEJ,
-                numeroDemandePaiement: entity.numeroDemandePaiement,
-                numPosteDP: entity.numPosteDP,
-                codeSociete: entity.codeSociete,
-                exercice: entity.exercice,
-            },
-            { $set: entity },
-        );
-        return;
+    private async findBy(query) {
+        const dbos = this.collection.find(query).toArray();
+        return (await dbos).map(dbo => dboToEntity(dbo));
     }
 
-    public async findBySiret(siret: Siret) {
-        return this.collection.find({ siret: siret.value }, { projection: { _id: 0 } }).toArray();
+    public findBySiret(siret: Siret) {
+        return this.findBy({ siret: siret.value });
     }
 
-    public async findByEJ(ej: string) {
-        return this.collection.find({ ej: ej }, { projection: { _id: 0 } }).toArray();
+    public findByEJ(ej: string) {
+        return this.findBy({ ej: ej });
     }
 
-    public async findBySiren(siren: Siren) {
-        return this.collection
-            .find(
-                {
-                    siret: new RegExp(`^${siren.value}\\d{5}`),
-                },
-                { projection: { _id: 0 } },
-            )
-            .toArray();
+    public findBySiren(siren: Siren) {
+        return this.findBy({ siren: siren.value });
     }
 
-    public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
-        return this.collection.find(query, { projection });
+    public async *cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
+        const cursor = this.collection.find(query, { projection });
+        try {
+            for await (const dbo of cursor) {
+                yield dboToEntity(dbo); // @TODO: transform this to Entity
+            }
+        } finally {
+            await cursor.close();
+        }
     }
 
-    public cursorFindOnExercise(exerciceBudgetaire: number) {
+    public cursorFindOnExercise(exercise: number) {
         return this.cursorFind({
-            exercice: exerciceBudgetaire,
+            exercice: exercise,
         });
     }
 
     async createIndexes() {
         await this.collection.createIndex(
             {
-                ej: 1,
+                ej: 1, // create an ej:1 index if you change order here
                 numPosteEJ: 1,
                 numeroDemandePaiement: 1,
                 numPosteDP: 1,
@@ -105,9 +98,7 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusP
             },
             { unique: true },
         );
-        await this.collection.createIndex({ ej: 1 });
         await this.collection.createIndex({ siret: 1 });
-        await this.collection.createIndex({ updated: 1 });
     }
 }
 

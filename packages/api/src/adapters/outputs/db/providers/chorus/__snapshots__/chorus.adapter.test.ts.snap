@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`chorusPort upsertMany calls bulkWrite with filters from chorus unique index 1`] = `
+[
+  {
+    "codeSociete": "HNOR",
+    "ej": "0001821732",
+    "exercice": 2023,
+    "numPosteDP": "3",
+    "numPosteEJ": "2",
+    "numeroDemandePaiement": "000195567",
+  },
+  {
+    "codeSociete": "HNOR",
+    "ej": "0001821732",
+    "exercice": 2023,
+    "numPosteDP": "2",
+    "numPosteEJ": "21",
+    "numeroDemandePaiement": "000212692",
+  },
+  {
+    "codeSociete": "HNOR",
+    "ej": "0003823760",
+    "exercice": 2022,
+    "numPosteDP": "2",
+    "numPosteEJ": "2",
+    "numeroDemandePaiement": "000311141",
+  },
+]
+`;

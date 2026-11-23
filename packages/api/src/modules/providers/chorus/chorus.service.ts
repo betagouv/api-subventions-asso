@@ -1,14 +1,13 @@
+import { ReadableStream, TransformStream } from "stream/web";
 import CacheData from "../../../shared/Cache";
-import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ProviderCore from "../provider.core";
 import Siren from "../../../identifier-objects/Siren";
-import chorusAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.adapter";
-import ChorusEntity from "./entities/ChorusEntity";
+import ChorusEntity from "../../../domain/providers/chorus/ChorusEntity";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 import Siret from "../../../identifier-objects/Siret";
-import ChorusFseEntity from "./entities/ChorusFseEntity";
+import ChorusFseEntity from "../../../domain/providers/chorus/ChorusFseEntity";
 import chorusFseAdapter from "../../../adapters/outputs/db/providers/chorus/chorus-fse.adapter";
 import PaymentFlatProvider from "../../payment-flat/@types/paymentFlatProvider";
 import paymentFlatService from "../../payment-flat/payment-flat.service";
@@ -33,10 +32,6 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
-    public async upsertMany(entities: ChorusEntity[]) {
-        return chorusAdapter.upsertMany(entities);
-    }
-
     // will replace isAcceptedEntity when Chorus will be refactored to match new ChorusFseEntity process
     public async isEntityAccepted(entity: ChorusFseEntity) {
         const siret = entity.identifier;
@@ -58,20 +53,9 @@ export class ChorusService extends ProviderCore implements PaymentFlatProvider {
         return result;
     }
 
-    public cursorFind(exerciceBudgetaire?: number) {
-        if (!exerciceBudgetaire) return chorusAdapter.cursorFind({});
-        else return chorusAdapter.cursorFindOnExercise(exerciceBudgetaire);
-    }
-
     // TODO: unit test this
     public getProgramCode(entity: ChorusEntity) {
         return parseInt(entity.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
-    }
-
-    public async persistEuropeanEntities(entities: ChorusFseEntity[]) {
-        const validEntities = await asyncFilter(entities, entity => this.isEntityAccepted(entity));
-        await chorusFseAdapter.upsertMany(validEntities);
-        return this.syncFlat(validEntities);
     }
 
     public savePaymentsFromStream(stream: ReadableStream<PaymentFlatEntity>) {

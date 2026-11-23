@@ -1,9 +1,8 @@
-import { ProviderDataEntity } from "../../../../@types/ProviderData";
+import { ProviderDataEntity } from "../../../../../@types/ProviderData";
 
-export default interface ChorusEntity extends ProviderDataEntity {
+export default interface ChorusDbo extends ProviderDataEntity {
     ej: string;
-    numPosteEJ: number;
-    // @TODO: make it a Siret
+    numPosteEJ: string;
     siret: string;
     ridetOrTahitiet: string;
     codeBranche: string;
@@ -11,7 +10,7 @@ export default interface ChorusEntity extends ProviderDataEntity {
     activitee: string;
     codeActivitee: string;
     numeroDemandePaiement: string;
-    numPosteDP: number;
+    numPosteDP: string;
     codeSociete: string;
     exercice: number;
     numeroTier: string;
@@ -20,6 +19,8 @@ export default interface ChorusEntity extends ProviderDataEntity {
     codeCentreFinancier: string;
     domaineFonctionnel: string;
     codeDomaineFonctionnel: string;
-    amount: number;
+    montant: number;
     dateOperation: Date;
 }
+
+export type ChorusFseDbo = Omit<ChorusDbo, "ej" | "numPosteEJ"> & { ej: "#"; numPosteEJ: "#" };

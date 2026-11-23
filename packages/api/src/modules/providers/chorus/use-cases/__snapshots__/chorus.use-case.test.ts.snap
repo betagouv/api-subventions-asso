@@ -3,7 +3,7 @@
 exports[`Chorus Use Cases TransformFseToFlat returns ChorusFseEntity 1`] = `
 {
   "accountingAttachment": "BNOR",
-  "accountingAttachmentRegion": "Normandie",
+  "accountingAttachmentRegion": "REGION",
   "actionCode": "FSE00-14",
   "actionLabel": "Prog nat.Etat FSE+2021-27",
   "activityCode": "N/A",

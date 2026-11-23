@@ -1,24 +1,20 @@
+import { ReadableStream } from "node:stream/web";
 import { ChorusService } from "./chorus.service";
-import chorusAdapter from "../../../adapters/outputs/db/providers/chorus/chorus.adapter";
-import { CHORUS_FSE_ENTITIES, CHORUS_ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
 import Siret from "../../../identifier-objects/Siret";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
-import chorusFseAdapter from "../../../adapters/outputs/db/providers/chorus/chorus-fse.adapter";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../payment-flat/__fixtures__/payment-flat.fixture";
 import paymentFlatService from "../../payment-flat/payment-flat.service";
 import { PROGRAMS } from "../../../../tests/adapters/outputs/db/__fixtures__/state-budget-program.fixtures";
 import { TransformFseToFlat } from "./use-cases/transform-fse-to-flat";
+import { CHORUS_ENTITIES, CHORUS_FSE_ENTITIES } from "../../../domain/providers/chorus/chorus.fixture";
 
 jest.mock("../../../adapters/outputs/db/providers/chorus/chorus.adapter");
-jest.mock("./mappers/chorus.mapper");
 jest.mock("../../../shared/helpers/StringHelper");
 jest.mock("../../payment-flat/payment-flat.service");
 jest.mock("../../associations/associations.helper");
 jest.mock("../../payment-flat/payment-flat.chorus.service");
-
-const mockedChorusPort = jest.mocked(chorusAdapter);
 
 describe("ChorusService", () => {
     let service: ChorusService;
@@ -27,25 +23,6 @@ describe("ChorusService", () => {
         service = new ChorusService(mockTransformFseToFlat);
         // @ts-expect-error: reassign private cache
         service.sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
-    });
-
-    describe("upsertMany", () => {
-        it("should call port with entities", async () => {
-            await service.upsertMany(CHORUS_ENTITIES);
-        });
-    });
-
-    describe("cursorFind", () => {
-        it("should call chorusPort.cursorFind", () => {
-            service.cursorFind();
-            expect(mockedChorusPort.cursorFind).toHaveBeenCalledWith({});
-        });
-
-        it("should call chorusPort.cursorFindOnExercise", () => {
-            const exerciceBudgetaire = 2021;
-            service.cursorFind(exerciceBudgetaire);
-            expect(mockedChorusPort.cursorFindOnExercise).toHaveBeenCalledWith(exerciceBudgetaire);
-        });
     });
 
     describe("getProgramCode", () => {
@@ -62,7 +39,7 @@ describe("ChorusService", () => {
         beforeAll(() => {
             jest.mocked(associationHelper.isIdentifierFromAsso).mockReturnValue(SOME_PROMISE);
         });
-        const SIREN = new Siret(CHORUS_ENTITIES[0].siret).toSiren();
+        const SIREN = (CHORUS_ENTITIES[0].identifier as Siret).toSiren();
 
         it("calls associationService test with valueObject association identifier", async () => {
             service.sirenBelongAsso(SIREN);
@@ -105,31 +82,6 @@ describe("ChorusService", () => {
         it("returns result", async () => {
             const actual = await service.isEntityAccepted(ENTITY);
             expect(actual).toEqual(IS_ASSO);
-        });
-    });
-
-    describe("persistEuropeanEntities", () => {
-        // test with more than one
-        const ENTITIES = [...CHORUS_FSE_ENTITIES, ...CHORUS_FSE_ENTITIES];
-        let mockSyncFlat: jest.SpyInstance;
-        let mockIsEntityAccepted: jest.SpyInstance;
-
-        beforeEach(() => {
-            mockSyncFlat = jest.spyOn(service, "syncFlat").mockResolvedValue();
-            mockIsEntityAccepted = jest.spyOn(service, "isEntityAccepted").mockResolvedValue(true);
-            jest.spyOn(chorusFseAdapter, "upsertMany").mockResolvedValue();
-        });
-
-        afterAll(() => [mockIsEntityAccepted, mockSyncFlat].map(mock => mock.mockRestore()));
-
-        it("filters entities", async () => {
-            await service.persistEuropeanEntities(ENTITIES);
-            expect(mockIsEntityAccepted).toHaveBeenCalledTimes(ENTITIES.length);
-        });
-
-        it("pass entities to port", async () => {
-            await service.persistEuropeanEntities(ENTITIES);
-            expect(chorusFseAdapter.upsertMany).toHaveBeenCalledWith(ENTITIES);
         });
     });
 
