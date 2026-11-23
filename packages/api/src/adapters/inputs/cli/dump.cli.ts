@@ -3,18 +3,20 @@ import { StaticImplements } from "../../../decorators/static-implements.decorato
 import { CliStaticInterface } from "../../../@types";
 import DumpPipedriveParser from "../../../modules/dump/dump.pipedrive.parser";
 import { metabaseDumpService } from "../../../init-services";
-import publishLogs from "../../../usecases/posthog/publish-logs";
+import type AsyncUseCase from "../../../@types/use-case/AsyncUseCase";
 
 @StaticImplements<CliStaticInterface>()
 export default class DumpCli {
     static cmdName = "dump";
+
+    constructor(private publishLogs: AsyncUseCase<void, void>) {}
 
     public publishStatsData() {
         return metabaseDumpService.publishStatsData();
     }
 
     public publishPosthogLogs() {
-        return publishLogs.execute();
+        return this.publishLogs.execute();
     }
 
     public importPipedriveData(file: string) {

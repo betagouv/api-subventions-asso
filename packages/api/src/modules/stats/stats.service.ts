@@ -43,8 +43,7 @@ class StatsService {
 
             if (logToAnonymize.meta.req?.user) {
                 const userId = logToAnonymize.meta.req.user._id;
-                if (userId && ObjectId.isValid(userId))
-                    logToAnonymize.meta.req.userId = userId.toString().toLowerCase();
+                if (userId && ObjectId.isValid(userId)) logToAnonymize.meta.req.userId = userId;
                 delete logToAnonymize.meta.req.user;
             }
 

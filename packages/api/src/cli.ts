@@ -17,6 +17,7 @@ import GisproCli from "./adapters/inputs/cli/gispro.cli";
 import DauphinCli from "./adapters/inputs/cli/dauphin.cli";
 import AdminStructureCli from "./adapters/inputs/cli/admin-structure.cli";
 import DumpCli from "./adapters/inputs/cli/dump.cli";
+import publishLogs from "./usecases/posthog/publish-logs";
 import ScdlCli from "./adapters/inputs/cli/scdl.cli";
 import { initIndexes } from "./shared/MongoInit";
 import GeoCli from "./adapters/inputs/cli/geo.cli";
@@ -67,6 +68,7 @@ async function main() {
     ];
 
     const factoryMap = new Map([
+        [DumpCli.cmdName, { factory: () => new DumpCli(publishLogs) }],
         [HeliosCli.cmdName, { factory: createHeliosCli }],
         [ChorusCli.cmdName, { factory: () => new ChorusCli(chorusImport, updateFlatByExercise) }],
         [EstablishmentCli.cmdName, { factory: createEstablishmentCli }],

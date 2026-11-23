@@ -1,7 +1,4 @@
 import { PublishLogs } from "./publish-logs";
-import posthogAdapter from "../../adapters/outputs/api/posthog/posthog.adapter";
-import configurationsService from "../../modules/configurations/configurations.service";
-import statsService from "../../modules/stats/stats.service";
 import { AnonymizedWinstonLog } from "../../@types/WinstonLog";
 import { ObjectId } from "mongodb";
 
@@ -16,7 +13,13 @@ jest.mock("../../configurations/env.conf", () => ({
 }));
 
 describe("PublishLogs", () => {
-    const publishLogs = new PublishLogs();
+    const posthogAdapter = { isConfigured: jest.fn(), sendLogs: jest.fn() };
+    const configurationsService = {
+        getLastPublishPosthogDate: jest.fn(),
+        setLastPublishPosthogDate: jest.fn(),
+    };
+    const statsService = { iterateAnonymizedLogsOnPeriod: jest.fn() };
+    const publishLogs = new PublishLogs(posthogAdapter, configurationsService, statsService);
 
     describe("execute", () => {
         const LOG = { _id: new ObjectId(), timestamp: new Date() } as AnonymizedWinstonLog;
