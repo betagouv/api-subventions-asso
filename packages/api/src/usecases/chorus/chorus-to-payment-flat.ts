@@ -113,7 +113,6 @@ export class ChorusToPaymentFlat implements UseCase<
     ) {
         const { code: programCode, entity: programEntity } = this.getProgramCodeAndEntity(chorusEntity, programs);
         let ministryEntity: MinistryEntity | null = null;
-        console.log(programEntity);
         if (programEntity) {
             ministryEntity = this.dataBretagneService.getMinistryEntity(programEntity, ministries);
         }
