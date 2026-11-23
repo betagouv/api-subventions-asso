@@ -164,7 +164,7 @@
 
 <style>
     .spellcheck {
-        width: 100%;
+        flex: 1;
         min-width: 0;
 
         > input {
