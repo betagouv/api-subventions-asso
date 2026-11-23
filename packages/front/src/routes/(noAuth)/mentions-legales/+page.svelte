@@ -10,24 +10,24 @@
 <h2>Éditeur de la Plateforme</h2>
 
 <p>
-    La Plateforme {getName()} est éditée par l'Incubateur de services numériques de la Direction interministérielle du numérique
-    (DINUM).
+    La Plateforme {getName()} est éditée par la Direction de la Jeunesse, de l’Éducation Populaire et de la Vie Associative
+    (DJEPVA), rattachée au ministère chargé de la Jeunesse.
 </p>
 
 <p>
-    Coordonnées :
+    Coordonnées (DJEPVA) :
     <br />
-    Adresse : DINUM, 20 avenue de Ségur, 75007 Paris
+    Adresse : 95 avenue de France, 75650 Paris Cedex 13
     <br />
-    Tel. accueil : 01.71.21.01.70
+    Tel. accueil : 01.40.45.90.00
     <br />
-    SIRET : 12000101100010 (secrétariat général du gouvernement)
+    SIREN : 120 041 017
     <br />
-    SIREN : 120 001 011
+    SIRET : 120 041 017 00035
 </p>
 
 <h2>Directrice.eur de la publication</h2>
-<p>Directeur interministériel du numérique.</p>
+<p>Thibaut de Saint Pol, directeur de la Jeunesse, de l’Éducation populaire et de la Vie associative.</p>
 
 <h2>Hébergement de la Plateforme</h2>
 <p>Ce site est hébergé en propre par Scalingo SAS, 15 avenue du Rhin, 67100 Strasbourg, France.</p>
