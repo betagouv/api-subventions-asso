@@ -5,10 +5,8 @@ import rnaSirenService, { RnaSirenService } from "./rna-siren.service";
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
 import rnaSirenAdapter from "../../adapters/outputs/db/rna-siren/rna-siren.adapter";
-import associationIdentifierService from "../association-identifier/association-identifier.service";
 import FindRnaSirenUseCase from "../providers/api-asso/use-cases/find-rna-siren.use-case";
 
-jest.mock("../association-identifier/association-identifier.service");
 jest.mock("../providers/api-asso/api-asso.service");
 jest.mock("../../adapters/outputs/db/rna-siren/rna-siren.adapter");
 
@@ -74,41 +72,6 @@ describe("RnaSirenService", () => {
             const actual = await rnaSirenService.find(RNA);
             const expected = [RNA_SIREN_ENTITY];
             expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("findFromUnknownIdentifier", () => {
-        let mockFind: jest.SpyInstance;
-
-        beforeAll(() => {
-            mockFind = jest.spyOn(rnaSirenService, "find").mockResolvedValue([RNA_SIREN_ENTITY]);
-            jest.mocked(associationIdentifierService.identifierStringToEntity).mockReturnValue(RNA);
-        });
-
-        beforeEach(() => {
-            mockFind.mockClear();
-            jest.mocked(associationIdentifierService.identifierStringToEntity).mockClear();
-        });
-
-        afterAll(() => {
-            mockFind.mockRestore();
-        });
-
-        it("map string to an identifier object", async () => {
-            await rnaSirenService.findFromUnknownIdentifier(RNA.value);
-            expect(associationIdentifierService.identifierStringToEntity).toHaveBeenCalledWith(RNA.value);
-        });
-
-        it("calls find with identifier object", async () => {
-            jest.mocked(associationIdentifierService.identifierStringToEntity).mockReturnValueOnce(RNA);
-            await rnaSirenService.findFromUnknownIdentifier(RNA.value);
-            expect(mockFind).toHaveBeenCalledWith(RNA);
-        });
-
-        it("returns rnaSiren entity", async () => {
-            jest.mocked(associationIdentifierService.identifierStringToEntity).mockReturnValueOnce(RNA);
-            await rnaSirenService.findFromUnknownIdentifier(RNA.value);
-            expect(mockFind).toHaveBeenCalledWith(RNA);
         });
     });
 

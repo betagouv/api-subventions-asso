@@ -945,13 +945,6 @@ L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;servi
 "
 `;
 
-exports[`/association /{identifier}/grants/csv returns extract from siret 1`] = `
-"﻿Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
-L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;serviceInstructeur;dispositif;objet;30000;15000;Accordé;89988,3;AA01/0776-C001-4000 - UO DGER XXXX-C001;2023-07-12;101 - Programme Exemple
-L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;serviceInstructeur;dispositif;objet;30000;15000;Accordé;3752;N/A - N/A;2023-07-12;163 - Programme Exemple
-"
-`;
-
 exports[`/association /{identifier}/grants/v2 should return grants with rna 1`] = `
 {
   "count": 2,

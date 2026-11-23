@@ -3,7 +3,6 @@ import associationsService from "../../../modules/associations/associations.serv
 import { AssociationHttp, isAssoIdentifierFromAssoMiddleware } from "./association.http";
 import consumers from "stream/consumers";
 import grantService from "../../../modules/grant/grant.service";
-import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";
 import AssociationIdentifier from "../../../identifier-objects/AssociationIdentifier";
 import Siren from "../../../identifier-objects/Siren";
 import grantExtractService from "../../../modules/grant/grant-extract.service";
@@ -11,14 +10,15 @@ import { errorHandler } from "../../../middlewares/error.middleware";
 import associationHelper from "../../../modules/associations/associations.helper";
 import rawGrantService from "../../../modules/grant/raw-grant.service";
 import getAssociation from "../../../modules/associations/use-cases/get-association";
+import getOneAssociationIdentifier from "../../../usecases/association/get-one-association-identifier";
 
 jest.mock("../../../modules/grant/grant.service");
 jest.mock("../../../modules/grant/raw-grant.service");
 jest.mock("../../../modules/grant/grant-extract.service");
-jest.mock("../../../modules/association-identifier/association-identifier.service");
 jest.mock("../../../middlewares/error.middleware");
 jest.mock("../../../modules/associations/associations.service");
 jest.mock("../../../modules/associations/associations.helper");
+jest.mock("../../../usecases/association/get-one-association-identifier");
 
 const controller = new AssociationHttp();
 
@@ -30,7 +30,7 @@ describe("AssociationHttp", () => {
     const REQ = { params: { identifier: ID_STR }, assoIdentifier: ASSOCIATION_ID };
 
     beforeAll(() => {
-        jest.mocked(associationIdentifierService.getOneAssociationIdentifier).mockResolvedValue(ASSOCIATION_ID);
+        jest.mocked(getOneAssociationIdentifier.execute).mockResolvedValue(ASSOCIATION_ID);
     });
 
     describe("getDemandeSubventions", () => {
@@ -217,20 +217,20 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
     const ERROR_HANDLER_RES = jest.fn();
 
     beforeAll(() => {
-        jest.mocked(associationIdentifierService.getOneAssociationIdentifier).mockResolvedValue(ASSOCIATION_ID);
+        jest.mocked(getOneAssociationIdentifier.execute).mockResolvedValue(ASSOCIATION_ID);
         jest.mocked(associationHelper.isIdentifierFromAsso).mockResolvedValue(true);
         jest.mocked(errorHandler).mockReturnValue(ERROR_HANDLER_RES);
     });
 
     afterAll(() => {
-        jest.mocked(associationIdentifierService.getOneAssociationIdentifier).mockRestore();
+        jest.mocked(getOneAssociationIdentifier.execute).mockRestore();
         jest.mocked(associationHelper.isIdentifierFromAsso).mockRestore();
         jest.mocked(errorHandler).mockRestore();
     });
 
     it("gets formal id", async () => {
         await isAssoIdentifierFromAssoMiddleware({ ...REQ }, RES, NEXT);
-        expect(associationIdentifierService.getOneAssociationIdentifier).toHaveBeenCalledWith(ID_STR);
+        expect(getOneAssociationIdentifier.execute).toHaveBeenCalledWith(ID_STR);
     });
 
     it("upper the cases of identifier", async () => {
@@ -239,7 +239,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
             RES,
             NEXT,
         );
-        expect(associationIdentifierService.getOneAssociationIdentifier).toHaveBeenCalledWith("W00000001");
+        expect(getOneAssociationIdentifier.execute).toHaveBeenCalledWith("W00000001");
     });
 
     it("calls service to check it is from asso", async () => {
@@ -286,7 +286,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
 
     it("if any error calls errorHandler", async () => {
         const REQ_TMP = { ...REQ };
-        jest.mocked(associationIdentifierService.getOneAssociationIdentifier).mockRejectedValueOnce(new Error("haha"));
+        jest.mocked(getOneAssociationIdentifier.execute).mockRejectedValueOnce(new Error("haha"));
         await isAssoIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
         expect(ERROR_HANDLER_RES.mock.calls?.[0]).toMatchInlineSnapshot(`
             [

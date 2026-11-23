@@ -6,6 +6,9 @@ import associationSearchAdapter, {
 } from "../../adapters/outputs/db/association-search/association-search.adapter";
 import { IdentifierNotHandledError } from "../../domain/errors/IdentifierNotHandledError";
 
+/**
+ * Association sometimes have a SIREN linked to multiple RNA, or vice-versa
+ */
 export class GetAssociationIdentifiers implements AsyncUseCase<string, AssociationIdentifier[]> {
     constructor(private adapter: AssociationSearchAdapter) {}
 

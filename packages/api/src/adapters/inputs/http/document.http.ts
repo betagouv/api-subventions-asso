@@ -19,7 +19,7 @@ import {
 import { HttpErrorInterface } from "core";
 import documentService from "../../../modules/documents/documents.service";
 import establishmentIdentifierService from "../../../modules/establishment-identifier/establishment-identifier.service";
-import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";
+import getOneAssociationIdentifier from "../../../usecases/association/get-one-association-identifier";
 
 @Route("document")
 @Security("jwt")
@@ -34,7 +34,7 @@ export class DocumentHttp extends Controller {
     public async downloadDocumentsByIdentifier(@Path() identifier: StructureIdentifierDto) {
         const identifierEntity = await (establishmentIdentifierService.isEstablishmentIdentifier(identifier)
             ? establishmentIdentifierService.getEstablishmentIdentifiers(identifier)
-            : associationIdentifierService.getOneAssociationIdentifier(identifier));
+            : getOneAssociationIdentifier.execute(identifier));
 
         const stream = await documentService.getDocumentsFilesByIdentifier(identifierEntity);
         this.setHeader("Content-Type", "application/zip");

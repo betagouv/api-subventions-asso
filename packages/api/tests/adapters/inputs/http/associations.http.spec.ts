@@ -1,8 +1,8 @@
+import db from "../../../../src/shared/MongoConnection";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../../__helpers__/tokenHelper";
 import osirisRequestAdapter from "../../../../src/adapters/outputs/db/providers/osiris/osiris.request.adapter";
 import request from "supertest";
 import { OSIRIS_REQUEST_ENTITY, OSIRIS_ACTION_ENTITY } from "../__fixtures__/OsirisEntities";
-import rnaSirenAdapter from "../../../../src/adapters/outputs/db/rna-siren/rna-siren.adapter";
 import demarchesSimplifieesDataAdapter from "../../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-data.adapter";
 
 import demarchesSimplifieesSchemaAdapter from "../../../../src/adapters/outputs/db/providers/demarches-simplifiees/demarches-simplifiees-schema.adapter";
@@ -11,7 +11,6 @@ import miscScdlGrantAdapter from "../../../../src/adapters/outputs/db/providers/
 import DEFAULT_ASSOCIATION, {
     API_ASSO_ASSOCIATION_FROM_SIREN,
     API_ASSO_ESTABLISHMENTS_FROM_SIREN,
-    LONELY_RNA,
     RNA_STR,
     SIREN_STR,
     SIRET_STR,
@@ -56,7 +55,7 @@ import {
 import getAssociation from "../../../../src/modules/associations/use-cases/get-association";
 import bodaccAdapter from "../../../../src/adapters/outputs/api/bodacc/bodacc.adapter";
 import { BODACC_ENTITY } from "../../../../src/domain/__fixtures__/bodacc.fixture";
-import { NotAssociationError } from "core";
+import { ASSOCIATION_SEARCH_DBOS } from "../../../../src/adapters/outputs/db/association-search/__fixtures__/association-search.fixture";
 
 jest.mock("../../../../src/modules/provider-request/provider-request.service");
 
@@ -64,7 +63,7 @@ const g = global as unknown as { app: App };
 
 const insertData = async (firstTest: boolean) => {
     // data
-    await rnaSirenAdapter.insert({ siren: new Siren(SIREN_STR), rna: new Rna(RNA_STR) });
+    await db.collection("association-search").insertOne(ASSOCIATION_SEARCH_DBOS[0]);
 
     // FONJEP
     await fonjepPostesAdapter.insertMany(POSTE_ENTITIES);
@@ -186,7 +185,7 @@ describe("/association", () => {
     describe("/{structure_identifier}/subventions", () => {
         it("should return a list of subventions", async () => {
             const response = await request(g.app)
-                .get(`/association/${DEFAULT_ASSOCIATION.siret}/subventions`)
+                .get(`/association/${DEFAULT_ASSOCIATION.siren}/subventions`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -195,21 +194,12 @@ describe("/association", () => {
 
             expect(subventions).toMatchSnapshot();
         });
-
-        it("throws NotAssociationError if identifier not found in DB", async () => {
-            await request(g.app)
-                .get(`/association/${LONELY_RNA}/subventions`)
-                .set("x-access-token", await createAndGetUserToken())
-                .set("Accept", "application/json")
-                .expect(422)
-                .expect(response => expect(response.text).toContain(new NotAssociationError().message));
-        });
     });
 
     describe("/{identifier}/paiements", () => {
         it("returns a list of payments flat", async () => {
             const response = await request(g.app)
-                .get(`/association/${DEFAULT_ASSOCIATION.siret}/paiements`)
+                .get(`/association/${DEFAULT_ASSOCIATION.siren}/paiements`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -223,7 +213,7 @@ describe("/association", () => {
     describe("/{identifier}/applications", () => {
         it("returns a list of applications flat", async () => {
             const response = await request(g.app)
-                .get(`/association/${DEFAULT_ASSOCIATION.siret}/applications`)
+                .get(`/association/${DEFAULT_ASSOCIATION.siren}/applications`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -325,7 +315,6 @@ describe("/association", () => {
             identifierType | identifier
             ${"siren"}     | ${SIREN_STR}
             ${"rna"}       | ${RNA_STR}
-            ${"siret"}     | ${SIRET_STR}
         `("returns extract from $identifierType", async ({ identifier }) => {
             const response = await request(g.app)
                 .get(`/association/${identifier}/grants/csv`)
@@ -335,6 +324,15 @@ describe("/association", () => {
             expect(response.statusCode).toBe(200);
             const actual = response.text;
             expect(actual).toMatchSnapshot();
+        });
+
+        it("throws error if identifier is not an association identifier ", async () => {
+            await request(g.app)
+                .get(`/association/${SIRET_STR}/grants/csv`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "text/csv")
+                .expect(400)
+                .then(req => expect(req.body.message).toEqual(`Invalid structure identifier: ${SIRET_STR}`));
         });
     });
 });

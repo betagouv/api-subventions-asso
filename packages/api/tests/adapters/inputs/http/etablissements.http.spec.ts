@@ -1,6 +1,7 @@
 import request from "supertest";
+import db from "../../../../src/shared/MongoConnection";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../../__helpers__/tokenHelper";
-import DEFAULT_ASSOCIATION, {
+import {
     API_ASSO_ESTABLISHMENTS_FROM_SIREN,
     LONELY_RNA,
     SIREN_STR,
@@ -24,6 +25,7 @@ import {
     FONJEP_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY_2,
 } from "../../../../src/modules/payment-flat/__fixtures__/payment-flat.fixture";
+import { ASSOCIATION_SEARCH_DBOS } from "../../../../src/adapters/outputs/db/association-search/__fixtures__/association-search.fixture";
 
 const g = global as unknown as { app: App };
 
@@ -46,9 +48,7 @@ describe("/etablissement", () => {
     });
 
     beforeEach(async () => {
-        await rnaSirenAdapter.insert(
-            new RnaSirenEntity(new Rna(DEFAULT_ASSOCIATION.rna), new Siren(DEFAULT_ASSOCIATION.siren)),
-        );
+        await db.collection("association-search").insertOne(ASSOCIATION_SEARCH_DBOS[0]);
         await initData();
     });
 

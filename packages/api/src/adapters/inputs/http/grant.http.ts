@@ -10,7 +10,7 @@ import { Controller, Get, Route, Tags, Example } from "tsoa";
 import Siret from "../../../identifier-objects/Siret";
 import openDataGrantService from "../../../modules/open-data/grant/open-data-grant.service";
 import establishmentIdentifierService from "../../../modules/establishment-identifier/establishment-identifier.service";
-import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";
+import getOneAssociationIdentifier from "../../../usecases/association/get-one-association-identifier";
 
 @Route("open-data/subventions")
 @Tags("Open Data")
@@ -63,7 +63,7 @@ export class GrantHttp extends Controller {
     ])
     @Get("/association/{siren_ou_rna}")
     async getOpenDataGrantsByAssociation(siren_ou_rna: AssociationIdentifierDto): Promise<PublishableGrantDto[]> {
-        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(siren_ou_rna);
+        const associationIdentifiers = await getOneAssociationIdentifier.execute(siren_ou_rna);
 
         return await openDataGrantService.getByStructure(associationIdentifiers);
     }
@@ -92,7 +92,7 @@ export class GrantHttp extends Controller {
     async getOpenDataGrantsByStructure(siren_ou_siret_ou_rna: StructureIdentifierDto): Promise<PublishableGrantDto[]> {
         const identifier = Siret.isSiret(siren_ou_siret_ou_rna)
             ? await establishmentIdentifierService.getEstablishmentIdentifiers(siren_ou_siret_ou_rna)
-            : await associationIdentifierService.getOneAssociationIdentifier(siren_ou_siret_ou_rna);
+            : await getOneAssociationIdentifier.execute(siren_ou_siret_ou_rna);
         return await openDataGrantService.getByStructure(identifier);
     }
 }

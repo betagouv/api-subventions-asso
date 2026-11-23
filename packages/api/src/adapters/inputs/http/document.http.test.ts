@@ -5,7 +5,7 @@ import { IncomingMessage } from "http";
 import { ReadStream } from "node:fs";
 import { DocumentRequestDto } from "dto";
 import { IdentifiedRequest } from "../../../@types";
-import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";
+import getOneAssociationIdentifier from "../../../usecases/association/get-one-association-identifier";
 
 jest.mock("../../../modules/documents/documents.service");
 
@@ -92,7 +92,7 @@ describe("DocumentController", () => {
             getDocumentsFilesSpy.mockResolvedValue(stream);
             documentController = new DocumentHttp();
             setHeaderMock = jest.spyOn(documentController, "setHeader").mockImplementation(jest.fn());
-            getOneAssociationIdentifierSpy = jest.spyOn(associationIdentifierService, "getOneAssociationIdentifier");
+            getOneAssociationIdentifierSpy = jest.spyOn(getOneAssociationIdentifier, "execute");
             getOneAssociationIdentifierSpy.mockResolvedValue({});
         });
 

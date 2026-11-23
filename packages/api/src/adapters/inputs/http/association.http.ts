@@ -30,11 +30,10 @@ import {
     Deprecated,
     Example,
 } from "tsoa";
-import { HttpErrorInterface, NotAssociationError } from "core";
+import { BadRequestError, HttpErrorInterface, NotAssociationError } from "core";
 
 import associationsService from "../../../modules/associations/associations.service";
 import grantService from "../../../modules/grant/grant.service";
-import associationIdentifierService from "../../../modules/association-identifier/association-identifier.service";
 import grantExtractService from "../../../modules/grant/grant-extract.service";
 import { errorHandler } from "../../../middlewares/error.middleware";
 import associationHelper from "../../../modules/associations/associations.helper";
@@ -45,6 +44,8 @@ import { OLD_APPLICATON_DTO, OLD_PAYMENT_DTO } from "./examples/OldGrants";
 import { DOCUMENT_DTO } from "./examples/Documents";
 import rawGrantService from "../../../modules/grant/raw-grant.service";
 import getAssociationUseCase from "../../../modules/associations/use-cases/get-association";
+import { IdentifierError } from "../../../domain/errors/IdentifierError";
+import getOneAssociationIdentifier from "../../../usecases/association/get-one-association-identifier";
 
 export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
     /*
@@ -57,9 +58,16 @@ export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
     try {
         // avoids case sensitivity breaks with identifiers containing letters
         const identifier = (req.params.identifier as string).toUpperCase();
-        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
-        if (!(await associationHelper.isIdentifierFromAsso(associationIdentifiers))) throw new NotAssociationError();
-        req.assoIdentifier = associationIdentifiers;
+        try {
+            const associationIdentifiers = await getOneAssociationIdentifier.execute(identifier);
+
+            if (!(await associationHelper.isIdentifierFromAsso(associationIdentifiers)))
+                throw new NotAssociationError();
+            req.assoIdentifier = associationIdentifiers;
+        } catch (e) {
+            if (e instanceof IdentifierError) throw new BadRequestError(e.message);
+            throw e;
+        }
     } catch (e) {
         // somehow errorMiddleware does not catch errors in tsoa middlewares so it needs ot be called explicitly
         errorHandler(false)(e, req, _res, next);

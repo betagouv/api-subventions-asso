@@ -4,7 +4,6 @@ import RnaSirenEntity from "../../entities/RnaSirenEntity";
 import Rna from "../../identifier-objects/Rna";
 import Siren from "../../identifier-objects/Siren";
 import AssociationIdentifier from "../../identifier-objects/AssociationIdentifier";
-import Siret from "../../identifier-objects/Siret";
 import { FullAssociationIdentifier } from "../../identifier-objects/@types/StructureIdentifier";
 import FindRnaSirenUseCase from "../providers/api-asso/use-cases/find-rna-siren.use-case";
 import { findRnaSiren } from "../providers/api-asso/use-cases/api-asso.use-case.factory";
@@ -63,17 +62,6 @@ export class RnaSirenService {
             )
             .map(assoIdentifier => new RnaSirenEntity(assoIdentifier.rna, assoIdentifier.siren));
         return this.insertMany(entities);
-    }
-
-    extractRnaOrSirenFromIdentifier(id: string | Rna | Siren): Rna | Siren {
-        if (id instanceof Rna || id instanceof Siren) return id;
-        if (Rna.isRna(id)) {
-            return new Rna(id);
-        }
-        if (Siren.isSiren(id)) {
-            return new Siren(id);
-        }
-        return new Siren(Siret.getSiren(id));
     }
 }
 
