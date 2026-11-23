@@ -51,6 +51,9 @@ module.exports = {
             ])
             .toArray();
 
-        await db.collection("chorus-fse").createIndex("exercice_1_codeSociete_1_numPosteDP_1_numeroDemandePaiement_1");
+        await db.collection("chorus-fse").createIndex(
+            { exercice: 1, codeSociete: 1, numPosteDP: 1, numeroDemandePaiement: 1 },
+            { unique: true },
+        );
     },
 };
