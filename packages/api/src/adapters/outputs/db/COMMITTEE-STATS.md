@@ -1,6 +1,115 @@
 # MONGODB QUERIES FOR REGULAR REQUESTS
 
-## LISTS OF LOCAL OPERATORS SIRET
+## USERS
+
+### Nombre de visites utilisateurs par semestre (depuis 2025)
+
+```
+[
+  {
+    $match: {
+      timestamp: {
+        $gte: new ISODate("2025-01-01")
+      },
+      "meta.req.user._id": {
+        $exists: true,
+        $ne: null
+      },
+      "meta.req.url": {
+        $in: [
+          /^\/association/,
+          /^\/etablissement/,
+          /^\/search/
+        ]
+      }
+    }
+  },
+  {
+    $addFields: {
+      userId: {
+        $convert: {
+          input: "$meta.req.user._id",
+          to: "objectId",
+          onError: null,
+          onNull: null
+        }
+      },
+
+    }
+  },
+  {
+    $lookup: {
+      from: "users",
+      localField: "userId",
+      foreignField: "_id",
+      as: "user"
+    }
+  },
+  {
+    $unwind: {
+      path: "$user",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+  {
+    $match: {
+      // minor difference from delete users
+			// user: { $exists: true},
+      "user.roles": { $nin: ["consumer", "admin"] }
+    }
+  },
+  {
+    $addFields: {
+      exercice: {
+        $year: {
+          date: "$timestamp",
+          timezone: "Europe/Paris"
+        }
+      },
+      semestre: {
+        $cond: [
+          {
+            $lte: [
+              {
+                $month: {
+                  date: "$timestamp",
+                  timezone: "Europe/Paris"
+                }
+              },
+              6
+            ]
+          },
+          1,
+          2
+        ]
+      }
+    }
+  },
+  {
+    $group: {
+      _id: {
+        exercise: "$exercice",
+        semestre: "$semestre"
+      },
+      count: {
+        $sum: 1
+      },
+    }
+  },
+  {
+    $project: {
+      exercise: "$_id.exercise",
+      semestre: "$_id.semestre",
+      count: 1,
+      user: 1
+    }
+  }
+]
+```
+
+## SCDL
+
+### LISTS OF LOCAL OPERATORS SIRET
 
 | Name                           | SIRET          |
 | ------------------------------ | -------------- |
@@ -22,8 +131,7 @@
 | Agence du Service Civique      | 13001184400011 |
 | Caisse des dépôts              | 18002002600019 |
 | OFB                            | 13002591900015 |
-
-## Montants en €
+| Université de Lille            | 13002975400012 |
 
 ### Collectivités
 
@@ -33,158 +141,19 @@ Montants des collectivités SCDL excluant les opérateurs
 
 ```js
 [
-  {
-    $match: {
-      exerciceBudgetaire: { $in: [2023, 2024, 2025] },
-      statutLabel: "Accordé",
-      idAttribuant: {
-        $nin: [
-          "38529030900454",
-          "13002233800011",
-          "19754686400012",
-          "13003019000016",
-          "13000548113153",
-          "13000548121040",
-          "13000548112007",
-          "13000548116917",
-          "13000548121115",
-          "13000548118277",
-          "13000548117501",
-          "13000548119044",
-          "13000548117345",
-          "13000548119424",
-          "13000548119820",
-          "13000548100010",
-          "13001184400011",
-          "18002002600019",
-          "13002591900015"
-        ]
-      }
-    }
-  },
-  {
-    $lookup: {
-      from: "rna-siren",
-      localField: "idEntrepriseBeneficiaire",
-      foreignField: "siren",
-      as: "__association_match"
-    }
-  },
-  {
-    $match: {
-      "__association_match.0": { $exists: true }
-    }
-  },
-  {
-    $project: { __association_match: 0 }
-  },
-  {
-    $group: {
-      _id: "$exerciceBudgetaire",
-      amount_eur: { $sum: "$montantAccorde" },
-      grants_count: { $sum: 1 },
-      scdl_sources: { $addToSet: "$fournisseur" }
-    }
-  },
-  {
-    $project: {
-      _id: 0,
-      year: "$_id",
-      amount_eur: 1,
-      grants_count: 1,
-      scdl_sources_count: { $size: "$scdl_sources" }
-    }
-  },
-  { $sort: { year: 1 } }
-]
-```
-
-### Opérateurs
-
-Collection : `applications-flat`
-
-Une ligne par année et par opérateur
-
-```js
-[
-  {
-    $match: {
-      exerciceBudgetaire: { $in: [2023, 2024, 2025] },
-      statutLabel: "Accordé",
-      $or: [
-        {
-          idAttribuant: {
-            $in: [
-              "38529030900454",
-              "13002233800011",
-              "19754686400012",
-              "13003019000016",
-              "13000548113153",
-              "13000548121040",
-              "13000548112007",
-              "13000548116917",
-              "13000548121115",
-              "13000548118277",
-              "13000548117501",
-              "13000548119044",
-              "13000548117345",
-              "13000548119424",
-              "13000548119820",
-              "13000548100010",
-              "13001184400011",
-              "18002002600019",
-              "13002591900015"
-            ]
-          }
-        },
-        { fournisseur: "fonjep" },
-        { fournisseur: "osiris", dispositif: { $regex: /^ANS/i } }
-      ]
-    }
-  },
-  {
-    $lookup: {
-      from: "rna-siren",
-      localField: "idEntrepriseBeneficiaire",
-      foreignField: "siren",
-      as: "__association_match"
-    }
-  },
-  {
-    $match: {
-      "__association_match.0": { $exists: true }
-    }
-  },
-  {
-    $project: { __association_match: 0 }
-  },
-  {
-    $addFields: {
-      operator_name: {
-        $switch: {
-          branches: [
-            { case: { $eq: ["$fournisseur", "fonjep"] }, then: "FONJEP" },
-            {
-              case: {
-                $and: [
-                  { $eq: ["$fournisseur", "osiris"] },
-                  { $eq: [{ $toUpper: { $substrCP: [{ $ifNull: ["$dispositif", ""] }, 0, 3] } }, "ANS"] }
-                ]
-              },
-              then: "ANS"
+    {
+        $match: {
+            fournisseur: /^scdl/,
+            exerciceBudgetaire: {
+                $in: [2023, 2024, 2025, 2026],
             },
-            { case: { $eq: ["$idAttribuant", "38529030900454"] }, then: "ADEME" },
-            { case: { $eq: ["$idAttribuant", "13002233800011"] }, then: "Santé Publique France" },
-            { case: { $eq: ["$idAttribuant", "19754686400012"] }, then: "IHEDN" },
-            { case: { $eq: ["$idAttribuant", "13003019000016"] }, then: "GIP Les entreprises s'engagent" },
-            { case: { $eq: ["$idAttribuant", "13001184400011"] }, then: "Agence du Service Civique" },
-            { case: { $eq: ["$idAttribuant", "18002002600019"] }, then: "Caisse des dépôts" },
-            { case: { $eq: ["$idAttribuant", "13002591900015"] }, then: "OFB" },
-            {
-              case: {
-                $in: [
-                  "$idAttribuant",
-                  [
+            statutLabel: "Accordé",
+            idAttribuant: {
+                $nin: [
+                    "38529030900454",
+                    "13002233800011",
+                    "19754686400012",
+                    "13003019000016",
                     "13000548113153",
                     "13000548121040",
                     "13000548112007",
@@ -196,64 +165,214 @@ Une ligne par année et par opérateur
                     "13000548117345",
                     "13000548119424",
                     "13000548119820",
-                    "13000548100010"
-                  ]
-                ]
-              },
-              then: "France Travail"
-            }
-          ],
-          default: "Autre"
-        }
-      },
-      operator_type: {
-        $cond: [
-          { $in: ["$fournisseur", ["fonjep", "osiris"]] },
-          "hors SCDL",
-          "SCDL"
-        ]
-      },
-      source: {
-        $switch: {
-          branches: [
-            { case: { $eq: ["$fournisseur", "fonjep"] }, then: "fonjep" },
-            { case: { $eq: ["$fournisseur", "osiris"] }, then: "osiris-ans" }
-          ],
-          default: "scdl"
-        }
-      }
-    }
-  },
-  {
-    $match: {
-      operator_name: { $ne: "Autre" }
-    }
-  },
-  {
-    $group: {
-      _id: {
-        year: "$exerciceBudgetaire",
-        operator_type: "$operator_type",
-        operator_name: "$operator_name",
-        source: "$source"
-      },
-      amount_eur: { $sum: "$montantAccorde" },
-      grants_count: { $sum: 1 }
-    }
-  },
-  {
-    $project: {
-      _id: 0,
-      year: "$_id.year",
-      operator_type: "$_id.operator_type",
-      operator_name: "$_id.operator_name",
-      source: "$_id.source",
-      amount_eur: 1,
-      grants_count: 1
-    }
-  },
-  { $sort: { year: 1, operator_type: 1, operator_name: 1 } }
-]
+                    "13000548100010",
+                    "13001184400011",
+                    "18002002600019",
+                    "13002591900015",
+                    "13002975400012",
+                ],
+            },
+        },
+    },
+    {
+        $lookup: {
+            from: "association-search",
+            localField: "idEntrepriseBeneficiaire",
+            foreignField: "siren",
+            as: "association",
+        },
+    },
+    {
+        $match: {
+            association: {
+                $exists: true,
+            },
+        },
+    },
+    {
+        $group: {
+            _id: { exercice: "$exerciceBudgetaire", attribuant: "$idAttribuant" },
+            total: {
+                $sum: "$montantAccorde",
+            },
+            subventions: {
+                $sum: 1,
+            },
+        },
+    },
+    {
+        $project: {
+            _id: 0,
+            exercice: "$_id.exercice",
+            attribuant: "$_id.attribuant",
+            total: 1,
+            subventions: 1,
+        },
+    },
+    {
+        $sort: {
+            exercice: 1,
+        },
+    },
+];
+```
+
+### Opérateurs
+
+Collection : `applications-flat`
+
+Une ligne par année et par opérateur
+
+```js
+[
+    {
+        $match: {
+            exerciceBudgetaire: { $in: [2023, 2024, 2025] },
+            statutLabel: "Accordé",
+            $or: [
+                {
+                    idAttribuant: {
+                        $in: [
+                            "38529030900454",
+                            "13002233800011",
+                            "19754686400012",
+                            "13003019000016",
+                            "13000548113153",
+                            "13000548121040",
+                            "13000548112007",
+                            "13000548116917",
+                            "13000548121115",
+                            "13000548118277",
+                            "13000548117501",
+                            "13000548119044",
+                            "13000548117345",
+                            "13000548119424",
+                            "13000548119820",
+                            "13000548100010",
+                            "13001184400011",
+                            "18002002600019",
+                            "13002591900015",
+                        ],
+                    },
+                },
+                { fournisseur: "fonjep" },
+                { fournisseur: "osiris", dispositif: { $regex: /^ANS/i } },
+            ],
+        },
+    },
+    {
+        $lookup: {
+            from: "rna-siren",
+            localField: "idEntrepriseBeneficiaire",
+            foreignField: "siren",
+            as: "__association_match",
+        },
+    },
+    {
+        $match: {
+            "__association_match.0": { $exists: true },
+        },
+    },
+    {
+        $project: { __association_match: 0 },
+    },
+    {
+        $addFields: {
+            operator_name: {
+                $switch: {
+                    branches: [
+                        { case: { $eq: ["$fournisseur", "fonjep"] }, then: "FONJEP" },
+                        {
+                            case: {
+                                $and: [
+                                    { $eq: ["$fournisseur", "osiris"] },
+                                    {
+                                        $eq: [
+                                            { $toUpper: { $substrCP: [{ $ifNull: ["$dispositif", ""] }, 0, 3] } },
+                                            "ANS",
+                                        ],
+                                    },
+                                ],
+                            },
+                            then: "ANS",
+                        },
+                        { case: { $eq: ["$idAttribuant", "38529030900454"] }, then: "ADEME" },
+                        { case: { $eq: ["$idAttribuant", "13002233800011"] }, then: "Santé Publique France" },
+                        { case: { $eq: ["$idAttribuant", "19754686400012"] }, then: "IHEDN" },
+                        { case: { $eq: ["$idAttribuant", "13003019000016"] }, then: "GIP Les entreprises s'engagent" },
+                        { case: { $eq: ["$idAttribuant", "13001184400011"] }, then: "Agence du Service Civique" },
+                        { case: { $eq: ["$idAttribuant", "18002002600019"] }, then: "Caisse des dépôts" },
+                        { case: { $eq: ["$idAttribuant", "13002591900015"] }, then: "OFB" },
+                        {
+                            case: {
+                                $in: [
+                                    "$idAttribuant",
+                                    [
+                                        "13000548113153",
+                                        "13000548121040",
+                                        "13000548112007",
+                                        "13000548116917",
+                                        "13000548121115",
+                                        "13000548118277",
+                                        "13000548117501",
+                                        "13000548119044",
+                                        "13000548117345",
+                                        "13000548119424",
+                                        "13000548119820",
+                                        "13000548100010",
+                                    ],
+                                ],
+                            },
+                            then: "France Travail",
+                        },
+                    ],
+                    default: "Autre",
+                },
+            },
+            operator_type: {
+                $cond: [{ $in: ["$fournisseur", ["fonjep", "osiris"]] }, "hors SCDL", "SCDL"],
+            },
+            source: {
+                $switch: {
+                    branches: [
+                        { case: { $eq: ["$fournisseur", "fonjep"] }, then: "fonjep" },
+                        { case: { $eq: ["$fournisseur", "osiris"] }, then: "osiris-ans" },
+                    ],
+                    default: "scdl",
+                },
+            },
+        },
+    },
+    {
+        $match: {
+            operator_name: { $ne: "Autre" },
+        },
+    },
+    {
+        $group: {
+            _id: {
+                year: "$exerciceBudgetaire",
+                operator_type: "$operator_type",
+                operator_name: "$operator_name",
+                source: "$source",
+            },
+            amount_eur: { $sum: "$montantAccorde" },
+            grants_count: { $sum: 1 },
+        },
+    },
+    {
+        $project: {
+            _id: 0,
+            year: "$_id.year",
+            operator_type: "$_id.operator_type",
+            operator_name: "$_id.operator_name",
+            source: "$_id.source",
+            amount_eur: 1,
+            grants_count: 1,
+        },
+    },
+    { $sort: { year: 1, operator_type: 1, operator_name: 1 } },
+];
 ```
 
 Pour obtenir les sous-totaux par année, remplacer la partie finale à partir du `$group` par :
@@ -285,28 +404,28 @@ Compte les fournisseurs distincts qui ont des subventions sur chaque exercice, c
 
 ```js
 [
-  {
-    $match: {
-      exerciceBudgetaire: { $in: [2023, 2024, 2025] },
-      montantAccorde: { $gt: 0 },
-      fournisseur: { $ne: null }
-    }
-  },
-  {
-    $group: {
-      _id: "$exerciceBudgetaire",
-      sources: { $addToSet: "$fournisseur" }
-    }
-  },
-  {
-    $project: {
-      _id: 0,
-      year: "$_id",
-      sources_count: { $size: "$sources" }
-    }
-  },
-  { $sort: { year: 1 } }
-]
+    {
+        $match: {
+            exerciceBudgetaire: { $in: [2023, 2024, 2025] },
+            montantAccorde: { $gt: 0 },
+            fournisseur: { $ne: null },
+        },
+    },
+    {
+        $group: {
+            _id: "$exerciceBudgetaire",
+            sources: { $addToSet: "$fournisseur" },
+        },
+    },
+    {
+        $project: {
+            _id: 0,
+            year: "$_id",
+            sources_count: { $size: "$sources" },
+        },
+    },
+    { $sort: { year: 1 } },
+];
 ```
 
 ## Jeux de données SCDL importés
@@ -317,43 +436,43 @@ Compte les imports dont `providerId` est un SIRET, par année d'intégration
 
 ```js
 [
-  {
-    $match: {
-      integrationDate: {
-        $gte: new Date("2023-01-01T00:00:00.000Z"),
-        $lt: new Date("2026-01-01T00:00:00.000Z")
-      },
-      providerId: { $regex: /^\d{14}$/ }
-    }
-  },
-  {
-    $project: {
-      year: { $year: "$integrationDate" },
-      providerId: "$providerId"
-    }
-  },
-  {
-    $match: {
-      year: { $in: [2023, 2024, 2025] }
-    }
-  },
-  {
-    $group: {
-      _id: "$year",
-      imports_count: { $sum: 1 },
-      scdl_sources: { $addToSet: "$providerId" }
-    }
-  },
-  {
-    $project: {
-      _id: 0,
-      year: "$_id",
-      imports_count: 1,
-      scdl_sources_count: { $size: "$scdl_sources" }
-    }
-  },
-  { $sort: { year: 1 } }
-]
+    {
+        $match: {
+            integrationDate: {
+                $gte: new Date("2023-01-01T00:00:00.000Z"),
+                $lt: new Date("2026-01-01T00:00:00.000Z"),
+            },
+            providerId: { $regex: /^\d{14}$/ },
+        },
+    },
+    {
+        $project: {
+            year: { $year: "$integrationDate" },
+            providerId: "$providerId",
+        },
+    },
+    {
+        $match: {
+            year: { $in: [2023, 2024, 2025] },
+        },
+    },
+    {
+        $group: {
+            _id: "$year",
+            imports_count: { $sum: 1 },
+            scdl_sources: { $addToSet: "$providerId" },
+        },
+    },
+    {
+        $project: {
+            _id: 0,
+            year: "$_id",
+            imports_count: 1,
+            scdl_sources_count: { $size: "$scdl_sources" },
+        },
+    },
+    { $sort: { year: 1 } },
+];
 ```
 
 ## NB OF PROVIDERS
