@@ -5,7 +5,7 @@ import { CONSUMER_USER, USER_ENTITY } from "../user/__fixtures__/user.fixture";
 import userCrudService from "../user/services/crud/user.crud.service";
 import RouteTypesEnum from "./@types/RouteTypesEnum";
 import statsService from "./stats.service";
-import { FindCursor, ObjectId } from "mongodb";
+import { FindCursor } from "mongodb";
 import UserEntity from "../../domain/users/UserEntity";
 
 jest.mocked("../user/services/crud/user.crud.service");
@@ -74,11 +74,9 @@ describe("StatsService", () => {
             expect(actual).toBeUndefined();
         });
 
-        it("sets user id as ObjectId", async () => {
-            const expected = new ObjectId(USER_ENTITY.id);
-            const req = (await statsService.getAnonymizedLogsOnPeriod(START, END))[0].meta.req as { userId?: ObjectId };
-            const actual = req.userId;
-            expect(actual).toEqual(expected);
+        it("sets user id as a string", async () => {
+            const { userId } = (await statsService.getAnonymizedLogsOnPeriod(START, END))[0].meta.req;
+            expect(userId).toBe(USER_ENTITY.id);
         });
 
         it("removes user's properties", async () => {

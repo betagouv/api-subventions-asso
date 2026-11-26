@@ -1,6 +1,6 @@
-import { dumpService } from "../../../init-services";
+import { metabaseDumpService } from "../../../init-services";
 jest.mock("../../../modules/dump/dump.pipedrive.parser");
-jest.mock("../../../modules/dump/dump.service");
+jest.mock("../../../modules/dump/metabase-dump.service");
 import fs from "fs";
 
 import DumpPipedriveParser from "../../../modules/dump/dump.pipedrive.parser";
@@ -8,7 +8,7 @@ import DumpCli from "./dump.cli";
 
 describe("importPipedriveData", () => {
     const FILE_PATH = "path/file.xlsx";
-    const dumpCli = new DumpCli();
+    const dumpCli = new DumpCli({ execute: jest.fn() });
     // @ts-expect-error -- mock
     const mockBuffer = "buffer" as Buffer;
 
@@ -62,6 +62,15 @@ describe("importPipedriveData", () => {
         const parsedData = "buffer" as DefaultObject<string | number>;
         jest.mocked(DumpPipedriveParser.parse).mockReturnValueOnce(parsedData);
         dumpCli.importPipedriveData(FILE_PATH);
-        expect(dumpService.importPipedriveData).toHaveBeenCalledWith(parsedData);
+        expect(metabaseDumpService.importPipedriveData).toHaveBeenCalledWith(parsedData);
+    });
+});
+
+describe("publishPosthogLogs", () => {
+    it("publishes PostHog logs", async () => {
+        const publishLogs = { execute: jest.fn() };
+        const dumpCli = new DumpCli(publishLogs);
+        await dumpCli.publishPosthogLogs();
+        expect(publishLogs.execute).toHaveBeenCalled();
     });
 });

@@ -1,4 +1,4 @@
-import { DumpService } from "./dump.service";
+import { MetabaseDumpService } from "./metabase-dump.service";
 import metabaseDumpAdapter from "../../adapters/outputs/db/dump/metabase-dump.adapter";
 import userCrudService from "../user/services/crud/user.crud.service";
 import { DEPOSIT_LOG_ENTITY } from "../deposit-scdl-process/__fixtures__/deposit-log.fixture";
@@ -20,10 +20,10 @@ jest.mock("../../configurations/env.conf", () => ({
 
 describe("dumpService", () => {
     const mockDepositScdlProcessService = createDepositScdlProcessService();
-    let dumpService: DumpService;
+    let dumpService: MetabaseDumpService;
 
     beforeEach(() => {
-        dumpService = new DumpService(mockDepositScdlProcessService);
+        dumpService = new MetabaseDumpService(mockDepositScdlProcessService);
     });
 
     describe("patchWithPipedriveData", () => {
